@@ -1,0 +1,1648 @@
+{
+  "project": "ARTDOM",
+  "stack": {
+    "backend": "Laravel 11",
+    "frontend": "Inertia.js + React 18 + TypeScript",
+    "auth": "Laravel Breeze (Inertia stack)",
+    "database": "MySQL 8",
+    "storage": "Laravel Storage (S3 compatible)",
+    "payments": ["Stripe", "PayStack", "Orange Money", "MTN Money"],
+    "realtime": "Laravel Reverb (WebSockets)",
+    "queue": "Laravel Horizon (Redis)",
+    "cache": "Redis",
+    "notifications": "Laravel Notifications (mail + SMS + push)"
+  },
+
+  "migrations": [
+
+    {
+      "order": 1,
+      "table": "users",
+      "file": "2024_01_01_000001_create_users_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "email": "string unique",
+        "phone": "string nullable unique",
+        "password": "string",
+        "profile_photo": "string nullable",
+        "city": "string nullable",
+        "role": "enum(['client','artist','admin']) default:'client'",
+        "is_active": "boolean default:true",
+        "email_verified_at": "timestamp nullable",
+        "phone_verified_at": "timestamp nullable",
+        "remember_token": "string nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["email", "phone", "role"]
+    },
+
+    {
+      "order": 2,
+      "table": "client_profiles",
+      "file": "2024_01_01_000002_create_client_profiles_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "user_id": "uuid foreign:users.id onDelete:cascade unique",
+        "first_name": "string",
+        "last_name": "string",
+        "date_of_birth": "date nullable",
+        "gender": "string nullable",
+        "is_premium": "boolean default:false",
+        "listening_history": "json nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["user_id"]
+    },
+
+    {
+      "order": 3,
+      "table": "artist_profiles",
+      "file": "2024_01_01_000003_create_artist_profiles_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "user_id": "uuid foreign:users.id onDelete:cascade unique",
+        "stage_name": "string",
+        "bio": "text nullable",
+        "categories": "json nullable",
+        "base_rate": "decimal(10,2) default:0",
+        "is_verified": "boolean default:false",
+        "verification_status": "enum(['pending','approved','rejected']) default:'pending'",
+        "id_document_front": "string nullable",
+        "id_document_back": "string nullable",
+        "rating": "decimal(3,2) default:0",
+        "total_reviews": "unsignedInteger default:0",
+        "social_links": "json nullable",
+        "portfolio_urls": "json nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["user_id", "verification_status", "rating"]
+    },
+
+    {
+      "order": 4,
+      "table": "services",
+      "file": "2024_01_01_000004_create_services_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "artist_id": "uuid foreign:users.id onDelete:cascade",
+        "title": "string",
+        "description": "text",
+        "category": "string",
+        "price": "decimal(10,2)",
+        "price_type": "enum(['fixed','from','hourly']) default:'fixed'",
+        "duration_minutes": "unsignedInteger",
+        "notice_period_hours": "unsignedInteger default:48",
+        "location_type": "enum(['home','online','public','any'])",
+        "options": "json nullable",
+        "media_urls": "json nullable",
+        "is_active": "boolean default:true",
+        "order": "unsignedInteger default:0",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["artist_id", "category", "is_active", "price"]
+    },
+
+    {
+      "order": 5,
+      "table": "availabilities",
+      "file": "2024_01_01_000005_create_availabilities_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "artist_id": "uuid foreign:users.id onDelete:cascade",
+        "date": "date",
+        "start_time": "time",
+        "end_time": "time",
+        "is_booked": "boolean default:false",
+        "is_blocked": "boolean default:false",
+        "block_reason": "string nullable",
+        "repeat_rule": "string nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["artist_id", "date", ["artist_id","date","is_booked"]]
+    },
+
+    {
+      "order": 6,
+      "table": "stories",
+      "file": "2024_01_01_000006_create_stories_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "artist_id": "uuid foreign:users.id onDelete:cascade",
+        "media_url": "string",
+        "media_type": "enum(['image','video'])",
+        "views": "unsignedInteger default:0",
+        "expires_at": "timestamp",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["artist_id", "expires_at"]
+    },
+
+    {
+      "order": 7,
+      "table": "reservations",
+      "file": "2024_01_01_000007_create_reservations_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "reservation_number": "string unique",
+        "client_id": "uuid foreign:users.id",
+        "artist_id": "uuid foreign:users.id",
+        "service_id": "uuid foreign:services.id",
+        "scheduled_at": "timestamp",
+        "duration_minutes": "unsignedInteger",
+        "status": "enum(['pending','confirmed','in_progress','completed','cancelled','refunded']) default:'pending'",
+        "total_amount": "decimal(10,2)",
+        "commission_rate": "decimal(5,2)",
+        "commission_amount": "decimal(10,2)",
+        "artist_earnings": "decimal(10,2)",
+        "custom_message": "text nullable",
+        "recipient_name": "string nullable",
+        "relation_type": "string nullable",
+        "emotion_type": "string nullable",
+        "location_type": "enum(['home','online','public'])",
+        "location_address": "string nullable",
+        "location_link": "string nullable",
+        "qr_code": "string nullable",
+        "checkin_at": "timestamp nullable",
+        "checkout_at": "timestamp nullable",
+        "checkin_lat": "decimal(10,8) nullable",
+        "checkin_lng": "decimal(11,8) nullable",
+        "cancelled_at": "timestamp nullable",
+        "cancel_reason": "string nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["client_id", "artist_id", "service_id", "status", "scheduled_at", "reservation_number"]
+    },
+
+    {
+      "order": 8,
+      "table": "carts",
+      "file": "2024_01_01_000008_create_carts_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "client_id": "uuid foreign:users.id onDelete:cascade unique",
+        "coupon_code": "string nullable",
+        "discount": "decimal(10,2) default:0",
+        "total_amount": "decimal(10,2) default:0",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["client_id"]
+    },
+
+    {
+      "order": 9,
+      "table": "cart_items",
+      "file": "2024_01_01_000009_create_cart_items_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "cart_id": "uuid foreign:carts.id onDelete:cascade",
+        "service_id": "uuid foreign:services.id",
+        "quantity": "unsignedInteger default:1",
+        "unit_price": "decimal(10,2)",
+        "customization": "json nullable",
+        "scheduled_at": "timestamp nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["cart_id", "service_id"]
+    },
+
+    {
+      "order": 10,
+      "table": "coupons",
+      "file": "2024_01_01_000010_create_coupons_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "code": "string unique",
+        "description": "string nullable",
+        "discount_type": "enum(['percentage','fixed'])",
+        "discount_value": "decimal(10,2)",
+        "min_order_amount": "decimal(10,2) default:0",
+        "expires_at": "timestamp nullable",
+        "usage_limit": "unsignedInteger nullable",
+        "used_count": "unsignedInteger default:0",
+        "is_active": "boolean default:true",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["code", "is_active"]
+    },
+
+    {
+      "order": 11,
+      "table": "payments",
+      "file": "2024_01_01_000011_create_payments_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "reservation_id": "uuid foreign:reservations.id nullable",
+        "client_id": "uuid foreign:users.id",
+        "amount": "decimal(10,2)",
+        "currency": "string default:'XAF'",
+        "method": "enum(['mobile_money_orange','mobile_money_mtn','card_stripe','paypal','bank_transfer'])",
+        "provider_ref": "string nullable",
+        "status": "enum(['pending','processing','completed','failed','refunded']) default:'pending'",
+        "metadata": "json nullable",
+        "paid_at": "timestamp nullable",
+        "failed_at": "timestamp nullable",
+        "refunded_at": "timestamp nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["reservation_id", "client_id", "status", "provider_ref"]
+    },
+
+    {
+      "order": 12,
+      "table": "subscriptions",
+      "file": "2024_01_01_000012_create_subscriptions_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "client_id": "uuid foreign:users.id onDelete:cascade",
+        "plan": "enum(['free','monthly','annual'])",
+        "price": "decimal(10,2)",
+        "starts_at": "timestamp",
+        "ends_at": "timestamp nullable",
+        "is_active": "boolean default:true",
+        "payment_id": "uuid foreign:payments.id nullable",
+        "cancelled_at": "timestamp nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["client_id", "is_active", "ends_at"]
+    },
+
+    {
+      "order": 13,
+      "table": "wallets",
+      "file": "2024_01_01_000013_create_wallets_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "artist_id": "uuid foreign:users.id onDelete:cascade unique",
+        "balance": "decimal(12,2) default:0",
+        "pending_balance": "decimal(12,2) default:0",
+        "currency": "string default:'XAF'",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["artist_id"]
+    },
+
+    {
+      "order": 14,
+      "table": "wallet_transactions",
+      "file": "2024_01_01_000014_create_wallet_transactions_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "wallet_id": "uuid foreign:wallets.id onDelete:cascade",
+        "type": "enum(['credit_prestation','credit_album_sale','credit_streaming','debit_withdrawal','debit_refund','commission'])",
+        "amount": "decimal(10,2)",
+        "commission": "decimal(10,2) default:0",
+        "net_amount": "decimal(10,2)",
+        "source": "string nullable",
+        "reference_id": "uuid nullable",
+        "reference_type": "string nullable",
+        "balance_after": "decimal(12,2)",
+        "note": "string nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["wallet_id", "type", "reference_id"]
+    },
+
+    {
+      "order": 15,
+      "table": "withdrawals",
+      "file": "2024_01_01_000015_create_withdrawals_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "wallet_id": "uuid foreign:wallets.id onDelete:cascade",
+        "amount": "decimal(10,2)",
+        "fee": "decimal(10,2) default:0",
+        "net_amount": "decimal(10,2)",
+        "method": "enum(['mobile_money','bank_transfer','paypal'])",
+        "account_details": "json",
+        "status": "enum(['pending','processing','completed','failed']) default:'pending'",
+        "provider_ref": "string nullable",
+        "requested_at": "timestamp",
+        "processed_at": "timestamp nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["wallet_id", "status"]
+    },
+
+    {
+      "order": 16,
+      "table": "conversations",
+      "file": "2024_01_01_000016_create_conversations_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "reservation_id": "uuid foreign:reservations.id nullable",
+        "last_message": "text nullable",
+        "last_message_at": "timestamp nullable",
+        "is_archived": "boolean default:false",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["last_message_at"]
+    },
+
+    {
+      "order": 17,
+      "table": "conversation_user",
+      "file": "2024_01_01_000017_create_conversation_user_table.php",
+      "note": "Pivot table for BelongsToMany between Conversation and User",
+      "columns": {
+        "conversation_id": "uuid foreign:conversations.id onDelete:cascade",
+        "user_id": "uuid foreign:users.id onDelete:cascade",
+        "unread_count": "unsignedInteger default:0",
+        "last_read_at": "timestamp nullable"
+      },
+      "indexes": [["conversation_id","user_id"]]
+    },
+
+    {
+      "order": 18,
+      "table": "messages",
+      "file": "2024_01_01_000018_create_messages_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "conversation_id": "uuid foreign:conversations.id onDelete:cascade",
+        "sender_id": "uuid foreign:users.id",
+        "content": "text nullable",
+        "type": "enum(['text','image','audio','video','file']) default:'text'",
+        "media_url": "string nullable",
+        "duration_seconds": "unsignedInteger nullable",
+        "reply_to_id": "uuid foreign:messages.id nullable",
+        "is_deleted": "boolean default:false",
+        "is_read": "boolean default:false",
+        "reactions": "json nullable",
+        "sent_at": "timestamp",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["conversation_id", "sender_id", "sent_at"]
+    },
+
+    {
+      "order": 19,
+      "table": "notifications",
+      "file": "2024_01_01_000019_create_notifications_table.php",
+      "note": "Use Laravel's built-in notifications table (database driver), extend with extra columns",
+      "columns": {
+        "id": "uuid primary key",
+        "type": "string",
+        "notifiable_type": "string",
+        "notifiable_id": "uuid",
+        "data": "json",
+        "read_at": "timestamp nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": [["notifiable_type","notifiable_id"]]
+    },
+
+    {
+      "order": 20,
+      "table": "tickets",
+      "file": "2024_01_01_000020_create_tickets_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "ticket_number": "string unique",
+        "user_id": "uuid foreign:users.id",
+        "type": "enum(['suggestion','complaint','bug','question','other'])",
+        "subject": "string",
+        "message": "text",
+        "attachments": "json nullable",
+        "status": "enum(['open','in_progress','resolved','closed']) default:'open'",
+        "admin_response": "text nullable",
+        "closed_at": "timestamp nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["user_id", "status", "ticket_number"]
+    },
+
+    {
+      "order": 21,
+      "table": "reviews",
+      "file": "2024_01_01_000021_create_reviews_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "reservation_id": "uuid foreign:reservations.id unique",
+        "client_id": "uuid foreign:users.id",
+        "artist_id": "uuid foreign:users.id",
+        "service_id": "uuid foreign:services.id",
+        "rating": "unsignedTinyInteger",
+        "comment": "text nullable",
+        "is_reported": "boolean default:false",
+        "report_reason": "string nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["client_id", "artist_id", "service_id", "rating"]
+    },
+
+    {
+      "order": 22,
+      "table": "albums",
+      "file": "2024_01_01_000022_create_albums_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "artist_id": "uuid foreign:users.id onDelete:cascade",
+        "title": "string",
+        "year": "year",
+        "genre": "string",
+        "cover_url": "string nullable",
+        "price": "decimal(10,2) default:0",
+        "is_streamable": "boolean default:true",
+        "is_purchasable": "boolean default:true",
+        "total_plays": "unsignedBigInteger default:0",
+        "published_at": "timestamp nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["artist_id", "genre", "is_streamable", "published_at"]
+    },
+
+    {
+      "order": 23,
+      "table": "tracks",
+      "file": "2024_01_01_000023_create_tracks_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "album_id": "uuid foreign:albums.id onDelete:cascade",
+        "title": "string",
+        "duration_seconds": "unsignedInteger",
+        "file_url": "string",
+        "lyrics": "text nullable",
+        "plays": "unsignedBigInteger default:0",
+        "track_number": "unsignedTinyInteger",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["album_id", "track_number"]
+    },
+
+    {
+      "order": 24,
+      "table": "playlists",
+      "file": "2024_01_01_000024_create_playlists_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "client_id": "uuid foreign:users.id onDelete:cascade",
+        "title": "string",
+        "cover_url": "string nullable",
+        "is_public": "boolean default:false",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["client_id"]
+    },
+
+    {
+      "order": 25,
+      "table": "playlist_track",
+      "file": "2024_01_01_000025_create_playlist_track_table.php",
+      "note": "Pivot for BelongsToMany between Playlist and Track",
+      "columns": {
+        "playlist_id": "uuid foreign:playlists.id onDelete:cascade",
+        "track_id": "uuid foreign:tracks.id onDelete:cascade",
+        "order": "unsignedInteger default:0"
+      },
+      "indexes": [["playlist_id","track_id"]]
+    },
+
+    {
+      "order": 26,
+      "table": "videos",
+      "file": "2024_01_01_000026_create_videos_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "artist_id": "uuid foreign:users.id onDelete:cascade",
+        "title": "string",
+        "description": "text nullable",
+        "video_url": "string",
+        "thumbnail_url": "string nullable",
+        "duration_seconds": "unsignedInteger",
+        "category": "string",
+        "tags": "json nullable",
+        "views": "unsignedBigInteger default:0",
+        "likes": "unsignedInteger default:0",
+        "visibility": "enum(['public','subscribers','private']) default:'public'",
+        "published_at": "timestamp nullable",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["artist_id", "visibility", "published_at", "category"]
+    },
+
+    {
+      "order": 27,
+      "table": "album_purchases",
+      "file": "2024_01_01_000027_create_album_purchases_table.php",
+      "note": "Track which clients bought which albums",
+      "columns": {
+        "id": "uuid primary key",
+        "client_id": "uuid foreign:users.id",
+        "album_id": "uuid foreign:albums.id",
+        "payment_id": "uuid foreign:payments.id",
+        "price_paid": "decimal(10,2)",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["client_id", "album_id", ["client_id","album_id"]]
+    },
+
+    {
+      "order": 28,
+      "table": "artist_followers",
+      "file": "2024_01_01_000028_create_artist_followers_table.php",
+      "note": "Pivot for client following an artist",
+      "columns": {
+        "client_id": "uuid foreign:users.id onDelete:cascade",
+        "artist_id": "uuid foreign:users.id onDelete:cascade",
+        "created_at": "timestamp"
+      },
+      "indexes": [["client_id","artist_id"], "artist_id"]
+    },
+
+    {
+      "order": 29,
+      "table": "video_comments",
+      "file": "2024_01_01_000029_create_video_comments_table.php",
+      "columns": {
+        "id": "uuid primary key",
+        "video_id": "uuid foreign:videos.id onDelete:cascade",
+        "user_id": "uuid foreign:users.id",
+        "parent_id": "uuid foreign:video_comments.id nullable",
+        "content": "text",
+        "is_reported": "boolean default:false",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexes": ["video_id", "user_id", "parent_id"]
+    }
+
+  ],
+
+  "models": [
+
+    {
+      "name": "User",
+      "file": "app/Models/User.php",
+      "table": "users",
+      "primaryKey": "id",
+      "keyType": "string",
+      "incrementing": false,
+      "fillable": ["email","phone","password","profile_photo","city","role","is_active"],
+      "hidden": ["password","remember_token"],
+      "casts": {
+        "id": "string",
+        "is_active": "boolean",
+        "email_verified_at": "datetime",
+        "role": "App\\Enums\\UserRole"
+      },
+      "relationships": {
+        "clientProfile": "hasOne(ClientProfile::class)",
+        "artistProfile": "hasOne(ArtistProfile::class)",
+        "notifications": "hasMany(Notification::class, 'notifiable_id')",
+        "conversations": "belongsToMany(Conversation::class, 'conversation_user')",
+        "tickets": "hasMany(Ticket::class)",
+        "sentMessages": "hasMany(Message::class, 'sender_id')"
+      },
+      "traits": ["HasUuids", "Notifiable", "HasApiTokens"],
+      "scopes": ["scopeActive", "scopeByRole"],
+      "helpers": ["isClient()", "isArtist()", "isAdmin()", "hasVerifiedEmail()"]
+    },
+
+    {
+      "name": "ClientProfile",
+      "file": "app/Models/ClientProfile.php",
+      "table": "client_profiles",
+      "fillable": ["user_id","first_name","last_name","date_of_birth","gender","is_premium","listening_history"],
+      "casts": {
+        "is_premium": "boolean",
+        "listening_history": "array",
+        "date_of_birth": "date"
+      },
+      "relationships": {
+        "user": "belongsTo(User::class)",
+        "reservations": "hasMany(Reservation::class, 'client_id', 'user_id')",
+        "cart": "hasOne(Cart::class, 'client_id', 'user_id')",
+        "subscriptions": "hasMany(Subscription::class, 'client_id', 'user_id')",
+        "playlists": "hasMany(Playlist::class, 'client_id', 'user_id')",
+        "reviews": "hasMany(Review::class, 'client_id', 'user_id')",
+        "albumPurchases": "hasMany(AlbumPurchase::class, 'client_id', 'user_id')",
+        "followedArtists": "belongsToMany(User::class, 'artist_followers', 'client_id', 'artist_id')"
+      }
+    },
+
+    {
+      "name": "ArtistProfile",
+      "file": "app/Models/ArtistProfile.php",
+      "table": "artist_profiles",
+      "fillable": ["user_id","stage_name","bio","categories","base_rate","is_verified","verification_status","rating","social_links","portfolio_urls"],
+      "casts": {
+        "categories": "array",
+        "social_links": "array",
+        "portfolio_urls": "array",
+        "is_verified": "boolean",
+        "rating": "float",
+        "base_rate": "decimal:2"
+      },
+      "relationships": {
+        "user": "belongsTo(User::class)",
+        "services": "hasMany(Service::class, 'artist_id', 'user_id')",
+        "availabilities": "hasMany(Availability::class, 'artist_id', 'user_id')",
+        "stories": "hasMany(Story::class, 'artist_id', 'user_id')",
+        "albums": "hasMany(Album::class, 'artist_id', 'user_id')",
+        "videos": "hasMany(Video::class, 'artist_id', 'user_id')",
+        "wallet": "hasOne(Wallet::class, 'artist_id', 'user_id')",
+        "reviews": "hasMany(Review::class, 'artist_id', 'user_id')",
+        "followers": "belongsToMany(User::class, 'artist_followers', 'artist_id', 'client_id')"
+      },
+      "scopes": ["scopeVerified", "scopeByCategory", "scopeNearby"]
+    },
+
+    {
+      "name": "Service",
+      "file": "app/Models/Service.php",
+      "table": "services",
+      "fillable": ["artist_id","title","description","category","price","price_type","duration_minutes","notice_period_hours","location_type","options","media_urls","is_active","order"],
+      "casts": {
+        "price": "decimal:2",
+        "options": "array",
+        "media_urls": "array",
+        "is_active": "boolean"
+      },
+      "relationships": {
+        "artist": "belongsTo(User::class, 'artist_id')",
+        "reservations": "hasMany(Reservation::class)",
+        "reviews": "hasMany(Review::class)",
+        "cartItems": "hasMany(CartItem::class)"
+      },
+      "scopes": ["scopeActive", "scopeByCategory"]
+    },
+
+    {
+      "name": "Availability",
+      "file": "app/Models/Availability.php",
+      "table": "availabilities",
+      "fillable": ["artist_id","date","start_time","end_time","is_booked","is_blocked","block_reason","repeat_rule"],
+      "casts": {
+        "date": "date",
+        "is_booked": "boolean",
+        "is_blocked": "boolean"
+      },
+      "relationships": {
+        "artist": "belongsTo(User::class, 'artist_id')"
+      },
+      "scopes": ["scopeAvailable", "scopeByDate", "scopeByMonth"]
+    },
+
+    {
+      "name": "Story",
+      "file": "app/Models/Story.php",
+      "table": "stories",
+      "fillable": ["artist_id","media_url","media_type","expires_at"],
+      "casts": {
+        "expires_at": "datetime"
+      },
+      "relationships": {
+        "artist": "belongsTo(User::class, 'artist_id')"
+      },
+      "scopes": ["scopeActive (where expires_at > now)"],
+      "helpers": ["isExpired()"]
+    },
+
+    {
+      "name": "Reservation",
+      "file": "app/Models/Reservation.php",
+      "table": "reservations",
+      "fillable": ["reservation_number","client_id","artist_id","service_id","scheduled_at","duration_minutes","status","total_amount","commission_rate","commission_amount","artist_earnings","custom_message","recipient_name","relation_type","emotion_type","location_type","location_address","location_link","qr_code"],
+      "casts": {
+        "scheduled_at": "datetime",
+        "total_amount": "decimal:2",
+        "status": "App\\Enums\\ReservationStatus"
+      },
+      "relationships": {
+        "client": "belongsTo(User::class, 'client_id')",
+        "artist": "belongsTo(User::class, 'artist_id')",
+        "service": "belongsTo(Service::class)",
+        "payment": "hasOne(Payment::class)",
+        "review": "hasOne(Review::class)",
+        "conversation": "hasOne(Conversation::class)"
+      },
+      "observers": ["ReservationObserver (auto-generate reservation_number, qr_code, notify artist)"],
+      "events": ["ReservationConfirmed", "ReservationCancelled", "ReservationCompleted"]
+    },
+
+    {
+      "name": "Cart",
+      "file": "app/Models/Cart.php",
+      "table": "carts",
+      "fillable": ["client_id","coupon_code","discount","total_amount"],
+      "casts": {
+        "discount": "decimal:2",
+        "total_amount": "decimal:2"
+      },
+      "relationships": {
+        "client": "belongsTo(User::class, 'client_id')",
+        "items": "hasMany(CartItem::class)",
+        "coupon": "belongsTo(Coupon::class, 'coupon_code', 'code')"
+      },
+      "helpers": ["recalculate()", "applyCoupon(code)", "checkout()"]
+    },
+
+    {
+      "name": "CartItem",
+      "file": "app/Models/CartItem.php",
+      "table": "cart_items",
+      "fillable": ["cart_id","service_id","quantity","unit_price","customization","scheduled_at"],
+      "casts": {
+        "unit_price": "decimal:2",
+        "customization": "array",
+        "scheduled_at": "datetime"
+      },
+      "relationships": {
+        "cart": "belongsTo(Cart::class)",
+        "service": "belongsTo(Service::class)"
+      },
+      "helpers": ["getSubtotal()"]
+    },
+
+    {
+      "name": "Coupon",
+      "file": "app/Models/Coupon.php",
+      "table": "coupons",
+      "fillable": ["code","description","discount_type","discount_value","min_order_amount","expires_at","usage_limit","is_active"],
+      "casts": {
+        "discount_value": "decimal:2",
+        "min_order_amount": "decimal:2",
+        "expires_at": "datetime",
+        "is_active": "boolean"
+      },
+      "helpers": ["isValid()", "applyTo(amount)"]
+    },
+
+    {
+      "name": "Payment",
+      "file": "app/Models/Payment.php",
+      "table": "payments",
+      "fillable": ["reservation_id","client_id","amount","currency","method","provider_ref","status","metadata","paid_at"],
+      "casts": {
+        "amount": "decimal:2",
+        "metadata": "array",
+        "paid_at": "datetime",
+        "status": "App\\Enums\\PaymentStatus"
+      },
+      "relationships": {
+        "reservation": "belongsTo(Reservation::class)",
+        "client": "belongsTo(User::class, 'client_id')"
+      },
+      "events": ["PaymentCompleted → credit Wallet, update Reservation status"]
+    },
+
+    {
+      "name": "Subscription",
+      "file": "app/Models/Subscription.php",
+      "table": "subscriptions",
+      "fillable": ["client_id","plan","price","starts_at","ends_at","is_active","payment_id"],
+      "casts": {
+        "price": "decimal:2",
+        "starts_at": "datetime",
+        "ends_at": "datetime",
+        "is_active": "boolean"
+      },
+      "relationships": {
+        "client": "belongsTo(User::class, 'client_id')",
+        "payment": "belongsTo(Payment::class)"
+      },
+      "helpers": ["isExpired()", "daysRemaining()"]
+    },
+
+    {
+      "name": "Wallet",
+      "file": "app/Models/Wallet.php",
+      "table": "wallets",
+      "fillable": ["artist_id","balance","pending_balance","currency"],
+      "casts": {
+        "balance": "decimal:2",
+        "pending_balance": "decimal:2"
+      },
+      "relationships": {
+        "artist": "belongsTo(User::class, 'artist_id')",
+        "transactions": "hasMany(WalletTransaction::class)",
+        "withdrawals": "hasMany(Withdrawal::class)"
+      },
+      "helpers": ["credit(amount, source, ref)", "debit(amount)", "release(reservationId)"]
+    },
+
+    {
+      "name": "WalletTransaction",
+      "file": "app/Models/WalletTransaction.php",
+      "table": "wallet_transactions",
+      "fillable": ["wallet_id","type","amount","commission","net_amount","source","reference_id","reference_type","balance_after","note"],
+      "casts": {
+        "amount": "decimal:2",
+        "commission": "decimal:2",
+        "net_amount": "decimal:2",
+        "balance_after": "decimal:2"
+      },
+      "relationships": {
+        "wallet": "belongsTo(Wallet::class)"
+      }
+    },
+
+    {
+      "name": "Withdrawal",
+      "file": "app/Models/Withdrawal.php",
+      "table": "withdrawals",
+      "fillable": ["wallet_id","amount","fee","net_amount","method","account_details","status","provider_ref"],
+      "casts": {
+        "amount": "decimal:2",
+        "fee": "decimal:2",
+        "net_amount": "decimal:2",
+        "account_details": "array",
+        "requested_at": "datetime",
+        "processed_at": "datetime"
+      },
+      "relationships": {
+        "wallet": "belongsTo(Wallet::class)"
+      }
+    },
+
+    {
+      "name": "Conversation",
+      "file": "app/Models/Conversation.php",
+      "table": "conversations",
+      "fillable": ["reservation_id","last_message","last_message_at","is_archived"],
+      "casts": {
+        "last_message_at": "datetime",
+        "is_archived": "boolean"
+      },
+      "relationships": {
+        "participants": "belongsToMany(User::class, 'conversation_user').withPivot('unread_count','last_read_at')",
+        "messages": "hasMany(Message::class)",
+        "reservation": "belongsTo(Reservation::class)"
+      }
+    },
+
+    {
+      "name": "Message",
+      "file": "app/Models/Message.php",
+      "table": "messages",
+      "fillable": ["conversation_id","sender_id","content","type","media_url","duration_seconds","reply_to_id","reactions"],
+      "casts": {
+        "is_deleted": "boolean",
+        "is_read": "boolean",
+        "reactions": "array",
+        "sent_at": "datetime"
+      },
+      "relationships": {
+        "conversation": "belongsTo(Conversation::class)",
+        "sender": "belongsTo(User::class, 'sender_id')",
+        "replyTo": "belongsTo(Message::class, 'reply_to_id')"
+      },
+      "events": ["MessageSent (broadcasts via Reverb)"]
+    },
+
+    {
+      "name": "Review",
+      "file": "app/Models/Review.php",
+      "table": "reviews",
+      "fillable": ["reservation_id","client_id","artist_id","service_id","rating","comment","is_reported","report_reason"],
+      "casts": {
+        "is_reported": "boolean"
+      },
+      "relationships": {
+        "reservation": "belongsTo(Reservation::class)",
+        "client": "belongsTo(User::class, 'client_id')",
+        "artist": "belongsTo(User::class, 'artist_id')",
+        "service": "belongsTo(Service::class)"
+      },
+      "observers": ["ReviewObserver (update ArtistProfile.rating average after save)"]
+    },
+
+    {
+      "name": "Album",
+      "file": "app/Models/Album.php",
+      "table": "albums",
+      "fillable": ["artist_id","title","year","genre","cover_url","price","is_streamable","is_purchasable","published_at"],
+      "casts": {
+        "price": "decimal:2",
+        "is_streamable": "boolean",
+        "is_purchasable": "boolean",
+        "published_at": "datetime"
+      },
+      "relationships": {
+        "artist": "belongsTo(User::class, 'artist_id')",
+        "tracks": "hasMany(Track::class).orderBy('track_number')",
+        "purchases": "hasMany(AlbumPurchase::class)"
+      },
+      "helpers": ["isPurchasedBy(userId)", "incrementPlays()"]
+    },
+
+    {
+      "name": "Track",
+      "file": "app/Models/Track.php",
+      "table": "tracks",
+      "fillable": ["album_id","title","duration_seconds","file_url","lyrics","track_number"],
+      "relationships": {
+        "album": "belongsTo(Album::class)",
+        "playlists": "belongsToMany(Playlist::class, 'playlist_track').withPivot('order')"
+      },
+      "helpers": ["incrementPlays()"]
+    },
+
+    {
+      "name": "Playlist",
+      "file": "app/Models/Playlist.php",
+      "table": "playlists",
+      "fillable": ["client_id","title","cover_url","is_public"],
+      "casts": { "is_public": "boolean" },
+      "relationships": {
+        "client": "belongsTo(User::class, 'client_id')",
+        "tracks": "belongsToMany(Track::class, 'playlist_track').withPivot('order').orderByPivot('order')"
+      }
+    },
+
+    {
+      "name": "Video",
+      "file": "app/Models/Video.php",
+      "table": "videos",
+      "fillable": ["artist_id","title","description","video_url","thumbnail_url","duration_seconds","category","tags","visibility","published_at"],
+      "casts": {
+        "tags": "array",
+        "published_at": "datetime"
+      },
+      "relationships": {
+        "artist": "belongsTo(User::class, 'artist_id')",
+        "comments": "hasMany(VideoComment::class)"
+      },
+      "helpers": ["incrementViews()"]
+    },
+
+    {
+      "name": "Ticket",
+      "file": "app/Models/Ticket.php",
+      "table": "tickets",
+      "fillable": ["ticket_number","user_id","type","subject","message","attachments","status","admin_response"],
+      "casts": { "attachments": "array" },
+      "relationships": {
+        "user": "belongsTo(User::class)"
+      },
+      "observers": ["TicketObserver (auto-generate ticket_number, notify admin)"]
+    }
+
+  ],
+
+  "enums": [
+    {
+      "name": "UserRole",
+      "file": "app/Enums/UserRole.php",
+      "cases": ["client", "artist", "admin"]
+    },
+    {
+      "name": "ReservationStatus",
+      "file": "app/Enums/ReservationStatus.php",
+      "cases": ["pending","confirmed","in_progress","completed","cancelled","refunded"]
+    },
+    {
+      "name": "PaymentStatus",
+      "file": "app/Enums/PaymentStatus.php",
+      "cases": ["pending","processing","completed","failed","refunded"]
+    }
+  ],
+
+  "controllers": [
+
+    {
+      "name": "Auth\\RegisterController",
+      "file": "app/Http/Controllers/Auth/RegisterController.php",
+      "middleware": ["guest"],
+      "methods": {
+        "showForm": "GET /register → render Inertia 'Auth/Register'",
+        "store": "POST /register → validate, create User + ClientProfile/ArtistProfile, send verification email, redirect"
+      }
+    },
+    {
+      "name": "Auth\\LoginController",
+      "file": "app/Http/Controllers/Auth/LoginController.php",
+      "middleware": ["guest"],
+      "methods": {
+        "showForm": "GET /login → render Inertia 'Auth/Login'",
+        "store": "POST /login → authenticate, redirect to role dashboard",
+        "destroy": "DELETE /logout → logout, redirect /"
+      }
+    },
+    {
+      "name": "Auth\\SocialLoginController",
+      "file": "app/Http/Controllers/Auth/SocialLoginController.php",
+      "middleware": ["guest"],
+      "methods": {
+        "redirect": "GET /auth/{provider} → Socialite::redirect",
+        "callback": "GET /auth/{provider}/callback → Socialite::user, find or create User"
+      }
+    },
+    {
+      "name": "Auth\\ForgotPasswordController",
+      "file": "app/Http/Controllers/Auth/ForgotPasswordController.php",
+      "methods": {
+        "showForm": "GET /forgot-password",
+        "sendOtp": "POST /forgot-password → generate OTP, send SMS/email",
+        "verifyOtp": "POST /verify-otp → validate OTP, issue reset token",
+        "resetPassword": "POST /reset-password → update password"
+      }
+    },
+
+    {
+      "name": "Client\\HomeController",
+      "file": "app/Http/Controllers/Client/HomeController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "index": "GET / → Inertia 'Client/Home' with {stories, featured, categories, trendingArtists, latestAlbums}"
+      }
+    },
+    {
+      "name": "Client\\SearchController",
+      "file": "app/Http/Controllers/Client/SearchController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "index": "GET /search → Inertia 'Client/Search' with filters",
+        "results": "GET /search/results → paginated artists list with filters (city, event_type, category, budget_min/max, rating, date)"
+      }
+    },
+    {
+      "name": "Client\\ArtistController",
+      "file": "app/Http/Controllers/Client/ArtistController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "show": "GET /artists/{artist} → Inertia 'Client/ArtistProfile' with {profile, services, albums, reviews, similar}",
+        "follow": "POST /artists/{artist}/follow",
+        "unfollow": "DELETE /artists/{artist}/follow",
+        "report": "POST /artists/{artist}/report"
+      }
+    },
+    {
+      "name": "Client\\ReservationController",
+      "file": "app/Http/Controllers/Client/ReservationController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "index": "GET /reservations → Inertia 'Client/Reservations' with tabs",
+        "show": "GET /reservations/{reservation} → Inertia 'Client/ReservationDetail'",
+        "availability": "GET /services/{service}/availability → JSON available slots",
+        "customize": "GET /services/{service}/book → Inertia 'Client/Customize'",
+        "store": "POST /reservations → create reservation, add to cart or direct checkout",
+        "cancel": "DELETE /reservations/{reservation} → cancel if policy allows",
+        "review": "POST /reservations/{reservation}/review → create Review"
+      }
+    },
+    {
+      "name": "Client\\CartController",
+      "file": "app/Http/Controllers/Client/CartController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "show": "GET /cart → Inertia 'Client/Cart'",
+        "addItem": "POST /cart/items",
+        "removeItem": "DELETE /cart/items/{item}",
+        "applyCoupon": "POST /cart/coupon",
+        "removeCoupon": "DELETE /cart/coupon",
+        "checkout": "POST /cart/checkout → create Reservations, initiate Payment"
+      }
+    },
+    {
+      "name": "Client\\PaymentController",
+      "file": "app/Http/Controllers/Client/PaymentController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "show": "GET /payment/{reservation} → Inertia 'Client/Payment'",
+        "initiate": "POST /payment/{reservation} → call payment gateway",
+        "callback": "GET /payment/callback → handle provider webhook/redirect",
+        "webhook": "POST /payment/webhook/{provider} → handle async payment notification",
+        "receipt": "GET /payment/{payment}/receipt → download PDF receipt"
+      }
+    },
+    {
+      "name": "Client\\LibraryController",
+      "file": "app/Http/Controllers/Client/LibraryController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "index": "GET /library → Inertia 'Client/Library' with {albums, playlists}",
+        "albums": "GET /library/albums",
+        "playlists": "GET /library/playlists"
+      }
+    },
+    {
+      "name": "Client\\SubscriptionController",
+      "file": "app/Http/Controllers/Client/SubscriptionController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "show": "GET /subscription → Inertia 'Client/Subscription' (landing + manage)",
+        "store": "POST /subscription → initiate subscription payment",
+        "cancel": "DELETE /subscription → cancel active subscription",
+        "upgrade": "PUT /subscription → change plan"
+      }
+    },
+
+    {
+      "name": "Artist\\DashboardController",
+      "file": "app/Http/Controllers/Artist/DashboardController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "index": "GET /artist/dashboard → Inertia 'Artist/Dashboard' with KPI data (revenue, reservations, followers, plays)"
+      }
+    },
+    {
+      "name": "Artist\\ProfileController",
+      "file": "app/Http/Controllers/Artist/ProfileController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "show": "GET /artist/profile → Inertia 'Artist/Profile'",
+        "update": "PUT /artist/profile → update ArtistProfile",
+        "uploadMedia": "POST /artist/profile/media → upload portfolio photos/videos",
+        "deleteMedia": "DELETE /artist/profile/media/{media}"
+      }
+    },
+    {
+      "name": "Artist\\ServiceController",
+      "file": "app/Http/Controllers/Artist/ServiceController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "index": "GET /artist/services → Inertia 'Artist/Services'",
+        "store": "POST /artist/services",
+        "update": "PUT /artist/services/{service}",
+        "destroy": "DELETE /artist/services/{service}",
+        "toggle": "PATCH /artist/services/{service}/toggle",
+        "reorder": "POST /artist/services/reorder"
+      }
+    },
+    {
+      "name": "Artist\\AvailabilityController",
+      "file": "app/Http/Controllers/Artist/AvailabilityController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "index": "GET /artist/availability → Inertia 'Artist/Agenda'",
+        "store": "POST /artist/availability → add available slots",
+        "block": "POST /artist/availability/block → block a slot",
+        "destroy": "DELETE /artist/availability/{availability}"
+      }
+    },
+    {
+      "name": "Artist\\OrderController",
+      "file": "app/Http/Controllers/Artist/OrderController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "index": "GET /artist/orders → Inertia 'Artist/Orders' (tabs: pending, confirmed, done)",
+        "show": "GET /artist/orders/{reservation}",
+        "accept": "POST /artist/orders/{reservation}/accept",
+        "decline": "POST /artist/orders/{reservation}/decline",
+        "checkIn": "POST /artist/orders/{reservation}/checkin",
+        "checkOut": "POST /artist/orders/{reservation}/checkout"
+      }
+    },
+    {
+      "name": "Artist\\WalletController",
+      "file": "app/Http/Controllers/Artist/WalletController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "index": "GET /artist/wallet → Inertia 'Artist/Wallet' with balance + transactions",
+        "transactions": "GET /artist/wallet/transactions → paginated list + filters",
+        "exportCsv": "GET /artist/wallet/export",
+        "withdraw": "POST /artist/wallet/withdraw → create Withdrawal",
+        "withdrawalStatus": "GET /artist/wallet/withdrawals/{withdrawal}"
+      }
+    },
+    {
+      "name": "Artist\\StoryController",
+      "file": "app/Http/Controllers/Artist/StoryController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "store": "POST /artist/stories → upload story (auto expires 24h)",
+        "destroy": "DELETE /artist/stories/{story}"
+      }
+    },
+    {
+      "name": "Artist\\AlbumController",
+      "file": "app/Http/Controllers/Artist/AlbumController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "index": "GET /artist/albums",
+        "store": "POST /artist/albums → create album with tracks",
+        "update": "PUT /artist/albums/{album}",
+        "destroy": "DELETE /artist/albums/{album}",
+        "addTrack": "POST /artist/albums/{album}/tracks",
+        "removeTrack": "DELETE /artist/albums/{album}/tracks/{track}",
+        "publish": "POST /artist/albums/{album}/publish"
+      }
+    },
+    {
+      "name": "Artist\\VideoController",
+      "file": "app/Http/Controllers/Artist/VideoController.php",
+      "middleware": ["auth", "role:artist"],
+      "methods": {
+        "index": "GET /artist/videos",
+        "store": "POST /artist/videos",
+        "update": "PUT /artist/videos/{video}",
+        "destroy": "DELETE /artist/videos/{video}",
+        "publish": "POST /artist/videos/{video}/publish"
+      }
+    },
+
+    {
+      "name": "Stream\\AlbumController",
+      "file": "app/Http/Controllers/Stream/AlbumController.php",
+      "middleware": ["auth"],
+      "methods": {
+        "index": "GET /stream → Inertia 'Stream/Hub' with {latestAlbums, topArtists, genres, playlists, recommendations}",
+        "show": "GET /stream/albums/{album} → Inertia 'Stream/Album'",
+        "purchase": "POST /stream/albums/{album}/purchase",
+        "play": "GET /stream/albums/{album}/tracks/{track}/play → signed URL for audio file"
+      }
+    },
+    {
+      "name": "Stream\\PlaylistController",
+      "file": "app/Http/Controllers/Stream/PlaylistController.php",
+      "middleware": ["auth", "role:client"],
+      "methods": {
+        "store": "POST /playlists",
+        "update": "PUT /playlists/{playlist}",
+        "destroy": "DELETE /playlists/{playlist}",
+        "addTrack": "POST /playlists/{playlist}/tracks",
+        "removeTrack": "DELETE /playlists/{playlist}/tracks/{track}",
+        "reorder": "POST /playlists/{playlist}/tracks/reorder"
+      }
+    },
+    {
+      "name": "Stream\\VideoController",
+      "file": "app/Http/Controllers/Stream/VideoController.php",
+      "middleware": ["auth"],
+      "methods": {
+        "index": "GET /arttube → Inertia 'ArtTube/Hub'",
+        "show": "GET /arttube/videos/{video} → Inertia 'ArtTube/VideoPlayer'",
+        "storeComment": "POST /arttube/videos/{video}/comments",
+        "like": "POST /arttube/videos/{video}/like"
+      }
+    },
+
+    {
+      "name": "Social\\ConversationController",
+      "file": "app/Http/Controllers/Social/ConversationController.php",
+      "middleware": ["auth"],
+      "methods": {
+        "index": "GET /messages → Inertia 'Messaging/List' with conversations",
+        "show": "GET /messages/{conversation} → Inertia 'Messaging/Chat' with messages",
+        "store": "POST /messages → create or find conversation",
+        "archive": "PATCH /messages/{conversation}/archive"
+      }
+    },
+    {
+      "name": "Social\\MessageController",
+      "file": "app/Http/Controllers/Social/MessageController.php",
+      "middleware": ["auth"],
+      "methods": {
+        "store": "POST /messages/{conversation}/send → create message, broadcast via Reverb",
+        "destroy": "DELETE /messages/{conversation}/messages/{message}",
+        "markRead": "PATCH /messages/{conversation}/read"
+      }
+    },
+    {
+      "name": "Social\\NotificationController",
+      "file": "app/Http/Controllers/Social/NotificationController.php",
+      "middleware": ["auth"],
+      "methods": {
+        "index": "GET /notifications → Inertia 'Notifications/Index'",
+        "markRead": "PATCH /notifications/{id}/read",
+        "markAllRead": "PATCH /notifications/read-all",
+        "destroy": "DELETE /notifications/{id}"
+      }
+    },
+    {
+      "name": "Social\\TicketController",
+      "file": "app/Http/Controllers/Social/TicketController.php",
+      "middleware": ["auth"],
+      "methods": {
+        "index": "GET /support → Inertia 'Support/Index' with ticket history",
+        "store": "POST /support → create ticket",
+        "show": "GET /support/{ticket}"
+      }
+    },
+
+    {
+      "name": "Settings\\ProfileController",
+      "file": "app/Http/Controllers/Settings/ProfileController.php",
+      "middleware": ["auth"],
+      "methods": {
+        "show": "GET /settings/profile → Inertia 'Settings/Profile'",
+        "update": "PUT /settings/profile",
+        "updateEmail": "PUT /settings/profile/email → requires re-verification",
+        "updatePhone": "PUT /settings/profile/phone → requires OTP",
+        "updatePassword": "PUT /settings/profile/password",
+        "toggle2fa": "POST /settings/profile/2fa",
+        "deactivate": "POST /settings/profile/deactivate",
+        "delete": "DELETE /settings/profile → requires password confirmation"
+      }
+    },
+    {
+      "name": "Settings\\PreferencesController",
+      "file": "app/Http/Controllers/Settings/PreferencesController.php",
+      "middleware": ["auth"],
+      "methods": {
+        "show": "GET /settings → Inertia 'Settings/App'",
+        "update": "PUT /settings → update theme, language, notification prefs"
+      }
+    },
+
+    {
+      "name": "Admin\\DashboardController",
+      "file": "app/Http/Controllers/Admin/DashboardController.php",
+      "middleware": ["auth", "role:admin"],
+      "methods": {
+        "index": "GET /admin → Inertia 'Admin/Dashboard'"
+      }
+    },
+    {
+      "name": "Admin\\ArtistValidationController",
+      "file": "app/Http/Controllers/Admin/ArtistValidationController.php",
+      "middleware": ["auth", "role:admin"],
+      "methods": {
+        "index": "GET /admin/artists/pending",
+        "approve": "POST /admin/artists/{artist}/approve",
+        "reject": "POST /admin/artists/{artist}/reject"
+      }
+    },
+    {
+      "name": "Admin\\TicketController",
+      "file": "app/Http/Controllers/Admin/TicketController.php",
+      "middleware": ["auth", "role:admin"],
+      "methods": {
+        "index": "GET /admin/tickets",
+        "show": "GET /admin/tickets/{ticket}",
+        "respond": "POST /admin/tickets/{ticket}/respond",
+        "close": "PATCH /admin/tickets/{ticket}/close"
+      }
+    }
+
+  ],
+
+  "routes": {
+    "file": "routes/web.php",
+    "note": "All routes return Inertia responses. Group by middleware.",
+    "groups": [
+
+      {
+        "middleware": ["guest"],
+        "prefix": "",
+        "routes": [
+          "GET  /              → HomeController@index (splash/landing)",
+          "GET  /onboarding    → OnboardingController@index",
+          "GET  /register      → RegisterController@showForm",
+          "POST /register      → RegisterController@store",
+          "GET  /login         → LoginController@showForm",
+          "POST /login         → LoginController@store",
+          "GET  /auth/{provider}          → SocialLoginController@redirect",
+          "GET  /auth/{provider}/callback → SocialLoginController@callback",
+          "GET  /forgot-password          → ForgotPasswordController@showForm",
+          "POST /forgot-password          → ForgotPasswordController@sendOtp",
+          "POST /verify-otp               → ForgotPasswordController@verifyOtp",
+          "POST /reset-password           → ForgotPasswordController@resetPassword"
+        ]
+      },
+
+      {
+        "middleware": ["auth"],
+        "prefix": "",
+        "routes": [
+          "DELETE /logout                                     → LoginController@destroy",
+          "GET    /notifications                              → NotificationController@index",
+          "PATCH  /notifications/{id}/read                   → NotificationController@markRead",
+          "PATCH  /notifications/read-all                    → NotificationController@markAllRead",
+          "DELETE /notifications/{id}                        → NotificationController@destroy",
+          "GET    /messages                                   → ConversationController@index",
+          "GET    /messages/{conversation}                    → ConversationController@show",
+          "POST   /messages                                   → ConversationController@store",
+          "PATCH  /messages/{conversation}/archive            → ConversationController@archive",
+          "POST   /messages/{conversation}/send               → MessageController@store",
+          "DELETE /messages/{conversation}/messages/{message} → MessageController@destroy",
+          "PATCH  /messages/{conversation}/read               → MessageController@markRead",
+          "GET    /settings                                   → PreferencesController@show",
+          "PUT    /settings                                   → PreferencesController@update",
+          "GET    /settings/profile                           → ProfileController@show",
+          "PUT    /settings/profile                           → ProfileController@update",
+          "PUT    /settings/profile/email                     → ProfileController@updateEmail",
+          "PUT    /settings/profile/phone                     → ProfileController@updatePhone",
+          "PUT    /settings/profile/password                  → ProfileController@updatePassword",
+          "POST   /settings/profile/2fa                      → ProfileController@toggle2fa",
+          "POST   /settings/profile/deactivate               → ProfileController@deactivate",
+          "DELETE /settings/profile                          → ProfileController@delete",
+          "GET    /support                                    → TicketController@index",
+          "POST   /support                                    → TicketController@store",
+          "GET    /support/{ticket}                           → TicketController@show",
+          "GET    /stream                                     → AlbumController@index",
+          "GET    /stream/albums/{album}                      → AlbumController@show",
+          "GET    /stream/albums/{album}/tracks/{track}/play  → AlbumController@play",
+          "GET    /arttube                                    → VideoController@index",
+          "GET    /arttube/videos/{video}                     → VideoController@show",
+          "POST   /arttube/videos/{video}/like                → VideoController@like",
+          "POST   /arttube/videos/{video}/comments            → VideoController@storeComment"
+        ]
+      },
+
+      {
+        "middleware": ["auth", "role:client"],
+        "prefix": "",
+        "routes": [
+          "GET    /home                                       → HomeController@index",
+          "GET    /search                                     → SearchController@index",
+          "GET    /search/results                             → SearchController@results",
+          "GET    /artists/{artist}                           → ArtistController@show",
+          "POST   /artists/{artist}/follow                    → ArtistController@follow",
+          "DELETE /artists/{artist}/follow                    → ArtistController@unfollow",
+          "POST   /artists/{artist}/report                    → ArtistController@report",
+          "GET    /services/{service}/availability            → ReservationController@availability",
+          "GET    /services/{service}/book                    → ReservationController@customize",
+          "POST   /reservations                               → ReservationController@store",
+          "GET    /reservations                               → ReservationController@index",
+          "GET    /reservations/{reservation}                 → ReservationController@show",
+          "DELETE /reservations/{reservation}                 → ReservationController@cancel",
+          "POST   /reservations/{reservation}/review          → ReservationController@review",
+          "GET    /cart                                       → CartController@show",
+          "POST   /cart/items                                 → CartController@addItem",
+          "DELETE /cart/items/{item}                          → CartController@removeItem",
+          "POST   /cart/coupon                                → CartController@applyCoupon",
+          "DELETE /cart/coupon                                → CartController@removeCoupon",
+          "POST   /cart/checkout                              → CartController@checkout",
+          "GET    /payment/{reservation}                      → PaymentController@show",
+          "POST   /payment/{reservation}                      → PaymentController@initiate",
+          "GET    /payment/callback                           → PaymentController@callback",
+          "GET    /payment/{payment}/receipt                  → PaymentController@receipt",
+          "GET    /library                                    → LibraryController@index",
+          "GET    /library/albums                             → LibraryController@albums",
+          "GET    /library/playlists                          → LibraryController@playlists",
+          "POST   /stream/albums/{album}/purchase             → AlbumController@purchase",
+          "POST   /playlists                                  → PlaylistController@store",
+          "PUT    /playlists/{playlist}                       → PlaylistController@update",
+          "DELETE /playlists/{playlist}                       → PlaylistController@destroy",
+          "POST   /playlists/{playlist}/tracks                → PlaylistController@addTrack",
+          "DELETE /playlists/{playlist}/tracks/{track}        → PlaylistController@removeTrack",
+          "POST   /playlists/{playlist}/tracks/reorder        → PlaylistController@reorder",
+          "GET    /subscription                               → SubscriptionController@show",
+          "POST   /subscription                               → SubscriptionController@store",
+          "DELETE /subscription                               → SubscriptionController@cancel",
+          "PUT    /subscription                               → SubscriptionController@upgrade"
+        ]
+      },
+
+      {
+        "middleware": ["auth", "role:artist"],
+        "prefix": "artist",
+        "routes": [
+          "GET    /dashboard                                  → DashboardController@index",
+          "GET    /profile                                    → ProfileController@show",
+          "PUT    /profile                                    → ProfileController@update",
+          "POST   /profile/media                             → ProfileController@uploadMedia",
+          "DELETE /profile/media/{media}                     → ProfileController@deleteMedia",
+          "GET    /services                                   → ServiceController@index",
+          "POST   /services                                   → ServiceController@store",
+          "PUT    /services/{service}                         → ServiceController@update",
+          "DELETE /services/{service}                         → ServiceController@destroy",
+          "PATCH  /services/{service}/toggle                 → ServiceController@toggle",
+          "POST   /services/reorder                          → ServiceController@reorder",
+          "GET    /availability                               → AvailabilityController@index",
+          "POST   /availability                               → AvailabilityController@store",
+          "POST   /availability/block                        → AvailabilityController@block",
+          "DELETE /availability/{availability}                → AvailabilityController@destroy",
+          "GET    /orders                                     → OrderController@index",
+          "GET    /orders/{reservation}                       → OrderController@show",
+          "POST   /orders/{reservation}/accept                → OrderController@accept",
+          "POST   /orders/{reservation}/decline               → OrderController@decline",
+          "POST   /orders/{reservation}/checkin               → OrderController@checkIn",
+          "POST   /orders/{reservation}/checkout              → OrderController@checkOut",
+          "GET    /wallet                                     → WalletController@index",
+          "GET    /wallet/transactions                        → WalletController@transactions",
+          "GET    /wallet/export                              → WalletController@exportCsv",
+          "POST   /wallet/withdraw                            → WalletController@withdraw",
+          "GET    /wallet/withdrawals/{withdrawal}            → WalletController@withdrawalStatus",
+          "POST   /stories                                    → StoryController@store",
+          "DELETE /stories/{story}                            → StoryController@destroy",
+          "GET    /albums                                     → AlbumController@index",
+          "POST   /albums                                     → AlbumController@store",
+          "PUT    /albums/{album}                             → AlbumController@update",
+          "DELETE /albums/{album}                             → AlbumController@destroy",
+          "POST   /albums/{album}/tracks                      → AlbumController@addTrack",
+          "DELETE /albums/{album}/tracks/{track}              → AlbumController@removeTrack",
+          "POST   /albums/{album}/publish                     → AlbumController@publish",
+          "GET    /videos                                     → VideoController@index",
+          "POST   /videos                                     → VideoController@store",
+          "PUT    /videos/{video}                             → VideoController@update",
+          "DELETE /videos/{video}                             → VideoController@destroy",
+          "POST   /videos/{video}/publish                     → VideoController@publish"
+        ]
+      },
+
+      {
+        "middleware": ["auth", "role:admin"],
+        "prefix": "admin",
+        "routes": [
+          "GET    /                                           → DashboardController@index",
+          "GET    /artists/pending                            → ArtistValidationController@index",
+          "POST   /artists/{artist}/approve                   → ArtistValidationController@approve",
+          "POST   /artists/{artist}/reject                    → ArtistValidationController@reject",
+          "GET    /tickets                                    → TicketController@index",
+          "GET    /tickets/{ticket}                           → TicketController@show",
+          "POST   /tickets/{ticket}/respond                   → TicketController@respond",
+          "PATCH  /tickets/{ticket}/close                     → TicketController@close"
+        ]
+      },
+
+      {
+        "middleware": [],
+        "note": "Webhooks — no CSRF, verify signature manually",
+        "routes": [
+          "POST /webhooks/stripe                              → PaymentController@webhook (stripe)",
+          "POST /webhooks/paystack                            → PaymentController@webhook (paystack)",
+          "POST /webhooks/orange-money                        → PaymentController@webhook (orange_money)",
+          "POST /webhooks/mtn-money                           → PaymentController@webhook (mtn_money)"
+        ]
+      }
+
+    ]
+  },
+
+  "inertia_pages": {
+    "note": "React/TypeScript components at resources/js/Pages/",
+    "structure": {
+      "Auth": ["Register.tsx","Login.tsx","ForgotPassword.tsx","VerifyOtp.tsx","ResetPassword.tsx","ChooseRole.tsx","Onboarding.tsx"],
+      "Client": ["Home.tsx","Search.tsx","SearchResults.tsx","ArtistProfile.tsx","ServiceDetail.tsx","Availability.tsx","Customize.tsx","Cart.tsx","Payment.tsx","PaymentConfirmation.tsx","Reservations.tsx","ReservationDetail.tsx","Library.tsx","Subscription.tsx"],
+      "Stream": ["Hub.tsx","Album.tsx","VideoHub.tsx","VideoPlayer.tsx"],
+      "Artist": ["Dashboard.tsx","Profile.tsx","Services.tsx","Agenda.tsx","Orders.tsx","OrderDetail.tsx","Wallet.tsx","Albums.tsx","Videos.tsx"],
+      "Messaging": ["List.tsx","Chat.tsx"],
+      "Notifications": ["Index.tsx"],
+      "Support": ["Index.tsx","Show.tsx"],
+      "Settings": ["Profile.tsx","App.tsx"],
+      "Admin": ["Dashboard.tsx","ArtistsPending.tsx","Tickets.tsx"]
+    }
+  },
+
+  "jobs_events": {
+    "jobs": [
+      "SendEmailVerificationJob",
+      "SendSmsOtpJob",
+      "ProcessPaymentJob",
+      "CreditArtistWalletJob",
+      "SendReservationConfirmationJob",
+      "ExpireStoriesJob (scheduled daily)",
+      "ProcessWithdrawalJob",
+      "UpdateArtistRatingJob",
+      "SendEventReminderJob (24h, 1h before)"
+    ],
+    "events_listeners": [
+      "PaymentCompleted → CreditArtistWalletJob, SendConfirmationEmail",
+      "ReservationConfirmed → NotifyArtist, AddToCalendar",
+      "ReservationCancelled → RefundPayment, NotifyBothParties",
+      "ArtistApproved → SendWelcomeEmail, CreateWallet",
+      "MessageSent → BroadcastMessage (Reverb), UpdateConversation",
+      "ReviewCreated → UpdateArtistRating"
+    ]
+  },
+
+  "middleware": [
+    {
+      "name": "RoleMiddleware",
+      "file": "app/Http/Middleware/RoleMiddleware.php",
+      "logic": "Check auth()->user()->role matches expected role, abort 403 if not"
+    },
+    {
+      "name": "ArtistVerifiedMiddleware",
+      "file": "app/Http/Middleware/ArtistVerifiedMiddleware.php",
+      "logic": "For artist-specific actions requiring verified status"
+    },
+    {
+      "name": "HandleInertiaRequests",
+      "file": "app/Http/Middleware/HandleInertiaRequests.php",
+      "share": {
+        "auth.user": "auth user with role, profile, unread_notifications_count",
+        "flash": "session flash messages",
+        "app.name": "config app.name"
+      }
+    }
+  ],
+
+  "policies": [
+    "ReservationPolicy (only owner can cancel, view, review)",
+    "ServicePolicy (only artist owner can update/delete)",
+    "MessagePolicy (only conversation participant can send)",
+    "AlbumPolicy (only album owner can update/delete)",
+    "VideoPolicy (only video owner can update/delete)",
+    "PlaylistPolicy (only playlist owner can manage)",
+    "WalletPolicy (only wallet owner can withdraw)"
+  ]
+}
