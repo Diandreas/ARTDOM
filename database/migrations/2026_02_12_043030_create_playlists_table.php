@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('playlists', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('client_id');
+            $table->string('title');
+            $table->string('cover_url')->nullable();
+            $table->boolean('is_public')->default(false);
             $table->timestamps();
+
+            $table->foreign('client_id')->references('id')->on('users')->onDelete('cascade');
+            $table->index('client_id');
         });
     }
 

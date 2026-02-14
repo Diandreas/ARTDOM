@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('conversations', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('reservation_id')->nullable();
+            $table->text('last_message')->nullable();
+            $table->timestamp('last_message_at')->nullable();
+            $table->boolean('is_archived')->default(false);
             $table->timestamps();
+
+            $table->foreign('reservation_id')->references('id')->on('reservations');
+            $table->index('last_message_at');
         });
     }
 

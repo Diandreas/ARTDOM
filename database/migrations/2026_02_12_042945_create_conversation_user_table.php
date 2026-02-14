@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('conversation_user', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('conversation_id');
+            $table->uuid('user_id');
+            $table->unsignedInteger('unread_count')->default(0);
+            $table->timestamp('last_read_at')->nullable();
             $table->timestamps();
+
+            $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->primary(['conversation_id', 'user_id']);
         });
     }
 

@@ -12,8 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('artist_followers', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('client_id');
+            $table->uuid('artist_id');
             $table->timestamps();
+
+            $table->foreign('client_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('artist_id')->references('id')->on('users')->onDelete('cascade');
+            $table->primary(['client_id', 'artist_id']);
+            $table->index('artist_id');
         });
     }
 

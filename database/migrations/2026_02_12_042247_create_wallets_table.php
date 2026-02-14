@@ -12,8 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('wallets', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('artist_id')->unique();
+            $table->decimal('balance', 12, 2)->default(0);
+            $table->decimal('pending_balance', 12, 2)->default(0);
+            $table->string('currency')->default('XAF');
             $table->timestamps();
+
+            $table->foreign('artist_id')->references('id')->on('users')->onDelete('cascade');
+            $table->index('artist_id');
         });
     }
 
