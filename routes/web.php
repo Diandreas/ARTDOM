@@ -61,6 +61,12 @@ Route::get('/artstream/player', function () {
     return Inertia::render('ArtStream/full-player');
 })->name('artstream.player');
 
+// ArtTube routes
+Route::get('/arttube', [\App\Http\Controllers\Stream\VideoController::class, 'index'])->name('arttube.index');
+Route::get('/arttube/videos/{video}', [\App\Http\Controllers\Stream\VideoController::class, 'show'])->name('arttube.videos.show');
+Route::post('/arttube/videos/{video}/like', [\App\Http\Controllers\Stream\VideoController::class, 'like'])->middleware('auth')->name('arttube.videos.like');
+Route::post('/arttube/videos/{video}/comments', [\App\Http\Controllers\Stream\VideoController::class, 'storeComment'])->middleware('auth')->name('arttube.videos.comments');
+
 // Booking routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/booking/calendar', [\App\Http\Controllers\BookingController::class, 'calendar'])->name('booking.calendar');
