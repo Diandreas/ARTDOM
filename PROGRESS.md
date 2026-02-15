@@ -1,7 +1,7 @@
 # ARTDOM - PROGRESSION DU DÉVELOPPEMENT
 
 **Dernière mise à jour**: 2026-02-15
-**Session actuelle**: TOUS LES MODULES DE BASE COMPLÉTÉS ✅✅✅
+**Session actuelle**: 6 MODULES COMPLÉTÉS (Home, ArtStream, Dashboard, Profil, Service, Liste) ✅✅✅
 
 ---
 
@@ -106,11 +106,60 @@
 - [x] **Design** : Cards, badges, gradients, responsive mobile/desktop
 - [x] **Simplification** : Utilise seulement Albums et Services (pas Wallet, Reservations, etc.)
 
+### Module Profil Artiste Public
+- [x] **ArtistController@show** créé
+- [x] **resources/js/pages/Artist/profile.tsx** - Profil public complet
+- [x] **Route** configurée (`/artist/{id}` → ArtistController@show)
+- [x] **Fonctionnalités implémentées**:
+  - [x] Cover photo + avatar avec badge vérifié
+  - [x] Infos artiste (nom, ville, rating, catégories, tarif de base)
+  - [x] 4 cartes stats (Services, Albums, Écoutes, Tarif)
+  - [x] Onglets : Biographie / Services / Albums / Portfolio
+  - [x] Liste services cliquables vers détails
+  - [x] Grille albums avec hover effects et play button
+  - [x] Portfolio d'images (si disponible)
+  - [x] Boutons Réserver / Message / Partager
+- [x] **Design** : Tabs, cards, badges, transitions fluides
+
+### Module Détail Service
+- [x] **ServiceController@show** créé
+- [x] **resources/js/pages/Service/detail.tsx** - Page détail service
+- [x] **Route** configurée (`/service/{id}` → ServiceController@show)
+- [x] **Fonctionnalités implémentées**:
+  - [x] Header service avec catégorie et titre
+  - [x] Card infos artiste (avatar, nom, ville, rating, vérifié)
+  - [x] Description complète du service
+  - [x] Détails pratiques (durée, localisation, préavis, type tarif)
+  - [x] Sidebar réservation avec prix et conditions
+  - [x] Formatage durées et préavis (heures/jours)
+  - [x] Types de localisation traduits (À domicile, En ligne, etc.)
+  - [x] Bouton Réserver (désactivé si service inactif)
+- [x] **Design** : Layout 2 colonnes, cards, icons, sticky sidebar
+
+### Module Liste Artistes
+- [x] **ArtistController@index** créé avec filtres et pagination
+- [x] **resources/js/pages/artists.tsx** - Liste complète avec filtres
+- [x] **Route** configurée (`/artists` → ArtistController@index)
+- [x] **Fonctionnalités implémentées**:
+  - [x] Barre de recherche par nom d'artiste
+  - [x] Filtres rapides par catégorie (boutons)
+  - [x] Panel filtres avancés (ville, tarif max, tri, vérifiés)
+  - [x] Tri : Meilleures notes / Prix croissant / Prix décroissant
+  - [x] Grille responsive (2/3/4 colonnes selon écran)
+  - [x] Cards artistes avec photo, rating, catégories, tarif
+  - [x] Badge vérifié sur les artistes certifiés
+  - [x] Pagination Laravel intégrée
+  - [x] Indicateur de filtres actifs
+  - [x] Bouton réinitialiser filtres
+  - [x] Message si aucun résultat
+- [x] **Backend** : Filtres SQL optimisés avec JSON search sur categories
+- [x] **Design** : Filters panel, responsive grid, badges
+
 ---
 
 ## ⏳ EN COURS
 
-Rien. Les 3 modules de base sont complétés !
+Rien. 6 modules complétés ! 🎉
 
 ---
 

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Artist\DashboardController as ArtistDashboardController;
+use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ArtStreamController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -33,13 +35,9 @@ Route::get('/onboarding', function () {
     return Inertia::render('onboarding');
 })->name('onboarding');
 
-Route::get('/artist/{id}', function ($id) {
-    return Inertia::render('Artist/profile');
-})->name('artist.show');
+Route::get('/artist/{id}', [ArtistController::class, 'show'])->name('artist.show');
 
-Route::get('/service/{id}', function ($id) {
-    return Inertia::render('Service/detail');
-})->name('service.show');
+Route::get('/service/{id}', [ServiceController::class, 'show'])->name('service.show');
 
 Route::get('/artstream', [ArtStreamController::class, 'index'])->name('artstream.index');
 
@@ -47,8 +45,6 @@ Route::get('/artstream/player', function () {
     return Inertia::render('ArtStream/full-player');
 })->name('artstream.player');
 
-Route::get('/artists', function () {
-    return Inertia::render('artists');
-})->name('artists.index');
+Route::get('/artists', [ArtistController::class, 'index'])->name('artists.index');
 
 require __DIR__.'/settings.php';
