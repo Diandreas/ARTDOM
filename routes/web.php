@@ -57,9 +57,23 @@ Route::get('/artstream', [ArtStreamController::class, 'index'])->name('artstream
 
 Route::get('/artstream/album/{album}', [ArtStreamController::class, 'album'])->name('artstream.album');
 
-Route::get('/artstream/player', function () {
-    return Inertia::render('ArtStream/full-player');
-})->name('artstream.player');
+Route::get('/artstream/player', [ArtStreamController::class, 'player'])->name('artstream.player');
+
+// Favorites routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/tracks/{track}/favorite', [\App\Http\Controllers\FavoriteController::class, 'toggle'])->name('tracks.favorite');
+    Route::get('/favorites', [\App\Http\Controllers\FavoriteController::class, 'index'])->name('favorites.index');
+});
+
+// Playlist routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/playlists', [\App\Http\Controllers\PlaylistController::class, 'index'])->name('playlists.index');
+    Route::post('/playlists', [\App\Http\Controllers\PlaylistController::class, 'store'])->name('playlists.store');
+    Route::get('/playlists/{playlist}', [\App\Http\Controllers\PlaylistController::class, 'show'])->name('playlists.show');
+    Route::delete('/playlists/{playlist}', [\App\Http\Controllers\PlaylistController::class, 'destroy'])->name('playlists.destroy');
+    Route::post('/playlists/{playlist}/tracks/{track}', [\App\Http\Controllers\PlaylistController::class, 'addTrack'])->name('playlists.addTrack');
+    Route::delete('/playlists/{playlist}/tracks/{track}', [\App\Http\Controllers\PlaylistController::class, 'removeTrack'])->name('playlists.removeTrack');
+});
 
 // ArtTube routes
 Route::get('/arttube', [\App\Http\Controllers\Stream\VideoController::class, 'index'])->name('arttube.index');

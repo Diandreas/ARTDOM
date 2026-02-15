@@ -123,6 +123,25 @@ class User extends Authenticatable
     }
 
     /**
+     * Relation : Un User peut avoir PLUSIEURS Tracks en favoris
+     * Relation N-N (belongsToMany) : Un utilisateur peut avoir plusieurs tracks en favoris
+     */
+    public function favorites()
+    {
+        return $this->belongsToMany(Track::class, 'favorites')
+            ->withTimestamps();
+    }
+
+    /**
+     * Relation : Un User peut avoir PLUSIEURS Playlists
+     * Relation 1-N (hasMany) : Un utilisateur peut avoir plusieurs playlists
+     */
+    public function playlists()
+    {
+        return $this->hasMany(Playlist::class, 'client_id');
+    }
+
+    /**
      * Méthodes helper pour vérifier le rôle
      */
     public function isClient(): bool

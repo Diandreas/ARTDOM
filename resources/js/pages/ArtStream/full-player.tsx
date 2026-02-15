@@ -1,12 +1,22 @@
 
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, Heart, ListMusic, Share2, Volume2, VolumeX } from 'lucide-react';
-import { useAudio } from '@/contexts/AudioContext';
+import { useAudio, Track } from '@/contexts/AudioContext';
 import { cn } from '@/lib/utils';
+import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
 
-export default function FullPlayer() {
+interface FullPlayerProps {
+    initialTrack?: Track;
+    albumTracks?: Track[];
+}
+
+export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProps) {
+    const { auth } = usePage().props as { auth?: { user?: any } };
+    const [isFavorited, setIsFavorited] = useState(false);
+
     const {
         currentTrack,
         isPlaying,
@@ -24,7 +34,54 @@ export default function FullPlayer() {
         setVolume,
         isMuted,
         toggleMute,
+        playTrack,
+        setQueue,
     } = useAudio();
+
+    // Load initial track from URL parameters without autoplay
+    useEffect(() => {
+        if (initialTrack && !currentTrack) {
+            if (albumTracks && albumTracks.length > 0) {
+                const trackIndex = albumTracks.findIndex(t => t.id === initialTrack.id);
+                // Load queue without autoplay (false parameter)
+                setQueue(albumTracks, trackIndex, false);
+            }
+        }
+    }, [initialTrack, albumTracks, currentTrack, setQueue]);
+
+    // Update favorite status when track changes
+    useEffect(() => {
+        const track = currentTrack || initialTrack;
+        if (track) {
+            setIsFavorited(track.is_favorited || false);
+        }
+    }, [currentTrack, initialTrack]);
+
+    const handleToggleFavorite = () => {
+        if (!auth?.user) {
+            router.visit('/login');
+            return;
+        }
+
+        const track = currentTrack || initialTrack;
+        if (!track) return;
+
+        // Optimistically update UI
+        setIsFavorited(!isFavorited);
+
+        router.post(
+            toggleFavorite.url({ track: track.id }),
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onError: () => {
+                    // Revert on error
+                    setIsFavorited(!isFavorited);
+                },
+            }
+        );
+    };
 
     const formatTime = (seconds: number) => {
         if (!seconds || isNaN(seconds)) return '0:00';
@@ -41,7 +98,8 @@ export default function FullPlayer() {
         setVolume(value[0] / 100);
     };
 
-    if (!currentTrack) {
+    // Show empty state only if there's no current track AND no initial track
+    if (!currentTrack && !initialTrack) {
         return (
             <div className="h-screen w-full bg-gradient-to-b from-primary/10 to-background flex flex-col items-center justify-center">
                 <Head title="Lecteur - ArtStream" />
@@ -55,9 +113,12 @@ export default function FullPlayer() {
         );
     }
 
+    // Use currentTrack or fallback to initialTrack
+    const displayTrack = currentTrack || initialTrack;
+
     return (
         <div className="h-screen w-full bg-gradient-to-b from-primary/10 to-background flex flex-col">
-            <Head title={`${currentTrack.title} - ${currentTrack.artist}`} />
+            <Head title={`${displayTrack.title} - ${displayTrack.artist}`} />
 
             {/* Header */}
             <div className="p-4 flex justify-between items-center">
@@ -68,7 +129,7 @@ export default function FullPlayer() {
                 </Button>
                 <div className="text-center">
                     <span className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Lecture en cours</span>
-                    <p className="text-sm font-semibold">{currentTrack.album || 'Album'}</p>
+                    <p className="text-sm font-semibold">{displayTrack.album || 'Album'}</p>
                 </div>
                 <Button variant="ghost" size="icon">
                     <MoreHorizontal className="w-6 h-6" />
@@ -80,8 +141,8 @@ export default function FullPlayer() {
                 {/* Album Art */}
                 <div className="w-full aspect-square bg-muted rounded-2xl shadow-2xl mb-8 overflow-hidden relative group">
                     <img
-                        src={currentTrack.image || 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=800&auto=format&fit=crop'}
-                        alt={currentTrack.title}
+                        src={displayTrack.image || 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=800&auto=format&fit=crop'}
+                        alt={displayTrack.title}
                         className="w-full h-full object-cover"
                     />
                 </div>
@@ -89,11 +150,18 @@ export default function FullPlayer() {
                 {/* Track Info */}
                 <div className="w-full flex justify-between items-center mb-2">
                     <div className="overflow-hidden">
-                        <h1 className="text-2xl font-bold font-heading truncate">{currentTrack.title}</h1>
-                        <p className="text-lg text-muted-foreground truncate">{currentTrack.artist}</p>
+                        <h1 className="text-2xl font-bold font-heading truncate">{displayTrack.title}</h1>
+                        <p className="text-lg text-muted-foreground truncate">{displayTrack.artist}</p>
                     </div>
-                    <Button variant="ghost" size="icon" className="text-primary">
-                        <Heart className="w-6 h-6 fill-current" />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleToggleFavorite}
+                        className={cn(
+                            isFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                        )}
+                    >
+                        <Heart className={cn('w-6 h-6', isFavorited && 'fill-current')} />
                     </Button>
                 </div>
 

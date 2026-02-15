@@ -2,13 +2,14 @@
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 
 export type Track = {
-    id: number;
+    id: string;
     title: string;
     artist: string;
     image: string;
     url: string; // URL to audio file
     duration?: number;
     album?: string;
+    is_favorited?: boolean;
 };
 
 export type RepeatMode = 'off' | 'one' | 'all';
@@ -23,7 +24,7 @@ interface AudioContextType {
     seek: (time: number) => void;
     // Advanced features
     queue: Track[];
-    setQueue: (tracks: Track[], startIndex?: number) => void;
+    setQueue: (tracks: Track[], startIndex?: number, autoplay?: boolean) => void;
     addToQueue: (track: Track) => void;
     next: () => void;
     previous: () => void;
@@ -154,7 +155,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         return shuffled;
     };
 
-    const setQueue = useCallback((tracks: Track[], startIndex: number = 0) => {
+    const setQueue = useCallback((tracks: Track[], startIndex: number = 0, autoplay: boolean = true) => {
         setQueueState(tracks);
         setOriginalQueue(tracks);
         setIsShuffled(false);
@@ -162,7 +163,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         const startTrack = tracks[startIndex];
         if (startTrack) {
             setCurrentTrack(startTrack);
-            setIsPlaying(true);
+            setIsPlaying(autoplay);
         }
     }, []);
 
