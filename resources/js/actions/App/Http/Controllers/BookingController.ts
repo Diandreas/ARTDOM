@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\BookingController::calendar
  * @see app/Http/Controllers/BookingController.php:16
@@ -42,6 +42,41 @@ calendar.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\BookingController::calendar
+ * @see app/Http/Controllers/BookingController.php:16
+ * @route '/booking/calendar'
+ */
+    const calendarForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: calendar.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\BookingController::calendar
+ * @see app/Http/Controllers/BookingController.php:16
+ * @route '/booking/calendar'
+ */
+        calendarForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: calendar.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\BookingController::calendar
+ * @see app/Http/Controllers/BookingController.php:16
+ * @route '/booking/calendar'
+ */
+        calendarForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: calendar.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    calendar.form = calendarForm
 /**
 * @see \App\Http\Controllers\BookingController::customize
  * @see app/Http/Controllers/BookingController.php:58
@@ -85,6 +120,41 @@ customize.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\BookingController::customize
+ * @see app/Http/Controllers/BookingController.php:58
+ * @route '/booking/customize'
+ */
+    const customizeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: customize.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\BookingController::customize
+ * @see app/Http/Controllers/BookingController.php:58
+ * @route '/booking/customize'
+ */
+        customizeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: customize.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\BookingController::customize
+ * @see app/Http/Controllers/BookingController.php:58
+ * @route '/booking/customize'
+ */
+        customizeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: customize.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    customize.form = customizeForm
 /**
 * @see \App\Http\Controllers\BookingController::payment
  * @see app/Http/Controllers/BookingController.php:92
@@ -128,6 +198,41 @@ payment.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\BookingController::payment
+ * @see app/Http/Controllers/BookingController.php:92
+ * @route '/booking/payment'
+ */
+    const paymentForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: payment.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\BookingController::payment
+ * @see app/Http/Controllers/BookingController.php:92
+ * @route '/booking/payment'
+ */
+        paymentForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: payment.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\BookingController::payment
+ * @see app/Http/Controllers/BookingController.php:92
+ * @route '/booking/payment'
+ */
+        paymentForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: payment.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    payment.form = paymentForm
 /**
 * @see \App\Http\Controllers\BookingController::store
  * @see app/Http/Controllers/BookingController.php:127
@@ -162,6 +267,27 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\BookingController::store
+ * @see app/Http/Controllers/BookingController.php:127
+ * @route '/booking/store'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\BookingController::store
+ * @see app/Http/Controllers/BookingController.php:127
+ * @route '/booking/store'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\BookingController::confirmation
  * @see app/Http/Controllers/BookingController.php:169
@@ -223,6 +349,42 @@ confirmation.head = (args: { id: string | number } | [id: string | number ] | st
     url: confirmation.url(args, options),
     method: 'head',
 })
+
+    /**
+* @see \App\Http\Controllers\BookingController::confirmation
+ * @see app/Http/Controllers/BookingController.php:169
+ * @route '/booking/confirmation/{id}'
+ */
+    const confirmationForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: confirmation.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\BookingController::confirmation
+ * @see app/Http/Controllers/BookingController.php:169
+ * @route '/booking/confirmation/{id}'
+ */
+        confirmationForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: confirmation.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\BookingController::confirmation
+ * @see app/Http/Controllers/BookingController.php:169
+ * @route '/booking/confirmation/{id}'
+ */
+        confirmationForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: confirmation.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    confirmation.form = confirmationForm
 const BookingController = { calendar, customize, payment, store, confirmation }
 
 export default BookingController

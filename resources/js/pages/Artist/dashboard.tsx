@@ -1,4 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
+import { index as albumsIndex } from '@/routes/artist/albums';
 import MainLayout from '@/layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -90,6 +91,12 @@ export default function ArtistDashboard({ stats, services, albums, topAlbum, rec
                                     <Edit className="w-4 h-4" />
                                     Modifier profil
                                 </Button>
+                                <Link href={albumsIndex.url()}>
+                                    <Button variant="outline" className="gap-2">
+                                        <Music className="w-4 h-4" />
+                                        Mes Albums
+                                    </Button>
+                                </Link>
                                 <Button className="gap-2 bg-primary hover:bg-primary/90">
                                     <BarChart3 className="w-4 h-4" />
                                     Statistiques

@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ConversationController::index
  * @see app/Http/Controllers/ConversationController.php:15
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\ConversationController::index
+ * @see app/Http/Controllers/ConversationController.php:15
+ * @route '/messages'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\ConversationController::index
+ * @see app/Http/Controllers/ConversationController.php:15
+ * @route '/messages'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\ConversationController::index
+ * @see app/Http/Controllers/ConversationController.php:15
+ * @route '/messages'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\ConversationController::show
  * @see app/Http/Controllers/ConversationController.php:30
@@ -109,6 +144,41 @@ show.head = (args: { conversation: string | { id: string } } | [conversation: st
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\ConversationController::show
+ * @see app/Http/Controllers/ConversationController.php:30
+ * @route '/messages/{conversation}'
+ */
+    const showForm = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\ConversationController::show
+ * @see app/Http/Controllers/ConversationController.php:30
+ * @route '/messages/{conversation}'
+ */
+        showForm.get = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\ConversationController::show
+ * @see app/Http/Controllers/ConversationController.php:30
+ * @route '/messages/{conversation}'
+ */
+        showForm.head = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
 /**
 * @see \App\Http\Controllers\ConversationController::store
  * @see app/Http/Controllers/ConversationController.php:50
@@ -167,6 +237,27 @@ store.post = (args: { conversation: string | { id: string } } | [conversation: s
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\ConversationController::store
+ * @see app/Http/Controllers/ConversationController.php:50
+ * @route '/messages/{conversation}'
+ */
+    const storeForm = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(args, options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\ConversationController::store
+ * @see app/Http/Controllers/ConversationController.php:50
+ * @route '/messages/{conversation}'
+ */
+        storeForm.post = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(args, options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \App\Http\Controllers\ConversationController::contact
  * @see app/Http/Controllers/ConversationController.php:84
@@ -233,6 +324,42 @@ contact.head = (args: { reservation: string | { id: string } } | [reservation: s
     url: contact.url(args, options),
     method: 'head',
 })
+
+    /**
+* @see \App\Http\Controllers\ConversationController::contact
+ * @see app/Http/Controllers/ConversationController.php:84
+ * @route '/reservation/{reservation}/contact'
+ */
+    const contactForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: contact.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\ConversationController::contact
+ * @see app/Http/Controllers/ConversationController.php:84
+ * @route '/reservation/{reservation}/contact'
+ */
+        contactForm.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: contact.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\ConversationController::contact
+ * @see app/Http/Controllers/ConversationController.php:84
+ * @route '/reservation/{reservation}/contact'
+ */
+        contactForm.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: contact.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    contact.form = contactForm
 const ConversationController = { index, show, store, contact }
 
 export default ConversationController

@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ArtStreamController::index
  * @see app/Http/Controllers/ArtStreamController.php:12
@@ -42,6 +42,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\ArtStreamController::index
+ * @see app/Http/Controllers/ArtStreamController.php:12
+ * @route '/artstream'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\ArtStreamController::index
+ * @see app/Http/Controllers/ArtStreamController.php:12
+ * @route '/artstream'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\ArtStreamController::index
+ * @see app/Http/Controllers/ArtStreamController.php:12
+ * @route '/artstream'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\ArtStreamController::album
  * @see app/Http/Controllers/ArtStreamController.php:105
@@ -108,6 +143,42 @@ album.head = (args: { album: string | { id: string } } | [album: string | { id: 
     url: album.url(args, options),
     method: 'head',
 })
+
+    /**
+* @see \App\Http\Controllers\ArtStreamController::album
+ * @see app/Http/Controllers/ArtStreamController.php:105
+ * @route '/artstream/album/{album}'
+ */
+    const albumForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: album.url(args, options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\ArtStreamController::album
+ * @see app/Http/Controllers/ArtStreamController.php:105
+ * @route '/artstream/album/{album}'
+ */
+        albumForm.get = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: album.url(args, options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\ArtStreamController::album
+ * @see app/Http/Controllers/ArtStreamController.php:105
+ * @route '/artstream/album/{album}'
+ */
+        albumForm.head = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: album.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    album.form = albumForm
 const ArtStreamController = { index, album }
 
 export default ArtStreamController

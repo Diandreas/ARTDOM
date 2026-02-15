@@ -11,16 +11,22 @@ use Inertia\Inertia;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth', 'verified', 'role.client'])
     ->name('dashboard');
 
 // Artist routes
-Route::middleware(['auth'])->prefix('artist')->name('artist.')->group(function () {
+Route::middleware(['auth', 'role.artist'])->prefix('artist')->name('artist.')->group(function () {
     Route::get('/dashboard', [ArtistDashboardController::class, 'index'])->name('dashboard');
+
+    // Album upload management
+    Route::get('/albums', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'index'])->name('albums.index');
+    Route::post('/albums', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'store'])->name('albums.store');
+    Route::delete('/albums/{album}', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'destroy'])->name('albums.destroy');
+    Route::patch('/albums/{album}/toggle-publication', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'togglePublication'])->name('albums.toggle');
 });
 
 // Client routes
-Route::middleware(['auth'])->prefix('client')->name('client.')->group(function () {
+Route::middleware(['auth', 'role.client'])->prefix('client')->name('client.')->group(function () {
     Route::get('/reservations', [\App\Http\Controllers\Client\ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/{reservation}', [\App\Http\Controllers\Client\ReservationController::class, 'show'])->name('reservations.show');
     Route::post('/reservations/{reservation}/cancel', [\App\Http\Controllers\Client\ReservationController::class, 'cancel'])->name('reservations.cancel');
@@ -62,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/booking/payment', [\App\Http\Controllers\BookingController::class, 'payment'])->name('booking.payment');
     Route::post('/booking/store', [\App\Http\Controllers\BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/confirmation/{id}', [\App\Http\Controllers\BookingController::class, 'confirmation'])->name('booking.confirmation');
-    
+
     // Messaging routes
     Route::get('/messages', [\App\Http\Controllers\ConversationController::class, 'index'])->name('messages.index');
     Route::get('/messages/{conversation}', [\App\Http\Controllers\ConversationController::class, 'show'])->name('messages.show');
