@@ -3,10 +3,10 @@ import MainLayout from '@/layouts/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { User, Music, Calendar, Users, TrendingUp, Star, DollarSign } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import type { User as UserType } from '@/types/auth';
 
-export default function Dashboard() {
-  const { auth } = usePage().props as any;
+export default function Dashboard({ auth, stats, recentReservations }: any) {
   const user: UserType = auth.user;
 
   // Client Dashboard
@@ -27,8 +27,8 @@ export default function Dashboard() {
                 <Calendar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
-                <p className="text-xs text-muted-foreground">Aucune réservation en cours</p>
+                <div className="text-2xl font-bold">{stats.reservations_count}</div>
+                <p className="text-xs text-muted-foreground">Total des réservations</p>
               </CardContent>
             </Card>
 
@@ -38,8 +38,8 @@ export default function Dashboard() {
                 <Star className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">0</div>
-                <p className="text-xs text-muted-foreground">Aucun favori ajouté</p>
+                <div className="text-2xl font-bold">{stats.favorites_count}</div>
+                <p className="text-xs text-muted-foreground">Favoris enregistrés</p>
               </CardContent>
             </Card>
 
@@ -75,17 +75,37 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Réservations Récentes</CardTitle>
-                <CardDescription>Vos dernières réservations</CardDescription>
-              </CardHeader>
-              <CardContent>
+            <CardHeader>
+              <CardTitle>Réservations Récentes</CardTitle>
+              <CardDescription>Vos dernières réservations</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {recentReservations.length > 0 ? (
+                <div className="space-y-4">
+                  {recentReservations.map((res: any) => (
+                    <div key={res.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+                      <div className="flex items-center gap-3">
+                        <img src={res.artist.profile_photo_url} className="w-10 h-10 rounded-full object-cover" />
+                        <div>
+                          <p className="font-medium text-sm">{res.service.title}</p>
+                          <p className="text-xs text-muted-foreground">{res.artist.stage_name || res.artist.name}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant={res.status === 'pending' ? 'outline' : 'default'}>{res.status}</Badge>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          <Link href={`/client/reservations/${res.id}`} className="hover:underline">Voir</Link>
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
                 <p className="text-sm text-muted-foreground text-center py-8">
                   Aucune réservation pour le moment.
                 </p>
-              </CardContent>
-            </Card>
+              )}
+            </CardContent>
           </div>
         </div>
       </MainLayout>

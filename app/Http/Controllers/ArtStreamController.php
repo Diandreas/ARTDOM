@@ -106,7 +106,16 @@ class ArtStreamController extends Controller
     {
         $album->load(['artist.artistProfile', 'tracks']);
 
-        return Inertia::render('ArtStream/full-player', [
+        // Check if user has purchased this album (if authenticated)
+        $isPurchased = false;
+        $isInLibrary = false;
+        if (auth()->check()) {
+            // TODO: Check purchase status
+            // $isPurchased = auth()->user()->purchasedAlbums()->where('album_id', $album->id)->exists();
+            // $isInLibrary = auth()->user()->libraryAlbums()->where('album_id', $album->id)->exists();
+        }
+
+        return Inertia::render('ArtStream/album-view', [
             'album' => [
                 'id' => $album->id,
                 'title' => $album->title,
@@ -132,6 +141,8 @@ class ArtStreamController extends Controller
                     'track_number' => $track->track_number,
                 ];
             }),
+            'isPurchased' => $isPurchased,
+            'isInLibrary' => $isInLibrary,
         ]);
     }
 }

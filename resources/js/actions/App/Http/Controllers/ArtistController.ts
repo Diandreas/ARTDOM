@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\ArtistController::show
  * @see app/Http/Controllers/ArtistController.php:121
@@ -61,41 +61,6 @@ show.head = (args: { id: string | number } | [id: string | number ] | string | n
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\ArtistController::show
- * @see app/Http/Controllers/ArtistController.php:121
- * @route '/artist/{id}'
- */
-    const showForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: show.url(args, options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\ArtistController::show
- * @see app/Http/Controllers/ArtistController.php:121
- * @route '/artist/{id}'
- */
-        showForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: show.url(args, options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\ArtistController::show
- * @see app/Http/Controllers/ArtistController.php:121
- * @route '/artist/{id}'
- */
-        showForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: show.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    show.form = showForm
 /**
 * @see \App\Http\Controllers\ArtistController::index
  * @see app/Http/Controllers/ArtistController.php:14
@@ -138,42 +103,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
     method: 'head',
 })
-
-    /**
-* @see \App\Http\Controllers\ArtistController::index
- * @see app/Http/Controllers/ArtistController.php:14
- * @route '/artists'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\ArtistController::index
- * @see app/Http/Controllers/ArtistController.php:14
- * @route '/artists'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\ArtistController::index
- * @see app/Http/Controllers/ArtistController.php:14
- * @route '/artists'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
 const ArtistController = { show, index }
 
 export default ArtistController

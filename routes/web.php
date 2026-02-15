@@ -10,9 +10,9 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // Artist routes
 Route::middleware(['auth'])->prefix('artist')->name('artist.')->group(function () {
@@ -54,6 +54,21 @@ Route::get('/artstream/album/{album}', [ArtStreamController::class, 'album'])->n
 Route::get('/artstream/player', function () {
     return Inertia::render('ArtStream/full-player');
 })->name('artstream.player');
+
+// Booking routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/booking/calendar', [\App\Http\Controllers\BookingController::class, 'calendar'])->name('booking.calendar');
+    Route::get('/booking/customize', [\App\Http\Controllers\BookingController::class, 'customize'])->name('booking.customize');
+    Route::get('/booking/payment', [\App\Http\Controllers\BookingController::class, 'payment'])->name('booking.payment');
+    Route::post('/booking/store', [\App\Http\Controllers\BookingController::class, 'store'])->name('booking.store');
+    Route::get('/booking/confirmation/{id}', [\App\Http\Controllers\BookingController::class, 'confirmation'])->name('booking.confirmation');
+    
+    // Messaging routes
+    Route::get('/messages', [\App\Http\Controllers\ConversationController::class, 'index'])->name('messages.index');
+    Route::get('/messages/{conversation}', [\App\Http\Controllers\ConversationController::class, 'show'])->name('messages.show');
+    Route::post('/messages/{conversation}', [\App\Http\Controllers\ConversationController::class, 'store'])->name('messages.store');
+    Route::get('/reservation/{reservation}/contact', [\App\Http\Controllers\ConversationController::class, 'contact'])->name('reservation.contact');
+});
 
 Route::get('/artists', [ArtistController::class, 'index'])->name('artists.index');
 

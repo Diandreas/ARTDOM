@@ -237,8 +237,10 @@ export default function ServiceDetail({ service, artist }: ServiceDetailProps) {
                                             </div>
                                         </div>
 
-                                        <Button className="w-full text-lg h-12 bg-primary hover:bg-primary/90">
-                                            Réserver maintenant
+                                        <Button className="w-full text-lg h-12 bg-primary hover:bg-primary/90" asChild>
+                                            <Link href={`/booking/calendar?service=${service.id}`}>
+                                                Réserver maintenant
+                                            </Link>
                                         </Button>
 
                                         <p className="text-xs text-center text-muted-foreground">

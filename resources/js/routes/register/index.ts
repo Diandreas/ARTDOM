@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../wayfinder'
 /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::store
  * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:53
@@ -33,27 +33,6 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
-    /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::store
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:53
- * @route '/register'
- */
-    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: store.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::store
- * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:53
- * @route '/register'
- */
-        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: store.url(options),
-            method: 'post',
-        })
-    
-    store.form = storeForm
 /**
  * @see routes/web.php:30
  * @route '/register/selection'
@@ -93,38 +72,6 @@ selection.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
- * @see routes/web.php:30
- * @route '/register/selection'
- */
-    const selectionForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: selection.url(options),
-        method: 'get',
-    })
-
-            /**
- * @see routes/web.php:30
- * @route '/register/selection'
- */
-        selectionForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: selection.url(options),
-            method: 'get',
-        })
-            /**
- * @see routes/web.php:30
- * @route '/register/selection'
- */
-        selectionForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: selection.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    selection.form = selectionForm
 /**
  * @see routes/web.php:34
  * @route '/register/artist'
@@ -163,39 +110,6 @@ artist.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: artist.url(options),
     method: 'head',
 })
-
-    /**
- * @see routes/web.php:34
- * @route '/register/artist'
- */
-    const artistForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: artist.url(options),
-        method: 'get',
-    })
-
-            /**
- * @see routes/web.php:34
- * @route '/register/artist'
- */
-        artistForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: artist.url(options),
-            method: 'get',
-        })
-            /**
- * @see routes/web.php:34
- * @route '/register/artist'
- */
-        artistForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: artist.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    artist.form = artistForm
 const register = {
     store: Object.assign(store, store),
 selection: Object.assign(selection, selection),

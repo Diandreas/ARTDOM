@@ -96,6 +96,33 @@ class User extends Authenticatable
     }
 
     /**
+     * Relation : Un User peut participer à PLUSIEURS Conversations
+     * Relation N-N (belongsToMany) : Un utilisateur a plusieurs conversations
+     */
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_user')
+            ->withPivot('unread_count', 'last_read_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Relation : Un User peut avoir PLUSIEURS Reservations (en tant que client)
+     */
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'client_id');
+    }
+
+    /**
+     * Relation : Un User peut avoir PLUSIEURS Reservations (en tant qu'artiste)
+     */
+    public function artistReservations()
+    {
+        return $this->hasMany(Reservation::class, 'artist_id');
+    }
+
+    /**
      * Méthodes helper pour vérifier le rôle
      */
     public function isClient(): bool

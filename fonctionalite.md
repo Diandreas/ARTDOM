@@ -126,38 +126,38 @@ Fonctionnalités :
 •	Compteur de vues du profil (visible artiste uniquement) [x]
 •	Chat direct avec l'artiste (bouton flottant) [x]
 ________________________________________
-2.5 Détail Prestation [B]
+2.5 Détail Prestation [x]
 Fonctionnalités :
-•	Titre de la prestation (ex : "Chanson d'anniversaire personnalisée") [B]
-•	Description détaillée (déroulement, durée, inclus/non inclus) [B]
-•	Prix (fixe ou à partir de) [B]
-•	Photos/Vidéos exemples [B]
-•	Délai de préparation (ex : 48h de prévenance minimum) [B]
+•	Titre de la prestation (ex : "Chanson d'anniversaire personnalisée") [x]
+•	Description détaillée (déroulement, durée, inclus/non inclus) [x]
+•	Prix (fixe ou à partir de) [x]
+•	Photos/Vidéos exemples [x]
+•	Délai de préparation (ex : 48h de prévenance minimum) [x]
 •	Options supplémentaires (ex : Vidéo HD +10€) [B]
-•	Bouton "Réserver maintenant" [B]
+•	Bouton "Réserver maintenant" [x]
 •	Section FAQ spécifique à la prestation [B]
 •	Avis liés à cette prestation uniquement [B]
 ________________________________________
-2.6 Calendrier de Disponibilité [B]
+2.6 Calendrier de Disponibilité [x]
 Fonctionnalités :
-•	Vue Calendrier mensuel : Jours disponibles en vert, indisponibles en gris [B]
-•	Sélection de date (clic sur jour disponible) [B]
-•	Vue Créneaux horaires : Liste des plages disponibles ce jour-là [B]
-•	Sélection d'heure de début + durée estimée [B]
-•	Calcul automatique du prix selon durée [B]
+•	Vue Calendrier mensuel : Jours disponibles en vert, indisponibles en gris [x]
+•	Sélection de date (clic sur jour disponible) [x]
+•	Vue Créneaux horaires : Liste des plages disponibles ce jour-là [x]
+•	Sélection d'heure de début + durée estimée [x]
+•	Calcul automatique du prix selon durée [x]
 •	Indication de la popularité (ex : "Seulement 2 créneaux restants") [B]
-•	Bouton "Suivant" vers Personnalisation [B]
+•	Bouton "Suivant" vers Personnalisation [x]
 ________________________________________
-2.7 Personnalisation Émotion [B]
+2.7 Personnalisation Émotion [x]
 Fonctionnalités :
-•	Champ "Prénom du destinataire" [B]
+•	Champ "Prénom du destinataire" [x]
 •	Champ "Relation" (dropdown : Ami, Conjoint, Parent, Enfant, Collègue) [B]
-•	Type d'émotion (dropdown : Joie, Amour, Soutien, Hommage, Fierté) [B]
-•	Message personnel (textarea 500 caractères max) : Instructions pour l'artiste [B]
+•	Type d'émotion (dropdown : Joie, Amour, Soutien, Hommage, Fierté) [x]
+•	Message personnel (textarea 500 caractères max) : Instructions pour l'artiste [x]
 •	Upload fichier (optionnel) : Photo/document à intégrer dans la prestation [B]
-•	Lieu de prestation : À domicile (adresse) / En ligne (lien généré) / Lieu public (à préciser) [B]
-•	Bouton "Ajouter au panier" ou "Commander" [B]
-•	Prévisualisation du récapitulatif [B]
+•	Lieu de prestation : À domicile (adresse) / En ligne (lien généré) / Lieu public (à préciser) [x]
+•	Bouton "Ajouter au panier" ou "Commander" [x]
+•	Prévisualisation du récapitulatif [x]
 ________________________________________
 2.8 Panier / Récapitulatif [B]
 Fonctionnalités :
@@ -172,32 +172,32 @@ o	Total TTC [B]
 •	Bouton "Procéder au paiement" [B]
 •	Option "Sauvegarder pour plus tard" [B]
 ________________________________________
-2.9 Paiement [B]
+2.9 Paiement [x]
 Fonctionnalités :
-•	Choix du moyen de paiement : [B]
-o	Mobile Money (Orange Money, MTN Money, etc.) → Saisie numéro [B]
-o	Carte bancaire → Intégration Stripe/Paystack (champs CB sécurisés) [B]
+•	Choix du moyen de paiement : [x]
+o	Mobile Money (Orange Money, MTN Money, etc.) → Saisie numéro [x]
+o	Carte bancaire → Intégration Stripe/Paystack (champs CB sécurisés) [x]
 o	PayPal → Redirection [B]
 o	Virement bancaire → Affichage IBAN + Référence unique [B]
 •	Sauvegarde des moyens de paiement (tokenisation) [B]
 •	Checkbox "Utiliser ce moyen par défaut" [B]
 •	Validation 3D Secure si applicable [B]
-•	Bouton "Payer [Montant]" [B]
-•	Indicateur de chargement + Sécurité (icône cadenas) [B]
+•	Bouton "Payer [Montant]" [x]
+•	Indicateur de chargement + Sécurité (icône cadenas) [x]
 •	Gestion des erreurs (paiement refusé, timeout) [B]
 ________________________________________
-2.10 Confirmation Commande
+2.10 Confirmation Commande [x]
 Fonctionnalités :
-•	Animation de succès (checkmark animé)
-•	Message "Réservation confirmée !"
-•	QR Code de la réservation (scannable par l'artiste le jour J)
-•	Numéro de réservation unique
-•	Récapitulatif : Artiste, Prestation, Date/Heure, Lieu, Montant payé
-•	Bouton "Télécharger le reçu" (PDF)
-•	Bouton "Contacter l'artiste"
-•	Bouton "Retour à l'accueil"
-•	Envoi automatique d'email/SMS de confirmation
-•	Ajout automatique au calendrier du téléphone (option)
+•	Animation de succès (checkmark animé) [x]
+•	Message "Réservation confirmée !" [x]
+•	QR Code de la réservation (scannable par l'artiste le jour J) [x]
+•	Numéro de réservation unique [x]
+•	Récapitulatif : Artiste, Prestation, Date/Heure, Lieu, Montant payé [x]
+•	Bouton "Télécharger le reçu" (PDF) [x]
+•	Bouton "Contacter l'artiste" [x]
+•	Bouton "Retour à l'accueil" [x]
+•	Envoi automatique d'email/SMS de confirmation [B]
+•	Ajout automatique au calendrier du téléphone (option) [x]
 ________________________________________
 C. ARTSTREAM (STREAMING AUDIO)
 2.11 Hub Musique [x]
@@ -211,19 +211,19 @@ Fonctionnalités :
 •	Bottom Player : Lecteur mini persistant [x]
 •	Accès au mode hors-ligne (si abonnement Premium) [x]
 ________________________________________
-2.12 Vue Album/Playlist [B]
+2.12 Vue Album/Playlist [x]
 Fonctionnalités :
-•	Header : Cover, Titre album/playlist, Nom artiste, Année, Nombre de pistes [B]
-•	Bouton "Lire" (lecture aléatoire ou séquentielle) [B]
-•	Bouton "Ajouter à Ma Bibliothèque" [B]
-•	Bouton "Partager" [B]
-•	Bouton "Acheter l'album" (prix affiché) [B]
-•	Liste des pistes : [B]
-o	Numéro, Titre, Durée [B]
-o	Icône "Lecture" au survol/clic [B]
-o	Icône "..." (menu : Ajouter à playlist, Télécharger si acheté) [B]
-•	Nombre d'écoutes total de l'album [B]
-•	Lien vers le profil de l'artiste [B]
+•	Header : Cover, Titre album/playlist, Nom artiste, Année, Nombre de pistes [x]
+•	Bouton "Lire" (lecture aléatoire ou séquentielle) [x]
+•	Bouton "Ajouter à Ma Bibliothèque" [x]
+•	Bouton "Partager" [x]
+•	Bouton "Acheter l'album" (prix affiché) [x]
+•	Liste des pistes : [x]
+o	Numéro, Titre, Durée [x]
+o	Icône "Lecture" au survol/clic [x]
+o	Icône "..." (menu : Ajouter à playlist, Télécharger si acheté) [x]
+•	Nombre d'écoutes total de l'album [x]
+•	Lien vers le profil de l'artiste [x]
 ________________________________________
 2.13 Lecteur Audio (Full Screen) [x]
 Fonctionnalités :

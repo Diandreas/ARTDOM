@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,7 +13,9 @@ import {
     Plus,
     BarChart3,
     Play,
-    Package
+    Package,
+    Calendar,
+    User
 } from 'lucide-react';
 
 interface Service {
@@ -33,33 +35,16 @@ interface Album {
     year: number;
 }
 
-interface Stats {
-    services_count: number;
-    active_services: number;
-    albums_count: number;
-    total_plays: number;
-    avg_album_plays: number;
-}
-
-interface ArtistProfile {
-    stage_name: string;
-    bio: string;
-    categories: string[];
-    base_rate: number;
-    is_verified: boolean;
-    rating: number;
-    total_reviews: number;
-}
-
 interface DashboardProps {
-    stats: Stats;
+    stats: any;
     services: Service[];
     albums: Album[];
     topAlbum: Album | null;
-    artistProfile: ArtistProfile;
+    recentReservations: any[];
+    artistProfile: any;
 }
 
-export default function ArtistDashboard({ stats, services, albums, topAlbum, artistProfile }: DashboardProps) {
+export default function ArtistDashboard({ stats, services, albums, topAlbum, recentReservations, artistProfile }: DashboardProps) {
     const formatNumber = (num: number) => {
         if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
         if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
@@ -86,7 +71,7 @@ export default function ArtistDashboard({ stats, services, albums, topAlbum, art
                                     )}
                                 </h1>
                                 <p className="text-muted-foreground mt-1">
-                                    {artistProfile.categories.join(' • ')}
+                                    {(artistProfile.categories || []).join(' • ')}
                                 </p>
                                 {artistProfile.rating > 0 && (
                                     <div className="flex items-center gap-2 mt-2 text-sm">
@@ -118,65 +103,55 @@ export default function ArtistDashboard({ stats, services, albums, topAlbum, art
                 <section className="py-8 px-4">
                     <div className="container max-w-7xl mx-auto">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {/* Services Card */}
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Services actifs</CardTitle>
-                                    <Package className="h-4 w-4 text-muted-foreground" />
+                                    <CardTitle className="text-sm font-medium">Revenus totaux</CardTitle>
+                                    <DollarSign className="h-4 w-4 text-muted-foreground" />
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-2xl font-bold text-foreground">
-                                        {stats.active_services}/{stats.services_count}
+                                        {(stats.total_earnings || 0).toLocaleString()} FCFA
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        Services disponibles
-                                    </p>
+                                    <p className="text-xs text-muted-foreground mt-1">Cumulatif</p>
                                 </CardContent>
                             </Card>
 
-                            {/* Albums Card */}
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Albums</CardTitle>
-                                    <Music className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold text-foreground">{stats.albums_count}</div>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        Publiés sur la plateforme
-                                    </p>
-                                </CardContent>
-                            </Card>
-
-                            {/* Total Plays Card */}
-                            <Card>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Écoutes totales</CardTitle>
-                                    <Eye className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold text-foreground">
-                                        {formatNumber(stats.total_plays)}
-                                    </div>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        Sur tous vos albums
-                                    </p>
-                                </CardContent>
-                            </Card>
-
-                            {/* Average Plays Card */}
-                            <Card>
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Moyenne par album</CardTitle>
+                                    <CardTitle className="text-sm font-medium">Revenus ce mois</CardTitle>
                                     <TrendingUp className="h-4 w-4 text-muted-foreground" />
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-2xl font-bold text-foreground">
-                                        {formatNumber(stats.avg_album_plays)}
+                                    <div className="text-2xl font-bold text-primary">
+                                        {(stats.monthly_earnings || 0).toLocaleString()} FCFA
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        Écoutes en moyenne
-                                    </p>
+                                    <p className="text-xs text-muted-foreground mt-1">Mois en cours</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardTitle className="text-sm font-medium">Réservations en attente</CardTitle>
+                                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold text-amber-500">
+                                        {stats.pending_reservations || 0}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-1">Demandes à traiter</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardTitle className="text-sm font-medium">Écoutes totales</CardTitle>
+                                    <Play className="h-4 w-4 text-muted-foreground" />
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold text-foreground">
+                                        {formatNumber(stats.total_plays || 0)}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mt-1">Sur vos albums</p>
                                 </CardContent>
                             </Card>
                         </div>
@@ -233,6 +208,51 @@ export default function ArtistDashboard({ stats, services, albums, topAlbum, art
                     </section>
                 )}
 
+                {/* Recent Reservations */}
+                <section className="py-8 px-4">
+                    <div className="container max-w-7xl mx-auto">
+                        <h2 className="text-2xl font-bold font-heading mb-6 text-foreground">Réservations récentes</h2>
+                        <Card>
+                            <CardContent className="p-0">
+                                {recentReservations && recentReservations.length > 0 ? (
+                                    <div className="divide-y">
+                                        {recentReservations.map((res: any) => (
+                                            <div key={res.id} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                                        <User className="w-5 h-5 text-primary" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-sm">{res.client.name}</p>
+                                                        <p className="text-xs text-muted-foreground">{res.service.title}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="text-right">
+                                                        <Badge variant={res.status === 'pending' ? 'outline' : 'default'} className="capitalize">
+                                                            {res.status}
+                                                        </Badge>
+                                                        <p className="text-[10px] text-muted-foreground mt-1">
+                                                            {new Date(res.created_at).toLocaleDateString()}
+                                                        </p>
+                                                    </div>
+                                                    <Button variant="ghost" size="sm" asChild>
+                                                        <Link href={`/client/reservations/${res.id}`}>Gérer</Link>
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-12 text-muted-foreground">
+                                        Aucune réservation pour le moment.
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                </section>
+
                 {/* Services List */}
                 <section className="py-8 px-4">
                     <div className="container max-w-7xl mx-auto">
@@ -244,7 +264,7 @@ export default function ArtistDashboard({ stats, services, albums, topAlbum, art
                             </Button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {services.slice(0, 6).map((service) => (
+                            {(services || []).slice(0, 6).map((service) => (
                                 <Card key={service.id} className="hover:shadow-lg transition-shadow">
                                     <CardHeader>
                                         <div className="flex items-start justify-between">
@@ -273,44 +293,8 @@ export default function ArtistDashboard({ stats, services, albums, topAlbum, art
                                 </Card>
                             ))}
                         </div>
-                        {services.length > 6 && (
-                            <div className="text-center mt-6">
-                                <Button variant="outline">Voir tous les services ({services.length})</Button>
-                            </div>
-                        )}
                     </div>
                 </section>
-
-                {/* Recent Albums */}
-                {albums.length > 0 && (
-                    <section className="py-8 px-4 bg-muted/30">
-                        <div className="container max-w-7xl mx-auto">
-                            <h2 className="text-2xl font-bold font-heading mb-6 text-foreground">Mes albums</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                                {albums.map((album) => (
-                                    <div key={album.id} className="group cursor-pointer">
-                                        <div className="aspect-square rounded-lg overflow-hidden bg-muted mb-3 relative">
-                                            <img
-                                                src={album.cover_url}
-                                                alt={album.title}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                            />
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <Button size="icon" className="rounded-full">
-                                                    <Play className="w-4 h-4 fill-current ml-0.5" />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                        <h3 className="font-semibold text-sm truncate text-foreground">{album.title}</h3>
-                                        <p className="text-xs text-muted-foreground">
-                                            {formatNumber(album.total_plays)} écoutes
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-                )}
             </div>
         </MainLayout>
     );

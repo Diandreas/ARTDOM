@@ -58,11 +58,27 @@ class DashboardController extends Controller
         // Album le plus populaire
         $topAlbum = $albums->sortByDesc('total_plays')->first();
 
+        // Réservations récentes
+        $reservations = $artist->artistReservations()
+            ->with(['client', 'service'])
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        // Statistiques de réservation
+        $stats['pending_reservations'] = $artist->artistReservations()->where('status', 'pending')->count();
+        $stats['total_earnings'] = $artist->artistReservations()->where('status', 'completed')->sum('artist_earnings');
+        $stats['monthly_earnings'] = $artist->artistReservations()
+            ->where('status', 'completed')
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->sum('artist_earnings');
+
         return Inertia::render('Artist/dashboard', [
             'stats' => $stats,
             'services' => $services,
             'albums' => $albums->take(6),
             'topAlbum' => $topAlbum,
+            'recentReservations' => $reservations,
             'artistProfile' => [
                 'stage_name' => $artist->artistProfile->stage_name ?? $artist->name,
                 'bio' => $artist->artistProfile->bio ?? '',

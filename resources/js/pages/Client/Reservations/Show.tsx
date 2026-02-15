@@ -140,9 +140,11 @@ export default function Show({ reservation }: ReservationShowProps) {
                                                     Voir profil
                                                 </Link>
                                             </Button>
-                                            <Button variant="outline" size="sm">
-                                                <MessageCircle className="w-4 h-4 mr-2" />
-                                                Contacter
+                                            <Button variant="outline" size="sm" asChild>
+                                                <Link href={`/reservation/${reservation.id}/contact`}>
+                                                    <MessageCircle className="w-4 h-4 mr-2" />
+                                                    Contacter
+                                                </Link>
                                             </Button>
                                         </div>
                                     </div>
