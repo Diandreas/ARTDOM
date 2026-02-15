@@ -2,6 +2,8 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { AudioProvider } from '@/contexts/AudioContext';
+import MiniPlayer from '@/components/Player/MiniPlayer';
 import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
 import "./i18n";
@@ -20,7 +22,10 @@ createInertiaApp({
 
         root.render(
             <StrictMode>
-                <App {...props} />
+                <AudioProvider>
+                    <App {...props} />
+                    <MiniPlayer />
+                </AudioProvider>
             </StrictMode>,
         );
     },
