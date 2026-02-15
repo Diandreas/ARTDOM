@@ -3,7 +3,8 @@ import { Link, Head } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { User, Palette, Mic, Music } from 'lucide-react';
 import AuthLayout from '@/layouts/auth-layout';
-import { login, register } from '@/routes';
+import { login } from '@/routes';
+import register from '@/routes/register';
 
 export default function RegisterSelection() {
     return (
@@ -15,7 +16,7 @@ export default function RegisterSelection() {
 
             <div className="grid gap-6 md:grid-cols-2">
                 {/* Client Profile */}
-                <Link href={register()} className="group relative flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-card p-6 text-center shadow-sm transition-all hover:border-primary hover:bg-muted/50 hover:shadow-md">
+                <Link href={register.store.url()} className="group relative flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-card p-6 text-center shadow-sm transition-all hover:border-primary hover:bg-muted/50 hover:shadow-md">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                         <User className="h-8 w-8" />
                     </div>
@@ -31,7 +32,7 @@ export default function RegisterSelection() {
                 </Link>
 
                 {/* Artist Profile */}
-                <Link href={register.artist()} className="group relative flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-card p-6 text-center shadow-sm transition-all hover:border-primary hover:bg-muted/50 hover:shadow-md">
+                <Link href={register.artist.url()} className="group relative flex flex-col items-center justify-center gap-4 rounded-xl border border-border bg-card p-6 text-center shadow-sm transition-all hover:border-primary hover:bg-muted/50 hover:shadow-md">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary/10 text-secondary transition-colors group-hover:bg-secondary group-hover:text-secondary-foreground">
                         <div className="flex gap-1">
                             <Palette className="h-6 w-6" />
