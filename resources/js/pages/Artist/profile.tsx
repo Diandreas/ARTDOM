@@ -130,8 +130,10 @@ export default function ArtistProfile({ artist, services, albums, stats }: Profi
                     </div>
 
                     <div className="flex gap-2 w-full md:w-auto">
-                        <Button className="flex-1 md:flex-none bg-primary hover:bg-primary/90">
-                            Réserver
+                        <Button className="flex-1 md:flex-none bg-primary hover:bg-primary/90" asChild>
+                            <Link href={services.length > 0 ? `/service/${services[0].id}` : '#'}>
+                                Réserver
+                            </Link>
                         </Button>
                         <Button variant="outline" size="icon">
                             <MessageCircle className="w-4 h-4" />
@@ -249,29 +251,31 @@ export default function ArtistProfile({ artist, services, albums, stats }: Profi
                         {albums.length > 0 ? (
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                                 {albums.map((album) => (
-                                    <div key={album.id} className="group cursor-pointer">
-                                        <div className="aspect-square rounded-lg overflow-hidden bg-muted mb-3 relative">
-                                            <img
-                                                src={album.cover_url}
-                                                alt={album.title}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                            />
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                <Button size="icon" className="rounded-full">
-                                                    <Play className="w-4 h-4 fill-current ml-0.5" />
-                                                </Button>
+                                    <Link key={album.id} href={`/artstream/album/${album.id}`}>
+                                        <div className="group cursor-pointer">
+                                            <div className="aspect-square rounded-lg overflow-hidden bg-muted mb-3 relative">
+                                                <img
+                                                    src={album.cover_url}
+                                                    alt={album.title}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                />
+                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <Button size="icon" className="rounded-full">
+                                                        <Play className="w-4 h-4 fill-current ml-0.5" />
+                                                    </Button>
+                                                </div>
+                                                <Badge className="absolute top-2 right-2 bg-black/70 text-white border-none text-xs">
+                                                    {album.tracks_count} titres
+                                                </Badge>
                                             </div>
-                                            <Badge className="absolute top-2 right-2 bg-black/70 text-white border-none text-xs">
-                                                {album.tracks_count} titres
-                                            </Badge>
+                                            <h3 className="font-semibold text-sm truncate text-foreground">{album.title}</h3>
+                                            <p className="text-xs text-muted-foreground">{album.year}</p>
+                                            <div className="flex items-center gap-1 text-xs text-primary mt-1">
+                                                <TrendingUp className="w-3 h-3" />
+                                                {formatNumber(album.total_plays)} écoutes
+                                            </div>
                                         </div>
-                                        <h3 className="font-semibold text-sm truncate text-foreground">{album.title}</h3>
-                                        <p className="text-xs text-muted-foreground">{album.year}</p>
-                                        <div className="flex items-center gap-1 text-xs text-primary mt-1">
-                                            <TrendingUp className="w-3 h-3" />
-                                            {formatNumber(album.total_plays)} écoutes
-                                        </div>
-                                    </div>
+                                    </Link>
                                 ))}
                             </div>
                         ) : (

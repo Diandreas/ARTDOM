@@ -104,8 +104,10 @@ export default function Home({ featuredArtists, recentAlbums, categories }: Home
                                 <p className="text-lg mb-6 text-white/90">
                                     Réservez vos artistes préférés pour vos événements. Musique, danse, art et plus encore.
                                 </p>
-                                <Button size="lg" variant="secondary" className="bg-background text-foreground hover:bg-background/90">
-                                    Explorer les artistes
+                                <Button size="lg" variant="secondary" className="bg-background text-foreground hover:bg-background/90" asChild>
+                                    <Link href="/artists">
+                                        Explorer les artistes
+                                    </Link>
                                 </Button>
                             </div>
                             <div className="absolute -right-12 -bottom-12 opacity-20">
@@ -248,37 +250,39 @@ export default function Home({ featuredArtists, recentAlbums, categories }: Home
                             <CarouselContent>
                                 {recentAlbums.map((album) => (
                                     <CarouselItem key={album.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                                        <div className="group cursor-pointer">
-                                            <div className="aspect-square relative overflow-hidden rounded-lg bg-muted mb-3">
-                                                <img
-                                                    src={album.cover_url}
-                                                    alt={album.title}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                />
-                                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
-                                                    <Button
-                                                        size="icon"
-                                                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full bg-primary hover:bg-primary/90 scale-0 group-hover:scale-100"
-                                                    >
-                                                        <Play className="w-5 h-5 fill-current" />
-                                                    </Button>
+                                        <Link href={`/artstream/album/${album.id}`} className="block">
+                                            <div className="group cursor-pointer">
+                                                <div className="aspect-square relative overflow-hidden rounded-lg bg-muted mb-3">
+                                                    <img
+                                                        src={album.cover_url}
+                                                        alt={album.title}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
+                                                        <Button
+                                                            size="icon"
+                                                            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-full bg-primary hover:bg-primary/90 scale-0 group-hover:scale-100"
+                                                        >
+                                                            <Play className="w-5 h-5 fill-current" />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                                <h3 className="font-semibold text-sm mb-1 truncate text-foreground">
+                                                    {album.title}
+                                                </h3>
+                                                <p className="text-xs text-muted-foreground truncate">
+                                                    {album.artist.stage_name}
+                                                </p>
+                                                <div className="flex items-center justify-between mt-2">
+                                                    <Badge variant="outline" className="text-xs">
+                                                        {album.genre}
+                                                    </Badge>
+                                                    <span className="text-xs text-primary font-medium">
+                                                        {album.price.toLocaleString()} FCFA
+                                                    </span>
                                                 </div>
                                             </div>
-                                            <h3 className="font-semibold text-sm mb-1 truncate text-foreground">
-                                                {album.title}
-                                            </h3>
-                                            <p className="text-xs text-muted-foreground truncate">
-                                                {album.artist.stage_name}
-                                            </p>
-                                            <div className="flex items-center justify-between mt-2">
-                                                <Badge variant="outline" className="text-xs">
-                                                    {album.genre}
-                                                </Badge>
-                                                <span className="text-xs text-primary font-medium">
-                                                    {album.price.toLocaleString()} FCFA
-                                                </span>
-                                            </div>
-                                        </div>
+                                        </Link>
                                     </CarouselItem>
                                 ))}
                             </CarouselContent>

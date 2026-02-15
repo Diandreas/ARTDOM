@@ -101,4 +101,37 @@ class ArtStreamController extends Controller
             'genres' => $genres,
         ]);
     }
+
+    public function album(Album $album): Response
+    {
+        $album->load(['artist.artistProfile', 'tracks']);
+
+        return Inertia::render('ArtStream/full-player', [
+            'album' => [
+                'id' => $album->id,
+                'title' => $album->title,
+                'cover_url' => $album->cover_url,
+                'genre' => $album->genre,
+                'year' => $album->year,
+                'price' => $album->price,
+                'total_plays' => $album->total_plays,
+                'artist' => [
+                    'id' => $album->artist->id,
+                    'name' => $album->artist->name,
+                    'stage_name' => $album->artist->artistProfile->stage_name ?? $album->artist->name,
+                    'profile_photo' => $album->artist->profile_photo,
+                ],
+            ],
+            'tracks' => $album->tracks->map(function ($track) {
+                return [
+                    'id' => $track->id,
+                    'title' => $track->title,
+                    'duration_seconds' => $track->duration_seconds,
+                    'plays' => $track->plays,
+                    'file_url' => $track->file_url,
+                    'track_number' => $track->track_number,
+                ];
+            }),
+        ]);
+    }
 }

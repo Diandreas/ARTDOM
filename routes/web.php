@@ -19,6 +19,14 @@ Route::middleware(['auth'])->prefix('artist')->name('artist.')->group(function (
     Route::get('/dashboard', [ArtistDashboardController::class, 'index'])->name('dashboard');
 });
 
+// Client routes
+Route::middleware(['auth'])->prefix('client')->name('client.')->group(function () {
+    Route::get('/reservations', [\App\Http\Controllers\Client\ReservationController::class, 'index'])->name('reservations.index');
+    Route::get('/reservations/{reservation}', [\App\Http\Controllers\Client\ReservationController::class, 'show'])->name('reservations.show');
+    Route::post('/reservations/{reservation}/cancel', [\App\Http\Controllers\Client\ReservationController::class, 'cancel'])->name('reservations.cancel');
+    Route::post('/reservations/{reservation}/review', [\App\Http\Controllers\Client\ReservationController::class, 'review'])->name('reservations.review');
+});
+
 Route::get('/register/selection', function () {
     return Inertia::render('auth/register-selection');
 })->name('register.selection');
@@ -40,6 +48,8 @@ Route::get('/artist/{id}', [ArtistController::class, 'show'])->name('artist.show
 Route::get('/service/{id}', [ServiceController::class, 'show'])->name('service.show');
 
 Route::get('/artstream', [ArtStreamController::class, 'index'])->name('artstream.index');
+
+Route::get('/artstream/album/{album}', [ArtStreamController::class, 'album'])->name('artstream.album');
 
 Route::get('/artstream/player', function () {
     return Inertia::render('ArtStream/full-player');

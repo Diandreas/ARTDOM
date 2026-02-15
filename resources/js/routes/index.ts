@@ -360,7 +360,7 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     dashboard.form = dashboardForm
 /**
- * @see routes/web.php:30
+ * @see routes/web.php:38
  * @route '/splash'
  */
 export const splash = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -374,7 +374,7 @@ splash.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:30
+ * @see routes/web.php:38
  * @route '/splash'
  */
 splash.url = (options?: RouteQueryOptions) => {
@@ -382,7 +382,7 @@ splash.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:30
+ * @see routes/web.php:38
  * @route '/splash'
  */
 splash.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -390,7 +390,7 @@ splash.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:30
+ * @see routes/web.php:38
  * @route '/splash'
  */
 splash.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -399,7 +399,7 @@ splash.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:30
+ * @see routes/web.php:38
  * @route '/splash'
  */
     const splashForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -408,7 +408,7 @@ splash.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:30
+ * @see routes/web.php:38
  * @route '/splash'
  */
         splashForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -416,7 +416,7 @@ splash.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:30
+ * @see routes/web.php:38
  * @route '/splash'
  */
         splashForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -431,7 +431,7 @@ splash.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     splash.form = splashForm
 /**
- * @see routes/web.php:34
+ * @see routes/web.php:42
  * @route '/onboarding'
  */
 export const onboarding = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -445,7 +445,7 @@ onboarding.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:34
+ * @see routes/web.php:42
  * @route '/onboarding'
  */
 onboarding.url = (options?: RouteQueryOptions) => {
@@ -453,7 +453,7 @@ onboarding.url = (options?: RouteQueryOptions) => {
 }
 
 /**
- * @see routes/web.php:34
+ * @see routes/web.php:42
  * @route '/onboarding'
  */
 onboarding.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -461,7 +461,7 @@ onboarding.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     method: 'get',
 })
 /**
- * @see routes/web.php:34
+ * @see routes/web.php:42
  * @route '/onboarding'
  */
 onboarding.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -470,7 +470,7 @@ onboarding.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:34
+ * @see routes/web.php:42
  * @route '/onboarding'
  */
     const onboardingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -479,7 +479,7 @@ onboarding.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:34
+ * @see routes/web.php:42
  * @route '/onboarding'
  */
         onboardingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -487,7 +487,7 @@ onboarding.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
             method: 'get',
         })
             /**
- * @see routes/web.php:34
+ * @see routes/web.php:42
  * @route '/onboarding'
  */
         onboardingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
