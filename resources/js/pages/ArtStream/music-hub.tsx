@@ -1,106 +1,310 @@
-
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 import MainLayout from '@/layouts/MainLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Play, Heart, MoreHorizontal, Shuffle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp } from 'lucide-react';
 
-export default function MusicHub() {
-    const featuredPlaylists = [
-        { id: 1, title: "Afro Hits 2024", cover: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=400&auto=format&fit=crop", artist: "ARTDOM Curated" },
-        { id: 2, title: "Rumba Classics", cover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400&auto=format&fit=crop", artist: "Koffi Olomide" },
-        { id: 3, title: "Naija Vibes", cover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=400&auto=format&fit=crop", artist: "Burna Boy" },
-        { id: 4, title: "Coupé Décalé", cover: "https://images.unsplash.com/photo-1514525253440-b393452e8d26?q=80&w=400&auto=format&fit=crop", artist: "DJ Arafat" },
-    ];
+interface Artist {
+    id: string;
+    name?: string;
+    stage_name: string;
+    profile_photo?: string;
+}
 
-    const newReleases = [
-        { id: 1, title: "Légende", artist: "Koffi Olomide", cover: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=200&auto=format&fit=crop" },
-        { id: 2, title: "Love Damini", artist: "Burna Boy", cover: "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=200&auto=format&fit=crop" },
-        { id: 3, title: "Aya", artist: "Aya Nakamura", cover: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?q=80&w=200&auto=format&fit=crop" },
-    ];
+interface Album {
+    id: string;
+    title: string;
+    cover_url: string;
+    genre: string;
+    year: number;
+    price?: number;
+    total_plays?: number;
+    tracks_count?: number;
+    artist: Artist;
+}
+
+interface Track {
+    id: string;
+    title: string;
+    duration_seconds: number;
+    plays: number;
+    file_url: string;
+    album: {
+        id: string;
+        title: string;
+        cover_url: string;
+        artist: Artist;
+    };
+}
+
+interface MusicHubProps {
+    featuredAlbums: Album[];
+    recentAlbums: Album[];
+    topTracks: Track[];
+    genres: string[];
+}
+
+export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genres }: MusicHubProps) {
+    const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+
+    const formatDuration = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    const formatPlays = (plays: number) => {
+        if (plays >= 1000000) return `${(plays / 1000000).toFixed(1)}M`;
+        if (plays >= 1000) return `${(plays / 1000).toFixed(1)}K`;
+        return plays.toString();
+    };
+
+    const featuredAlbum = featuredAlbums[0];
 
     return (
         <MainLayout>
-            <Head title="ArtStream - Musique" />
+            <Head title="ArtStream - Hub Musique" />
 
-            <div className="container px-4 md:px-6 py-8 pb-24">
-                {/* Hero Section */}
-                <div className="relative rounded-xl overflow-hidden bg-gradient-to-r from-primary/20 to-secondary/20 p-6 md:p-12 mb-8">
-                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-12">
-                        <img
-                            src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=400&auto=format&fit=crop"
-                            alt="Featured Album"
-                            className="w-48 h-48 object-cover rounded-lg shadow-2xl rotate-3 transition-transform hover:rotate-0"
-                        />
-                        <div className="text-center md:text-left space-y-4">
-                            <h2 className="text-sm font-bold tracking-wider text-primary uppercase">Album de la semaine</h2>
-                            <h1 className="text-4xl md:text-6xl font-black font-heading">AFRO VIBES</h1>
-                            <p className="text-lg text-muted-foreground max-w-lg">
-                                Découvrez les meilleurs sons du moment. Une sélection exclusive pour vibrer au rythme de l'Afrique.
-                            </p>
-                            <div className="flex gap-4 justify-center md:justify-start">
-                                <Button size="lg" className="rounded-full px-8 gap-2">
-                                    <Play className="w-5 h-5 fill-current" /> Écouter
-                                </Button>
-                                <Button size="lg" variant="outline" className="rounded-full px-8 gap-2">
-                                    <Heart className="w-5 h-5" /> Favoris
-                                </Button>
+            <div className="pb-24 md:pb-6">
+                {/* Hero Section - Featured Album */}
+                {featuredAlbum && (
+                    <div className="relative bg-gradient-earth overflow-hidden border-b border-border/40">
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background"></div>
+                        <div className="container max-w-7xl mx-auto px-4 py-12 md:py-16">
+                            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                                <div className="w-48 h-48 md:w-64 md:h-64 rounded-lg overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-300">
+                                    <img
+                                        src={featuredAlbum.cover_url}
+                                        alt={featuredAlbum.title}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <div className="text-center md:text-left space-y-4 flex-1">
+                                    <Badge className="bg-primary text-primary-foreground">
+                                        <TrendingUp className="w-3 h-3 mr-1" />
+                                        Album le plus écouté
+                                    </Badge>
+                                    <h1 className="text-4xl md:text-6xl font-black font-heading text-foreground">
+                                        {featuredAlbum.title}
+                                    </h1>
+                                    <p className="text-xl text-muted-foreground">
+                                        {featuredAlbum.artist.stage_name}
+                                    </p>
+                                    <div className="flex flex-wrap gap-3 text-sm text-muted-foreground justify-center md:justify-start">
+                                        <span className="flex items-center gap-1">
+                                            <Badge variant="outline">{featuredAlbum.genre}</Badge>
+                                        </span>
+                                        <span>•</span>
+                                        <span>{featuredAlbum.year}</span>
+                                        <span>•</span>
+                                        <span>{featuredAlbum.tracks_count} titres</span>
+                                        {featuredAlbum.total_plays && featuredAlbum.total_plays > 0 && (
+                                            <>
+                                                <span>•</span>
+                                                <span>{formatPlays(featuredAlbum.total_plays)} écoutes</span>
+                                            </>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-4 justify-center md:justify-start pt-2">
+                                        <Button size="lg" className="rounded-full px-8 gap-2 bg-primary hover:bg-primary/90">
+                                            <Play className="w-5 h-5 fill-current" />
+                                            Écouter
+                                        </Button>
+                                        <Button size="lg" variant="outline" className="rounded-full px-8 gap-2">
+                                            <Heart className="w-5 h-5" />
+                                            J'aime
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
 
-                {/* Featured Playlists */}
-                <div className="mb-10">
-                    <div className="flex justify-between items-end mb-6">
-                        <h2 className="text-2xl font-bold font-heading">Playlists à la une</h2>
-                        <Link href="#" className="text-sm text-primary hover:underline">Voir tout</Link>
+                {/* Genres Filter */}
+                <section className="py-6 px-4 bg-muted/30 border-b border-border/40">
+                    <div className="container max-w-7xl mx-auto">
+                        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                            <Button
+                                variant={selectedGenre === null ? 'default' : 'outline'}
+                                size="sm"
+                                onClick={() => setSelectedGenre(null)}
+                                className="rounded-full whitespace-nowrap"
+                            >
+                                Tous les genres
+                            </Button>
+                            {genres.map((genre) => (
+                                <Button
+                                    key={genre}
+                                    variant={selectedGenre === genre ? 'default' : 'outline'}
+                                    size="sm"
+                                    onClick={() => setSelectedGenre(genre)}
+                                    className="rounded-full whitespace-nowrap capitalize"
+                                >
+                                    {genre}
+                                </Button>
+                            ))}
+                        </div>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {featuredPlaylists.map(playlist => (
-                            <div key={playlist.id} className="group cursor-pointer space-y-3">
-                                <div className="aspect-square rounded-lg overflow-hidden relative">
-                                    <img
-                                        src={playlist.cover}
-                                        alt={playlist.title}
-                                        className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                                    />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                                            <Play className="w-6 h-6 text-primary-foreground fill-current ml-1" />
+                </section>
+
+                {/* Tabs Section */}
+                <section className="py-8 px-4">
+                    <div className="container max-w-7xl mx-auto">
+                        <Tabs defaultValue="albums" className="w-full">
+                            <TabsList className="mb-6">
+                                <TabsTrigger value="albums">Albums populaires</TabsTrigger>
+                                <TabsTrigger value="recent">Nouveautés</TabsTrigger>
+                                <TabsTrigger value="tracks">Top Titres</TabsTrigger>
+                            </TabsList>
+
+                            {/* Featured Albums Tab */}
+                            <TabsContent value="albums" className="mt-0">
+                                <Carousel
+                                    opts={{
+                                        align: 'start',
+                                        loop: true,
+                                    }}
+                                    className="w-full"
+                                >
+                                    <CarouselContent>
+                                        {featuredAlbums
+                                            .filter((album) => !selectedGenre || album.genre === selectedGenre)
+                                            .map((album) => (
+                                                <CarouselItem key={album.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                                                    <div className="group cursor-pointer space-y-3">
+                                                        <div className="aspect-square rounded-lg overflow-hidden relative bg-muted">
+                                                            <img
+                                                                src={album.cover_url}
+                                                                alt={album.title}
+                                                                className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"
+                                                            />
+                                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                                <Button
+                                                                    size="icon"
+                                                                    className="w-14 h-14 rounded-full bg-primary hover:bg-primary/90 scale-0 group-hover:scale-100 transition-transform"
+                                                                >
+                                                                    <Play className="w-6 h-6 text-primary-foreground fill-current ml-0.5" />
+                                                                </Button>
+                                                            </div>
+                                                            {album.total_plays && album.total_plays > 0 && (
+                                                                <Badge className="absolute top-3 right-3 bg-black/70 text-white border-none">
+                                                                    {formatPlays(album.total_plays)} écoutes
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="font-semibold truncate text-foreground">
+                                                                {album.title}
+                                                            </h3>
+                                                            <p className="text-sm text-muted-foreground truncate">
+                                                                {album.artist.stage_name}
+                                                            </p>
+                                                            <div className="flex items-center justify-between mt-1">
+                                                                <Badge variant="outline" className="text-xs capitalize">
+                                                                    {album.genre}
+                                                                </Badge>
+                                                                <span className="text-xs text-muted-foreground">
+                                                                    {album.year}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </CarouselItem>
+                                            ))}
+                                    </CarouselContent>
+                                    <CarouselPrevious className="hidden md:flex -left-4 bg-background border-border hover:bg-muted" />
+                                    <CarouselNext className="hidden md:flex -right-4 bg-background border-border hover:bg-muted" />
+                                </Carousel>
+                            </TabsContent>
+
+                            {/* Recent Albums Tab */}
+                            <TabsContent value="recent" className="mt-0">
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                                    {recentAlbums
+                                        .filter((album) => !selectedGenre || album.genre === selectedGenre)
+                                        .map((album) => (
+                                            <div key={album.id} className="group cursor-pointer space-y-3">
+                                                <div className="aspect-square rounded-lg overflow-hidden relative bg-muted">
+                                                    <img
+                                                        src={album.cover_url}
+                                                        alt={album.title}
+                                                        className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                        <Button
+                                                            size="icon"
+                                                            className="rounded-full bg-primary hover:bg-primary/90"
+                                                        >
+                                                            <Play className="w-5 h-5 fill-current ml-0.5" />
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-semibold truncate text-sm text-foreground">
+                                                        {album.title}
+                                                    </h3>
+                                                    <p className="text-xs text-muted-foreground truncate">
+                                                        {album.artist.stage_name}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                </div>
+                            </TabsContent>
+
+                            {/* Top Tracks Tab */}
+                            <TabsContent value="tracks" className="mt-0">
+                                <div className="space-y-2">
+                                    {topTracks.map((track, index) => (
+                                        <div
+                                            key={track.id}
+                                            className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
+                                        >
+                                            <span className="w-8 text-center text-muted-foreground font-medium">
+                                                {index + 1}
+                                            </span>
+                                            <img
+                                                src={track.album.cover_url}
+                                                alt={track.album.title}
+                                                className="w-12 h-12 rounded object-cover"
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-semibold truncate text-foreground">{track.title}</h4>
+                                                <p className="text-sm text-muted-foreground truncate">
+                                                    {track.album.artist.stage_name}
+                                                </p>
+                                            </div>
+                                            <div className="hidden md:block text-sm text-muted-foreground">
+                                                {track.album.title}
+                                            </div>
+                                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                                <TrendingUp className="w-4 h-4" />
+                                                <span>{formatPlays(track.plays)}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                                <Clock className="w-4 h-4" />
+                                                <span>{formatDuration(track.duration_seconds)}</span>
+                                            </div>
+                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                    <Play className="w-4 h-4 fill-current" />
+                                                </Button>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                    <Heart className="w-4 h-4" />
+                                                </Button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    ))}
                                 </div>
-                                <div>
-                                    <h3 className="font-semibold truncate">{playlist.title}</h3>
-                                    <p className="text-sm text-muted-foreground truncate">{playlist.artist}</p>
-                                </div>
-                            </div>
-                        ))}
+                            </TabsContent>
+                        </Tabs>
                     </div>
-                </div>
-
-                {/* New Releases */}
-                <div>
-                    <h2 className="text-2xl font-bold font-heading mb-6">Nouveautés</h2>
-                    <div className="space-y-4">
-                        {newReleases.map((track, i) => (
-                            <div key={track.id} className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group">
-                                <span className="w-6 text-center text-muted-foreground font-medium">{i + 1}</span>
-                                <img src={track.cover} alt={track.title} className="w-12 h-12 rounded object-cover" />
-                                <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold truncate">{track.title}</h4>
-                                    <p className="text-sm text-muted-foreground truncate">{track.artist}</p>
-                                </div>
-                                <div className="hidden md:flex text-sm text-muted-foreground">3:45</div>
-                                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Button variant="ghost" size="icon" className="h-8 w-8"><Heart className="w-4 h-4" /></Button>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="w-4 h-4" /></Button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                </section>
             </div>
         </MainLayout>
     );

@@ -1,7 +1,8 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\HomeController::index
+ * @see app/Http/Controllers/HomeController.php:12
+ * @route '/'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -10,28 +11,31 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '/artists',
+    url: '/',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\HomeController::index
+ * @see app/Http/Controllers/HomeController.php:12
+ * @route '/'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\HomeController::index
+ * @see app/Http/Controllers/HomeController.php:12
+ * @route '/'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
 /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\HomeController::index
+ * @see app/Http/Controllers/HomeController.php:12
+ * @route '/'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -39,8 +43,9 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\HomeController::index
+ * @see app/Http/Controllers/HomeController.php:12
+ * @route '/'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -48,16 +53,18 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\HomeController::index
+ * @see app/Http/Controllers/HomeController.php:12
+ * @route '/'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
             method: 'get',
         })
             /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\HomeController::index
+ * @see app/Http/Controllers/HomeController.php:12
+ * @route '/'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -70,8 +77,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     index.form = indexForm
-const artists = {
-    index: Object.assign(index, index),
-}
+const HomeController = { index }
 
-export default artists
+export default HomeController

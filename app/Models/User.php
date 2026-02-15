@@ -78,6 +78,24 @@ class User extends Authenticatable
     }
 
     /**
+     * Relation : Un artiste (User) peut avoir plusieurs Services
+     * Relation 1-N (hasMany) : Un artiste a plusieurs services
+     */
+    public function services()
+    {
+        return $this->hasMany(Service::class, 'artist_id');
+    }
+
+    /**
+     * Relation : Un artiste (User) peut avoir plusieurs Albums
+     * Relation 1-N (hasMany) : Un artiste a plusieurs albums
+     */
+    public function albums()
+    {
+        return $this->hasMany(Album::class, 'artist_id');
+    }
+
+    /**
      * Méthodes helper pour vérifier le rôle
      */
     public function isClient(): bool

@@ -2,138 +2,76 @@
 
 namespace App\Http\Controllers\Artist;
 
-use App\Enums\ReservationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Album;
-use App\Models\Reservation;
-use App\Models\Video;
-use App\Models\Wallet;
-use Illuminate\Http\Request;
+use App\Models\Service;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    /**
-     * Affiche le tableau de bord de l'artiste avec les KPIs
-     * 
-     * Route: GET /artist/dashboard
-     * Middleware: auth, role:artist
-     * 
-     * Affiche les indicateurs clés :
-     * - Revenus (mois en cours, comparaison avec mois précédent)
-     * - Réservations (en attente, confirmées, terminées)
-     * - Nouveaux abonnés (cette semaine)
-     * - Écoutes de morceaux (cette semaine)
-     * - Vues de vidéos (cette semaine)
-     * - Prochaine prestation
-     * - Notifications importantes
-     */
     public function index(): Response
     {
         $artist = Auth::user();
 
-        // Revenus du mois en cours
-        $currentMonthRevenue = Wallet::where('artist_id', $artist->id)
-            ->first()
-            ?->transactions()
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->where('type', 'like', 'credit_%')
-            ->sum('net_amount') ?? 0;
-
-        // Revenus du mois précédent
-        $lastMonthRevenue = Wallet::where('artist_id', $artist->id)
-            ->first()
-            ?->transactions()
-            ->whereMonth('created_at', now()->subMonth()->month)
-            ->whereYear('created_at', now()->subMonth()->year)
-            ->where('type', 'like', 'credit_%')
-            ->sum('net_amount') ?? 0;
-
-        // Calcul du pourcentage de variation
-        $revenueChange = $lastMonthRevenue > 0
-            ? (($currentMonthRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100
-            : 0;
-
-        // Réservations
-        $pendingReservations = Reservation::where('artist_id', $artist->id)
-            ->where('status', ReservationStatus::Pending)
-            ->count();
-
-        $confirmedReservations = Reservation::where('artist_id', $artist->id)
-            ->where('status', ReservationStatus::Confirmed)
-            ->count();
-
-        $completedReservations = Reservation::where('artist_id', $artist->id)
-            ->where('status', ReservationStatus::Completed)
-            ->count();
-
-        // Prochaine prestation
-        $nextReservation = Reservation::where('artist_id', $artist->id)
-            ->whereIn('status', [ReservationStatus::Pending, ReservationStatus::Confirmed])
-            ->where('scheduled_at', '>=', now())
-            ->with(['client.clientProfile', 'service'])
-            ->orderBy('scheduled_at', 'asc')
-            ->first();
-
-        // Nouveaux abonnés cette semaine
-        $newFollowers = $artist->artistProfile
-            ->followers()
-            ->wherePivot('created_at', '>=', now()->startOfWeek())
-            ->count();
-
-        // Écoutes de morceaux cette semaine
-        $playsThisWeek = Album::where('artist_id', $artist->id)
-            ->withSum('tracks', 'plays')
+        // Services de l'artiste
+        $services = Service::where('artist_id', $artist->id)
             ->get()
-            ->sum('tracks_sum_plays') ?? 0;
+            ->map(function ($service) {
+                return [
+                    'id' => $service->id,
+                    'title' => $service->title,
+                    'price' => $service->price,
+                    'is_active' => $service->is_active,
+                    'category' => $service->category,
+                ];
+            });
 
-        // Vues de vidéos cette semaine
-        $videoViewsThisWeek = Video::where('artist_id', $artist->id)
-            ->where('created_at', '>=', now()->startOfWeek())
-            ->sum('views');
-
-        // Graphique des revenus (7 derniers jours)
-        $revenueChart = Wallet::where('artist_id', $artist->id)
-            ->first()
-            ?->transactions()
-            ->where('created_at', '>=', now()->subDays(7))
-            ->where('type', 'like', 'credit_%')
-            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(net_amount) as amount'))
-            ->groupBy('date')
-            ->orderBy('date')
+        // Albums de l'artiste avec stats
+        $albums = Album::where('artist_id', $artist->id)
+            ->withCount('tracks')
             ->get()
-            ->map(fn ($item) => [
-                'date' => $item->date,
-                'amount' => (float) $item->amount,
-            ]) ?? collect();
+            ->map(function ($album) {
+                return [
+                    'id' => $album->id,
+                    'title' => $album->title,
+                    'cover_url' => $album->cover_url,
+                    'total_plays' => $album->total_plays,
+                    'tracks_count' => $album->tracks_count,
+                    'year' => $album->year,
+                ];
+            });
 
-        return Inertia::render('Artist/Dashboard', [
-            'kpis' => [
-                'revenue' => [
-                    'current' => $currentMonthRevenue,
-                    'last' => $lastMonthRevenue,
-                    'change' => round($revenueChange, 2),
-                ],
-                'reservations' => [
-                    'pending' => $pendingReservations,
-                    'confirmed' => $confirmedReservations,
-                    'completed' => $completedReservations,
-                ],
-                'followers' => [
-                    'new_this_week' => $newFollowers,
-                    'total' => $artist->artistProfile->followers()->count(),
-                ],
-                'content' => [
-                    'plays_this_week' => $playsThisWeek,
-                    'video_views_this_week' => $videoViewsThisWeek,
-                ],
+        // Calcul du total des écoutes
+        $totalPlays = Album::where('artist_id', $artist->id)->sum('total_plays');
+
+        // Statistiques basiques
+        $stats = [
+            'services_count' => $services->count(),
+            'active_services' => $services->where('is_active', true)->count(),
+            'albums_count' => $albums->count(),
+            'total_plays' => $totalPlays,
+            'avg_album_plays' => $albums->count() > 0 ? round($totalPlays / $albums->count()) : 0,
+        ];
+
+        // Album le plus populaire
+        $topAlbum = $albums->sortByDesc('total_plays')->first();
+
+        return Inertia::render('Artist/dashboard', [
+            'stats' => $stats,
+            'services' => $services,
+            'albums' => $albums->take(6),
+            'topAlbum' => $topAlbum,
+            'artistProfile' => [
+                'stage_name' => $artist->artistProfile->stage_name ?? $artist->name,
+                'bio' => $artist->artistProfile->bio ?? '',
+                'categories' => json_decode($artist->artistProfile->categories ?? '[]'),
+                'base_rate' => $artist->artistProfile->base_rate ?? 0,
+                'is_verified' => $artist->artistProfile->is_verified ?? false,
+                'rating' => $artist->artistProfile->rating ?? 0,
+                'total_reviews' => $artist->artistProfile->total_reviews ?? 0,
             ],
-            'nextReservation' => $nextReservation,
-            'revenueChart' => $revenueChart,
         ]);
     }
 }

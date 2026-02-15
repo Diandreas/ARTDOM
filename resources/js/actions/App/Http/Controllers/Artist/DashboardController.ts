@@ -1,7 +1,8 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\Artist\DashboardController::index
+ * @see app/Http/Controllers/Artist/DashboardController.php:14
+ * @route '/artist/dashboard'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -10,28 +11,31 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '/artists',
+    url: '/artist/dashboard',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\Artist\DashboardController::index
+ * @see app/Http/Controllers/Artist/DashboardController.php:14
+ * @route '/artist/dashboard'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\Artist\DashboardController::index
+ * @see app/Http/Controllers/Artist/DashboardController.php:14
+ * @route '/artist/dashboard'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
 /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\Artist\DashboardController::index
+ * @see app/Http/Controllers/Artist/DashboardController.php:14
+ * @route '/artist/dashboard'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -39,8 +43,9 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\Artist\DashboardController::index
+ * @see app/Http/Controllers/Artist/DashboardController.php:14
+ * @route '/artist/dashboard'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -48,16 +53,18 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\Artist\DashboardController::index
+ * @see app/Http/Controllers/Artist/DashboardController.php:14
+ * @route '/artist/dashboard'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
             method: 'get',
         })
             /**
- * @see routes/web.php:50
- * @route '/artists'
+* @see \App\Http\Controllers\Artist\DashboardController::index
+ * @see app/Http/Controllers/Artist/DashboardController.php:14
+ * @route '/artist/dashboard'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -70,8 +77,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     index.form = indexForm
-const artists = {
-    index: Object.assign(index, index),
-}
+const DashboardController = { index }
 
-export default artists
+export default DashboardController

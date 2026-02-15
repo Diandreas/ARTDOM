@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "mcp__laravel-boost__browser-logs",
-      "Bash(php artisan migrate:fresh:*)"
+      "Bash(php artisan migrate:fresh:*)",
+      "mcp__laravel-boost__application-info",
+      "Bash(php artisan make:factory:*)",
+      "Bash(php artisan:*)",
+      "mcp__laravel-boost__database-schema",
+      "mcp__laravel-boost__database-query",
+      "Bash(vendor/bin/pint:*)",
+      "Bash(npm run build:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
