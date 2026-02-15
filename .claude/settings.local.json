@@ -21,7 +21,8 @@
       "mcp__chrome-devtools__fill",
       "mcp__chrome-devtools__wait_for",
       "mcp__chrome-devtools__fill_form",
-      "Bash(npx shadcn@latest add:*)"
+      "Bash(npx shadcn@latest add:*)",
+      "mcp__chrome-devtools__take_screenshot"
     ]
   },
   "enableAllProjectMcpServers": true,

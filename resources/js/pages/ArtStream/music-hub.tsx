@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import MainLayout from '@/layouts/MainLayout';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp } from 'lucide-react';
+import { useAudio, type Track as AudioTrack } from '@/contexts/AudioContext';
 
 interface Artist {
     id: string;
@@ -50,6 +51,7 @@ interface MusicHubProps {
 
 export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genres }: MusicHubProps) {
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+    const { setQueue, playTrack } = useAudio();
 
     const formatDuration = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);
@@ -61,6 +63,38 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
         if (plays >= 1000000) return `${(plays / 1000000).toFixed(1)}M`;
         if (plays >= 1000) return `${(plays / 1000).toFixed(1)}K`;
         return plays.toString();
+    };
+
+    const convertToAudioTrack = (track: Track): AudioTrack => ({
+        id: parseInt(track.id),
+        title: track.title,
+        artist: track.album.artist.stage_name,
+        image: track.album.cover_url,
+        url: track.file_url,
+        duration: track.duration_seconds,
+        album: track.album.title,
+    });
+
+    const handlePlayTrack = (track: Track, allTracks?: Track[]) => {
+        const audioTrack = convertToAudioTrack(track);
+
+        if (allTracks && allTracks.length > 0) {
+            // Set up queue with all tracks
+            const audioTracks = allTracks.map(convertToAudioTrack);
+            const trackIndex = allTracks.findIndex(t => t.id === track.id);
+            setQueue(audioTracks, trackIndex);
+        } else {
+            // Just play this single track
+            playTrack(audioTrack);
+        }
+
+        // Navigate to full player
+        router.visit('/artstream/player');
+    };
+
+    const handlePlayAlbum = (albumId: string) => {
+        // Navigate to album view which will handle playback
+        router.visit(`/artstream/album/${albumId}`);
     };
 
     const featuredAlbum = featuredAlbums[0];
@@ -110,7 +144,11 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                                         )}
                                     </div>
                                     <div className="flex gap-4 justify-center md:justify-start pt-2">
-                                        <Button size="lg" className="rounded-full px-8 gap-2 bg-primary hover:bg-primary/90">
+                                        <Button
+                                            size="lg"
+                                            onClick={() => handlePlayAlbum(featuredAlbum.id)}
+                                            className="rounded-full px-8 gap-2 bg-primary hover:bg-primary/90"
+                                        >
                                             <Play className="w-5 h-5 fill-current" />
                                             Écouter
                                         </Button>
@@ -186,6 +224,7 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                                                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                                 <Button
                                                                     size="icon"
+                                                                    onClick={() => handlePlayAlbum(album.id)}
                                                                     className="w-14 h-14 rounded-full bg-primary hover:bg-primary/90 scale-0 group-hover:scale-100 transition-transform"
                                                                 >
                                                                     <Play className="w-6 h-6 text-primary-foreground fill-current ml-0.5" />
@@ -238,6 +277,7 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                         <Button
                                                             size="icon"
+                                                            onClick={() => handlePlayAlbum(album.id)}
                                                             className="rounded-full bg-primary hover:bg-primary/90"
                                                         >
                                                             <Play className="w-5 h-5 fill-current ml-0.5" />
@@ -263,6 +303,7 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                                     {topTracks.map((track, index) => (
                                         <div
                                             key={track.id}
+                                            onClick={() => handlePlayTrack(track, topTracks)}
                                             className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
                                         >
                                             <span className="w-8 text-center text-muted-foreground font-medium">
@@ -291,7 +332,12 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                                                 <span>{formatDuration(track.duration_seconds)}</span>
                                             </div>
                                             <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8"
+                                                    onClick={() => handlePlayTrack(track, topTracks)}
+                                                >
                                                     <Play className="w-4 h-4 fill-current" />
                                                 </Button>
                                                 <Button variant="ghost" size="icon" className="h-8 w-8">

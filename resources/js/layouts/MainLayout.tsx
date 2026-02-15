@@ -18,6 +18,15 @@ import { Input } from '@/components/ui/input';
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const user = (usePage().props as any).auth.user;
+    const { url } = usePage();
+
+    // Helper function to check if link is active
+    const isActive = (path: string) => {
+        if (path === '/') {
+            return url === '/';
+        }
+        return url.startsWith(path);
+    };
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans">
@@ -173,25 +182,50 @@ export default function MainLayout({ children }: PropsWithChildren) {
             {/* Mobile Bottom Navigation */}
             <div className="md:hidden fixed bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur z-40 pb-safe">
                 <nav className="flex items-center justify-around h-16">
-                    <Link href={home()} className="flex flex-col items-center gap-1 text-xs font-medium text-primary">
+                    <Link
+                        href={home()}
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                            isActive('/') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                        }`}
+                    >
                         <Home className="h-5 w-5" />
                         <span>Accueil</span>
                     </Link>
-                    <Link href="/artists" className="flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
+                    <Link
+                        href="/artists"
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                            isActive('/artists') || isActive('/artist') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                        }`}
+                    >
                         <Search className="h-5 w-5" />
                         <span>Artistes</span>
                     </Link>
-                    <Link href="/artstream" className="flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
+                    <Link
+                        href="/artstream"
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                            isActive('/artstream') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                        }`}
+                    >
                         <Music className="h-5 w-5" />
                         <span>ArtStream</span>
                     </Link>
                     {user ? (
-                        <Link href="/dashboard" className="flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
+                        <Link
+                            href="/dashboard"
+                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                                isActive('/dashboard') || isActive('/client') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                            }`}
+                        >
                             <Grid className="h-5 w-5" />
                             <span>Dashboard</span>
                         </Link>
                     ) : (
-                        <Link href="/register/selection" className="flex flex-col items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
+                        <Link
+                            href="/register/selection"
+                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                                isActive('/register') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                            }`}
+                        >
                             <Grid className="h-5 w-5" />
                             <span>Inscription</span>
                         </Link>
