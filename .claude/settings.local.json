@@ -20,7 +20,8 @@
       "mcp__laravel-boost__tinker",
       "mcp__chrome-devtools__fill",
       "mcp__chrome-devtools__wait_for",
-      "mcp__chrome-devtools__fill_form"
+      "mcp__chrome-devtools__fill_form",
+      "Bash(npx shadcn@latest add:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
