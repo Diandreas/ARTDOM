@@ -3,30 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Track;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class FavoriteController extends Controller
 {
-    public function toggle(Request $request, Track $track): JsonResponse
+    public function toggle(Request $request, Track $track): RedirectResponse
     {
         $user = $request->user();
 
-        $favorite = $user->favorites()->where('track_id', $track->id)->first();
+        $isFavorited = $user->favorites()->where('track_id', $track->id)->exists();
 
-        if ($favorite) {
+        if ($isFavorited) {
             $user->favorites()->detach($track->id);
 
-            return response()->json([
-                'favorited' => false,
+            return back()->with('toast', [
+                'type' => 'success',
                 'message' => 'Retiré des favoris',
             ]);
         }
 
         $user->favorites()->attach($track->id);
 
-        return response()->json([
-            'favorited' => true,
+        return back()->with('toast', [
+            'type' => 'success',
             'message' => 'Ajouté aux favoris',
         ]);
     }

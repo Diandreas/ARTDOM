@@ -6,8 +6,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp } from 'lucide-react';
+import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp, ListMusic } from 'lucide-react';
 import { useAudio, type Track as AudioTrack } from '@/contexts/AudioContext';
+import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 
 interface Artist {
     id: string;
@@ -162,6 +163,26 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                         </div>
                     </div>
                 )}
+
+                {/* Quick Actions Bar */}
+                <section className="py-4 px-4 bg-muted/30 border-b border-border/40">
+                    <div className="container max-w-7xl mx-auto">
+                        <div className="flex gap-3 justify-center">
+                            <Button variant="outline" size="sm" asChild className="gap-2">
+                                <Link href="/playlists">
+                                    <ListMusic className="w-4 h-4" />
+                                    Mes Playlists
+                                </Link>
+                            </Button>
+                            <Button variant="outline" size="sm" asChild className="gap-2">
+                                <Link href="/favorites">
+                                    <Heart className="w-4 h-4" />
+                                    Mes Favoris
+                                </Link>
+                            </Button>
+                        </div>
+                    </div>
+                </section>
 
                 {/* Genres Filter */}
                 <section className="py-6 px-4 bg-muted/30 border-b border-border/40">
@@ -343,6 +364,15 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                                                 <Button variant="ghost" size="icon" className="h-8 w-8">
                                                     <Heart className="w-4 h-4" />
                                                 </Button>
+                                                <AddToPlaylistDialog
+                                                    trackId={parseInt(track.id)}
+                                                    trackTitle={track.title}
+                                                    trigger={
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                                                            <ListMusic className="w-4 h-4" />
+                                                        </Button>
+                                                    }
+                                                />
                                             </div>
                                         </div>
                                     ))}

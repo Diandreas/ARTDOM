@@ -1,6 +1,56 @@
 ARTDOM - SPÉCIFICATIONS DÉTAILLÉES PAR INTERFACE
 Date : 15 janvier 2026
-Version : 1.0
+Version : 1.1
+Dernière mise à jour : 15 février 2026
+
+========================================
+MISES À JOUR SESSION 15 FÉVRIER 2026
+========================================
+
+ARTSTREAM - FONCTIONNALITÉS COMPLÉTÉES :
+
+✅ Système Audio Complet (Backend + Frontend)
+  - AudioContext avec gestion de queue avancée
+  - Modes shuffle, repeat (off/one/all)
+  - Contrôle volume et mute
+  - Auto-play track suivant
+  - Streaming progressif (preload='metadata')
+  - Protection contre rechargement intempestif
+
+✅ Système de Favoris (Backend + Frontend)
+  - Migration table 'favorites' (many-to-many User-Track)
+  - FavoriteController (toggle, index)
+  - Routes favorites (/favorites/toggle, /favorites)
+  - Toast notifications (Sonner) pour feedback utilisateur
+  - Bouton cœur fonctionnel dans full-player et mise à jour optimiste
+
+✅ Système de Playlists (Backend uniquement)
+  - Tables 'playlists' et 'playlist_track'
+  - Model Playlist avec relations (User, Tracks)
+  - PlaylistController complet (CRUD + add/remove tracks)
+  - PlaylistPolicy pour autorisation
+  - Routes playlists générées via Wayfinder
+  - ⚠️ UI frontend en attente (Phase 1 du plan)
+
+✅ Lecteurs Audio
+  - Full-player avec chargement depuis URL parameters
+  - Mini-player persistant avec bouton expand fonctionnel
+  - Gestion état local vs audio progress pour seek fluide
+  - Affichage favoris synchronisé
+
+✅ Infrastructure
+  - 575 tracks seedés avec URLs audio valides (Archive.org/Pixabay CORS-enabled)
+  - UpdateTrackUrlsSeeder pour migration URLs
+  - ArtStreamController avec méthodes player(), album(), index()
+
+⚠️ PROBLÈMES CONNUS :
+  - Seek: redémarre parfois au lieu de continuer (investigation différée)
+
+📋 PROCHAINES ÉTAPES (voir PLAN_ARTSTREAM.md) :
+  - Phase 1: Interface Playlists (grille, création, gestion)
+  - Phase 2: Page Favoris (liste, tri, lecture)
+  - Phase 3: Queue UI (sidebar, drag & drop)
+
 ________________________________________
 1. AUTHENTIFICATION & ONBOARDING
 1.1 Splash Screen [x]
@@ -200,7 +250,7 @@ Fonctionnalités :
 •	Ajout automatique au calendrier du téléphone (option) [x]
 ________________________________________
 C. ARTSTREAM (STREAMING AUDIO)
-2.11 Hub Musique [x]
+2.11 Hub Musique [x] ✅ Infrastructure complète (15/02/2026)
 Fonctionnalités :
 •	Header : Logo ArtStream, icône Recherche musicale, icône Bibliothèque [x]
 •	Section "Nouveautés" : Carrousel d'albums/singles récents [x]
@@ -208,24 +258,24 @@ Fonctionnalités :
 •	Section "Genres" : Grille de catégories (Afrobeat, Hip-Hop, Gospel, Jazz, etc.) [x]
 •	Section "Playlists ARTDOM" : Playlists éditoriales (ex : "Talents émergents") [x]
 •	Section "Recommandé pour vous" : Algorithme basé sur l'historique d'écoute [x]
-•	Bottom Player : Lecteur mini persistant [x]
+•	Bottom Player : Lecteur mini persistant [x] ✅ Fonctionnel avec queue et streaming
 •	Accès au mode hors-ligne (si abonnement Premium) [x]
 ________________________________________
-2.12 Vue Album/Playlist [x]
+2.12 Vue Album/Playlist [x] ✅ Albums fonctionnels (15/02/2026)
 Fonctionnalités :
 •	Header : Cover, Titre album/playlist, Nom artiste, Année, Nombre de pistes [x]
-•	Bouton "Lire" (lecture aléatoire ou séquentielle) [x]
+•	Bouton "Lire" (lecture aléatoire ou séquentielle) [x] ✅ Charge queue et démarre lecture
 •	Bouton "Ajouter à Ma Bibliothèque" [x]
 •	Bouton "Partager" [x]
 •	Bouton "Acheter l'album" (prix affiché) [x]
 •	Liste des pistes : [x]
 o	Numéro, Titre, Durée [x]
-o	Icône "Lecture" au survol/clic [x]
-o	Icône "..." (menu : Ajouter à playlist, Télécharger si acheté) [x]
+o	Icône "Lecture" au survol/clic [x] ✅ Charge track dans player
+o	Icône "..." (menu : Ajouter à playlist, Télécharger si acheté) [x] ⚠️ Backend prêt, UI modal en attente
 •	Nombre d'écoutes total de l'album [x]
 •	Lien vers le profil de l'artiste [x]
 ________________________________________
-2.13 Lecteur Audio (Full Screen) [x]
+2.13 Lecteur Audio (Full Screen) [x] ✅ COMPLÉTÉ 15/02/2026
 Fonctionnalités :
 •	Cover animé (rotation ou visualiseur d'ondes) [x]
 •	Titre de la chanson + Nom de l'artiste (cliquables) [x]
@@ -233,25 +283,25 @@ Fonctionnalités :
 o	Bouton "Précédent" [x]
 o	Bouton "Play/Pause" (centré, large) [x]
 o	Bouton "Suivant" [x]
-o	Barre de progression (draggable) [x]
+o	Barre de progression (draggable) [x] ⚠️ Seek peut redémarrer (investigation différée)
 o	Timer (temps écoulé / durée totale) [x]
 •	Actions secondaires : [x]
-o	Bouton "J'aime" (cœur) [x]
-o	Bouton "Ajouter à playlist" [x]
+o	Bouton "J'aime" (cœur) [x] ✅ Backend + Frontend + Toast notifications
+o	Bouton "Ajouter à playlist" [x] ⚠️ Backend prêt, UI en attente (Phase 1)
 o	Bouton "Partager" [x]
 o	Bouton "Acheter l'album" (si non acheté) [x]
 •	Paroles : Toggle pour afficher les lyrics synchronisés (si disponibles) [x]
-•	Mode répétition (1x, répéter, aléatoire) [x]
-•	File d'attente (liste des prochaines pistes) [x]
-•	Gestion du volume [x]
+•	Mode répétition (1x, répéter, aléatoire) [x] ✅ off/all/one
+•	File d'attente (liste des prochaines pistes) [x] ✅ Backend complet
+•	Gestion du volume [x] ✅ Slider + Mute
 ________________________________________
-2.14 Lecteur Audio (Mini) [x]
+2.14 Lecteur Audio (Mini) [x] ✅ COMPLÉTÉ 15/02/2026
 Fonctionnalités :
 •	Barre persistante en bas de l'écran (toutes les pages) [x]
 •	Cover miniature + Titre + Artiste (texte défilant si long) [x]
 •	Bouton "Play/Pause" [x]
 •	Bouton "Suivant" [x]
-•	Clic sur la barre → Ouverture de l'lecteur Full Screen [x]
+•	Clic sur la barre → Ouverture de l'lecteur Full Screen [x] ✅ Bouton expand fonctionnel
 •	Fermeture (icône "X") → Arrêt de la lecture [x]
 ________________________________________
 D. ARTTUBE & CLASSROOM
@@ -362,7 +412,7 @@ o	"Télécharger reçu" [B]
 •	Section Messages : Historique du chat avec l'artiste [B]
 •	Countdown avant l'événement (si à venir) [B]
 ________________________________________
-2.22 Ma Bibliothèque [B]
+2.22 Ma Bibliothèque [B] ⚠️ BACKEND PLAYLISTS PRÊT (15/02/2026)
 Fonctionnalités :
 •	Onglets : "Albums achetés", "Cours en cours", "Playlists", "Téléchargements" [B]
 •	Albums achetés : [B]
@@ -375,7 +425,7 @@ o	Liste des formations achetées [B]
 o	Barre de progression (% complété) [B]
 o	Bouton "Continuer" [B]
 o	Date de dernière activité [B]
-•	Playlists : [B]
+•	Playlists : [B] ⚠️ Backend 100% prêt (tables, model, controller, policy, routes) - UI en attente
 o	Mes playlists créées [B]
 o	Bouton "Créer une nouvelle playlist" [B]
 o	Gestion (renommer, supprimer) [B]

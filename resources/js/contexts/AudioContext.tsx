@@ -53,11 +53,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const [volume, setVolumeState] = useState(0.7);
     const [isMuted, setIsMuted] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
+    const lastLoadedUrlRef = useRef<string | null>(null);
 
     // Initialize audio element
     useEffect(() => {
         audioRef.current = new Audio();
         audioRef.current.volume = volume;
+        audioRef.current.preload = 'metadata'; // Only load metadata, not entire file
 
         const audio = audioRef.current;
 
@@ -112,15 +114,19 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (currentTrack && audioRef.current) {
-            if (audioRef.current.src !== currentTrack.url) {
-                audioRef.current.src = currentTrack.url;
-                audioRef.current.load();
+            const audio = audioRef.current;
+
+            // Only reload if the URL has actually changed
+            if (lastLoadedUrlRef.current !== currentTrack.url) {
+                audio.src = currentTrack.url;
+                audio.load();
+                lastLoadedUrlRef.current = currentTrack.url;
             }
 
             if (isPlaying) {
-                audioRef.current.play().catch(e => console.error("Playback failed", e));
+                audio.play().catch(e => console.error("Playback failed", e));
             } else {
-                audioRef.current.pause();
+                audio.pause();
             }
         }
     }, [currentTrack, isPlaying]);
@@ -140,9 +146,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     };
 
     const seek = (time: number) => {
-        if (audioRef.current) {
-            audioRef.current.currentTime = time;
-            setProgress(time);
+        if (audioRef.current && !isNaN(time) && isFinite(time)) {
+            audioRef.current.currentTime = Math.max(0, Math.min(time, audioRef.current.duration || 0));
         }
     };
 

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 import {
     Play,
     Heart,
@@ -253,10 +254,16 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                                                 <Heart className="w-4 h-4 mr-2" />
                                                 Ajouter aux favoris
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem>
-                                                <ListMusic className="w-4 h-4 mr-2" />
-                                                Ajouter à une playlist
-                                            </DropdownMenuItem>
+                                            <AddToPlaylistDialog
+                                                trackId={parseInt(track.id)}
+                                                trackTitle={track.title}
+                                                trigger={
+                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                        <ListMusic className="w-4 h-4 mr-2" />
+                                                        Ajouter à une playlist
+                                                    </DropdownMenuItem>
+                                                }
+                                            />
                                             {isPurchased && (
                                                 <DropdownMenuItem>
                                                     <Download className="w-4 h-4 mr-2" />

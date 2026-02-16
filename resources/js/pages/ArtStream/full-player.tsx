@@ -1,9 +1,11 @@
 
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, Heart, ListMusic, Share2, Volume2, VolumeX } from 'lucide-react';
+import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 import { useAudio, Track } from '@/contexts/AudioContext';
 import { cn } from '@/lib/utils';
 import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
@@ -14,8 +16,11 @@ interface FullPlayerProps {
 }
 
 export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProps) {
-    const { auth } = usePage().props as { auth?: { user?: any } };
+    const { auth, toast: flashToast } = usePage().props as { auth?: { user?: any }; toast?: { type: string; message: string } };
     const [isFavorited, setIsFavorited] = useState(false);
+    const [localProgress, setLocalProgress] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+    const hasLoadedInitialTrack = useRef(false);
 
     const {
         currentTrack,
@@ -38,13 +43,34 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
         setQueue,
     } = useAudio();
 
-    // Load initial track from URL parameters without autoplay
+    // Sync local progress with audio progress when not dragging
     useEffect(() => {
-        if (initialTrack && !currentTrack) {
+        if (!isDragging) {
+            setLocalProgress(progress);
+        }
+    }, [progress, isDragging]);
+
+    // Display toast from flash messages
+    useEffect(() => {
+        if (flashToast) {
+            if (flashToast.type === 'success') {
+                toast.success(flashToast.message);
+            } else if (flashToast.type === 'error') {
+                toast.error(flashToast.message);
+            } else {
+                toast(flashToast.message);
+            }
+        }
+    }, [flashToast]);
+
+    // Load initial track from URL parameters without autoplay (only once)
+    useEffect(() => {
+        if (initialTrack && !currentTrack && !hasLoadedInitialTrack.current) {
             if (albumTracks && albumTracks.length > 0) {
                 const trackIndex = albumTracks.findIndex(t => t.id === initialTrack.id);
                 // Load queue without autoplay (false parameter)
                 setQueue(albumTracks, trackIndex, false);
+                hasLoadedInitialTrack.current = true;
             }
         }
     }, [initialTrack, albumTracks, currentTrack, setQueue]);
@@ -67,17 +93,17 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
         if (!track) return;
 
         // Optimistically update UI
-        setIsFavorited(!isFavorited);
+        const newState = !isFavorited;
+        setIsFavorited(newState);
 
         router.post(
             toggleFavorite.url({ track: track.id }),
             {},
             {
                 preserveScroll: true,
-                preserveState: true,
                 onError: () => {
                     // Revert on error
-                    setIsFavorited(!isFavorited);
+                    setIsFavorited(!newState);
                 },
             }
         );
@@ -91,7 +117,15 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
     };
 
     const handleProgressChange = (value: number[]) => {
-        seek(value[0]);
+        setLocalProgress(value[0]);
+        setIsDragging(true);
+    };
+
+    const handleProgressCommit = (value: number[]) => {
+        const targetTime = value[0];
+        setLocalProgress(targetTime);
+        seek(targetTime);
+        setIsDragging(false);
     };
 
     const handleVolumeChange = (value: number[]) => {
@@ -168,14 +202,15 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                 {/* Progress Bar */}
                 <div className="w-full space-y-2 mb-8">
                     <Slider
-                        value={[progress]}
+                        value={[localProgress]}
                         max={duration || 100}
                         step={1}
                         onValueChange={handleProgressChange}
+                        onValueCommit={handleProgressCommit}
                         className="w-full cursor-pointer"
                     />
                     <div className="flex justify-between text-xs text-muted-foreground font-medium">
-                        <span>{formatTime(progress)}</span>
+                        <span>{formatTime(localProgress)}</span>
                         <span>{formatTime(duration)}</span>
                     </div>
                 </div>
@@ -248,11 +283,17 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                     <Button variant="ghost" size="icon" className="text-muted-foreground">
                         <Share2 className="w-5 h-5" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground" asChild>
-                        <Link href="/artstream">
-                            <ListMusic className="w-5 h-5" />
-                        </Link>
-                    </Button>
+                    {displayTrack && (
+                        <AddToPlaylistDialog
+                            trackId={parseInt(displayTrack.id)}
+                            trackTitle={displayTrack.title}
+                            trigger={
+                                <Button variant="ghost" size="icon" className="text-muted-foreground">
+                                    <ListMusic className="w-5 h-5" />
+                                </Button>
+                            }
+                        />
+                    )}
                 </div>
             </div>
         </div>
