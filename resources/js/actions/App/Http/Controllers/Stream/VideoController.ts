@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Stream\VideoController::index
  * @see app/Http/Controllers/Stream/VideoController.php:29
@@ -42,41 +42,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\Stream\VideoController::index
- * @see app/Http/Controllers/Stream/VideoController.php:29
- * @route '/arttube'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\Stream\VideoController::index
- * @see app/Http/Controllers/Stream/VideoController.php:29
- * @route '/arttube'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\Stream\VideoController::index
- * @see app/Http/Controllers/Stream/VideoController.php:29
- * @route '/arttube'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Stream\VideoController::show
  * @see app/Http/Controllers/Stream/VideoController.php:81
@@ -144,41 +109,6 @@ show.head = (args: { video: string | { id: string } } | [video: string | { id: s
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\Stream\VideoController::show
- * @see app/Http/Controllers/Stream/VideoController.php:81
- * @route '/arttube/videos/{video}'
- */
-    const showForm = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: show.url(args, options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\Stream\VideoController::show
- * @see app/Http/Controllers/Stream/VideoController.php:81
- * @route '/arttube/videos/{video}'
- */
-        showForm.get = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: show.url(args, options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\Stream\VideoController::show
- * @see app/Http/Controllers/Stream/VideoController.php:81
- * @route '/arttube/videos/{video}'
- */
-        showForm.head = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: show.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    show.form = showForm
 /**
 * @see \App\Http\Controllers\Stream\VideoController::like
  * @see app/Http/Controllers/Stream/VideoController.php:157
@@ -237,27 +167,6 @@ like.post = (args: { video: string | { id: string } } | [video: string | { id: s
     method: 'post',
 })
 
-    /**
-* @see \App\Http\Controllers\Stream\VideoController::like
- * @see app/Http/Controllers/Stream/VideoController.php:157
- * @route '/arttube/videos/{video}/like'
- */
-    const likeForm = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: like.url(args, options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Stream\VideoController::like
- * @see app/Http/Controllers/Stream/VideoController.php:157
- * @route '/arttube/videos/{video}/like'
- */
-        likeForm.post = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: like.url(args, options),
-            method: 'post',
-        })
-    
-    like.form = likeForm
 /**
 * @see \App\Http\Controllers\Stream\VideoController::storeComment
  * @see app/Http/Controllers/Stream/VideoController.php:132
@@ -315,28 +224,6 @@ storeComment.post = (args: { video: string | { id: string } } | [video: string |
     url: storeComment.url(args, options),
     method: 'post',
 })
-
-    /**
-* @see \App\Http\Controllers\Stream\VideoController::storeComment
- * @see app/Http/Controllers/Stream/VideoController.php:132
- * @route '/arttube/videos/{video}/comments'
- */
-    const storeCommentForm = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: storeComment.url(args, options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Stream\VideoController::storeComment
- * @see app/Http/Controllers/Stream/VideoController.php:132
- * @route '/arttube/videos/{video}/comments'
- */
-        storeCommentForm.post = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: storeComment.url(args, options),
-            method: 'post',
-        })
-    
-    storeComment.form = storeCommentForm
 const VideoController = { index, show, like, storeComment }
 
 export default VideoController

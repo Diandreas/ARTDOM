@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp, ListMusic } from 'lucide-react';
+import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp, ListMusic, Search } from 'lucide-react';
 import { useAudio, type Track as AudioTrack } from '@/contexts/AudioContext';
 import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 
@@ -167,7 +167,13 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                 {/* Quick Actions Bar */}
                 <section className="py-4 px-4 bg-muted/30 border-b border-border/40">
                     <div className="container max-w-7xl mx-auto">
-                        <div className="flex gap-3 justify-center">
+                        <div className="flex gap-3 justify-center flex-wrap">
+                            <Button variant="outline" size="sm" asChild className="gap-2">
+                                <Link href="/artstream/search">
+                                    <Search className="w-4 h-4" />
+                                    Rechercher
+                                </Link>
+                            </Button>
                             <Button variant="outline" size="sm" asChild className="gap-2">
                                 <Link href="/playlists">
                                     <ListMusic className="w-4 h-4" />

@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\ConversationController::contact
  * @see app/Http/Controllers/ConversationController.php:84
@@ -65,42 +65,6 @@ contact.head = (args: { reservation: string | { id: string } } | [reservation: s
     url: contact.url(args, options),
     method: 'head',
 })
-
-    /**
-* @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
- * @route '/reservation/{reservation}/contact'
- */
-    const contactForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: contact.url(args, options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
- * @route '/reservation/{reservation}/contact'
- */
-        contactForm.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: contact.url(args, options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
- * @route '/reservation/{reservation}/contact'
- */
-        contactForm.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: contact.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    contact.form = contactForm
 const reservation = {
     contact: Object.assign(contact, contact),
 }

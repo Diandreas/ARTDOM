@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\ArtStreamController::index
  * @see app/Http/Controllers/ArtStreamController.php:13
@@ -42,41 +42,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\ArtStreamController::index
- * @see app/Http/Controllers/ArtStreamController.php:13
- * @route '/artstream'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\ArtStreamController::index
- * @see app/Http/Controllers/ArtStreamController.php:13
- * @route '/artstream'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\ArtStreamController::index
- * @see app/Http/Controllers/ArtStreamController.php:13
- * @route '/artstream'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
 /**
 * @see \App\Http\Controllers\ArtStreamController::album
  * @see app/Http/Controllers/ArtStreamController.php:112
@@ -144,41 +109,6 @@ album.head = (args: { album: string | { id: string } } | [album: string | { id: 
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\ArtStreamController::album
- * @see app/Http/Controllers/ArtStreamController.php:112
- * @route '/artstream/album/{album}'
- */
-    const albumForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: album.url(args, options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\ArtStreamController::album
- * @see app/Http/Controllers/ArtStreamController.php:112
- * @route '/artstream/album/{album}'
- */
-        albumForm.get = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: album.url(args, options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\ArtStreamController::album
- * @see app/Http/Controllers/ArtStreamController.php:112
- * @route '/artstream/album/{album}'
- */
-        albumForm.head = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: album.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    album.form = albumForm
 /**
 * @see \App\Http\Controllers\ArtStreamController::player
  * @see app/Http/Controllers/ArtStreamController.php:156
@@ -222,45 +152,53 @@ player.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\ArtStreamController::player
- * @see app/Http/Controllers/ArtStreamController.php:156
- * @route '/artstream/player'
+/**
+* @see \App\Http\Controllers\ArtStreamController::search
+ * @see app/Http/Controllers/ArtStreamController.php:239
+ * @route '/artstream/search'
  */
-    const playerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: player.url(options),
-        method: 'get',
-    })
+export const search = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: search.url(options),
+    method: 'get',
+})
 
-            /**
-* @see \App\Http\Controllers\ArtStreamController::player
- * @see app/Http/Controllers/ArtStreamController.php:156
- * @route '/artstream/player'
+search.definition = {
+    methods: ["get","head"],
+    url: '/artstream/search',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\ArtStreamController::search
+ * @see app/Http/Controllers/ArtStreamController.php:239
+ * @route '/artstream/search'
  */
-        playerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: player.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\ArtStreamController::player
- * @see app/Http/Controllers/ArtStreamController.php:156
- * @route '/artstream/player'
+search.url = (options?: RouteQueryOptions) => {
+    return search.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\ArtStreamController::search
+ * @see app/Http/Controllers/ArtStreamController.php:239
+ * @route '/artstream/search'
  */
-        playerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: player.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    player.form = playerForm
+search.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: search.url(options),
+    method: 'get',
+})
+/**
+* @see \App\Http\Controllers\ArtStreamController::search
+ * @see app/Http/Controllers/ArtStreamController.php:239
+ * @route '/artstream/search'
+ */
+search.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: search.url(options),
+    method: 'head',
+})
 const artstream = {
     index: Object.assign(index, index),
 album: Object.assign(album, album),
 player: Object.assign(player, player),
+search: Object.assign(search, search),
 }
 
 export default artstream

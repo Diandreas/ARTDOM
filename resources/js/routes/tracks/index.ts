@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\FavoriteController::favorite
  * @see app/Http/Controllers/FavoriteController.php:11
@@ -56,28 +56,6 @@ favorite.post = (args: { track: string | { id: string } } | [track: string | { i
     url: favorite.url(args, options),
     method: 'post',
 })
-
-    /**
-* @see \App\Http\Controllers\FavoriteController::favorite
- * @see app/Http/Controllers/FavoriteController.php:11
- * @route '/tracks/{track}/favorite'
- */
-    const favoriteForm = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: favorite.url(args, options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\FavoriteController::favorite
- * @see app/Http/Controllers/FavoriteController.php:11
- * @route '/tracks/{track}/favorite'
- */
-        favoriteForm.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: favorite.url(args, options),
-            method: 'post',
-        })
-    
-    favorite.form = favoriteForm
 const tracks = {
     favorite: Object.assign(favorite, favorite),
 }

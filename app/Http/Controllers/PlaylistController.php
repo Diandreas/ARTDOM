@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Playlist;
 use App\Models\Track;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -48,7 +47,13 @@ class PlaylistController extends Controller
             'is_public' => $validated['is_public'] ?? false,
         ]);
 
-        return redirect()->back()->with('success', 'Playlist créée avec succès');
+        return redirect()->back()->with([
+            'success' => 'Playlist créée avec succès',
+            'playlist' => [
+                'id' => $playlist->id,
+                'title' => $playlist->title,
+            ],
+        ]);
     }
 
     public function show(Playlist $playlist): Response
@@ -85,7 +90,7 @@ class PlaylistController extends Controller
         ]);
     }
 
-    public function addTrack(Request $request, Playlist $playlist, Track $track): JsonResponse
+    public function addTrack(Request $request, Playlist $playlist, Track $track): RedirectResponse
     {
         $this->authorize('update', $playlist);
 
@@ -94,27 +99,29 @@ class PlaylistController extends Controller
 
         // Check if track already exists in playlist
         if ($playlist->tracks()->where('track_id', $track->id)->exists()) {
-            return response()->json([
-                'message' => 'Cette piste est déjà dans la playlist',
-            ], 422);
+            return redirect()->back()->withErrors([
+                'track' => 'Cette piste est déjà dans la playlist',
+            ]);
         }
 
         $playlist->tracks()->attach($track->id, [
             'order' => $maxOrder + 1,
         ]);
 
-        return response()->json([
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
             'message' => 'Piste ajoutée à la playlist',
         ]);
     }
 
-    public function removeTrack(Playlist $playlist, Track $track): JsonResponse
+    public function removeTrack(Playlist $playlist, Track $track): RedirectResponse
     {
         $this->authorize('update', $playlist);
 
         $playlist->tracks()->detach($track->id);
 
-        return response()->json([
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
             'message' => 'Piste retirée de la playlist',
         ]);
     }

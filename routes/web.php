@@ -18,6 +18,12 @@ Route::get('dashboard', [\App\Http\Controllers\Client\DashboardController::class
 Route::middleware(['auth', 'role.artist'])->prefix('artist')->name('artist.')->group(function () {
     Route::get('/dashboard', [ArtistDashboardController::class, 'index'])->name('dashboard');
 
+    // Profile management
+    Route::get('/profile', [\App\Http\Controllers\Artist\ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [\App\Http\Controllers\Artist\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/media', [\App\Http\Controllers\Artist\ProfileController::class, 'uploadMedia'])->name('profile.media.upload');
+    Route::delete('/profile/media/{media}', [\App\Http\Controllers\Artist\ProfileController::class, 'deleteMedia'])->name('profile.media.delete');
+
     // Album upload management
     Route::get('/albums', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'index'])->name('albums.index');
     Route::post('/albums', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'store'])->name('albums.store');
@@ -27,6 +33,14 @@ Route::middleware(['auth', 'role.artist'])->prefix('artist')->name('artist.')->g
 
 // Client routes
 Route::middleware(['auth', 'role.client'])->prefix('client')->name('client.')->group(function () {
+    // Cart routes
+    Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/items', [\App\Http\Controllers\CartController::class, 'addItem'])->name('cart.addItem');
+    Route::delete('/cart/items/{item}', [\App\Http\Controllers\CartController::class, 'removeItem'])->name('cart.removeItem');
+    Route::post('/cart/coupon', [\App\Http\Controllers\CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
+    Route::delete('/cart', [\App\Http\Controllers\CartController::class, 'clear'])->name('cart.clear');
+
+    // Reservations routes
     Route::get('/reservations', [\App\Http\Controllers\Client\ReservationController::class, 'index'])->name('reservations.index');
     Route::get('/reservations/{reservation}', [\App\Http\Controllers\Client\ReservationController::class, 'show'])->name('reservations.show');
     Route::post('/reservations/{reservation}/cancel', [\App\Http\Controllers\Client\ReservationController::class, 'cancel'])->name('reservations.cancel');
@@ -59,6 +73,8 @@ Route::get('/artstream/album/{album}', [ArtStreamController::class, 'album'])->n
 
 Route::get('/artstream/player', [ArtStreamController::class, 'player'])->name('artstream.player');
 
+Route::get('/artstream/search', [ArtStreamController::class, 'search'])->name('artstream.search');
+
 // Favorites routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/tracks/{track}/favorite', [\App\Http\Controllers\FavoriteController::class, 'toggle'])->name('tracks.favorite');
@@ -88,6 +104,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/booking/payment', [\App\Http\Controllers\BookingController::class, 'payment'])->name('booking.payment');
     Route::post('/booking/store', [\App\Http\Controllers\BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/confirmation/{id}', [\App\Http\Controllers\BookingController::class, 'confirmation'])->name('booking.confirmation');
+    Route::get('/booking/{id}/receipt', [\App\Http\Controllers\BookingController::class, 'downloadReceipt'])->name('booking.receipt');
 
     // Messaging routes
     Route::get('/messages', [\App\Http\Controllers\ConversationController::class, 'index'])->name('messages.index');

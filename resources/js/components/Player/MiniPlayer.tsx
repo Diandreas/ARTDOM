@@ -2,10 +2,11 @@
 import { useAudio } from '@/contexts/AudioContext';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Play, Pause, SkipBack, SkipForward, Heart, Maximize2 } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Heart, Maximize2, ListMusic } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Link } from '@inertiajs/react';
+import QueueSidebar from '@/components/Player/QueueSidebar';
 
 export default function MiniPlayer() {
     const { currentTrack, isPlaying, togglePlay, progress, duration, seek } = useAudio();
@@ -106,6 +107,13 @@ export default function MiniPlayer() {
 
                 {/* Extra Actions */}
                 <div className="w-1/3 md:w-1/4 flex justify-end items-center gap-2">
+                    <QueueSidebar
+                        trigger={
+                            <Button size="icon" variant="ghost" className="h-9 w-9 text-muted-foreground hover:text-foreground hidden sm:flex">
+                                <ListMusic className="h-5 w-5" />
+                            </Button>
+                        }
+                    />
                     <Button size="icon" variant="ghost" className="h-9 w-9 text-muted-foreground hover:text-foreground" asChild>
                         <Link href="/artstream/player">
                             <Maximize2 className="h-5 w-5" />

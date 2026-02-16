@@ -4,7 +4,7 @@ Version : 1.1
 Dernière mise à jour : 15 février 2026
 
 ========================================
-MISES À JOUR SESSION 15 FÉVRIER 2026
+MISES À JOUR SESSION 15-16 FÉVRIER 2026
 ========================================
 
 ARTSTREAM - FONCTIONNALITÉS COMPLÉTÉES :
@@ -17,26 +17,30 @@ ARTSTREAM - FONCTIONNALITÉS COMPLÉTÉES :
   - Streaming progressif (preload='metadata')
   - Protection contre rechargement intempestif
 
-✅ Système de Favoris (Backend + Frontend)
+✅ Système de Favoris COMPLET (Backend + Frontend)
   - Migration table 'favorites' (many-to-many User-Track)
   - FavoriteController (toggle, index)
   - Routes favorites (/favorites/toggle, /favorites)
   - Toast notifications (Sonner) pour feedback utilisateur
   - Bouton cœur fonctionnel dans full-player et mise à jour optimiste
+  - ✅ PAGE FAVORIS (16/02): Liste complète avec tri, lecture, unfavorite
 
-✅ Système de Playlists (Backend uniquement)
+✅ Système de Playlists COMPLET (Backend + Frontend)
   - Tables 'playlists' et 'playlist_track'
   - Model Playlist avec relations (User, Tracks)
   - PlaylistController complet (CRUD + add/remove tracks)
   - PlaylistPolicy pour autorisation
   - Routes playlists générées via Wayfinder
-  - ⚠️ UI frontend en attente (Phase 1 du plan)
+  - ✅ PAGE PLAYLISTS (16/02): Grille, création, gestion
+  - ✅ PAGE DÉTAIL PLAYLIST (16/02): Liste tracks, lecture, retrait
+  - ✅ COMPOSANT "AJOUTER À PLAYLIST" (16/02): Modal réutilisable, intégré partout
 
 ✅ Lecteurs Audio
   - Full-player avec chargement depuis URL parameters
   - Mini-player persistant avec bouton expand fonctionnel
   - Gestion état local vs audio progress pour seek fluide
   - Affichage favoris synchronisé
+  - Bouton "Ajouter à playlist" fonctionnel
 
 ✅ Infrastructure
   - 575 tracks seedés avec URLs audio valides (Archive.org/Pixabay CORS-enabled)
@@ -46,10 +50,40 @@ ARTSTREAM - FONCTIONNALITÉS COMPLÉTÉES :
 ⚠️ PROBLÈMES CONNUS :
   - Seek: redémarre parfois au lieu de continuer (investigation différée)
 
+✅ File d'Attente UI (Queue Sidebar) - COMPLÉTÉE (16/02)
+  - Composant QueueSidebar avec Sheet (slide-in latéral)
+  - Header avec compteur de tracks
+  - Section "En cours" avec track actuelle
+  - Section "À suivre" avec liste des prochains tracks
+  - Bouton "Sauvegarder comme playlist" fonctionnel
+  - Bouton "Effacer la file d'attente"
+  - Intégré dans full-player ET mini-player
+  - Click sur track dans queue → lecture immédiate
+
+✅ Recherche Musicale COMPLÈTE - COMPLÉTÉE (16/02)
+  - Endpoint backend GET /artstream/search avec paramètres q et type
+  - Recherche multi-critères: Tracks, Albums, Artistes
+  - Page search.tsx avec input de recherche
+  - Onglets résultats: Tout, Titres, Albums, Artistes
+  - Recherches récentes (localStorage, max 5)
+  - Bouton "Effacer recherches récentes"
+  - États vides pour aucun résultat
+  - Click sur track → lecture avec queue
+  - Click sur album → vue album
+  - Click sur artiste → profil artiste
+  - Compteur de résultats total
+  - Bouton recherche dans music-hub
+
 📋 PROCHAINES ÉTAPES (voir PLAN_ARTSTREAM.md) :
-  - Phase 1: Interface Playlists (grille, création, gestion)
-  - Phase 2: Page Favoris (liste, tri, lecture)
-  - Phase 3: Queue UI (sidebar, drag & drop)
+  - ✅ Phase 1: Interface Playlists - COMPLÉTÉE (16/02)
+  - ✅ Phase 2: Page Favoris - COMPLÉTÉE (16/02)
+  - ✅ Phase 3: Queue UI - COMPLÉTÉE (16/02)
+  - ✅ Phase 5: Recherche musicale - COMPLÉTÉE (16/02)
+  - Phase 4: Partage & Social
+  - Phase 6: Paroles (Lyrics)
+  - Phase 7: Hub amélioré
+  - Phase 8: Offline & Performance
+  - Phase 9: Analytics
 
 ________________________________________
 1. AUTHENTIFICATION & ONBOARDING

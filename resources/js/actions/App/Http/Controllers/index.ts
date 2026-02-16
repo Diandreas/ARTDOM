@@ -1,6 +1,7 @@
 import HomeController from './HomeController'
 import Client from './Client'
 import Artist from './Artist'
+import CartController from './CartController'
 import ArtistController from './ArtistController'
 import ServiceController from './ServiceController'
 import ArtStreamController from './ArtStreamController'
@@ -14,6 +15,7 @@ const Controllers = {
     HomeController: Object.assign(HomeController, HomeController),
 Client: Object.assign(Client, Client),
 Artist: Object.assign(Artist, Artist),
+CartController: Object.assign(CartController, CartController),
 ArtistController: Object.assign(ArtistController, ArtistController),
 ServiceController: Object.assign(ServiceController, ServiceController),
 ArtStreamController: Object.assign(ArtStreamController, ArtStreamController),

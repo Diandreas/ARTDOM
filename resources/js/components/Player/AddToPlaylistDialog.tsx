@@ -80,7 +80,7 @@ export default function AddToPlaylistDialog({
         }
     };
 
-    const handleAddToPlaylist = async (playlistId: number) => {
+    const handleAddToPlaylist = (playlistId: number) => {
         if (!auth?.user) {
             router.visit('/login');
             return;
@@ -88,32 +88,26 @@ export default function AddToPlaylistDialog({
 
         setAddingToPlaylist(playlistId);
 
-        try {
-            const response = await fetch(`/playlists/${playlistId}/tracks/${trackId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+        // Use Inertia router for proper CSRF handling
+        router.post(
+            `/playlists/${playlistId}/tracks/${trackId}`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    const playlist = playlists.find(p => p.id === playlistId);
+                    toast.success(`Ajouté à "${playlist?.title}"`);
+                    if (onSuccess) onSuccess();
+                    setIsOpen(false);
+                    setAddingToPlaylist(null);
                 },
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                const playlist = playlists.find(p => p.id === playlistId);
-                toast.success(`Ajouté à "${playlist?.title}"`);
-                if (onSuccess) onSuccess();
-                setIsOpen(false);
-            } else {
-                toast.error(data.message || 'Erreur lors de l\'ajout');
+                onError: (errors) => {
+                    const errorMessage = Object.values(errors)[0] as string || 'Erreur lors de l\'ajout';
+                    toast.error(errorMessage);
+                    setAddingToPlaylist(null);
+                },
             }
-        } catch (error) {
-            console.error('Failed to add to playlist:', error);
-            toast.error('Erreur lors de l\'ajout');
-        } finally {
-            setAddingToPlaylist(null);
-        }
+        );
     };
 
     const handleCreatePlaylist = (e: React.FormEvent) => {

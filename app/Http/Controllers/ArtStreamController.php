@@ -235,4 +235,126 @@ class ArtStreamController extends Controller
             'albumTracks' => $albumTracks,
         ]);
     }
+
+    public function search(Request $request): Response
+    {
+        $query = $request->input('q', '');
+        $type = $request->input('type', 'all'); // all, tracks, albums, artists
+
+        $results = [
+            'tracks' => [],
+            'albums' => [],
+            'artists' => [],
+            'query' => $query,
+        ];
+
+        if (strlen($query) < 2) {
+            return Inertia::render('ArtStream/search', $results);
+        }
+
+        // Get user's favorited track IDs
+        $favoritedTrackIds = auth()->check()
+            ? auth()->user()->favorites()->pluck('track_id')->toArray()
+            : [];
+
+        // Search Tracks
+        if (in_array($type, ['all', 'tracks'])) {
+            $results['tracks'] = Track::with(['album.artist.artistProfile'])
+                ->where('title', 'like', "%{$query}%")
+                ->orWhereHas('album', function ($q) use ($query) {
+                    $q->where('title', 'like', "%{$query}%");
+                })
+                ->orWhereHas('album.artist', function ($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%");
+                })
+                ->orWhereHas('album.artist.artistProfile', function ($q) use ($query) {
+                    $q->where('stage_name', 'like', "%{$query}%");
+                })
+                ->limit(20)
+                ->get()
+                ->map(function ($track) use ($favoritedTrackIds) {
+                    return [
+                        'id' => $track->id,
+                        'title' => $track->title,
+                        'duration_seconds' => $track->duration_seconds,
+                        'plays' => $track->plays,
+                        'file_url' => $track->file_url,
+                        'is_favorited' => in_array($track->id, $favoritedTrackIds),
+                        'album' => [
+                            'id' => $track->album->id,
+                            'title' => $track->album->title,
+                            'cover_url' => $track->album->cover_url,
+                            'artist' => [
+                                'id' => $track->album->artist->id,
+                                'stage_name' => $track->album->artist->artistProfile->stage_name ?? $track->album->artist->name,
+                            ],
+                        ],
+                    ];
+                });
+        }
+
+        // Search Albums
+        if (in_array($type, ['all', 'albums'])) {
+            $results['albums'] = Album::with(['artist.artistProfile'])
+                ->where('is_streamable', true)
+                ->where(function ($q) use ($query) {
+                    $q->where('title', 'like', "%{$query}%")
+                        ->orWhere('genre', 'like', "%{$query}%")
+                        ->orWhereHas('artist', function ($artistQ) use ($query) {
+                            $artistQ->where('name', 'like', "%{$query}%");
+                        })
+                        ->orWhereHas('artist.artistProfile', function ($artistQ) use ($query) {
+                            $artistQ->where('stage_name', 'like', "%{$query}%");
+                        });
+                })
+                ->withCount('tracks')
+                ->limit(12)
+                ->get()
+                ->map(function ($album) {
+                    return [
+                        'id' => $album->id,
+                        'title' => $album->title,
+                        'cover_url' => $album->cover_url,
+                        'genre' => $album->genre,
+                        'year' => $album->year,
+                        'total_plays' => $album->total_plays,
+                        'tracks_count' => $album->tracks_count,
+                        'artist' => [
+                            'id' => $album->artist->id,
+                            'stage_name' => $album->artist->artistProfile->stage_name ?? $album->artist->name,
+                        ],
+                    ];
+                });
+        }
+
+        // Search Artists
+        if (in_array($type, ['all', 'artists'])) {
+            $results['artists'] = \App\Models\User::whereHas('roles', function ($q) {
+                $q->where('name', 'artist');
+            })
+                ->with(['artistProfile', 'artistAlbums'])
+                ->where(function ($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%")
+                        ->orWhereHas('artistProfile', function ($profileQ) use ($query) {
+                            $profileQ->where('stage_name', 'like', "%{$query}%")
+                                ->orWhere('bio', 'like', "%{$query}%");
+                        });
+                })
+                ->withCount('artistAlbums')
+                ->limit(12)
+                ->get()
+                ->map(function ($artist) {
+                    return [
+                        'id' => $artist->id,
+                        'name' => $artist->name,
+                        'stage_name' => $artist->artistProfile->stage_name ?? $artist->name,
+                        'profile_photo' => $artist->profile_photo,
+                        'bio' => $artist->artistProfile->bio ?? null,
+                        'albums_count' => $artist->artist_albums_count,
+                    ];
+                });
+        }
+
+        return Inertia::render('ArtStream/search', $results);
+    }
 }

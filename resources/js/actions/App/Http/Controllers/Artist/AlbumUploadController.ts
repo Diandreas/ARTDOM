@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::index
  * @see app/Http/Controllers/Artist/AlbumUploadController.php:19
@@ -42,41 +42,6 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-    /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::index
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:19
- * @route '/artist/albums'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
-
-            /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::index
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:19
- * @route '/artist/albums'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::index
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:19
- * @route '/artist/albums'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::store
  * @see app/Http/Controllers/Artist/AlbumUploadController.php:52
@@ -111,27 +76,6 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
-    /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::store
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:52
- * @route '/artist/albums'
- */
-    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: store.url(options),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::store
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:52
- * @route '/artist/albums'
- */
-        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: store.url(options),
-            method: 'post',
-        })
-    
-    store.form = storeForm
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::destroy
  * @see app/Http/Controllers/Artist/AlbumUploadController.php:80
@@ -190,37 +134,6 @@ destroy.delete = (args: { album: string | { id: string } } | [album: string | { 
     method: 'delete',
 })
 
-    /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::destroy
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:80
- * @route '/artist/albums/{album}'
- */
-    const destroyForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: destroy.url(args, {
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'DELETE',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::destroy
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:80
- * @route '/artist/albums/{album}'
- */
-        destroyForm.delete = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: destroy.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'DELETE',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::togglePublication
  * @see app/Http/Controllers/Artist/AlbumUploadController.php:107
@@ -278,38 +191,6 @@ togglePublication.patch = (args: { album: string | { id: string } } | [album: st
     url: togglePublication.url(args, options),
     method: 'patch',
 })
-
-    /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::togglePublication
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:107
- * @route '/artist/albums/{album}/toggle-publication'
- */
-    const togglePublicationForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: togglePublication.url(args, {
-                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                        _method: 'PATCH',
-                        ...(options?.query ?? options?.mergeQuery ?? {}),
-                    }
-                }),
-        method: 'post',
-    })
-
-            /**
-* @see \App\Http\Controllers\Artist\AlbumUploadController::togglePublication
- * @see app/Http/Controllers/Artist/AlbumUploadController.php:107
- * @route '/artist/albums/{album}/toggle-publication'
- */
-        togglePublicationForm.patch = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: togglePublication.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'PATCH',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'post',
-        })
-    
-    togglePublication.form = togglePublicationForm
 const AlbumUploadController = { index, store, destroy, togglePublication }
 
 export default AlbumUploadController

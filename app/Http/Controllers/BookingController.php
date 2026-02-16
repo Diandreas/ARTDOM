@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Service;
-use App\Models\Reservation;
 use App\Models\Payment;
-use App\Enums\ReservationStatus;
-use App\Enums\PaymentStatus;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -127,7 +124,7 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $service = Service::findOrFail($request->service_id);
-        
+
         // Calculate commission (example: 10%)
         $commissionRate = 10.00;
         $commissionAmount = $request->total_amount * ($commissionRate / 100);
@@ -137,8 +134,8 @@ class BookingController extends Controller
             'client_id' => auth()->id(),
             'artist_id' => $service->artist_id,
             'service_id' => $request->service_id,
-            'reservation_number' => 'RES-' . strtoupper(uniqid()),
-            'scheduled_at' => $request->date . ' ' . $request->time,
+            'reservation_number' => 'RES-'.strtoupper(uniqid()),
+            'scheduled_at' => $request->date.' '.$request->time,
             'duration_minutes' => $service->duration_minutes,
             'status' => 'pending',
             'total_amount' => $request->total_amount,
@@ -159,7 +156,7 @@ class BookingController extends Controller
             'amount' => $request->total_amount,
             'method' => $request->payment_method,
             'status' => 'pending',
-            'provider_ref' => 'TRX-' . strtoupper(uniqid()),
+            'provider_ref' => 'TRX-'.strtoupper(uniqid()),
         ]);
 
         return redirect()->route('client.reservations.show', $reservation->id)
@@ -172,6 +169,16 @@ class BookingController extends Controller
             ->where('client_id', auth()->id())
             ->findOrFail($id);
 
+        // Generate QR Code
+        $qrService = app(\App\Services\QRCodeService::class);
+        $qrCode = $qrService->generateBase64(
+            json_encode([
+                'type' => 'reservation',
+                'id' => $reservation->id,
+                'number' => $reservation->reservation_number,
+            ])
+        );
+
         return Inertia::render('Booking/Confirmation', [
             'reservation' => [
                 'id' => $reservation->id,
@@ -182,6 +189,7 @@ class BookingController extends Controller
                 'emotion_type' => $reservation->emotion_type,
                 'recipient_name' => $reservation->recipient_name,
                 'special_message' => $reservation->special_message,
+                'qr_code' => $qrCode,
             ],
             'artist' => [
                 'id' => $reservation->artist->id,
@@ -194,5 +202,19 @@ class BookingController extends Controller
                 'title' => $reservation->service->title,
             ],
         ]);
+    }
+
+    /**
+     * Télécharge le reçu PDF d'une réservation
+     */
+    public function downloadReceipt($id)
+    {
+        $reservation = \App\Models\Reservation::with(['service', 'artist.artistProfile', 'client', 'payment'])
+            ->where('client_id', auth()->id())
+            ->findOrFail($id);
+
+        $pdfService = app(\App\Services\PDFService::class);
+
+        return $pdfService->downloadReceipt($reservation);
     }
 }
