@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Artist;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Artist\UpdateProfileRequest;
 use App\Models\ArtistProfile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,10 +16,10 @@ class ProfileController extends Controller
 {
     /**
      * Affiche la page de gestion du profil artiste
-     * 
+     *
      * Route: GET /artist/profile
      * Middleware: auth, role:artist
-     * 
+     *
      * Affiche le formulaire d'édition du profil avec :
      * - Informations personnelles
      * - Photo de profil et couverture
@@ -32,40 +33,83 @@ class ProfileController extends Controller
         $artist = Auth::user();
         $artist->load('artistProfile');
 
-        return Inertia::render('Artist/Profile', [
-            'artist' => $artist,
-            'profile' => $artist->artistProfile,
+        $availableCategories = [
+            'Musicien',
+            'Chanteur',
+            'Danseur',
+            'Comédien',
+            'Poète',
+            'DJ',
+            'Artiste visuel',
+            'Photographe',
+            'Magicien',
+            'Autre',
+        ];
+
+        return Inertia::render('Artist/Profile/Edit', [
+            'user' => [
+                'id' => $artist->id,
+                'name' => $artist->name,
+                'email' => $artist->email,
+                'phone' => $artist->phone,
+                'city' => $artist->city,
+                'profile_photo' => $artist->profile_photo,
+            ],
+            'profile' => [
+                'id' => $artist->artistProfile->id,
+                'stage_name' => $artist->artistProfile->stage_name,
+                'bio' => $artist->artistProfile->bio,
+                'categories' => $artist->artistProfile->categories ?? [],
+                'base_rate' => (float) $artist->artistProfile->base_rate,
+                'social_links' => $artist->artistProfile->social_links ?? [],
+                'portfolio_urls' => $artist->artistProfile->portfolio_urls ?? [],
+                'is_verified' => $artist->artistProfile->is_verified,
+                'rating' => (float) $artist->artistProfile->rating,
+                'total_reviews' => $artist->artistProfile->total_reviews,
+            ],
+            'availableCategories' => $availableCategories,
         ]);
     }
 
     /**
      * Met à jour le profil artiste
-     * 
+     *
      * Route: PUT /artist/profile
      * Middleware: auth, role:artist
-     * 
+     *
      * Met à jour les informations du profil :
+     * - Informations utilisateur (name, phone, city)
      * - Stage name, bio, catégories
      * - Réseaux sociaux
      * - Tarif de base
      */
-    public function update(Request $request): RedirectResponse
+    public function update(UpdateProfileRequest $request): RedirectResponse
     {
         $artist = Auth::user();
         $profile = $artist->artistProfile;
 
-        $validated = $request->validate([
-            'stage_name' => ['required', 'string', 'max:255'],
-            'bio' => ['nullable', 'string', 'max:1000'],
-            'categories' => ['nullable', 'array'],
-            'base_rate' => ['nullable', 'numeric', 'min:0'],
-            'social_links' => ['nullable', 'array'],
-            'portfolio_urls' => ['nullable', 'array'],
+        $validated = $request->validated();
+
+        // Update user data
+        $artist->update([
+            'name' => $validated['name'],
+            'phone' => $validated['phone'] ?? null,
+            'city' => $validated['city'] ?? null,
         ]);
 
-        $profile->update($validated);
+        // Update artist profile data
+        $profile->update([
+            'stage_name' => $validated['stage_name'],
+            'bio' => $validated['bio'] ?? null,
+            'categories' => $validated['categories'] ?? [],
+            'base_rate' => $validated['base_rate'] ?? 0,
+            'social_links' => $validated['social_links'] ?? [],
+        ]);
 
-        return back()->with('message', 'Profil mis à jour avec succès.');
+        return back()->with('toast', [
+            'type' => 'success',
+            'message' => 'Profil mis à jour avec succès.',
+        ]);
     }
 
     /**

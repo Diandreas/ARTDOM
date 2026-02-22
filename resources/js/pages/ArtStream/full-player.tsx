@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, Heart, ListMusic, Share2, Volume2, VolumeX } from 'lucide-react';
 import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
+import QueueSidebar from '@/components/Player/QueueSidebar';
 import { useAudio, Track } from '@/contexts/AudioContext';
 import { cn } from '@/lib/utils';
 import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
@@ -294,6 +295,7 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                             }
                         />
                     )}
+                    <QueueSidebar />
                 </div>
             </div>
         </div>

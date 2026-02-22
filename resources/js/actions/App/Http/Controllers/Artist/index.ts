@@ -1,4 +1,5 @@
 import DashboardController from './DashboardController'
+import ProfileController from './ProfileController'
 import AlbumUploadController from './AlbumUploadController'
 
 const Artist = {

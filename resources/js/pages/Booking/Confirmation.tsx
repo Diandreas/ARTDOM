@@ -40,6 +40,7 @@ interface Reservation {
     emotion_type: string;
     recipient_name?: string;
     special_message?: string;
+    qr_code?: string;
 }
 
 interface ConfirmationProps {
@@ -60,7 +61,7 @@ export default function BookingConfirmation({ reservation, artist, service }: Co
     const scheduledDate = parseISO(reservation.scheduled_at);
 
     const handleDownloadReceipt = () => {
-        window.print();
+        window.location.href = `/booking/${reservation.id}/receipt`;
     };
 
     const handleAddToCalendar = () => {
@@ -107,12 +108,20 @@ export default function BookingConfirmation({ reservation, artist, service }: Co
                     <CardContent className="pt-6">
                         <div className="flex flex-col md:flex-row gap-6 items-center">
                             <div className="flex-shrink-0 bg-white p-4 rounded-lg">
-                                <QRCodeSVG
-                                    value={`ARTDOM-${reservation.reservation_number}`}
-                                    size={150}
-                                    level="H"
-                                    includeMargin
-                                />
+                                {reservation.qr_code ? (
+                                    <img
+                                        src={reservation.qr_code}
+                                        alt="QR Code"
+                                        className="w-[150px] h-[150px]"
+                                    />
+                                ) : (
+                                    <QRCodeSVG
+                                        value={`ARTDOM-${reservation.reservation_number}`}
+                                        size={150}
+                                        level="H"
+                                        includeMargin
+                                    />
+                                )}
                             </div>
                             <div className="flex-1 text-center md:text-left">
                                 <div className="flex items-center gap-2 text-lg font-semibold mb-2 justify-center md:justify-start">
