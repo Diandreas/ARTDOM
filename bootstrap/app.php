@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserIsArtist;
 use App\Http\Middleware\EnsureUserIsClient;
 use App\Http\Middleware\HandleAppearance;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role.client' => EnsureUserIsClient::class,
             'role.artist' => EnsureUserIsArtist::class,
+            'role.admin' => EnsureUserIsAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

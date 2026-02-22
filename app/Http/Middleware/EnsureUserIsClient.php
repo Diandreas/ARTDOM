@@ -15,7 +15,17 @@ class EnsureUserIsClient
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user() || ! $request->user()->isClient()) {
+        $user = $request->user();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        if (! $user->isClient()) {
+            if ($user->isAdmin()) {
+                return redirect()->route('admin.dashboard')->with('error', 'Accès réservé aux clients.');
+            }
+
             return redirect()->route('artist.dashboard')->with('error', 'Accès réservé aux clients.');
         }
 

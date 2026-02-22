@@ -21,7 +21,7 @@ class RedirectAuthenticatedUser
         return match (true) {
             $user->isArtist() => route('artist.dashboard'),
             $user->isClient() => route('dashboard'),
-            $user->isAdmin() => route('dashboard'),
+            $user->isAdmin() => route('admin.dashboard'),
             default => route('home'),
         };
     }

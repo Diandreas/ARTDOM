@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\ArtistValidationController as AdminArtistValidationController;
+use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\TicketController as AdminTicketController;
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Artist\DashboardController as ArtistDashboardController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\ArtStreamController;
@@ -9,6 +14,42 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AdminLoginController::class, 'create'])->name('login');
+        Route::post('/login', [AdminLoginController::class, 'store'])->name('login.store');
+    });
+
+    Route::middleware(['auth', 'role.admin'])->group(function () {
+        Route::post('/logout', [AdminLoginController::class, 'destroy'])->name('logout');
+        Route::redirect('/', '/admin/dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/artists/pending', [AdminArtistValidationController::class, 'index'])->name('artists.pending');
+        Route::post('/artists/{artist}/approve', [AdminArtistValidationController::class, 'approve'])->name('artists.approve');
+        Route::post('/artists/{artist}/reject', [AdminArtistValidationController::class, 'reject'])->name('artists.reject');
+
+        Route::get('/tickets', [AdminTicketController::class, 'index'])->name('tickets.index');
+        Route::get('/tickets/{ticket}', [AdminTicketController::class, 'show'])->name('tickets.show');
+        Route::post('/tickets/{ticket}/respond', [AdminTicketController::class, 'respond'])->name('tickets.respond');
+        Route::patch('/tickets/{ticket}/close', [AdminTicketController::class, 'close'])->name('tickets.close');
+
+        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}', [UserManagementController::class, 'show'])->name('users.show');
+        Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+        Route::post('/users/{user}/suspend', [UserManagementController::class, 'suspend'])->name('users.suspend');
+        Route::post('/users/{user}/activate', [UserManagementController::class, 'activate'])->name('users.activate');
+        Route::post('/users/{user}/ban', [UserManagementController::class, 'ban'])->name('users.ban');
+        Route::post('/users/{user}/impersonate', [UserManagementController::class, 'impersonate'])->name('users.impersonate');
+        Route::post('/users/stop-impersonation', [UserManagementController::class, 'stopImpersonation'])->name('users.stop-impersonation');
+        Route::post('/users/bulk', [UserManagementController::class, 'bulk'])->name('users.bulk');
+    });
+});
 
 Route::get('dashboard', [\App\Http\Controllers\Client\DashboardController::class, 'index'])
     ->middleware(['auth', 'verified', 'role.client'])

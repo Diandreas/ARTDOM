@@ -6,6 +6,7 @@ use App\Models\Album;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -13,7 +14,11 @@ class ArtistController extends Controller
 {
     public function index(Request $request): Response
     {
-        $query = User::whereHas('artistProfile')
+        $query = User::where('is_active', true)
+            ->whereHas('artistProfile', function ($query) {
+                $query->where('is_verified', true)
+                    ->where('verification_status', 'approved');
+            })
             ->with(['artistProfile']);
 
         // Filtre par catégorie
@@ -122,6 +127,15 @@ class ArtistController extends Controller
     {
         $artist = User::with(['artistProfile'])
             ->findOrFail($id);
+
+        $isPubliclyVisible = $artist->is_active
+            && $artist->artistProfile?->is_verified
+            && $artist->artistProfile?->verification_status === 'approved';
+        $isAdmin = Auth::user()?->isAdmin() ?? false;
+
+        if (! $isPubliclyVisible && ! $isAdmin) {
+            abort(404);
+        }
 
         // Services de l'artiste
         $services = Service::where('artist_id', $artist->id)
