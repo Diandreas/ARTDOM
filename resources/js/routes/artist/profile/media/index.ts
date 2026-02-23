@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::upload
  * @see app/Http/Controllers/Artist/ProfileController.php:123
@@ -33,6 +33,27 @@ upload.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::upload
+ * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @route '/artist/profile/media'
+ */
+    const uploadForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: upload.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::upload
+ * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @route '/artist/profile/media'
+ */
+        uploadForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: upload.url(options),
+            method: 'post',
+        })
+    
+    upload.form = uploadForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::deleteMethod
  * @see app/Http/Controllers/Artist/ProfileController.php:153
@@ -85,6 +106,38 @@ deleteMethod.delete = (args: { media: string | number } | [media: string | numbe
     url: deleteMethod.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::deleteMethod
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @route '/artist/profile/media/{media}'
+ */
+    const deleteMethodForm = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: deleteMethod.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::deleteMethod
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @route '/artist/profile/media/{media}'
+ */
+        deleteMethodForm.delete = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: deleteMethod.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    deleteMethod.form = deleteMethodForm
 const media = {
     upload: Object.assign(upload, upload),
 delete: Object.assign(deleteMethod, deleteMethod),

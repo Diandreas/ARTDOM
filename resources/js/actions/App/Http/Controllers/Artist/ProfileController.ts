@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::show
  * @see app/Http/Controllers/Artist/ProfileController.php:31
@@ -42,6 +42,41 @@ show.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+    const showForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+        showForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+        showForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::update
  * @see app/Http/Controllers/Artist/ProfileController.php:86
@@ -76,6 +111,37 @@ update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     method: 'put',
 })
 
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::update
+ * @see app/Http/Controllers/Artist/ProfileController.php:86
+ * @route '/artist/profile'
+ */
+    const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url({
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::update
+ * @see app/Http/Controllers/Artist/ProfileController.php:86
+ * @route '/artist/profile'
+ */
+        updateForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
  * @see app/Http/Controllers/Artist/ProfileController.php:123
@@ -110,6 +176,27 @@ uploadMedia.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
+ * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @route '/artist/profile/media'
+ */
+    const uploadMediaForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: uploadMedia.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
+ * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @route '/artist/profile/media'
+ */
+        uploadMediaForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: uploadMedia.url(options),
+            method: 'post',
+        })
+    
+    uploadMedia.form = uploadMediaForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::deleteMedia
  * @see app/Http/Controllers/Artist/ProfileController.php:153
@@ -162,6 +249,38 @@ deleteMedia.delete = (args: { media: string | number } | [media: string | number
     url: deleteMedia.url(args, options),
     method: 'delete',
 })
+
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::deleteMedia
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @route '/artist/profile/media/{media}'
+ */
+    const deleteMediaForm = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: deleteMedia.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::deleteMedia
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @route '/artist/profile/media/{media}'
+ */
+        deleteMediaForm.delete = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: deleteMedia.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    deleteMedia.form = deleteMediaForm
 const ProfileController = { show, update, uploadMedia, deleteMedia }
 
 export default ProfileController
