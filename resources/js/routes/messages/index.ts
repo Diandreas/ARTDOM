@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\ConversationController::index
- * @see app/Http/Controllers/ConversationController.php:15
+ * @see app/Http/Controllers/ConversationController.php:17
  * @route '/messages'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\ConversationController::index
- * @see app/Http/Controllers/ConversationController.php:15
+ * @see app/Http/Controllers/ConversationController.php:17
  * @route '/messages'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\ConversationController::index
- * @see app/Http/Controllers/ConversationController.php:15
+ * @see app/Http/Controllers/ConversationController.php:17
  * @route '/messages'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\ConversationController::index
- * @see app/Http/Controllers/ConversationController.php:15
+ * @see app/Http/Controllers/ConversationController.php:17
  * @route '/messages'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\ConversationController::index
- * @see app/Http/Controllers/ConversationController.php:15
+ * @see app/Http/Controllers/ConversationController.php:17
  * @route '/messages'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\ConversationController::index
- * @see app/Http/Controllers/ConversationController.php:15
+ * @see app/Http/Controllers/ConversationController.php:17
  * @route '/messages'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\ConversationController::index
- * @see app/Http/Controllers/ConversationController.php:15
+ * @see app/Http/Controllers/ConversationController.php:17
  * @route '/messages'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\ConversationController::show
- * @see app/Http/Controllers/ConversationController.php:30
+ * @see app/Http/Controllers/ConversationController.php:32
  * @route '/messages/{conversation}'
  */
 export const show = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\ConversationController::show
- * @see app/Http/Controllers/ConversationController.php:30
+ * @see app/Http/Controllers/ConversationController.php:32
  * @route '/messages/{conversation}'
  */
 show.url = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -127,7 +127,7 @@ show.url = (args: { conversation: string | { id: string } } | [conversation: str
 
 /**
 * @see \App\Http\Controllers\ConversationController::show
- * @see app/Http/Controllers/ConversationController.php:30
+ * @see app/Http/Controllers/ConversationController.php:32
  * @route '/messages/{conversation}'
  */
 show.get = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -136,7 +136,7 @@ show.get = (args: { conversation: string | { id: string } } | [conversation: str
 })
 /**
 * @see \App\Http\Controllers\ConversationController::show
- * @see app/Http/Controllers/ConversationController.php:30
+ * @see app/Http/Controllers/ConversationController.php:32
  * @route '/messages/{conversation}'
  */
 show.head = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -146,7 +146,7 @@ show.head = (args: { conversation: string | { id: string } } | [conversation: st
 
     /**
 * @see \App\Http\Controllers\ConversationController::show
- * @see app/Http/Controllers/ConversationController.php:30
+ * @see app/Http/Controllers/ConversationController.php:32
  * @route '/messages/{conversation}'
  */
     const showForm = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -156,7 +156,7 @@ show.head = (args: { conversation: string | { id: string } } | [conversation: st
 
             /**
 * @see \App\Http\Controllers\ConversationController::show
- * @see app/Http/Controllers/ConversationController.php:30
+ * @see app/Http/Controllers/ConversationController.php:32
  * @route '/messages/{conversation}'
  */
         showForm.get = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -165,7 +165,7 @@ show.head = (args: { conversation: string | { id: string } } | [conversation: st
         })
             /**
 * @see \App\Http\Controllers\ConversationController::show
- * @see app/Http/Controllers/ConversationController.php:30
+ * @see app/Http/Controllers/ConversationController.php:32
  * @route '/messages/{conversation}'
  */
         showForm.head = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -181,7 +181,7 @@ show.head = (args: { conversation: string | { id: string } } | [conversation: st
     show.form = showForm
 /**
 * @see \App\Http\Controllers\ConversationController::store
- * @see app/Http/Controllers/ConversationController.php:50
+ * @see app/Http/Controllers/ConversationController.php:52
  * @route '/messages/{conversation}'
  */
 export const store = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -196,7 +196,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\ConversationController::store
- * @see app/Http/Controllers/ConversationController.php:50
+ * @see app/Http/Controllers/ConversationController.php:52
  * @route '/messages/{conversation}'
  */
 store.url = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -229,7 +229,7 @@ store.url = (args: { conversation: string | { id: string } } | [conversation: st
 
 /**
 * @see \App\Http\Controllers\ConversationController::store
- * @see app/Http/Controllers/ConversationController.php:50
+ * @see app/Http/Controllers/ConversationController.php:52
  * @route '/messages/{conversation}'
  */
 store.post = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -239,7 +239,7 @@ store.post = (args: { conversation: string | { id: string } } | [conversation: s
 
     /**
 * @see \App\Http\Controllers\ConversationController::store
- * @see app/Http/Controllers/ConversationController.php:50
+ * @see app/Http/Controllers/ConversationController.php:52
  * @route '/messages/{conversation}'
  */
     const storeForm = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -249,7 +249,7 @@ store.post = (args: { conversation: string | { id: string } } | [conversation: s
 
             /**
 * @see \App\Http\Controllers\ConversationController::store
- * @see app/Http/Controllers/ConversationController.php:50
+ * @see app/Http/Controllers/ConversationController.php:52
  * @route '/messages/{conversation}'
  */
         storeForm.post = (args: { conversation: string | { id: string } } | [conversation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

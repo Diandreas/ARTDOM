@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscriptions', function (Blueprint $table) {
+        Schema::create('client_subscriptions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('client_id');
             $table->enum('plan', ['free', 'monthly', 'annual']);
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subscriptions');
+        Schema::dropIfExists('client_subscriptions');
     }
 };

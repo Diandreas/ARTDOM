@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronLeft, ChevronRight, CreditCard, Wallet, Landmark, Info } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CreditCard, Wallet, Landmark, Info, Building } from 'lucide-react';
 import { fr } from 'date-fns/locale';
 import { format, parseISO } from 'date-fns';
 
@@ -14,6 +15,8 @@ interface Service {
     id: string;
     title: string;
     price: number;
+    options_total?: number;
+    selected_options?: any[];
 }
 
 interface Artist {
@@ -30,6 +33,10 @@ interface BookingData {
     recipient_name: string;
     special_message: string;
     customer_location: string;
+    location_type: string;
+    relation_type?: string;
+    file_url?: string;
+    selected_options?: string;
 }
 
 interface PaymentProps {
@@ -39,13 +46,16 @@ interface PaymentProps {
 }
 
 export default function BookingPayment({ service, artist, bookingData }: PaymentProps) {
-    const platformFee = service.price * 0.1;
-    const totalAmount = service.price + platformFee;
+    const optionsTotal = service.options_total || 0;
+    const subtotal = service.price + optionsTotal;
+    const platformFee = subtotal * 0.1;
+    const totalAmount = subtotal + platformFee;
 
     const { data, setData, post, processing } = useForm({
         ...bookingData,
         total_amount: totalAmount,
         payment_method: 'orange_money',
+        save_payment_method: false,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -110,8 +120,8 @@ export default function BookingPayment({ service, artist, bookingData }: Payment
                                     {/* Mobile Money */}
                                     <Label
                                         className={`flex flex-col gap-3 p-6 rounded-xl border-2 cursor-pointer transition-all ${data.payment_method === 'orange_money'
-                                                ? 'border-primary bg-primary/5'
-                                                : 'border-muted hover:border-primary/50'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-muted hover:border-primary/50'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">
@@ -128,8 +138,8 @@ export default function BookingPayment({ service, artist, bookingData }: Payment
 
                                     <Label
                                         className={`flex flex-col gap-3 p-6 rounded-xl border-2 cursor-pointer transition-all ${data.payment_method === 'moov_money'
-                                                ? 'border-primary bg-primary/5'
-                                                : 'border-muted hover:border-primary/50'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-muted hover:border-primary/50'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">
@@ -146,8 +156,8 @@ export default function BookingPayment({ service, artist, bookingData }: Payment
 
                                     <Label
                                         className={`flex flex-col gap-3 p-6 rounded-xl border-2 cursor-pointer transition-all ${data.payment_method === 'wave'
-                                                ? 'border-primary bg-primary/5'
-                                                : 'border-muted hover:border-primary/50'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-muted hover:border-primary/50'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">
@@ -165,8 +175,8 @@ export default function BookingPayment({ service, artist, bookingData }: Payment
                                     {/* Bank Card */}
                                     <Label
                                         className={`flex flex-col gap-3 p-6 rounded-xl border-2 cursor-pointer transition-all ${data.payment_method === 'card'
-                                                ? 'border-primary bg-primary/5'
-                                                : 'border-muted hover:border-primary/50'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-muted hover:border-primary/50'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">
@@ -180,7 +190,60 @@ export default function BookingPayment({ service, artist, bookingData }: Payment
                                             <div className="text-xs text-muted-foreground mt-1">Visa, Mastercard</div>
                                         </div>
                                     </Label>
+
+                                    {/* PayPal */}
+                                    <Label
+                                        className={`flex flex-col gap-3 p-6 rounded-xl border-2 cursor-pointer transition-all ${data.payment_method === 'paypal'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-muted hover:border-primary/50'
+                                            }`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <svg className="w-5 h-5 text-blue-700" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 2.227 2.534 2.15 6.452.33 9.42-1.72 2.812-4.524 4.195-8.082 4.195H9.42c-.524 0-.972.382-1.054.901l-1.29 8.27z" />
+                                                </svg>
+                                            </div>
+                                            <RadioGroupItem value="paypal" />
+                                        </div>
+                                        <div>
+                                            <div className="font-bold">PayPal</div>
+                                            <div className="text-xs text-muted-foreground mt-1">Paiement sécurisé</div>
+                                        </div>
+                                    </Label>
+
+                                    {/* Bank Transfer */}
+                                    <Label
+                                        className={`flex flex-col gap-3 p-6 rounded-xl border-2 cursor-pointer transition-all ${data.payment_method === 'bank_transfer'
+                                            ? 'border-primary bg-primary/5'
+                                            : 'border-muted hover:border-primary/50'
+                                            }`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                                                <Building className="w-5 h-5 text-gray-700" />
+                                            </div>
+                                            <RadioGroupItem value="bank_transfer" />
+                                        </div>
+                                        <div>
+                                            <div className="font-bold">Virement Bancaire</div>
+                                            <div className="text-xs text-muted-foreground mt-1">Traitement en 48h</div>
+                                        </div>
+                                    </Label>
                                 </RadioGroup>
+
+                                {data.payment_method === 'card' && (
+                                    <div className="flex items-center space-x-2 p-4 bg-muted/30 rounded-lg border">
+                                        <Checkbox
+                                            id="save_card"
+                                            checked={data.save_payment_method}
+                                            onCheckedChange={(checked) => setData('save_payment_method', checked as boolean)}
+                                        />
+                                        <Label htmlFor="save_card" className="text-sm font-medium leading-none cursor-pointer">
+                                            Sauvegarder cette carte pour mes prochains paiements
+                                        </Label>
+                                    </div>
+                                )}
 
                                 <div className="p-4 bg-muted/50 rounded-lg flex gap-3 items-start">
                                     <Info className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
@@ -242,6 +305,12 @@ export default function BookingPayment({ service, artist, bookingData }: Payment
                                         <span>Prix du service</span>
                                         <span>{service.price.toLocaleString()} FCFA</span>
                                     </div>
+                                    {optionsTotal > 0 && (
+                                        <div className="flex justify-between text-sm">
+                                            <span>Options ({service.selected_options?.length || 0})</span>
+                                            <span>+{optionsTotal.toLocaleString()} FCFA</span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between text-sm text-muted-foreground">
                                         <span>Frais plateforme</span>
                                         <span>{platformFee.toLocaleString()} FCFA</span>

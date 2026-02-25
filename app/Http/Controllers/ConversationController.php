@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\Reservation;
+use App\Events\MessageSent;
+use App\Notifications\NewMessageNotification;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -75,8 +77,14 @@ class ConversationController extends Controller
                 $conversation->participants()->updateExistingPivot($participant->id, [
                     'unread_count' => \DB::raw('unread_count + 1'),
                 ]);
+
+                // Send a notification
+                $participant->notify(new NewMessageNotification($message));
             }
         }
+
+        // Broadcast the message to other participants
+        broadcast(new MessageSent($message))->toOthers();
 
         return back();
     }

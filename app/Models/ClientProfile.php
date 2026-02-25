@@ -87,7 +87,7 @@ class ClientProfile extends Model
      */
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class, 'client_id', 'user_id');
+        return $this->hasMany(ClientSubscription::class, 'client_id', 'user_id');
     }
 
     /**

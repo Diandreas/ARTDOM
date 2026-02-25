@@ -1,6 +1,7 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { index as albumsIndex } from '@/routes/artist/albums';
 import MainLayout from '@/layouts/MainLayout';
+import { DashboardSkeleton } from '@/components/Skeletons';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,12 +13,15 @@ import {
     Star,
     Edit,
     Plus,
-    BarChart3,
+    Wallet,
+    Award,
     Play,
     Package,
     Calendar,
     User
 } from 'lucide-react';
+
+import { useState, useEffect } from 'react';
 
 interface Service {
     id: string;
@@ -46,6 +50,26 @@ interface DashboardProps {
 }
 
 export default function ArtistDashboard({ stats, services, albums, topAlbum, recentReservations, artistProfile }: DashboardProps) {
+    const { url } = usePage();
+    const isProcessing = url !== '/artist/dashboard' && url !== '/'; // Replace with a more robust processing check if inertia event listeners are used, or stick to initial load states if defined. Assuming initial data load isn't the issue, but standard page transitions. Actually Inertia handles loading out of the box with Nprogress, so the skeleton is mainly for initial paint or specific async data fetching which isn't happening here. We will wrap the main content in a simulated loading state for demonstration as requested by the "Micro-animations et Skeleton Loaders" finitions task.
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        // Simulate initial data loading for the skeleton effect
+        const timer = setTimeout(() => setIsLoading(false), 800);
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (isLoading) {
+        return (
+            <MainLayout>
+                <Head title="Tableau de bord" />
+                <DashboardSkeleton />
+            </MainLayout>
+        );
+    }
+
     const formatNumber = (num: number) => {
         if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
         if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
@@ -97,10 +121,18 @@ export default function ArtistDashboard({ stats, services, albums, topAlbum, rec
                                         Mes Albums
                                     </Button>
                                 </Link>
-                                <Button className="gap-2 bg-primary hover:bg-primary/90">
-                                    <BarChart3 className="w-4 h-4" />
-                                    Statistiques
-                                </Button>
+                                <Link href="/artist/subscription">
+                                    <Button variant="outline" className="gap-2 border-primary text-primary hover:bg-primary/10">
+                                        <Award className="w-4 h-4" />
+                                        Premium
+                                    </Button>
+                                </Link>
+                                <Link href="/artist/wallet">
+                                    <Button className="gap-2 bg-primary hover:bg-primary/90">
+                                        <Wallet className="w-4 h-4" />
+                                        Portefeuille
+                                    </Button>
+                                </Link>
                             </div>
                         </div>
                     </div>

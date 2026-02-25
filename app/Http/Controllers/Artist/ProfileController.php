@@ -113,6 +113,36 @@ class ProfileController extends Controller
     }
 
     /**
+     * Upload de la photo de profil (Avatar)
+     * 
+     * Route: POST /artist/profile/avatar
+     * Middleware: auth, role:artist
+     */
+    public function uploadAvatar(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:5120'], // 5MB max
+        ]);
+
+        $artist = Auth::user();
+
+        // Supprimer l'ancienne photo si elle existe et n'est pas celle par défaut
+        if ($artist->profile_photo && !str_starts_with($artist->profile_photo, 'http')) {
+            $oldPath = str_replace('/storage/', '', $artist->profile_photo);
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        // Upload de la nouvelle photo
+        $path = $request->file('avatar')->store('users/'.$artist->id.'/avatar', 'public');
+        
+        $artist->update([
+            'profile_photo' => Storage::url($path)
+        ]);
+
+        return back()->with('message', 'Photo de profil mise à jour avec succès.');
+    }
+
+    /**
      * Upload des médias (photos/vidéos) pour le portfolio
      * 
      * Route: POST /artist/profile/media

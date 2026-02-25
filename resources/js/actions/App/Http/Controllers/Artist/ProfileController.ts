@@ -143,8 +143,63 @@ update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     
     update.form = updateForm
 /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+export const uploadAvatar = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadAvatar.url(options),
+    method: 'post',
+})
+
+uploadAvatar.definition = {
+    methods: ["post"],
+    url: '/artist/profile/avatar',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+uploadAvatar.url = (options?: RouteQueryOptions) => {
+    return uploadAvatar.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+uploadAvatar.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadAvatar.url(options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+    const uploadAvatarForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: uploadAvatar.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+        uploadAvatarForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: uploadAvatar.url(options),
+            method: 'post',
+        })
+    
+    uploadAvatar.form = uploadAvatarForm
+/**
 * @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
  * @route '/artist/profile/media'
  */
 export const uploadMedia = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -159,7 +214,7 @@ uploadMedia.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
  * @route '/artist/profile/media'
  */
 uploadMedia.url = (options?: RouteQueryOptions) => {
@@ -168,7 +223,7 @@ uploadMedia.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
  * @route '/artist/profile/media'
  */
 uploadMedia.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -178,7 +233,7 @@ uploadMedia.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
  * @route '/artist/profile/media'
  */
     const uploadMediaForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -188,7 +243,7 @@ uploadMedia.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:123
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
  * @route '/artist/profile/media'
  */
         uploadMediaForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -199,7 +254,7 @@ uploadMedia.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     uploadMedia.form = uploadMediaForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::deleteMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @see app/Http/Controllers/Artist/ProfileController.php:183
  * @route '/artist/profile/media/{media}'
  */
 export const deleteMedia = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -214,7 +269,7 @@ deleteMedia.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::deleteMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @see app/Http/Controllers/Artist/ProfileController.php:183
  * @route '/artist/profile/media/{media}'
  */
 deleteMedia.url = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -242,7 +297,7 @@ deleteMedia.url = (args: { media: string | number } | [media: string | number ] 
 
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::deleteMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @see app/Http/Controllers/Artist/ProfileController.php:183
  * @route '/artist/profile/media/{media}'
  */
 deleteMedia.delete = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -252,7 +307,7 @@ deleteMedia.delete = (args: { media: string | number } | [media: string | number
 
     /**
 * @see \App\Http\Controllers\Artist\ProfileController::deleteMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @see app/Http/Controllers/Artist/ProfileController.php:183
  * @route '/artist/profile/media/{media}'
  */
     const deleteMediaForm = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -267,7 +322,7 @@ deleteMedia.delete = (args: { media: string | number } | [media: string | number
 
             /**
 * @see \App\Http\Controllers\Artist\ProfileController::deleteMedia
- * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @see app/Http/Controllers/Artist/ProfileController.php:183
  * @route '/artist/profile/media/{media}'
  */
         deleteMediaForm.delete = (args: { media: string | number } | [media: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -281,6 +336,6 @@ deleteMedia.delete = (args: { media: string | number } | [media: string | number
         })
     
     deleteMedia.form = deleteMediaForm
-const ProfileController = { show, update, uploadMedia, deleteMedia }
+const ProfileController = { show, update, uploadAvatar, uploadMedia, deleteMedia }
 
 export default ProfileController

@@ -58,7 +58,9 @@ class BookingController extends Controller
         $date = $request->query('date');
         $time = $request->query('time');
 
-        $service = Service::with(['artist.artistProfile'])->findOrFail($serviceId);
+        $service = Service::with(['artist.artistProfile', 'serviceOptions' => function($q) {
+            $q->where('is_active', true);
+        }])->findOrFail($serviceId);
 
         return Inertia::render('Booking/Customize', [
             'service' => [
@@ -66,6 +68,7 @@ class BookingController extends Controller
                 'title' => $service->title,
                 'price' => $service->price,
                 'location_type' => $service->location_type,
+                'options' => $service->serviceOptions,
             ],
             'artist' => [
                 'id' => $service->artist->id,
@@ -86,23 +89,72 @@ class BookingController extends Controller
         ]);
     }
 
+    public function checkout(Request $request)
+    {
+        $data = $request->validate([
+            'service_id' => 'required|exists:services,id',
+            'date' => 'required|string',
+            'time' => 'required|string',
+            'emotion_type' => 'required|string',
+            'recipient_name' => 'nullable|string',
+            'relation_type' => 'nullable|string',
+            'special_message' => 'nullable|string',
+            'customer_location' => 'nullable|string',
+            'selected_options' => 'nullable|string',
+            'file_url' => 'nullable|file|max:5120',
+        ]);
+
+        if ($request->hasFile('file_url')) {
+            $path = $request->file('file_url')->store('booking/files', 'public');
+            $data['file_url'] = '/storage/' . $path;
+        } else {
+            // Keep the string if it was passed via query/previous step or null
+            $data['file_url'] = $request->input('file_url');
+        }
+
+        session(['booking_checkout' => $data]);
+
+        return redirect()->route('booking.payment');
+    }
+
     public function payment(Request $request): Response
     {
-        $serviceId = $request->query('service_id');
-        $date = $request->query('date');
-        $time = $request->query('time');
-        $emotionType = $request->query('emotion_type');
-        $recipientName = $request->query('recipient_name');
-        $specialMessage = $request->query('special_message');
-        $customerLocation = $request->query('customer_location');
+        $bookingData = session('booking_checkout') ?? $request->all();
+        
+        $serviceId = $bookingData['service_id'] ?? null;
+        if (!$serviceId) {
+            abort(400, "Données de réservation manquantes");
+        }
 
-        $service = Service::with(['artist.artistProfile'])->findOrFail($serviceId);
+        $date = $bookingData['date'] ?? null;
+        $time = $bookingData['time'] ?? null;
+        $emotionType = $bookingData['emotion_type'] ?? null;
+        $recipientName = $bookingData['recipient_name'] ?? null;
+        $specialMessage = $bookingData['special_message'] ?? null;
+        $customerLocation = $bookingData['customer_location'] ?? null;
+        $relationType = $bookingData['relation_type'] ?? null;
+        $fileUrl = $bookingData['file_url'] ?? null;
+        $selectedOptionIds = $bookingData['selected_options'] ?? '';
+
+        $service = Service::with(['artist.artistProfile', 'serviceOptions'])->findOrFail($serviceId);
+
+        $selectedOptions = [];
+        if (!empty($selectedOptionIds)) {
+            $ids = explode(',', $selectedOptionIds);
+            $selectedOptions = $service->serviceOptions->whereIn('id', $ids)->values()->toArray();
+        }
+
+        $optionsTotal = array_reduce($selectedOptions, function($carry, $opt) {
+            return $carry + $opt['price'];
+        }, 0);
 
         return Inertia::render('Booking/Payment', [
             'service' => [
                 'id' => $service->id,
                 'title' => $service->title,
                 'price' => $service->price,
+                'options_total' => $optionsTotal,
+                'selected_options' => $selectedOptions,
             ],
             'artist' => [
                 'id' => $service->artist->id,
@@ -117,6 +169,10 @@ class BookingController extends Controller
                 'recipient_name' => $recipientName,
                 'special_message' => $specialMessage,
                 'customer_location' => $customerLocation,
+                'location_type' => $request->query('location_type', $service->location_type),
+                'relation_type' => $relationType,
+                'file_url' => $fileUrl,
+                'selected_options' => $selectedOptionIds,
             ],
         ]);
     }
@@ -147,7 +203,14 @@ class BookingController extends Controller
             'emotion_type' => $request->emotion_type,
             'location_type' => $service->location_type,
             'location_address' => $request->customer_location,
+            'relation_type' => $request->relation_type,
         ]);
+
+        // If file_url is present, store it via media or JSON options. For now we use custom_message to store extras
+        if ($request->file_url) {
+            $reservation->custom_message .= "\n\n[Fichier joint: " . $request->file_url . "]";
+            $reservation->save();
+        }
 
         // Create initial payment record
         \App\Models\Payment::create([
@@ -158,6 +221,17 @@ class BookingController extends Controller
             'status' => 'pending',
             'provider_ref' => 'TRX-'.strtoupper(uniqid()),
         ]);
+
+        // Mettre les fonds en attente dans le portefeuille de l'artiste
+        $wallet = \App\Models\Wallet::firstOrCreate([
+            'artist_id' => $service->artist_id,
+        ], [
+            'currency' => 'FCFA',
+            'balance' => 0,
+            'pending_balance' => 0,
+        ]);
+        
+        $wallet->addPending((float) $request->total_amount, 'reservation', $reservation->id);
 
         return redirect()->route('client.reservations.show', $reservation->id)
             ->with('success', 'Votre réservation a été envoyée avec succès !');

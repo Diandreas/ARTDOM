@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
+ * @see app/Http/Controllers/ConversationController.php:92
  * @route '/reservation/{reservation}/contact'
  */
 export const contact = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ contact.definition = {
 
 /**
 * @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
+ * @see app/Http/Controllers/ConversationController.php:92
  * @route '/reservation/{reservation}/contact'
  */
 contact.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ contact.url = (args: { reservation: string | { id: string } } | [reservation: st
 
 /**
 * @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
+ * @see app/Http/Controllers/ConversationController.php:92
  * @route '/reservation/{reservation}/contact'
  */
 contact.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -58,7 +58,7 @@ contact.get = (args: { reservation: string | { id: string } } | [reservation: st
 })
 /**
 * @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
+ * @see app/Http/Controllers/ConversationController.php:92
  * @route '/reservation/{reservation}/contact'
  */
 contact.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -68,7 +68,7 @@ contact.head = (args: { reservation: string | { id: string } } | [reservation: s
 
     /**
 * @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
+ * @see app/Http/Controllers/ConversationController.php:92
  * @route '/reservation/{reservation}/contact'
  */
     const contactForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -78,7 +78,7 @@ contact.head = (args: { reservation: string | { id: string } } | [reservation: s
 
             /**
 * @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
+ * @see app/Http/Controllers/ConversationController.php:92
  * @route '/reservation/{reservation}/contact'
  */
         contactForm.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -87,7 +87,7 @@ contact.head = (args: { reservation: string | { id: string } } | [reservation: s
         })
             /**
 * @see \App\Http\Controllers\ConversationController::contact
- * @see app/Http/Controllers/ConversationController.php:84
+ * @see app/Http/Controllers/ConversationController.php:92
  * @route '/reservation/{reservation}/contact'
  */
         contactForm.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

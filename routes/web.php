@@ -59,11 +59,47 @@ Route::get('dashboard', [\App\Http\Controllers\Client\DashboardController::class
 Route::middleware(['auth', 'role.artist'])->prefix('artist')->name('artist.')->group(function () {
     Route::get('/dashboard', [ArtistDashboardController::class, 'index'])->name('dashboard');
 
+    // Services management
+    Route::get('/services', [\App\Http\Controllers\Artist\ServiceController::class, 'index'])->name('services.index');
+    Route::post('/services', [\App\Http\Controllers\Artist\ServiceController::class, 'store'])->name('services.store');
+    Route::put('/services/{service}', [\App\Http\Controllers\Artist\ServiceController::class, 'update'])->name('services.update');
+    Route::delete('/services/{service}', [\App\Http\Controllers\Artist\ServiceController::class, 'destroy'])->name('services.destroy');
+    Route::patch('/services/{service}/toggle', [\App\Http\Controllers\Artist\ServiceController::class, 'toggle'])->name('services.toggle');
+    Route::post('/services/reorder', [\App\Http\Controllers\Artist\ServiceController::class, 'reorder'])->name('services.reorder');
+
+    // Orders management
+    Route::get('/orders', [\App\Http\Controllers\Artist\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{reservation}', [\App\Http\Controllers\Artist\OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{reservation}/accept', [\App\Http\Controllers\Artist\OrderController::class, 'accept'])->name('orders.accept');
+    Route::post('/orders/{reservation}/decline', [\App\Http\Controllers\Artist\OrderController::class, 'decline'])->name('orders.decline');
+    Route::post('/orders/{reservation}/checkin', [\App\Http\Controllers\Artist\OrderController::class, 'checkIn'])->name('orders.checkin');
+    Route::post('/orders/{reservation}/checkout', [\App\Http\Controllers\Artist\OrderController::class, 'checkOut'])->name('orders.checkout');
+
+    // Availability/Calendar
+    Route::get('/availability', [\App\Http\Controllers\Artist\AvailabilityController::class, 'index'])->name('availability.index');
+    Route::post('/availability', [\App\Http\Controllers\Artist\AvailabilityController::class, 'store'])->name('availability.store');
+    Route::post('/availability/block', [\App\Http\Controllers\Artist\AvailabilityController::class, 'block'])->name('availability.block');
+    Route::delete('/availability/{availability}', [\App\Http\Controllers\Artist\AvailabilityController::class, 'destroy'])->name('availability.destroy');
+
     // Profile management
     Route::get('/profile', [\App\Http\Controllers\Artist\ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [\App\Http\Controllers\Artist\ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/media', [\App\Http\Controllers\Artist\ProfileController::class, 'uploadMedia'])->name('profile.media.upload');
+    Route::post('/profile/avatar', [\App\Http\Controllers\Artist\ProfileController::class, 'uploadAvatar'])->name('profile.avatar');
+    Route::post('/profile/media', [\App\Http\Controllers\Artist\ProfileController::class, 'uploadMedia'])->name('profile.media');
     Route::delete('/profile/media/{media}', [\App\Http\Controllers\Artist\ProfileController::class, 'deleteMedia'])->name('profile.media.delete');
+
+    // Wallet management
+    Route::get('/wallet', [\App\Http\Controllers\Artist\WalletController::class, 'index'])->name('wallet.index');
+    Route::get('/wallet/transactions', [\App\Http\Controllers\Artist\WalletController::class, 'transactions'])->name('wallet.transactions');
+    Route::get('/wallet/export', [\App\Http\Controllers\Artist\WalletController::class, 'exportCsv'])->name('wallet.export');
+    Route::post('/wallet/withdraw', [\App\Http\Controllers\Artist\WalletController::class, 'withdraw'])->name('wallet.withdraw');
+    Route::get('/wallet/withdrawals/{withdrawal}', [\App\Http\Controllers\Artist\WalletController::class, 'withdrawalStatus'])->name('wallet.withdrawal.show');
+
+    // Subscription management
+    Route::get('/subscription', [\App\Http\Controllers\Artist\SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::post('/subscription/checkout', [\App\Http\Controllers\Artist\SubscriptionController::class, 'checkout'])->name('subscription.checkout');
+    Route::post('/subscription/cancel', [\App\Http\Controllers\Artist\SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+    Route::post('/subscription/resume', [\App\Http\Controllers\Artist\SubscriptionController::class, 'resume'])->name('subscription.resume');
 
     // Album upload management
     Route::get('/albums', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'index'])->name('albums.index');
@@ -142,6 +178,7 @@ Route::post('/arttube/videos/{video}/comments', [\App\Http\Controllers\Stream\Vi
 Route::middleware(['auth'])->group(function () {
     Route::get('/booking/calendar', [\App\Http\Controllers\BookingController::class, 'calendar'])->name('booking.calendar');
     Route::get('/booking/customize', [\App\Http\Controllers\BookingController::class, 'customize'])->name('booking.customize');
+    Route::post('/booking/checkout', [\App\Http\Controllers\BookingController::class, 'checkout'])->name('booking.checkout');
     Route::get('/booking/payment', [\App\Http\Controllers\BookingController::class, 'payment'])->name('booking.payment');
     Route::post('/booking/store', [\App\Http\Controllers\BookingController::class, 'store'])->name('booking.store');
     Route::get('/booking/confirmation/{id}', [\App\Http\Controllers\BookingController::class, 'confirmation'])->name('booking.confirmation');
@@ -152,6 +189,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/messages/{conversation}', [\App\Http\Controllers\ConversationController::class, 'show'])->name('messages.show');
     Route::post('/messages/{conversation}', [\App\Http\Controllers\ConversationController::class, 'store'])->name('messages.store');
     Route::get('/reservation/{reservation}/contact', [\App\Http\Controllers\ConversationController::class, 'contact'])->name('reservation.contact');
+
+    // Notifications routes
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+    Route::post('/notifications/{id}/mark-read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markRead');
+    Route::delete('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
+
+    // Support routes
+    Route::get('/support', [\App\Http\Controllers\SupportController::class, 'index'])->name('support.index');
+    Route::get('/support/create', [\App\Http\Controllers\SupportController::class, 'create'])->name('support.create');
+    Route::post('/support', [\App\Http\Controllers\SupportController::class, 'store'])->name('support.store');
+    Route::get('/support/{ticket}', [\App\Http\Controllers\SupportController::class, 'show'])->name('support.show');
 });
 
 Route::get('/artists', [ArtistController::class, 'index'])->name('artists.index');

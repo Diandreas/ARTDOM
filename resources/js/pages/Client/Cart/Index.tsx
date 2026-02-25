@@ -24,6 +24,12 @@ interface Service {
     artist: Artist;
 }
 
+interface CartItemOption {
+    id: string;
+    name: string;
+    price: string;
+}
+
 interface CartItem {
     id: string;
     service: Service;
@@ -31,6 +37,7 @@ interface CartItem {
     unit_price: number;
     subtotal: number;
     customization: any;
+    selected_options_details?: CartItemOption[];
     scheduled_at: string | null;
 }
 
@@ -187,6 +194,17 @@ export default function CartIndex({ cart }: CartIndexProps) {
                                                     "{item.customization.message.substring(0, 100)}
                                                     {item.customization.message.length > 100 ? '...' : ''}"
                                                 </p>
+                                            )}
+
+                                            {item.selected_options_details && item.selected_options_details.length > 0 && (
+                                                <div className="mt-2 text-sm text-muted-foreground">
+                                                    <span className="font-semibold">Options :</span>
+                                                    <ul className="list-disc list-inside mt-1">
+                                                        {item.selected_options_details.map(opt => (
+                                                            <li key={opt.id}>{opt.name} (+{Number(opt.price).toLocaleString('fr-FR')} FCFA)</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
                                             )}
 
                                             <div className="flex items-center gap-4 mt-3">

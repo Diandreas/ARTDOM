@@ -156,8 +156,63 @@ customize.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     customize.form = customizeForm
 /**
+* @see \App\Http\Controllers\BookingController::checkout
+ * @see app/Http/Controllers/BookingController.php:92
+ * @route '/booking/checkout'
+ */
+export const checkout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: checkout.url(options),
+    method: 'post',
+})
+
+checkout.definition = {
+    methods: ["post"],
+    url: '/booking/checkout',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\BookingController::checkout
+ * @see app/Http/Controllers/BookingController.php:92
+ * @route '/booking/checkout'
+ */
+checkout.url = (options?: RouteQueryOptions) => {
+    return checkout.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\BookingController::checkout
+ * @see app/Http/Controllers/BookingController.php:92
+ * @route '/booking/checkout'
+ */
+checkout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: checkout.url(options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\BookingController::checkout
+ * @see app/Http/Controllers/BookingController.php:92
+ * @route '/booking/checkout'
+ */
+    const checkoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: checkout.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\BookingController::checkout
+ * @see app/Http/Controllers/BookingController.php:92
+ * @route '/booking/checkout'
+ */
+        checkoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: checkout.url(options),
+            method: 'post',
+        })
+    
+    checkout.form = checkoutForm
+/**
 * @see \App\Http\Controllers\BookingController::payment
- * @see app/Http/Controllers/BookingController.php:89
+ * @see app/Http/Controllers/BookingController.php:120
  * @route '/booking/payment'
  */
 export const payment = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -172,7 +227,7 @@ payment.definition = {
 
 /**
 * @see \App\Http\Controllers\BookingController::payment
- * @see app/Http/Controllers/BookingController.php:89
+ * @see app/Http/Controllers/BookingController.php:120
  * @route '/booking/payment'
  */
 payment.url = (options?: RouteQueryOptions) => {
@@ -181,7 +236,7 @@ payment.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\BookingController::payment
- * @see app/Http/Controllers/BookingController.php:89
+ * @see app/Http/Controllers/BookingController.php:120
  * @route '/booking/payment'
  */
 payment.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -190,7 +245,7 @@ payment.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\BookingController::payment
- * @see app/Http/Controllers/BookingController.php:89
+ * @see app/Http/Controllers/BookingController.php:120
  * @route '/booking/payment'
  */
 payment.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -200,7 +255,7 @@ payment.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\BookingController::payment
- * @see app/Http/Controllers/BookingController.php:89
+ * @see app/Http/Controllers/BookingController.php:120
  * @route '/booking/payment'
  */
     const paymentForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -210,7 +265,7 @@ payment.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\BookingController::payment
- * @see app/Http/Controllers/BookingController.php:89
+ * @see app/Http/Controllers/BookingController.php:120
  * @route '/booking/payment'
  */
         paymentForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -219,7 +274,7 @@ payment.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\BookingController::payment
- * @see app/Http/Controllers/BookingController.php:89
+ * @see app/Http/Controllers/BookingController.php:120
  * @route '/booking/payment'
  */
         paymentForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -235,7 +290,7 @@ payment.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     payment.form = paymentForm
 /**
 * @see \App\Http\Controllers\BookingController::store
- * @see app/Http/Controllers/BookingController.php:124
+ * @see app/Http/Controllers/BookingController.php:180
  * @route '/booking/store'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -250,7 +305,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\BookingController::store
- * @see app/Http/Controllers/BookingController.php:124
+ * @see app/Http/Controllers/BookingController.php:180
  * @route '/booking/store'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -259,7 +314,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\BookingController::store
- * @see app/Http/Controllers/BookingController.php:124
+ * @see app/Http/Controllers/BookingController.php:180
  * @route '/booking/store'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -269,7 +324,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\BookingController::store
- * @see app/Http/Controllers/BookingController.php:124
+ * @see app/Http/Controllers/BookingController.php:180
  * @route '/booking/store'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -279,7 +334,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\BookingController::store
- * @see app/Http/Controllers/BookingController.php:124
+ * @see app/Http/Controllers/BookingController.php:180
  * @route '/booking/store'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -290,7 +345,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\BookingController::confirmation
- * @see app/Http/Controllers/BookingController.php:166
+ * @see app/Http/Controllers/BookingController.php:240
  * @route '/booking/confirmation/{id}'
  */
 export const confirmation = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -305,7 +360,7 @@ confirmation.definition = {
 
 /**
 * @see \App\Http\Controllers\BookingController::confirmation
- * @see app/Http/Controllers/BookingController.php:166
+ * @see app/Http/Controllers/BookingController.php:240
  * @route '/booking/confirmation/{id}'
  */
 confirmation.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -333,7 +388,7 @@ confirmation.url = (args: { id: string | number } | [id: string | number ] | str
 
 /**
 * @see \App\Http\Controllers\BookingController::confirmation
- * @see app/Http/Controllers/BookingController.php:166
+ * @see app/Http/Controllers/BookingController.php:240
  * @route '/booking/confirmation/{id}'
  */
 confirmation.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -342,7 +397,7 @@ confirmation.get = (args: { id: string | number } | [id: string | number ] | str
 })
 /**
 * @see \App\Http\Controllers\BookingController::confirmation
- * @see app/Http/Controllers/BookingController.php:166
+ * @see app/Http/Controllers/BookingController.php:240
  * @route '/booking/confirmation/{id}'
  */
 confirmation.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -352,7 +407,7 @@ confirmation.head = (args: { id: string | number } | [id: string | number ] | st
 
     /**
 * @see \App\Http\Controllers\BookingController::confirmation
- * @see app/Http/Controllers/BookingController.php:166
+ * @see app/Http/Controllers/BookingController.php:240
  * @route '/booking/confirmation/{id}'
  */
     const confirmationForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -362,7 +417,7 @@ confirmation.head = (args: { id: string | number } | [id: string | number ] | st
 
             /**
 * @see \App\Http\Controllers\BookingController::confirmation
- * @see app/Http/Controllers/BookingController.php:166
+ * @see app/Http/Controllers/BookingController.php:240
  * @route '/booking/confirmation/{id}'
  */
         confirmationForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -371,7 +426,7 @@ confirmation.head = (args: { id: string | number } | [id: string | number ] | st
         })
             /**
 * @see \App\Http\Controllers\BookingController::confirmation
- * @see app/Http/Controllers/BookingController.php:166
+ * @see app/Http/Controllers/BookingController.php:240
  * @route '/booking/confirmation/{id}'
  */
         confirmationForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -387,7 +442,7 @@ confirmation.head = (args: { id: string | number } | [id: string | number ] | st
     confirmation.form = confirmationForm
 /**
 * @see \App\Http\Controllers\BookingController::receipt
- * @see app/Http/Controllers/BookingController.php:210
+ * @see app/Http/Controllers/BookingController.php:284
  * @route '/booking/{id}/receipt'
  */
 export const receipt = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -402,7 +457,7 @@ receipt.definition = {
 
 /**
 * @see \App\Http\Controllers\BookingController::receipt
- * @see app/Http/Controllers/BookingController.php:210
+ * @see app/Http/Controllers/BookingController.php:284
  * @route '/booking/{id}/receipt'
  */
 receipt.url = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -430,7 +485,7 @@ receipt.url = (args: { id: string | number } | [id: string | number ] | string |
 
 /**
 * @see \App\Http\Controllers\BookingController::receipt
- * @see app/Http/Controllers/BookingController.php:210
+ * @see app/Http/Controllers/BookingController.php:284
  * @route '/booking/{id}/receipt'
  */
 receipt.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -439,7 +494,7 @@ receipt.get = (args: { id: string | number } | [id: string | number ] | string |
 })
 /**
 * @see \App\Http\Controllers\BookingController::receipt
- * @see app/Http/Controllers/BookingController.php:210
+ * @see app/Http/Controllers/BookingController.php:284
  * @route '/booking/{id}/receipt'
  */
 receipt.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -449,7 +504,7 @@ receipt.head = (args: { id: string | number } | [id: string | number ] | string 
 
     /**
 * @see \App\Http\Controllers\BookingController::receipt
- * @see app/Http/Controllers/BookingController.php:210
+ * @see app/Http/Controllers/BookingController.php:284
  * @route '/booking/{id}/receipt'
  */
     const receiptForm = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -459,7 +514,7 @@ receipt.head = (args: { id: string | number } | [id: string | number ] | string 
 
             /**
 * @see \App\Http\Controllers\BookingController::receipt
- * @see app/Http/Controllers/BookingController.php:210
+ * @see app/Http/Controllers/BookingController.php:284
  * @route '/booking/{id}/receipt'
  */
         receiptForm.get = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -468,7 +523,7 @@ receipt.head = (args: { id: string | number } | [id: string | number ] | string 
         })
             /**
 * @see \App\Http\Controllers\BookingController::receipt
- * @see app/Http/Controllers/BookingController.php:210
+ * @see app/Http/Controllers/BookingController.php:284
  * @route '/booking/{id}/receipt'
  */
         receiptForm.head = (args: { id: string | number } | [id: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -485,6 +540,7 @@ receipt.head = (args: { id: string | number } | [id: string | number ] | string 
 const booking = {
     calendar: Object.assign(calendar, calendar),
 customize: Object.assign(customize, customize),
+checkout: Object.assign(checkout, checkout),
 payment: Object.assign(payment, payment),
 store: Object.assign(store, store),
 confirmation: Object.assign(confirmation, confirmation),

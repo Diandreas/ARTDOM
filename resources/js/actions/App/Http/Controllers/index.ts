@@ -11,6 +11,8 @@ import PlaylistController from './PlaylistController'
 import Stream from './Stream'
 import BookingController from './BookingController'
 import ConversationController from './ConversationController'
+import NotificationController from './NotificationController'
+import SupportController from './SupportController'
 import Settings from './Settings'
 const Controllers = {
     HomeController: Object.assign(HomeController, HomeController),
@@ -26,6 +28,8 @@ PlaylistController: Object.assign(PlaylistController, PlaylistController),
 Stream: Object.assign(Stream, Stream),
 BookingController: Object.assign(BookingController, BookingController),
 ConversationController: Object.assign(ConversationController, ConversationController),
+NotificationController: Object.assign(NotificationController, NotificationController),
+SupportController: Object.assign(SupportController, SupportController),
 Settings: Object.assign(Settings, Settings),
 }
 

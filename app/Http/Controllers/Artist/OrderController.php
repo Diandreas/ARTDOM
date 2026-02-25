@@ -143,6 +143,12 @@ class OrderController extends Controller
         // TODO: Libérer la disponibilité
 
         // TODO: Rembourser le client si paiement effectué
+        
+        // Annuler les fonds en attente dans le portefeuille
+        $wallet = \App\Models\Wallet::where('artist_id', $reservation->artist_id)->first();
+        if ($wallet) {
+            $wallet->cancelPending($reservation->id);
+        }
 
         return back()->with('message', 'Réservation refusée. Le client a été notifié.');
     }
@@ -212,7 +218,12 @@ class OrderController extends Controller
             'checkout_at' => now(),
         ]);
 
-        // TODO: Libérer les fonds dans le portefeuille de l'artiste
+        // Libérer les fonds dans le portefeuille de l'artiste
+        $wallet = \App\Models\Wallet::where('artist_id', $reservation->artist_id)->first();
+        if ($wallet) {
+            $wallet->release($reservation->id);
+        }
+
         // TODO: Envoyer une notification au client pour laisser un avis
 
         return back()->with('message', 'Check-out effectué. La prestation est terminée.');

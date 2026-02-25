@@ -13,6 +13,9 @@ import { FormEvent, useState } from 'react';
 import update from '@/actions/App/Http/Controllers/Artist/ProfileController/update';
 import uploadMedia from '@/actions/App/Http/Controllers/Artist/ProfileController/uploadMedia';
 import deleteMedia from '@/actions/App/Http/Controllers/Artist/ProfileController/deleteMedia';
+import uploadAvatar from '@/actions/App/Http/Controllers/Artist/ProfileController/uploadAvatar';
+import { ImageCropper } from '@/components/ImageCropper';
+import { useRef } from 'react';
 
 interface User {
     id: string;
@@ -44,6 +47,11 @@ interface EditProfileProps {
 
 export default function EditProfile({ user, profile, availableCategories }: EditProfileProps) {
     const [isUploadingMedia, setIsUploadingMedia] = useState(false);
+
+    // States for Avatar cropper
+    const [isCropperOpen, setIsCropperOpen] = useState(false);
+    const [imageToCrop, setImageToCrop] = useState<string>('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const form = useForm({
         name: user.name,
@@ -106,6 +114,49 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
         }
     };
 
+    // Avatar handlers
+    const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                setImageToCrop(reader.result?.toString() || '');
+                setIsCropperOpen(true);
+            });
+            reader.readAsDataURL(file);
+        }
+        // Reset input so the same file could be selected again
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const handleAvatarCropComplete = async (croppedBlob: Blob) => {
+        setIsUploadingMedia(true);
+        const file = new File([croppedBlob], 'avatar.jpg', { type: 'image/jpeg' });
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        try {
+            const response = await fetch(uploadAvatar.url(), {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+                body: formData,
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Avatar upload failed:', error);
+        } finally {
+            setIsUploadingMedia(false);
+        }
+    };
+
     const handleDeleteMedia = (mediaUrl: string) => {
         if (confirm('Êtes-vous sûr de vouloir supprimer ce média ?')) {
             // Extract the media identifier from URL
@@ -143,9 +194,9 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                 <CardContent className="pt-6">
                                     <div className="flex flex-col items-center text-center">
                                         <div className="relative mb-4">
-                                            <Avatar className="w-32 h-32">
+                                            <Avatar className="w-32 h-32 text-4xl">
                                                 <AvatarImage src={user.profile_photo || undefined} />
-                                                <AvatarFallback className="text-3xl">
+                                                <AvatarFallback>
                                                     {profile.stage_name.charAt(0).toUpperCase()}
                                                 </AvatarFallback>
                                             </Avatar>
@@ -153,10 +204,19 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                                 type="button"
                                                 size="icon"
                                                 variant="secondary"
-                                                className="absolute bottom-0 right-0 rounded-full"
+                                                className="absolute bottom-0 right-0 rounded-full cursor-pointer hover:bg-secondary/80"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                disabled={isUploadingMedia}
                                             >
                                                 <Camera className="w-4 h-4" />
                                             </Button>
+                                            <input
+                                                type="file"
+                                                ref={fileInputRef}
+                                                className="hidden"
+                                                accept="image/jpeg,image/png,image/jpg"
+                                                onChange={handleAvatarSelect}
+                                            />
                                         </div>
 
                                         <h2 className="text-2xl font-bold mb-1">{profile.stage_name}</h2>
@@ -249,7 +309,6 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                                 id="name"
                                                 value={form.data.name}
                                                 onChange={(e) => form.setData('name', e.target.value)}
-                                                error={form.errors.name}
                                             />
                                             {form.errors.name && (
                                                 <p className="text-sm text-destructive mt-1">{form.errors.name}</p>
@@ -262,7 +321,6 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                                 id="stage_name"
                                                 value={form.data.stage_name}
                                                 onChange={(e) => form.setData('stage_name', e.target.value)}
-                                                error={form.errors.stage_name}
                                             />
                                             {form.errors.stage_name && (
                                                 <p className="text-sm text-destructive mt-1">{form.errors.stage_name}</p>
@@ -286,7 +344,6 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                                 type="tel"
                                                 value={form.data.phone}
                                                 onChange={(e) => form.setData('phone', e.target.value)}
-                                                error={form.errors.phone}
                                             />
                                             {form.errors.phone && (
                                                 <p className="text-sm text-destructive mt-1">{form.errors.phone}</p>
@@ -299,7 +356,6 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                                 id="city"
                                                 value={form.data.city}
                                                 onChange={(e) => form.setData('city', e.target.value)}
-                                                error={form.errors.city}
                                             />
                                             {form.errors.city && (
                                                 <p className="text-sm text-destructive mt-1">{form.errors.city}</p>
@@ -331,7 +387,6 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                             type="number"
                                             value={form.data.base_rate}
                                             onChange={(e) => form.setData('base_rate', parseFloat(e.target.value))}
-                                            error={form.errors.base_rate}
                                             min="0"
                                         />
                                         {form.errors.base_rate && (
@@ -483,6 +538,14 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                     </div>
                 </form>
             </div>
+
+            <ImageCropper
+                open={isCropperOpen}
+                onOpenChange={setIsCropperOpen}
+                imageSrc={imageToCrop}
+                onCropComplete={handleAvatarCropComplete}
+                aspectRatio={1}
+            />
         </MainLayout>
     );
 }
