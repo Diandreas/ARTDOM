@@ -160,6 +160,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Playlist routes
 Route::middleware(['auth'])->group(function () {
+    Route::get('/library', [\App\Http\Controllers\LibraryController::class, 'index'])->name('library.index');
     Route::get('/playlists', [\App\Http\Controllers\PlaylistController::class, 'index'])->name('playlists.index');
     Route::post('/playlists', [\App\Http\Controllers\PlaylistController::class, 'store'])->name('playlists.store');
     Route::get('/playlists/{playlist}', [\App\Http\Controllers\PlaylistController::class, 'show'])->name('playlists.show');

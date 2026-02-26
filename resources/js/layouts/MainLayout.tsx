@@ -12,7 +12,7 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Search, Menu, User, LogOut, Settings, Home, Music, Grid, Bell } from 'lucide-react';
+import { Search, Menu, User, LogOut, Settings, Home, Music, Grid, Bell, Calendar } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -180,6 +180,18 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                         <Link href={profile.edit()} className="cursor-pointer">
                                             <User className="mr-2 h-4 w-4" />
                                             <span>Profil</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/library" className="cursor-pointer">
+                                            <Music className="mr-2 h-4 w-4" />
+                                            <span>Ma Bibliothèque</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/reservations" className="cursor-pointer">
+                                            <Calendar className="mr-2 h-4 w-4" />
+                                            <span>Mes réservations</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
