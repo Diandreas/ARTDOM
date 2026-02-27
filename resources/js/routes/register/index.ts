@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see \Laravel\Fortify\Http\Controllers\RegisteredUserController::store
 * @see vendor/laravel/fortify/src/Http/Controllers/RegisteredUserController.php:53
@@ -56,7 +56,7 @@ storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => (
 store.form = storeForm
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:120
 * @route '/register/selection'
 */
 export const selection = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -70,7 +70,7 @@ selection.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:120
 * @route '/register/selection'
 */
 selection.url = (options?: RouteQueryOptions) => {
@@ -78,7 +78,7 @@ selection.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:120
 * @route '/register/selection'
 */
 selection.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -87,7 +87,7 @@ selection.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:120
 * @route '/register/selection'
 */
 selection.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -96,7 +96,7 @@ selection.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:120
 * @route '/register/selection'
 */
 const selectionForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -105,7 +105,7 @@ const selectionForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> 
 })
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:120
 * @route '/register/selection'
 */
 selectionForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -114,7 +114,7 @@ selectionForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =>
 })
 
 /**
-* @see routes/web.php:77
+* @see routes/web.php:120
 * @route '/register/selection'
 */
 selectionForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -130,7 +130,7 @@ selectionForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 selection.form = selectionForm
 
 /**
-* @see routes/web.php:81
+* @see routes/web.php:124
 * @route '/register/artist'
 */
 export const artist = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -144,7 +144,7 @@ artist.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:81
+* @see routes/web.php:124
 * @route '/register/artist'
 */
 artist.url = (options?: RouteQueryOptions) => {
@@ -152,7 +152,7 @@ artist.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:81
+* @see routes/web.php:124
 * @route '/register/artist'
 */
 artist.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -161,7 +161,7 @@ artist.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:81
+* @see routes/web.php:124
 * @route '/register/artist'
 */
 artist.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -170,7 +170,7 @@ artist.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:81
+* @see routes/web.php:124
 * @route '/register/artist'
 */
 const artistForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -179,7 +179,7 @@ const artistForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 })
 
 /**
-* @see routes/web.php:81
+* @see routes/web.php:124
 * @route '/register/artist'
 */
 artistForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -188,7 +188,7 @@ artistForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:81
+* @see routes/web.php:124
 * @route '/register/artist'
 */
 artistForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

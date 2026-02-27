@@ -26,7 +26,7 @@ class StoreUserRequest extends FormRequest
             'date_of_birth' => ['nullable', 'date'],
             'gender' => ['nullable', 'string', 'max:30'],
             'profile_photo' => ['nullable', 'string', 'max:2048'],
-            'role' => ['required', Rule::in(['client', 'artist', 'admin'])],
+            'role' => ['required', Rule::in(['client', 'artist', 'admin', 'super_admin'])],
             'status' => ['required', Rule::in(['active', 'pending', 'suspended', 'banned'])],
 
             'stage_name' => ['nullable', 'string', 'max:120', 'required_if:role,artist'],

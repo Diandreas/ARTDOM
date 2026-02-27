@@ -352,7 +352,7 @@ class DashboardController extends Controller
                 [
                     'label' => 'Moderer contenus',
                     'description' => 'Traiter les signalements de contenus.',
-                    'href' => route('admin.dashboard'),
+                    'href' => route('admin.moderation.index'),
                 ],
                 [
                     'label' => 'Tickets support',
@@ -362,12 +362,12 @@ class DashboardController extends Controller
                 [
                     'label' => 'Generer rapports',
                     'description' => 'Exporter les statistiques du mois.',
-                    'href' => route('admin.dashboard'),
+                    'href' => route('admin.reports.index'),
                 ],
                 [
                     'label' => 'Envoyer notification globale',
                     'description' => 'Diffuser un message a tous les utilisateurs.',
-                    'href' => route('admin.dashboard'),
+                    'href' => route('admin.broadcast.create'),
                 ],
             ],
         ]);

@@ -159,6 +159,11 @@ class User extends Authenticatable
         return $this->role === UserRole::Admin;
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === UserRole::SuperAdmin;
+    }
+
     public function hasVerifiedEmail(): bool
     {
         return $this->email_verified_at !== null;

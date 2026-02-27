@@ -32,6 +32,18 @@ test('admin users can authenticate via admin login', function () {
     $response->assertRedirect(route('admin.dashboard', absolute: false));
 });
 
+test('super admin users can authenticate via admin login', function () {
+    $superAdmin = User::factory()->superAdmin()->create();
+
+    $response = $this->post(route('admin.login.store'), [
+        'email' => $superAdmin->email,
+        'password' => 'password',
+    ]);
+
+    $this->assertAuthenticatedAs($superAdmin);
+    $response->assertRedirect(route('admin.dashboard', absolute: false));
+});
+
 test('admin dashboard is forbidden for non admin users', function () {
     $client = User::factory()->create(['role' => 'client']);
 

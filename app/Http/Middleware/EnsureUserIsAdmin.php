@@ -14,7 +14,7 @@ class EnsureUserIsAdmin
     {
         $user = $request->user();
 
-        if (! $user || ! $user->isAdmin()) {
+        if (! $user || (! $user->isAdmin() && ! $user->isSuperAdmin())) {
             abort(403, 'Accès interdit. Réservé aux administrateurs.');
         }
 

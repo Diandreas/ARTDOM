@@ -17,7 +17,7 @@ type UserPayload = {
     date_of_birth?: string | null;
     gender?: string | null;
     profile_photo?: string | null;
-    role: 'client' | 'artist' | 'admin';
+    role: 'client' | 'artist' | 'admin' | 'super_admin';
     status: 'active' | 'pending' | 'suspended' | 'banned';
     stage_name?: string | null;
     category?: string | null;

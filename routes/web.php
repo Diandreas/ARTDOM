@@ -2,7 +2,13 @@
 
 use App\Http\Controllers\Admin\ArtistValidationController as AdminArtistValidationController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
+use App\Http\Controllers\Admin\BroadcastNotificationController;
+use App\Http\Controllers\Admin\ClientActivityController;
+use App\Http\Controllers\Admin\ContentModerationController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\FinancialOverviewController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\SuperAdminCrudController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Artist\DashboardController as ArtistDashboardController;
@@ -35,6 +41,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/tickets/{ticket}/respond', [AdminTicketController::class, 'respond'])->name('tickets.respond');
         Route::patch('/tickets/{ticket}/close', [AdminTicketController::class, 'close'])->name('tickets.close');
 
+        Route::get('/moderation', [ContentModerationController::class, 'index'])->name('moderation.index');
+        Route::post('/moderation/reviews/{review}/resolve', [ContentModerationController::class, 'resolveReview'])->name('moderation.reviews.resolve');
+        Route::delete('/moderation/reviews/{review}', [ContentModerationController::class, 'deleteReview'])->name('moderation.reviews.delete');
+        Route::post('/moderation/comments/{comment}/resolve', [ContentModerationController::class, 'resolveComment'])->name('moderation.comments.resolve');
+        Route::delete('/moderation/comments/{comment}', [ContentModerationController::class, 'deleteComment'])->name('moderation.comments.delete');
+
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
+
+        Route::get('/broadcast', [BroadcastNotificationController::class, 'create'])->name('broadcast.create');
+        Route::post('/broadcast', [BroadcastNotificationController::class, 'store'])->name('broadcast.store');
+
+        Route::get('/client-activity', [ClientActivityController::class, 'index'])->name('client-activity.index');
+        Route::get('/financial-overview', [FinancialOverviewController::class, 'index'])->name('financial-overview.index');
+
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
         Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
@@ -48,6 +69,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/users/{user}/impersonate', [UserManagementController::class, 'impersonate'])->name('users.impersonate');
         Route::post('/users/stop-impersonation', [UserManagementController::class, 'stopImpersonation'])->name('users.stop-impersonation');
         Route::post('/users/bulk', [UserManagementController::class, 'bulk'])->name('users.bulk');
+    });
+
+    Route::middleware(['auth', 'role.super_admin'])->group(function () {
+        Route::get('/super-crud', [SuperAdminCrudController::class, 'index'])->name('super-crud.index');
+        Route::get('/super-crud/{resource}', [SuperAdminCrudController::class, 'show'])->name('super-crud.show');
+        Route::post('/super-crud/{resource}', [SuperAdminCrudController::class, 'store'])->name('super-crud.store');
+        Route::put('/super-crud/{resource}/{id}', [SuperAdminCrudController::class, 'update'])->name('super-crud.update');
+        Route::delete('/super-crud/{resource}/{id}', [SuperAdminCrudController::class, 'destroy'])->name('super-crud.destroy');
     });
 });
 

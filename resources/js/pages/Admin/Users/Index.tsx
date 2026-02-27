@@ -203,6 +203,7 @@ export default function Index({ users, filters, cities }: Props) {
                                         <SelectItem value="client">Client</SelectItem>
                                         <SelectItem value="artist">Artiste</SelectItem>
                                         <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="super_admin">Super admin</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>

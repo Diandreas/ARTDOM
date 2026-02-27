@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 import profile from './profile'
 import albums from './albums'
 /**
@@ -183,6 +183,7 @@ show.form = showForm
 
 const artist = {
     dashboard: Object.assign(dashboard, dashboard),
+    profile: Object.assign(profile, profile),
     albums: Object.assign(albums, albums),
     show: Object.assign(show, show),
 }

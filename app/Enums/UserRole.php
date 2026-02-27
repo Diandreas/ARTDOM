@@ -7,4 +7,5 @@ enum UserRole: string
     case Client = 'client';
     case Artist = 'artist';
     case Admin = 'admin';
+    case SuperAdmin = 'super_admin';
 }

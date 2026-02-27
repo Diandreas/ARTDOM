@@ -233,6 +233,8 @@ class UserManagementController extends Controller
         $transactions = $this->buildTransactions($user);
         $contents = $this->buildArtistContents($user);
         $reviews = $this->buildReviews($user);
+        $clientFinancialDetails = $this->buildClientFinancialDetails($user);
+        $artistEarningsReport = $this->buildArtistEarningsReport($user);
 
         return Inertia::render('Admin/Users/Show', [
             'user' => [
@@ -257,6 +259,8 @@ class UserManagementController extends Controller
             'artistStats' => $artistStats,
             'activity' => $activity,
             'transactions' => $transactions,
+            'clientFinancialDetails' => $clientFinancialDetails,
+            'artistEarningsReport' => $artistEarningsReport,
             'contents' => $contents,
             'reviews' => $reviews,
             'security' => [
@@ -671,9 +675,11 @@ class UserManagementController extends Controller
             ->limit(20)
             ->get(['id', 'status', 'created_at'])
             ->each(function (Reservation $reservation) use ($activities): void {
+                $status = is_string($reservation->status) ? $reservation->status : $reservation->status->value;
+
                 $activities->push([
                     'type' => 'reservation',
-                    'title' => 'Reservation '.$reservation->status,
+                    'title' => 'Reservation '.$status,
                     'description' => 'Reservation #'.$reservation->id,
                     'date' => $reservation->created_at?->toIso8601String(),
                 ]);
@@ -900,5 +906,185 @@ class UserManagementController extends Controller
     protected function roleValue(User $user): string
     {
         return is_string($user->role) ? $user->role : $user->role->value;
+    }
+
+    /**
+     * @return array{
+     *     payments: array<int, array<string, mixed>>,
+     *     reservations: array<int, array<string, mixed>>,
+     *     totals: array{payments_total: float, reservations_total: float, commissions_total: float}
+     * }
+     */
+    protected function buildClientFinancialDetails(User $user): array
+    {
+        if ($this->roleValue($user) !== 'client') {
+            return [
+                'payments' => [],
+                'reservations' => [],
+                'totals' => [
+                    'payments_total' => 0.0,
+                    'reservations_total' => 0.0,
+                    'commissions_total' => 0.0,
+                ],
+            ];
+        }
+
+        $payments = Payment::query()
+            ->where('client_id', $user->id)
+            ->with(['reservation:id,reservation_number,artist_id,service_id,total_amount,commission_amount,artist_earnings,status'])
+            ->latest('created_at')
+            ->limit(100)
+            ->get(['id', 'reservation_id', 'amount', 'currency', 'method', 'provider_ref', 'status', 'paid_at', 'created_at'])
+            ->map(function (Payment $payment): array {
+                return [
+                    'id' => $payment->id,
+                    'reservation_id' => $payment->reservation_id,
+                    'reservation_number' => $payment->reservation?->reservation_number,
+                    'amount' => (float) $payment->amount,
+                    'currency' => $payment->currency,
+                    'method' => $payment->method,
+                    'provider_ref' => $payment->provider_ref,
+                    'status' => is_string($payment->status) ? $payment->status : $payment->status->value,
+                    'paid_at' => $payment->paid_at?->toIso8601String(),
+                    'created_at' => $payment->created_at?->toIso8601String(),
+                ];
+            })
+            ->values()
+            ->all();
+
+        $reservations = Reservation::query()
+            ->where('client_id', $user->id)
+            ->with(['artist.artistProfile:id,user_id,stage_name', 'service:id,title'])
+            ->latest('created_at')
+            ->limit(100)
+            ->get(['id', 'reservation_number', 'artist_id', 'service_id', 'status', 'scheduled_at', 'total_amount', 'commission_amount', 'artist_earnings', 'created_at'])
+            ->map(function (Reservation $reservation): array {
+                return [
+                    'id' => $reservation->id,
+                    'reservation_number' => $reservation->reservation_number,
+                    'artist_name' => $reservation->artist?->artistProfile?->stage_name ?? $reservation->artist?->email,
+                    'service_title' => $reservation->service?->title,
+                    'status' => is_string($reservation->status) ? $reservation->status : $reservation->status->value,
+                    'scheduled_at' => $reservation->scheduled_at?->toIso8601String(),
+                    'total_amount' => (float) $reservation->total_amount,
+                    'commission_amount' => (float) $reservation->commission_amount,
+                    'artist_earnings' => (float) $reservation->artist_earnings,
+                    'created_at' => $reservation->created_at?->toIso8601String(),
+                ];
+            })
+            ->values()
+            ->all();
+
+        return [
+            'payments' => $payments,
+            'reservations' => $reservations,
+            'totals' => [
+                'payments_total' => (float) Payment::query()->where('client_id', $user->id)->where('status', 'completed')->sum('amount'),
+                'reservations_total' => (float) Reservation::query()->where('client_id', $user->id)->sum('total_amount'),
+                'commissions_total' => (float) Reservation::query()->where('client_id', $user->id)->sum('commission_amount'),
+            ],
+        ];
+    }
+
+    /**
+     * @return array{
+     *     summary: array{gross_revenue: float, platform_commissions: float, net_earnings: float, paid_withdrawals: float, pending_withdrawals: float},
+     *     earnings_by_month: array<int, array{month: string, revenue: float, commissions: float, net: float}>,
+     *     reservation_earnings: array<int, array<string, mixed>>,
+     *     withdrawals: array<int, array<string, mixed>>
+     * }
+     */
+    protected function buildArtistEarningsReport(User $user): array
+    {
+        if ($this->roleValue($user) !== 'artist') {
+            return [
+                'summary' => [
+                    'gross_revenue' => 0.0,
+                    'platform_commissions' => 0.0,
+                    'net_earnings' => 0.0,
+                    'paid_withdrawals' => 0.0,
+                    'pending_withdrawals' => 0.0,
+                ],
+                'earnings_by_month' => [],
+                'reservation_earnings' => [],
+                'withdrawals' => [],
+            ];
+        }
+
+        $reservationEarnings = Reservation::query()
+            ->where('artist_id', $user->id)
+            ->with(['client.clientProfile:id,user_id,first_name,last_name', 'service:id,title'])
+            ->latest('created_at')
+            ->limit(120)
+            ->get(['id', 'reservation_number', 'client_id', 'service_id', 'status', 'total_amount', 'commission_amount', 'artist_earnings', 'scheduled_at', 'created_at'])
+            ->map(function (Reservation $reservation): array {
+                $clientName = trim((string) (($reservation->client?->clientProfile?->first_name ?? '').' '.($reservation->client?->clientProfile?->last_name ?? '')));
+
+                return [
+                    'id' => $reservation->id,
+                    'reservation_number' => $reservation->reservation_number,
+                    'client_name' => $clientName !== '' ? $clientName : ($reservation->client?->email ?? 'N/A'),
+                    'service_title' => $reservation->service?->title,
+                    'status' => is_string($reservation->status) ? $reservation->status : $reservation->status->value,
+                    'total_amount' => (float) $reservation->total_amount,
+                    'commission_amount' => (float) $reservation->commission_amount,
+                    'artist_earnings' => (float) $reservation->artist_earnings,
+                    'scheduled_at' => $reservation->scheduled_at?->toIso8601String(),
+                    'created_at' => $reservation->created_at?->toIso8601String(),
+                ];
+            })
+            ->values()
+            ->all();
+
+        $earningsByMonth = Reservation::query()
+            ->where('artist_id', $user->id)
+            ->whereNotNull('created_at')
+            ->orderBy('created_at', 'desc')
+            ->get(['created_at', 'total_amount', 'commission_amount', 'artist_earnings'])
+            ->groupBy(fn (Reservation $reservation): string => $reservation->created_at?->format('Y-m') ?? now()->format('Y-m'))
+            ->map(function ($rows, string $month): array {
+                return [
+                    'month' => $month,
+                    'revenue' => (float) $rows->sum('total_amount'),
+                    'commissions' => (float) $rows->sum('commission_amount'),
+                    'net' => (float) $rows->sum('artist_earnings'),
+                ];
+            })
+            ->sortByDesc('month')
+            ->take(12)
+            ->values()
+            ->all();
+
+        $wallet = Wallet::query()->where('artist_id', $user->id)->first();
+        $withdrawals = collect();
+        if ($wallet) {
+            $withdrawals = Withdrawal::query()
+                ->where('wallet_id', $wallet->id)
+                ->latest('created_at')
+                ->limit(60)
+                ->get(['id', 'amount', 'fee', 'status', 'requested_at', 'processed_at', 'created_at'])
+                ->map(fn (Withdrawal $withdrawal): array => [
+                    'id' => $withdrawal->id,
+                    'amount' => (float) $withdrawal->amount,
+                    'fee' => (float) $withdrawal->fee,
+                    'status' => $withdrawal->status,
+                    'requested_at' => $withdrawal->requested_at?->toIso8601String(),
+                    'processed_at' => $withdrawal->processed_at?->toIso8601String(),
+                    'created_at' => $withdrawal->created_at?->toIso8601String(),
+                ]);
+        }
+
+        return [
+            'summary' => [
+                'gross_revenue' => (float) Reservation::query()->where('artist_id', $user->id)->sum('total_amount'),
+                'platform_commissions' => (float) Reservation::query()->where('artist_id', $user->id)->sum('commission_amount'),
+                'net_earnings' => (float) Reservation::query()->where('artist_id', $user->id)->sum('artist_earnings'),
+                'paid_withdrawals' => $wallet ? (float) Withdrawal::query()->where('wallet_id', $wallet->id)->where('status', 'completed')->sum('amount') : 0.0,
+                'pending_withdrawals' => $wallet ? (float) Withdrawal::query()->where('wallet_id', $wallet->id)->where('status', 'pending')->sum('amount') : 0.0,
+            ],
+            'earnings_by_month' => $earningsByMonth,
+            'reservation_earnings' => $reservationEarnings,
+            'withdrawals' => $withdrawals->values()->all(),
+        ];
     }
 }

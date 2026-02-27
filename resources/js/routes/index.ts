@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../wayfinder'
 /**
 * @see \Laravel\Fortify\Http\Controllers\AuthenticatedSessionController::login
 * @see vendor/laravel/fortify/src/Http/Controllers/AuthenticatedSessionController.php:47
@@ -380,7 +380,7 @@ dashboardForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 dashboard.form = dashboardForm
 
 /**
-* @see routes/web.php:85
+* @see routes/web.php:128
 * @route '/splash'
 */
 export const splash = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -394,7 +394,7 @@ splash.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:85
+* @see routes/web.php:128
 * @route '/splash'
 */
 splash.url = (options?: RouteQueryOptions) => {
@@ -402,7 +402,7 @@ splash.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:85
+* @see routes/web.php:128
 * @route '/splash'
 */
 splash.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -411,7 +411,7 @@ splash.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:85
+* @see routes/web.php:128
 * @route '/splash'
 */
 splash.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -420,7 +420,7 @@ splash.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:85
+* @see routes/web.php:128
 * @route '/splash'
 */
 const splashForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -429,7 +429,7 @@ const splashForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
 })
 
 /**
-* @see routes/web.php:85
+* @see routes/web.php:128
 * @route '/splash'
 */
 splashForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -438,7 +438,7 @@ splashForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:85
+* @see routes/web.php:128
 * @route '/splash'
 */
 splashForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -454,7 +454,7 @@ splashForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 splash.form = splashForm
 
 /**
-* @see routes/web.php:89
+* @see routes/web.php:132
 * @route '/onboarding'
 */
 export const onboarding = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -468,7 +468,7 @@ onboarding.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:89
+* @see routes/web.php:132
 * @route '/onboarding'
 */
 onboarding.url = (options?: RouteQueryOptions) => {
@@ -476,7 +476,7 @@ onboarding.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:89
+* @see routes/web.php:132
 * @route '/onboarding'
 */
 onboarding.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -485,7 +485,7 @@ onboarding.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see routes/web.php:89
+* @see routes/web.php:132
 * @route '/onboarding'
 */
 onboarding.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -494,7 +494,7 @@ onboarding.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see routes/web.php:89
+* @see routes/web.php:132
 * @route '/onboarding'
 */
 const onboardingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -503,7 +503,7 @@ const onboardingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'>
 })
 
 /**
-* @see routes/web.php:89
+* @see routes/web.php:132
 * @route '/onboarding'
 */
 onboardingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -512,7 +512,7 @@ onboardingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> =
 })
 
 /**
-* @see routes/web.php:89
+* @see routes/web.php:132
 * @route '/onboarding'
 */
 onboardingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

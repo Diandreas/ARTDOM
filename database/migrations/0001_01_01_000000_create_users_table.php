@@ -18,13 +18,13 @@ return new class extends Migration
             $table->string('password');
             $table->string('profile_photo')->nullable();
             $table->string('city')->nullable();
-            $table->enum('role', ['client', 'artist', 'admin'])->default('client');
+            $table->enum('role', ['client', 'artist', 'admin', 'super_admin'])->default('client');
             $table->boolean('is_active')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            
+
             $table->index('email');
             $table->index('phone');
             $table->index('role');
@@ -43,7 +43,7 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
-            
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

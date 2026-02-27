@@ -2,7 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { BarChart3, LogOut, ShieldCheck, Ticket, UserCheck, Users } from 'lucide-react';
+import { Banknote, BarChart3, Database, LogOut, ShieldCheck, ShoppingCart, Ticket, UserCheck, Users } from 'lucide-react';
 
 type AdminLayoutProps = PropsWithChildren<{
     title: string;
@@ -10,7 +10,8 @@ type AdminLayoutProps = PropsWithChildren<{
 }>;
 
 export default function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
-    const { url } = usePage();
+    const { url, props } = usePage<any>();
+    const currentRole = props?.auth?.user?.role;
 
     const navItems = [
         {
@@ -33,6 +34,25 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
             href: '/admin/users',
             icon: Users,
         },
+        {
+            label: 'Volet client',
+            href: '/admin/client-activity',
+            icon: ShoppingCart,
+        },
+        {
+            label: 'Stats financieres',
+            href: '/admin/financial-overview',
+            icon: Banknote,
+        },
+        ...(currentRole === 'super_admin'
+            ? [
+                {
+                    label: 'Super CRUD',
+                    href: '/admin/super-crud',
+                    icon: Database,
+                },
+            ]
+            : []),
     ];
 
     const isActive = (href: string): boolean => {

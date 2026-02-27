@@ -1,4 +1,4 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, applyUrlDefaults } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Client\ReservationController::index
 * @see app/Http/Controllers/Client/ReservationController.php:15
@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
-* @see app/Http/Controllers/Client/ReservationController.php:33
+* @see app/Http/Controllers/Client/ReservationController.php:103
 * @route '/client/reservations/{reservation}'
 */
 export const show = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -97,7 +97,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
-* @see app/Http/Controllers/Client/ReservationController.php:33
+* @see app/Http/Controllers/Client/ReservationController.php:103
 * @route '/client/reservations/{reservation}'
 */
 show.url = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -124,7 +124,7 @@ show.url = (args: { reservation: string | number } | [reservation: string | numb
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
-* @see app/Http/Controllers/Client/ReservationController.php:33
+* @see app/Http/Controllers/Client/ReservationController.php:103
 * @route '/client/reservations/{reservation}'
 */
 show.get = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -134,7 +134,7 @@ show.get = (args: { reservation: string | number } | [reservation: string | numb
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
-* @see app/Http/Controllers/Client/ReservationController.php:33
+* @see app/Http/Controllers/Client/ReservationController.php:103
 * @route '/client/reservations/{reservation}'
 */
 show.head = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -144,7 +144,7 @@ show.head = (args: { reservation: string | number } | [reservation: string | num
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
-* @see app/Http/Controllers/Client/ReservationController.php:33
+* @see app/Http/Controllers/Client/ReservationController.php:103
 * @route '/client/reservations/{reservation}'
 */
 const showForm = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -154,7 +154,7 @@ const showForm = (args: { reservation: string | number } | [reservation: string 
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
-* @see app/Http/Controllers/Client/ReservationController.php:33
+* @see app/Http/Controllers/Client/ReservationController.php:103
 * @route '/client/reservations/{reservation}'
 */
 showForm.get = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -164,7 +164,7 @@ showForm.get = (args: { reservation: string | number } | [reservation: string | 
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
-* @see app/Http/Controllers/Client/ReservationController.php:33
+* @see app/Http/Controllers/Client/ReservationController.php:103
 * @route '/client/reservations/{reservation}'
 */
 showForm.head = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -181,7 +181,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::cancel
-* @see app/Http/Controllers/Client/ReservationController.php:59
+* @see app/Http/Controllers/Client/ReservationController.php:158
 * @route '/client/reservations/{reservation}/cancel'
 */
 export const cancel = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -196,7 +196,7 @@ cancel.definition = {
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::cancel
-* @see app/Http/Controllers/Client/ReservationController.php:59
+* @see app/Http/Controllers/Client/ReservationController.php:158
 * @route '/client/reservations/{reservation}/cancel'
 */
 cancel.url = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -223,7 +223,7 @@ cancel.url = (args: { reservation: string | number } | [reservation: string | nu
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::cancel
-* @see app/Http/Controllers/Client/ReservationController.php:59
+* @see app/Http/Controllers/Client/ReservationController.php:158
 * @route '/client/reservations/{reservation}/cancel'
 */
 cancel.post = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -233,7 +233,7 @@ cancel.post = (args: { reservation: string | number } | [reservation: string | n
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::cancel
-* @see app/Http/Controllers/Client/ReservationController.php:59
+* @see app/Http/Controllers/Client/ReservationController.php:158
 * @route '/client/reservations/{reservation}/cancel'
 */
 const cancelForm = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -243,7 +243,7 @@ const cancelForm = (args: { reservation: string | number } | [reservation: strin
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::cancel
-* @see app/Http/Controllers/Client/ReservationController.php:59
+* @see app/Http/Controllers/Client/ReservationController.php:158
 * @route '/client/reservations/{reservation}/cancel'
 */
 cancelForm.post = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -255,7 +255,7 @@ cancel.form = cancelForm
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::review
-* @see app/Http/Controllers/Client/ReservationController.php:67
+* @see app/Http/Controllers/Client/ReservationController.php:195
 * @route '/client/reservations/{reservation}/review'
 */
 export const review = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -270,7 +270,7 @@ review.definition = {
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::review
-* @see app/Http/Controllers/Client/ReservationController.php:67
+* @see app/Http/Controllers/Client/ReservationController.php:195
 * @route '/client/reservations/{reservation}/review'
 */
 review.url = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -297,7 +297,7 @@ review.url = (args: { reservation: string | number } | [reservation: string | nu
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::review
-* @see app/Http/Controllers/Client/ReservationController.php:67
+* @see app/Http/Controllers/Client/ReservationController.php:195
 * @route '/client/reservations/{reservation}/review'
 */
 review.post = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -307,7 +307,7 @@ review.post = (args: { reservation: string | number } | [reservation: string | n
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::review
-* @see app/Http/Controllers/Client/ReservationController.php:67
+* @see app/Http/Controllers/Client/ReservationController.php:195
 * @route '/client/reservations/{reservation}/review'
 */
 const reviewForm = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -317,7 +317,7 @@ const reviewForm = (args: { reservation: string | number } | [reservation: strin
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::review
-* @see app/Http/Controllers/Client/ReservationController.php:67
+* @see app/Http/Controllers/Client/ReservationController.php:195
 * @route '/client/reservations/{reservation}/review'
 */
 reviewForm.post = (args: { reservation: string | number } | [reservation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

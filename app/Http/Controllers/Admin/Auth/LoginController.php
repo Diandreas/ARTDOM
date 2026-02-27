@@ -43,7 +43,7 @@ class LoginController extends Controller
         $request->session()->regenerate();
         $user = Auth::user();
 
-        if (! $user || $user->role !== UserRole::Admin) {
+        if (! $user || ! in_array($user->role, [UserRole::Admin, UserRole::SuperAdmin], true)) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

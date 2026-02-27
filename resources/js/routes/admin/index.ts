@@ -2,7 +2,13 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 import loginDf2c2a from './login'
 import artists from './artists'
 import tickets from './tickets'
+import moderation from './moderation'
+import reports from './reports'
+import broadcast from './broadcast'
+import clientActivity from './client-activity'
+import financialOverview from './financial-overview'
 import users from './users'
+import superCrud from './super-crud'
 /**
 * @see \App\Http\Controllers\Admin\Auth\LoginController::login
 * @see app/Http/Controllers/Admin/Auth/LoginController.php:18
@@ -227,7 +233,13 @@ const admin = {
     dashboard: Object.assign(dashboard, dashboard),
     artists: Object.assign(artists, artists),
     tickets: Object.assign(tickets, tickets),
+    moderation: Object.assign(moderation, moderation),
+    reports: Object.assign(reports, reports),
+    broadcast: Object.assign(broadcast, broadcast),
+    clientActivity: Object.assign(clientActivity, clientActivity),
+    financialOverview: Object.assign(financialOverview, financialOverview),
     users: Object.assign(users, users),
+    superCrud: Object.assign(superCrud, superCrud),
 }
 
 export default admin

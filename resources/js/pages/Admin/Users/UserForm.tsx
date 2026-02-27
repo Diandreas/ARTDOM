@@ -22,7 +22,7 @@ type InitialUser = {
     date_of_birth?: string | null;
     gender?: string | null;
     profile_photo?: string | null;
-    role?: 'client' | 'artist' | 'admin';
+    role?: 'client' | 'artist' | 'admin' | 'super_admin';
     status?: 'active' | 'pending' | 'suspended' | 'banned';
     stage_name?: string | null;
     category?: string | null;
@@ -49,7 +49,7 @@ export default function UserForm({ mode, endpoint, categories, user }: Props) {
         date_of_birth: user?.date_of_birth ?? '',
         gender: user?.gender ?? '',
         profile_photo: user?.profile_photo ?? '',
-        role: (user?.role ?? 'client') as 'client' | 'artist' | 'admin',
+        role: (user?.role ?? 'client') as 'client' | 'artist' | 'admin' | 'super_admin',
         status: (user?.status ?? 'active') as 'active' | 'pending' | 'suspended' | 'banned',
         stage_name: user?.stage_name ?? '',
         category: user?.category ?? '',
@@ -130,7 +130,7 @@ export default function UserForm({ mode, endpoint, categories, user }: Props) {
 
                     <div className="space-y-2">
                         <Label>Type compte *</Label>
-                        <Select value={form.data.role} onValueChange={(value) => form.setData('role', value as 'client' | 'artist' | 'admin')}>
+                        <Select value={form.data.role} onValueChange={(value) => form.setData('role', value as 'client' | 'artist' | 'admin' | 'super_admin')}>
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
@@ -138,6 +138,7 @@ export default function UserForm({ mode, endpoint, categories, user }: Props) {
                                 <SelectItem value="client">Client</SelectItem>
                                 <SelectItem value="artist">Artiste</SelectItem>
                                 <SelectItem value="admin">Admin</SelectItem>
+                                <SelectItem value="super_admin">Super admin</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

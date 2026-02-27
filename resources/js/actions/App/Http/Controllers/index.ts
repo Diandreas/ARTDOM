@@ -18,6 +18,7 @@ const Controllers = {
     Admin: Object.assign(Admin, Admin),
     Client: Object.assign(Client, Client),
     Artist: Object.assign(Artist, Artist),
+    CartController: Object.assign(CartController, CartController),
     ArtistController: Object.assign(ArtistController, ArtistController),
     ServiceController: Object.assign(ServiceController, ServiceController),
     ArtStreamController: Object.assign(ArtStreamController, ArtStreamController),
