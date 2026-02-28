@@ -43,6 +43,41 @@ show.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+    const showForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+        showForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+        showForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::show
 * @see app/Http/Controllers/Artist/ProfileController.php:31
@@ -114,6 +149,92 @@ update.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     method: 'put',
 })
 
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::update
+ * @see app/Http/Controllers/Artist/ProfileController.php:86
+ * @route '/artist/profile'
+ */
+    const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url({
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::update
+ * @see app/Http/Controllers/Artist/ProfileController.php:86
+ * @route '/artist/profile'
+ */
+        updateForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
+/**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+export const uploadAvatar = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadAvatar.url(options),
+    method: 'post',
+})
+
+uploadAvatar.definition = {
+    methods: ["post"],
+    url: '/artist/profile/avatar',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+uploadAvatar.url = (options?: RouteQueryOptions) => {
+    return uploadAvatar.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+uploadAvatar.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadAvatar.url(options),
+    method: 'post',
+})
+
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+    const uploadAvatarForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: uploadAvatar.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadAvatar
+ * @see app/Http/Controllers/Artist/ProfileController.php:121
+ * @route '/artist/profile/avatar'
+ */
+        uploadAvatarForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: uploadAvatar.url(options),
+            method: 'post',
+        })
+    
+    uploadAvatar.form = uploadAvatarForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::update
 * @see app/Http/Controllers/Artist/ProfileController.php:86
@@ -180,6 +301,27 @@ uploadMedia.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @route '/artist/profile/media'
+ */
+    const uploadMediaForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: uploadMedia.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
+ * @see app/Http/Controllers/Artist/ProfileController.php:153
+ * @route '/artist/profile/media'
+ */
+        uploadMediaForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: uploadMedia.url(options),
+            method: 'post',
+        })
+    
+    uploadMedia.form = uploadMediaForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::uploadMedia
 * @see app/Http/Controllers/Artist/ProfileController.php:123

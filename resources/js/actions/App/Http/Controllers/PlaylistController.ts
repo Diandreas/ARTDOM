@@ -32,7 +32,6 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
-
 /**
 * @see \App\Http\Controllers\PlaylistController::index
 * @see app/Http/Controllers/PlaylistController.php:14
@@ -43,7 +42,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\PlaylistController::index
 * @see app/Http/Controllers/PlaylistController.php:14
 * @route '/playlists'
@@ -53,7 +52,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
     method: 'get',
 })
 
-/**
+            /**
 * @see \App\Http\Controllers\PlaylistController::index
 * @see app/Http/Controllers/PlaylistController.php:14
 * @route '/playlists'
@@ -114,7 +113,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\PlaylistController::store
 * @see app/Http/Controllers/PlaylistController.php:38
 * @route '/playlists'
@@ -124,7 +123,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
     method: 'post',
 })
 
-/**
+            /**
 * @see \App\Http\Controllers\PlaylistController::store
 * @see app/Http/Controllers/PlaylistController.php:38
 * @route '/playlists'
@@ -161,23 +160,23 @@ show.url = (args: { playlist: string | { id: string } } | [playlist: string | { 
         args = { playlist: args }
     }
 
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { playlist: args.id }
-    }
-
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { playlist: args.id }
+        }
+    
     if (Array.isArray(args)) {
         args = {
-            playlist: args[0],
-        }
+                    playlist: args[0],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        playlist: typeof args.playlist === 'object'
-        ? args.playlist.id
-        : args.playlist,
-    }
+                        playlist: typeof args.playlist === 'object'
+                ? args.playlist.id
+                : args.playlist,
+                }
 
     return show.definition.url
             .replace('{playlist}', parsedArgs.playlist.toString())
@@ -193,7 +192,6 @@ show.get = (args: { playlist: string | { id: string } } | [playlist: string | { 
     url: show.url(args, options),
     method: 'get',
 })
-
 /**
 * @see \App\Http\Controllers\PlaylistController::show
 * @see app/Http/Controllers/PlaylistController.php:59
@@ -204,7 +202,7 @@ show.head = (args: { playlist: string | { id: string } } | [playlist: string | {
     method: 'head',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\PlaylistController::show
 * @see app/Http/Controllers/PlaylistController.php:59
 * @route '/playlists/{playlist}'
@@ -214,7 +212,7 @@ const showForm = (args: { playlist: string | { id: string } } | [playlist: strin
     method: 'get',
 })
 
-/**
+            /**
 * @see \App\Http\Controllers\PlaylistController::show
 * @see app/Http/Controllers/PlaylistController.php:59
 * @route '/playlists/{playlist}'
@@ -266,23 +264,23 @@ destroy.url = (args: { playlist: string | { id: string } } | [playlist: string |
         args = { playlist: args }
     }
 
-    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-        args = { playlist: args.id }
-    }
-
+            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+            args = { playlist: args.id }
+        }
+    
     if (Array.isArray(args)) {
         args = {
-            playlist: args[0],
-        }
+                    playlist: args[0],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        playlist: typeof args.playlist === 'object'
-        ? args.playlist.id
-        : args.playlist,
-    }
+                        playlist: typeof args.playlist === 'object'
+                ? args.playlist.id
+                : args.playlist,
+                }
 
     return destroy.definition.url
             .replace('{playlist}', parsedArgs.playlist.toString())
@@ -299,7 +297,7 @@ destroy.delete = (args: { playlist: string | { id: string } } | [playlist: strin
     method: 'delete',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\PlaylistController::destroy
 * @see app/Http/Controllers/PlaylistController.php:129
 * @route '/playlists/{playlist}'
@@ -314,7 +312,7 @@ const destroyForm = (args: { playlist: string | { id: string } } | [playlist: st
     method: 'post',
 })
 
-/**
+            /**
 * @see \App\Http\Controllers\PlaylistController::destroy
 * @see app/Http/Controllers/PlaylistController.php:129
 * @route '/playlists/{playlist}'
@@ -354,21 +352,21 @@ addTrack.definition = {
 addTrack.url = (args: { playlist: string | { id: string }, track: string | { id: string } } | [playlist: string | { id: string }, track: string | { id: string } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
-            playlist: args[0],
-            track: args[1],
-        }
+                    playlist: args[0],
+                    track: args[1],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        playlist: typeof args.playlist === 'object'
-        ? args.playlist.id
-        : args.playlist,
-        track: typeof args.track === 'object'
-        ? args.track.id
-        : args.track,
-    }
+                        playlist: typeof args.playlist === 'object'
+                ? args.playlist.id
+                : args.playlist,
+                                track: typeof args.track === 'object'
+                ? args.track.id
+                : args.track,
+                }
 
     return addTrack.definition.url
             .replace('{playlist}', parsedArgs.playlist.toString())
@@ -386,7 +384,7 @@ addTrack.post = (args: { playlist: string | { id: string }, track: string | { id
     method: 'post',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\PlaylistController::addTrack
 * @see app/Http/Controllers/PlaylistController.php:93
 * @route '/playlists/{playlist}/tracks/{track}'
@@ -396,7 +394,7 @@ const addTrackForm = (args: { playlist: string | { id: string }, track: string |
     method: 'post',
 })
 
-/**
+            /**
 * @see \App\Http\Controllers\PlaylistController::addTrack
 * @see app/Http/Controllers/PlaylistController.php:93
 * @route '/playlists/{playlist}/tracks/{track}'
@@ -431,21 +429,21 @@ removeTrack.definition = {
 removeTrack.url = (args: { playlist: string | { id: string }, track: string | { id: string } } | [playlist: string | { id: string }, track: string | { id: string } ], options?: RouteQueryOptions) => {
     if (Array.isArray(args)) {
         args = {
-            playlist: args[0],
-            track: args[1],
-        }
+                    playlist: args[0],
+                    track: args[1],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        playlist: typeof args.playlist === 'object'
-        ? args.playlist.id
-        : args.playlist,
-        track: typeof args.track === 'object'
-        ? args.track.id
-        : args.track,
-    }
+                        playlist: typeof args.playlist === 'object'
+                ? args.playlist.id
+                : args.playlist,
+                                track: typeof args.track === 'object'
+                ? args.track.id
+                : args.track,
+                }
 
     return removeTrack.definition.url
             .replace('{playlist}', parsedArgs.playlist.toString())
@@ -463,7 +461,7 @@ removeTrack.delete = (args: { playlist: string | { id: string }, track: string |
     method: 'delete',
 })
 
-/**
+    /**
 * @see \App\Http\Controllers\PlaylistController::removeTrack
 * @see app/Http/Controllers/PlaylistController.php:117
 * @route '/playlists/{playlist}/tracks/{track}'
@@ -478,7 +476,7 @@ const removeTrackForm = (args: { playlist: string | { id: string }, track: strin
     method: 'post',
 })
 
-/**
+            /**
 * @see \App\Http\Controllers\PlaylistController::removeTrack
 * @see app/Http/Controllers/PlaylistController.php:117
 * @route '/playlists/{playlist}/tracks/{track}'

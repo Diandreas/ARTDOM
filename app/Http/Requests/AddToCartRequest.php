@@ -30,6 +30,10 @@ class AddToCartRequest extends FormRequest
             'customization.message' => 'nullable|string|max:500',
             'customization.location_type' => 'nullable|string|in:home,online,public',
             'customization.location_address' => 'nullable|string|max:500',
+            'customization.relation_type' => 'nullable|string',
+            'customization.file_url' => 'nullable|string',
+            'selected_options' => 'nullable|array',
+            'selected_options.*' => 'uuid|exists:service_options,id',
             'scheduled_at' => 'required|date|after:now',
         ];
     }

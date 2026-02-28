@@ -11,8 +11,9 @@ import PlaylistController from './PlaylistController'
 import Stream from './Stream'
 import BookingController from './BookingController'
 import ConversationController from './ConversationController'
+import NotificationController from './NotificationController'
+import SupportController from './SupportController'
 import Settings from './Settings'
-
 const Controllers = {
     HomeController: Object.assign(HomeController, HomeController),
     Admin: Object.assign(Admin, Admin),

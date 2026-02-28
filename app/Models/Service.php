@@ -88,6 +88,14 @@ class Service extends Model
     }
 
     /**
+     * Relation : Un Service peut avoir PLUSIEURS Options
+     */
+    public function serviceOptions(): HasMany
+    {
+        return $this->hasMany(ServiceOption::class);
+    }
+
+    /**
      * Scopes pour filtrer les services
      */
     public function scopeActive($query)

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { User, Send, ChevronLeft, Calendar } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Message {
     id: string;
@@ -24,6 +24,7 @@ interface Conversation {
 export default function MessagesShow({ auth, conversation }: { auth: any, conversation: Conversation }) {
     const user = auth.user;
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [localMessages, setLocalMessages] = useState<Message[]>(conversation.messages);
 
     const other = conversation.participants.find(p => p.id !== user.id);
 
@@ -37,7 +38,25 @@ export default function MessagesShow({ auth, conversation }: { auth: any, conver
 
     useEffect(() => {
         scrollToBottom();
-    }, [conversation.messages]);
+    }, [localMessages]);
+
+    useEffect(() => {
+        // Only works if Laravel Echo is configured globally as window.Echo
+        if (typeof window !== 'undefined' && (window as any).Echo) {
+            const channel = (window as any).Echo.private(`conversation.${conversation.id}`);
+
+            channel.listen('MessageSent', (e: any) => {
+                setLocalMessages(prev => [...prev, e.message]);
+
+                // If the message is from the other person, mark it as read optionally via an API call
+            });
+
+            return () => {
+                channel.stopListening('MessageSent');
+                (window as any).Echo.leave(`conversation.${conversation.id}`);
+            };
+        }
+    }, [conversation.id]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,13 +105,13 @@ export default function MessagesShow({ auth, conversation }: { auth: any, conver
 
                 {/* Messages Area */}
                 <div className="flex-1 overflow-y-auto space-y-4 p-2 mb-4 scrollbar-hide">
-                    {conversation.messages.map((msg) => {
+                    {localMessages.map((msg) => {
                         const isMe = msg.sender_id === user.id;
                         return (
                             <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[80%] md:max-w-[70%] rounded-2xl p-3 px-4 ${isMe
-                                        ? 'bg-primary text-primary-foreground rounded-tr-none'
-                                        : 'bg-muted text-foreground rounded-tl-none'
+                                    ? 'bg-primary text-primary-foreground rounded-tr-none'
+                                    : 'bg-muted text-foreground rounded-tl-none'
                                     } shadow-sm`}>
                                     <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
                                     <p className={`text-[10px] mt-1 text-right ${isMe ? 'opacity-70' : 'text-muted-foreground'}`}>

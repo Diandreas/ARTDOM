@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useAudio } from '@/contexts/AudioContext';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { usePage } from '@inertiajs/react';
 import {
     Sheet,
     SheetContent,
@@ -24,7 +23,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ListMusic, X, Play, Pause, Trash2, Save, Music } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { router, useForm } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { toast } from 'sonner';
 
 interface QueueSidebarProps {
@@ -35,61 +34,10 @@ export default function QueueSidebar({ trigger }: QueueSidebarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
     const [isCreatingPlaylist, setIsCreatingPlaylist] = useState(false);
+    const [formData, setFormData] = useState({ title: '', is_public: false });
     const { queue, currentTrack, isPlaying, playTrack, clearQueue } = useAudio();
-    const page = usePage();
-
-    const createForm = useForm({
-        title: '',
-        is_public: false,
-    });
-
-    // Watch for playlist creation success
-    useEffect(() => {
-        const flashPlaylist = (page.props as any).playlist;
-
-        if (flashPlaylist && isCreatingPlaylist) {
-            const playlistId = flashPlaylist.id;
-            const playlistTitle = flashPlaylist.title;
-
-            // Add all tracks to the newly created playlist
-            const addTracksSequentially = async () => {
-                let successCount = 0;
-
-                for (const track of queue) {
-                    try {
-                        await new Promise<void>((resolve) => {
-                            router.post(
-                                `/playlists/${playlistId}/tracks/${track.id}`,
-                                {},
-                                {
-                                    preserveScroll: true,
-                                    onSuccess: () => {
-                                        successCount++;
-                                        resolve();
-                                    },
-                                    onError: () => resolve(), // Continue even if one fails
-                                }
-                            );
-                        });
-                    } catch (error) {
-                        console.error('Failed to add track:', error);
-                    }
-                }
-
-                toast.success(`Playlist "${playlistTitle}" créée avec ${successCount} titres`);
-                setIsSaveDialogOpen(false);
-                setIsCreatingPlaylist(false);
-                createForm.reset();
-
-                // Navigate to the new playlist
-                setTimeout(() => {
-                    router.visit(`/playlists/${playlistId}`);
-                }, 500);
-            };
-
-            addTracksSequentially();
-        }
-    }, [(page.props as any).playlist, isCreatingPlaylist]);
+    const queueRef = useRef(queue);
+    queueRef.current = queue;
 
     const formatDuration = (seconds?: number) => {
         if (!seconds || isNaN(seconds)) return '0:00';
@@ -111,16 +59,60 @@ export default function QueueSidebar({ trigger }: QueueSidebarProps) {
             return;
         }
 
-        if (!createForm.data.title.trim()) {
+        if (!formData.title.trim()) {
             toast.error('Veuillez entrer un nom pour la playlist');
             return;
         }
 
         setIsCreatingPlaylist(true);
 
-        // Use Inertia's form to create playlist with CSRF handling
-        createForm.post('/playlists', {
+        router.post('/playlists', formData, {
             preserveScroll: true,
+            onSuccess: (page) => {
+                const flashPlaylist = (page.props as any).playlist;
+
+                if (!flashPlaylist) {
+                    setIsCreatingPlaylist(false);
+                    return;
+                }
+
+                const playlistId = flashPlaylist.id;
+                const playlistTitle = flashPlaylist.title;
+                const tracksToAdd = [...queueRef.current];
+
+                const addTracksSequentially = async () => {
+                    let successCount = 0;
+
+                    for (const track of tracksToAdd) {
+                        try {
+                            await new Promise<void>((resolve) => {
+                                router.post(
+                                    `/playlists/${playlistId}/tracks/${track.id}`,
+                                    {},
+                                    {
+                                        preserveScroll: true,
+                                        onSuccess: () => { successCount++; resolve(); },
+                                        onError: () => resolve(),
+                                    },
+                                );
+                            });
+                        } catch (error) {
+                            console.error('Failed to add track:', error);
+                        }
+                    }
+
+                    toast.success(`Playlist "${playlistTitle}" créée avec ${successCount} titres`);
+                    setIsSaveDialogOpen(false);
+                    setIsCreatingPlaylist(false);
+                    setFormData({ title: '', is_public: false });
+
+                    setTimeout(() => {
+                        router.visit(`/playlists/${playlistId}`);
+                    }, 500);
+                };
+
+                addTracksSequentially();
+            },
             onError: (errors) => {
                 console.error('Failed to create playlist:', errors);
                 toast.error('Erreur lors de la création de la playlist');
@@ -288,8 +280,8 @@ export default function QueueSidebar({ trigger }: QueueSidebarProps) {
                                 <Input
                                     id="playlist-title"
                                     placeholder="Ma file d'attente..."
-                                    value={createForm.data.title}
-                                    onChange={(e) => createForm.setData('title', e.target.value)}
+                                    value={formData.title}
+                                    onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
                                     autoFocus
                                 />
                             </div>
@@ -302,8 +294,8 @@ export default function QueueSidebar({ trigger }: QueueSidebarProps) {
                                 </div>
                                 <Switch
                                     id="playlist-public"
-                                    checked={createForm.data.is_public}
-                                    onCheckedChange={(checked) => createForm.setData('is_public', checked)}
+                                    checked={formData.is_public}
+                                    onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, is_public: checked }))}
                                 />
                             </div>
                         </div>
@@ -315,7 +307,7 @@ export default function QueueSidebar({ trigger }: QueueSidebarProps) {
                             >
                                 Annuler
                             </Button>
-                            <Button type="submit" disabled={!createForm.data.title}>
+                            <Button type="submit" disabled={!formData.title}>
                                 Créer la playlist
                             </Button>
                         </DialogFooter>

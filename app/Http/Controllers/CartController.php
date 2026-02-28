@@ -28,10 +28,20 @@ class CartController extends Controller
 
         $cart->load([
             'items.service.artist.artistProfile',
+            'items.service.serviceOptions',
             'coupon',
         ]);
 
         $items = $cart->items->map(function ($item) {
+            $selectedOptions = [];
+            if (!empty($item->customization['selected_options'])) {
+                $selectedOptions = $item->service->serviceOptions
+                    ->whereIn('id', $item->customization['selected_options'])
+                    ->map(fn($opt) => ['id' => $opt->id, 'name' => $opt->name, 'price' => $opt->price])
+                    ->values()
+                    ->toArray();
+            }
+
             return [
                 'id' => $item->id,
                 'service' => [
@@ -47,6 +57,7 @@ class CartController extends Controller
                 'unit_price' => (float) $item->unit_price,
                 'subtotal' => $item->getSubtotal(),
                 'customization' => $item->customization,
+                'selected_options_details' => $selectedOptions,
                 'scheduled_at' => $item->scheduled_at?->format('d/m/Y H:i'),
             ];
         });
@@ -82,14 +93,25 @@ class CartController extends Controller
             ['total_amount' => 0]
         );
 
-        $service = Service::findOrFail($validated['service_id']);
+        $service = Service::with('serviceOptions')->findOrFail($validated['service_id']);
+
+        $optionsTotal = 0;
+        $selectedOptions = [];
+        if (!empty($validated['selected_options'])) {
+            $options = $service->serviceOptions->whereIn('id', $validated['selected_options']);
+            $optionsTotal = $options->sum('price');
+            $selectedOptions = $options->pluck('id')->toArray();
+        }
+
+        $customization = $validated['customization'] ?? [];
+        $customization['selected_options'] = $selectedOptions;
 
         // Créer l'item
         $cart->items()->create([
             'service_id' => $service->id,
             'quantity' => $validated['quantity'],
-            'unit_price' => $service->price,
-            'customization' => $validated['customization'] ?? null,
+            'unit_price' => $service->price + $optionsTotal,
+            'customization' => $customization,
             'scheduled_at' => $validated['scheduled_at'],
         ]);
 

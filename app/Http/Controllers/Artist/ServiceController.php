@@ -29,8 +29,13 @@ class ServiceController extends Controller
         $artist = Auth::user();
 
         $services = Service::where('artist_id', $artist->id)
+            ->with('serviceOptions')
             ->orderBy('order')
-            ->get();
+            ->get()->map(function ($service) {
+                $data = $service->toArray();
+                $data['options'] = $service->serviceOptions;
+                return $data;
+            });
 
         return Inertia::render('Artist/Services', [
             'services' => $services,
@@ -71,11 +76,31 @@ class ServiceController extends Controller
         // Déterminer l'ordre (dernier + 1)
         $maxOrder = Service::where('artist_id', $artist->id)->max('order') ?? 0;
 
-        Service::create([
+        $service = Service::create([
             'artist_id' => $artist->id,
-            ...$validated,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'category' => $validated['category'],
+            'price' => $validated['price'],
+            'price_type' => $validated['price_type'],
+            'duration_minutes' => $validated['duration_minutes'],
+            'notice_period_hours' => $validated['notice_period_hours'],
+            'location_type' => $validated['location_type'],
+            'options' => [], // Clear the JSON options
+            'media_urls' => $validated['media_urls'] ?? null,
             'order' => $maxOrder + 1,
         ]);
+
+        if (!empty($validated['options'])) {
+            foreach ($validated['options'] as $option) {
+                $service->serviceOptions()->create([
+                    'name' => $option['name'],
+                    'description' => $option['description'] ?? null,
+                    'price' => $option['price'],
+                    'is_active' => $option['is_active'] ?? true,
+                ]);
+            }
+        }
 
         return redirect()->route('artist.services.index')->with('message', 'Service créé avec succès.');
     }
@@ -106,7 +131,34 @@ class ServiceController extends Controller
             'media_urls' => ['nullable', 'array'],
         ]);
 
-        $service->update($validated);
+        $service->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'category' => $validated['category'],
+            'price' => $validated['price'],
+            'price_type' => $validated['price_type'],
+            'duration_minutes' => $validated['duration_minutes'],
+            'notice_period_hours' => $validated['notice_period_hours'],
+            'location_type' => $validated['location_type'],
+            'options' => [], // We use the relation now
+            'media_urls' => $validated['media_urls'] ?? null,
+        ]);
+
+        // Sync options
+        // This is a simple sync: delete all and recreate
+        // In reality, updating existing would be better if IDs were provided and matched, but deleting is quicker for nested arrays
+        $service->serviceOptions()->delete();
+        
+        if (!empty($validated['options'])) {
+            foreach ($validated['options'] as $option) {
+                $service->serviceOptions()->create([
+                    'name' => $option['name'],
+                    'description' => $option['description'] ?? null,
+                    'price' => $option['price'],
+                    'is_active' => $option['is_active'] ?? true,
+                ]);
+            }
+        }
 
         return back()->with('message', 'Service mis à jour avec succès.');
     }

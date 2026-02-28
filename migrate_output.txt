@@ -1,0 +1,68 @@
+
+  Dropping all tables  14.81ms DONE
+
+   INFO  Preparing database.  
+
+  Creating migration table  13.34ms DONE
+
+   INFO  Running migrations.  
+
+  0001_01_01_000000_create_users_table  173.43ms DONE
+  0001_01_01_000001_create_cache_table  25.85ms DONE
+  0001_01_01_000002_create_jobs_table  137.11ms DONE
+  2025_08_14_170933_add_two_factor_columns_to_users_table  32.76ms DONE
+  2026_02_12_040539_create_client_profiles_table  27.93ms DONE
+  2026_02_12_040625_create_artist_profiles_table  52.51ms DONE
+  2026_02_12_040635_create_services_table  137.57ms DONE
+  2026_02_12_040945_create_availabilities_table  144.73ms DONE
+  2026_02_12_042020_create_stories_table  26.58ms DONE
+  2026_02_12_042026_create_reservations_table  73.89ms DONE
+  2026_02_12_042034_create_carts_table  143.68ms DONE
+  2026_02_12_042041_create_cart_items_table  19.44ms DONE
+  2026_02_12_042049_create_coupons_table  128.39ms DONE
+  2026_02_12_042054_create_payments_table  40.99ms DONE
+  2026_02_12_042247_create_client_subscriptions_table  45.83ms DONE
+  2026_02_12_042247_create_wallets_table  23.50ms DONE
+  2026_02_12_042248_create_conversations_table  109.00ms DONE
+  2026_02_12_042248_create_wallet_transactions_table  49.39ms DONE
+  2026_02_12_042248_create_withdrawals_table  24.70ms DONE
+  2026_02_12_042945_create_conversation_user_table  10.62ms DONE
+  2026_02_12_042945_create_messages_table  28.53ms DONE
+  2026_02_12_042946_create_notifications_table  10.38ms DONE
+  2026_02_12_042946_create_reviews_table  544.01ms DONE
+  2026_02_12_042946_create_tickets_table  44.55ms DONE
+  2026_02_12_043029_create_albums_table  45.29ms DONE
+  2026_02_12_043030_create_playlists_table  13.98ms DONE
+  2026_02_12_043031_create_tracks_table  122.59ms DONE
+  2026_02_12_043032_create_playlist_track_table  14.48ms DONE
+  2026_02_12_043035_create_videos_table  146.88ms DONE
+  2026_02_12_045313_create_album_purchases_table  42.29ms DONE
+  2026_02_12_045313_create_artist_followers_table  11.84ms DONE
+  2026_02_12_045314_create_video_comments_table  119.32ms DONE
+  2026_02_15_025754_update_payment_methods_enum_in_payments_table  456.31ms DONE
+  2026_02_15_140136_create_favorites_table  34.90ms DONE
+  2026_02_16_104429_add_name_to_users_table  9.31ms DONE
+  2026_02_24_000636_create_attachments_table  7.08ms DONE
+  2026_02_24_000636_create_conversations_table  19.80ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[HY000]: General error: 1 table "conversations" already exists (Connection: sqlite, Database: D:\project\ARTDOM\database\database.sqlite, SQL: create table "conversations" ("id" integer primary key autoincrement not null, "created_at" datetime, "updated_at" datetime))
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:838
+    834▕             $exceptionType = $this->isUniqueConstraintError($e)
+    835▕                 ? UniqueConstraintViolationException::class
+    836▕                 : QueryException::class;
+    837▕ 
+  ➜ 838▕             throw new $exceptionType(
+    839▕                 $this->getNameWithReadWriteType(),
+    840▕                 $query,
+    841▕                 $this->prepareBindings($bindings),
+    842▕                 $e,
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:578
+      PDOException::("SQLSTATE[HY000]: General error: 1 table "conversations" already exists")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:578
+      PDO::prepare("create table "conversations" ("id" integer primary key autoincrement not null, "created_at" datetime, "updated_at" datetime)")
+

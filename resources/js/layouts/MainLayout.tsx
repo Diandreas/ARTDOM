@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import { home, login, register, logout } from '@/routes';
 import profile from '@/routes/profile';
 import { Button } from '@/components/ui/button';
@@ -12,9 +12,10 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Search, Menu, User, LogOut, Settings, Home, Music, Grid } from 'lucide-react';
+import { Search, Menu, User, LogOut, Settings, Home, Music, Grid, Bell, Calendar } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const user = (usePage().props as any).auth.user;
@@ -27,6 +28,42 @@ export default function MainLayout({ children }: PropsWithChildren) {
         }
         return url.startsWith(path);
     };
+
+    const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+    useEffect(() => {
+        if (user && typeof window !== 'undefined' && (window as any).Echo) {
+            const channel = (window as any).Echo.private(`App.Models.User.${user.id}`);
+
+            channel.notification((notification: any) => {
+                setUnreadNotifications(prev => prev + 1);
+
+                toast.info(
+                    notification.type === 'new_message'
+                        ? `Nouveau message de ${notification.sender_name}`
+                        : 'Nouvelle notification',
+                    {
+                        description: notification.content || '',
+                        action: {
+                            label: 'Voir',
+                            onClick: () => {
+                                if (notification.type === 'new_message' && notification.conversation_id) {
+                                    window.location.href = `/messages/${notification.conversation_id}`;
+                                } else {
+                                    window.location.href = '/notifications';
+                                }
+                            }
+                        }
+                    }
+                );
+            });
+
+            return () => {
+                channel.stopListening('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated');
+                (window as any).Echo.leave(`App.Models.User.${user.id}`);
+            };
+        }
+    }, [user]);
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans">
@@ -110,6 +147,15 @@ export default function MainLayout({ children }: PropsWithChildren) {
                             <Search className="h-5 w-5" />
                         </Button>
 
+                        {user && (
+                            <Link href="/notifications" className="relative hidden sm:flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted text-foreground transition-colors">
+                                <Bell className="h-5 w-5" />
+                                {unreadNotifications > 0 && (
+                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-background"></span>
+                                )}
+                            </Link>
+                        )}
+
                         {user ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -134,6 +180,18 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                         <Link href={profile.edit()} className="cursor-pointer">
                                             <User className="mr-2 h-4 w-4" />
                                             <span>Profil</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/library" className="cursor-pointer">
+                                            <Music className="mr-2 h-4 w-4" />
+                                            <span>Ma Bibliothèque</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/reservations" className="cursor-pointer">
+                                            <Calendar className="mr-2 h-4 w-4" />
+                                            <span>Mes réservations</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
@@ -184,27 +242,24 @@ export default function MainLayout({ children }: PropsWithChildren) {
                 <nav className="flex items-center justify-around h-16">
                     <Link
                         href={home()}
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                            isActive('/') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                        }`}
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                            }`}
                     >
                         <Home className="h-5 w-5" />
                         <span>Accueil</span>
                     </Link>
                     <Link
                         href="/artists"
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                            isActive('/artists') || isActive('/artist') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                        }`}
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/artists') || isActive('/artist') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                            }`}
                     >
                         <Search className="h-5 w-5" />
                         <span>Artistes</span>
                     </Link>
                     <Link
                         href="/artstream"
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                            isActive('/artstream') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                        }`}
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/artstream') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                            }`}
                     >
                         <Music className="h-5 w-5" />
                         <span>ArtStream</span>
@@ -212,9 +267,8 @@ export default function MainLayout({ children }: PropsWithChildren) {
                     {user ? (
                         <Link
                             href="/dashboard"
-                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                                isActive('/dashboard') || isActive('/client') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                            }`}
+                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/dashboard') || isActive('/client') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                                }`}
                         >
                             <Grid className="h-5 w-5" />
                             <span>Dashboard</span>
@@ -222,9 +276,8 @@ export default function MainLayout({ children }: PropsWithChildren) {
                     ) : (
                         <Link
                             href="/register/selection"
-                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                                isActive('/register') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                            }`}
+                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/register') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                                }`}
                         >
                             <Grid className="h-5 w-5" />
                             <span>Inscription</span>

@@ -3,6 +3,7 @@ import MainLayout from '@/layouts/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { User, MessageSquare, Clock } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface Conversation {
     id: string;
@@ -14,10 +15,52 @@ interface Conversation {
 
 export default function MessagesIndex({ auth, conversations }: { auth: any, conversations: Conversation[] }) {
     const user = auth.user;
+    const [localConversations, setLocalConversations] = useState<Conversation[]>(conversations);
 
     const getOtherParticipant = (conversation: Conversation) => {
         return conversation.participants.find(p => p.id !== user.id);
     };
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && (window as any).Echo) {
+            localConversations.forEach(conversation => {
+                const channelName = `conversation.${conversation.id}`;
+                const channel = (window as any).Echo.private(channelName);
+
+                channel.listen('MessageSent', (e: any) => {
+                    const message = e.message;
+                    setLocalConversations(prev => {
+                        const newConvos = [...prev];
+                        const idx = newConvos.findIndex(c => c.id === conversation.id);
+                        if (idx !== -1) {
+                            newConvos[idx] = { ...newConvos[idx] };
+                            newConvos[idx].last_message = message.content;
+                            newConvos[idx].last_message_at = message.sent_at;
+
+                            // Increment unread if message not from us
+                            if (message.sender_id !== user.id) {
+                                const otherIdx = newConvos[idx].participants.findIndex(p => p.id !== user.id);
+                                if (otherIdx !== -1) {
+                                    const other = { ...newConvos[idx].participants[otherIdx] };
+                                    other.pivot = { ...other.pivot, unread_count: (other.pivot?.unread_count || 0) + 1 };
+                                    newConvos[idx].participants[otherIdx] = other;
+                                }
+                            }
+                        }
+
+                        // Sort by last_message_at desc
+                        return newConvos.sort((a, b) => new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime());
+                    });
+                });
+            });
+
+            return () => {
+                localConversations.forEach(conversation => {
+                    (window as any).Echo.leave(`conversation.${conversation.id}`);
+                });
+            };
+        }
+    }, [conversations]); // Dependency array: only rebind if initial conversations prop changes
 
     return (
         <MainLayout>
@@ -29,10 +72,9 @@ export default function MessagesIndex({ auth, conversations }: { auth: any, conv
                 </div>
 
                 <div className="space-y-4">
-                    {conversations.length > 0 ? (
-                        conversations.map((conversation) => {
+                    {localConversations.length > 0 ? (
+                        localConversations.map((conversation) => {
                             const other = getOtherParticipant(conversation);
-                            const lastMessage = conversation.messages[0];
                             const unreadCount = other?.pivot?.unread_count || 0;
 
                             return (

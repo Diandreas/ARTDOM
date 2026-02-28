@@ -44,6 +44,41 @@ show.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+    const showForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+        showForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\Artist\ProfileController::show
+ * @see app/Http/Controllers/Artist/ProfileController.php:31
+ * @route '/artist/profile'
+ */
+        showForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
 /**
 * @see \App\Http\Controllers\Artist\ProfileController::show
 * @see app/Http/Controllers/Artist/ProfileController.php:31

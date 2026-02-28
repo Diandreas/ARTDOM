@@ -110,12 +110,94 @@ class Wallet extends Model
     }
 
     /**
+     * Ajoute un montant au solde en attente (ex: réservation payée mais non terminée)
+     */
+    public function addPending(float $amount, string $source, ?string $referenceId = null): WalletTransaction
+    {
+        $commissionRate = config('artdom.commission_rate', 0.15); // 15% par défaut
+        $commission = $amount * $commissionRate;
+        $netAmount = $amount - $commission;
+
+        $this->pending_balance += $netAmount;
+        $this->save();
+
+        return $this->transactions()->create([
+            'type' => 'pending_'.$source,
+            'amount' => $amount,
+            'commission' => $commission,
+            'net_amount' => $netAmount,
+            'source' => $source,
+            'reference_id' => $referenceId,
+            'balance_after' => $this->balance, // Le solde principal ne change pas
+            'note' => 'Montant mis en attente',
+        ]);
+    }
+
+    /**
      * Libère un montant du solde en attente vers le solde disponible
      * Utilisé quand une réservation est complétée
      */
-    public function release(string $reservationId): void
+    public function release(string $reservationId): ?WalletTransaction
     {
-        // Logique à implémenter : transférer de pending_balance vers balance
-        // Cette méthode sera complétée avec la logique métier
+        // Trouver la transaction "pending" correspondante
+        $pendingTx = $this->transactions()
+            ->where('reference_id', $reservationId)
+            ->where('type', 'like', 'pending_%')
+            ->first();
+
+        if (!$pendingTx) {
+            return null;
+        }
+
+        // Transférer du pending_balance vers balance
+        $netAmount = $pendingTx->net_amount;
+        
+        $this->pending_balance = max(0, $this->pending_balance - $netAmount);
+        $this->balance += $netAmount;
+        $this->save();
+
+        // Créer la transaction de libération (release)
+        $source = str_replace('pending_', '', $pendingTx->type);
+        
+        return $this->transactions()->create([
+            'type' => 'credit_'.$source,
+            'amount' => $pendingTx->amount,
+            'commission' => $pendingTx->commission,
+            'net_amount' => $netAmount,
+            'source' => $source,
+            'reference_id' => $reservationId,
+            'balance_after' => $this->balance,
+            'note' => 'Fonds libérés suite à la complétion',
+        ]);
+    }
+
+    /**
+     * Annule une transaction en attente (ex: réservation annulée)
+     */
+    public function cancelPending(string $reservationId): ?WalletTransaction
+    {
+        $pendingTx = $this->transactions()
+            ->where('reference_id', $reservationId)
+            ->where('type', 'like', 'pending_%')
+            ->first();
+
+        if (!$pendingTx) {
+            return null;
+        }
+
+        $netAmount = $pendingTx->net_amount;
+        $this->pending_balance = max(0, $this->pending_balance - $netAmount);
+        $this->save();
+
+        return $this->transactions()->create([
+            'type' => 'cancel_pending',
+            'amount' => $pendingTx->amount,
+            'commission' => $pendingTx->commission,
+            'net_amount' => -$netAmount, // Négatif car ça annule une promesse
+            'source' => str_replace('pending_', '', $pendingTx->type),
+            'reference_id' => $reservationId,
+            'balance_after' => $this->balance,
+            'note' => 'Annulation des fonds en attente',
+        ]);
     }
 }

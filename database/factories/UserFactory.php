@@ -24,6 +24,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->optional(0.8)->regexify('\+225[0-9]{10}'),
             'password' => static::$password ??= Hash::make('password'),
@@ -38,6 +39,16 @@ class UserFactory extends Factory
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ];
+    }
+
+    /**
+     * Indicate that the user is a client.
+     */
+    public function client(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'client',
+        ]);
     }
 
     /**

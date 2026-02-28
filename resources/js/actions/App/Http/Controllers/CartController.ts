@@ -43,6 +43,41 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     method: 'head',
 })
 
+    /**
+* @see \App\Http\Controllers\CartController::index
+ * @see app/Http/Controllers/CartController.php:20
+ * @route '/client/cart'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
+
+            /**
+* @see \App\Http\Controllers\CartController::index
+ * @see app/Http/Controllers/CartController.php:20
+ * @route '/client/cart'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
+* @see \App\Http\Controllers\CartController::index
+ * @see app/Http/Controllers/CartController.php:20
+ * @route '/client/cart'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \App\Http\Controllers\CartController::index
 * @see app/Http/Controllers/CartController.php:20
@@ -114,6 +149,27 @@ addItem.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\CartController::addItem
+ * @see app/Http/Controllers/CartController.php:86
+ * @route '/client/cart/items'
+ */
+    const addItemForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: addItem.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\CartController::addItem
+ * @see app/Http/Controllers/CartController.php:86
+ * @route '/client/cart/items'
+ */
+        addItemForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: addItem.url(options),
+            method: 'post',
+        })
+    
+    addItem.form = addItemForm
 /**
 * @see \App\Http\Controllers\CartController::addItem
 * @see app/Http/Controllers/CartController.php:75
@@ -194,6 +250,37 @@ removeItem.delete = (args: { item: string | { id: string } } | [item: string | {
     method: 'delete',
 })
 
+    /**
+* @see \App\Http\Controllers\CartController::removeItem
+ * @see app/Http/Controllers/CartController.php:130
+ * @route '/client/cart/items/{item}'
+ */
+    const removeItemForm = (args: { item: string | { id: string } } | [item: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: removeItem.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\CartController::removeItem
+ * @see app/Http/Controllers/CartController.php:130
+ * @route '/client/cart/items/{item}'
+ */
+        removeItemForm.delete = (args: { item: string | { id: string } } | [item: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: removeItem.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    removeItem.form = removeItemForm
 /**
 * @see \App\Http\Controllers\CartController::removeItem
 * @see app/Http/Controllers/CartController.php:108
@@ -260,6 +347,27 @@ applyCoupon.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     method: 'post',
 })
 
+    /**
+* @see \App\Http\Controllers\CartController::applyCoupon
+ * @see app/Http/Controllers/CartController.php:154
+ * @route '/client/cart/coupon'
+ */
+    const applyCouponForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: applyCoupon.url(options),
+        method: 'post',
+    })
+
+            /**
+* @see \App\Http\Controllers\CartController::applyCoupon
+ * @see app/Http/Controllers/CartController.php:154
+ * @route '/client/cart/coupon'
+ */
+        applyCouponForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: applyCoupon.url(options),
+            method: 'post',
+        })
+    
+    applyCoupon.form = applyCouponForm
 /**
 * @see \App\Http\Controllers\CartController::applyCoupon
 * @see app/Http/Controllers/CartController.php:132
