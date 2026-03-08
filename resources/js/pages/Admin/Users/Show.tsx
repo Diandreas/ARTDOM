@@ -255,25 +255,25 @@ export default function Show({ user, artistStats, activity, transactions, client
 
                     <TabsContent value="transactions">
                         <div className="space-y-4">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Historique transactions</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-3">
-                                    {transactions.map((transaction) => (
-                                        <div key={transaction.id} className="rounded border p-3 text-sm">
-                                            <div className="flex flex-wrap items-center justify-between gap-2">
-                                                <p className="font-medium">{transaction.type}</p>
-                                                <Badge variant="outline">{transaction.status}</Badge>
-                                            </div>
-                                            <p>Montant: {Math.round(transaction.amount).toLocaleString()} FCFA</p>
-                                            <p>Commission: {transaction.commission !== null ? `${Math.round(transaction.commission).toLocaleString()} FCFA` : '-'}</p>
-                                            <p className="text-muted-foreground">{transaction.date ? new Date(transaction.date).toLocaleString() : '-'}</p>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Historique transactions</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {transactions.map((transaction) => (
+                                    <div key={transaction.id} className="rounded border p-3 text-sm">
+                                        <div className="flex flex-wrap items-center justify-between gap-2">
+                                            <p className="font-medium">{transaction.type}</p>
+                                            <Badge variant="outline">{transaction.status}</Badge>
                                         </div>
-                                    ))}
-                                    {transactions.length === 0 ? <p className="text-sm text-muted-foreground">Aucune transaction.</p> : null}
-                                </CardContent>
-                            </Card>
+                                        <p>Montant: {Math.round(transaction.amount).toLocaleString()} FCFA</p>
+                                        <p>Commission: {transaction.commission !== null ? `${Math.round(transaction.commission).toLocaleString()} FCFA` : '-'}</p>
+                                        <p className="text-muted-foreground">{transaction.date ? new Date(transaction.date).toLocaleString() : '-'}</p>
+                                    </div>
+                                ))}
+                                {transactions.length === 0 ? <p className="text-sm text-muted-foreground">Aucune transaction.</p> : null}
+                            </CardContent>
+                        </Card>
 
                             {user.type === 'client' ? (
                                 <>

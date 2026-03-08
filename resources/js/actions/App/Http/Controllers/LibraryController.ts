@@ -1,8 +1,8 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
-* @see \App\Http\Controllers\HomeController::index
-* @see app/Http/Controllers/HomeController.php:12
-* @route '/'
+* @see \App\Http\Controllers\LibraryController::index
+* @see app/Http/Controllers/LibraryController.php:13
+* @route '/library'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,22 +11,22 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '/',
+    url: '/library',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\HomeController::index
-* @see app/Http/Controllers/HomeController.php:12
-* @route '/'
+* @see \App\Http\Controllers\LibraryController::index
+* @see app/Http/Controllers/LibraryController.php:13
+* @route '/library'
 */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\HomeController::index
-* @see app/Http/Controllers/HomeController.php:12
-* @route '/'
+* @see \App\Http\Controllers\LibraryController::index
+* @see app/Http/Controllers/LibraryController.php:13
+* @route '/library'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -34,9 +34,9 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 
 /**
-* @see \App\Http\Controllers\HomeController::index
-* @see app/Http/Controllers/HomeController.php:12
-* @route '/'
+* @see \App\Http\Controllers\LibraryController::index
+* @see app/Http/Controllers/LibraryController.php:13
+* @route '/library'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -44,9 +44,9 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
 /**
-* @see \App\Http\Controllers\HomeController::index
-* @see app/Http/Controllers/HomeController.php:12
-* @route '/'
+* @see \App\Http\Controllers\LibraryController::index
+* @see app/Http/Controllers/LibraryController.php:13
+* @route '/library'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(options),
@@ -54,9 +54,9 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 })
 
 /**
-* @see \App\Http\Controllers\HomeController::index
-* @see app/Http/Controllers/HomeController.php:12
-* @route '/'
+* @see \App\Http\Controllers\LibraryController::index
+* @see app/Http/Controllers/LibraryController.php:13
+* @route '/library'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url(options),
@@ -64,9 +64,9 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 /**
-* @see \App\Http\Controllers\HomeController::index
-* @see app/Http/Controllers/HomeController.php:12
-* @route '/'
+* @see \App\Http\Controllers\LibraryController::index
+* @see app/Http/Controllers/LibraryController.php:13
+* @route '/library'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: index.url({
@@ -80,6 +80,6 @@ indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 index.form = indexForm
 
-const HomeController = { index }
+const LibraryController = { index }
 
-export default HomeController
+export default LibraryController

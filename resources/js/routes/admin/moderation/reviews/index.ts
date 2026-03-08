@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-export const resolve = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const resolve = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resolve.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ resolve.definition = {
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-resolve.url = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+resolve.url = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { review: args }
     }
@@ -52,7 +52,7 @@ resolve.url = (args: { review: string | { id: string } } | [review: string | { i
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-resolve.post = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+resolve.post = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resolve.url(args, options),
     method: 'post',
 })
@@ -62,7 +62,7 @@ resolve.post = (args: { review: string | { id: string } } | [review: string | { 
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-const resolveForm = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const resolveForm = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: resolve.url(args, options),
     method: 'post',
 })
@@ -72,7 +72,7 @@ const resolveForm = (args: { review: string | { id: string } } | [review: string
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-resolveForm.post = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+resolveForm.post = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: resolve.url(args, options),
     method: 'post',
 })
@@ -84,7 +84,7 @@ resolve.form = resolveForm
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-export const deleteMethod = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const deleteMethod = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: deleteMethod.url(args, options),
     method: 'delete',
 })
@@ -99,7 +99,7 @@ deleteMethod.definition = {
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-deleteMethod.url = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+deleteMethod.url = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { review: args }
     }
@@ -132,7 +132,7 @@ deleteMethod.url = (args: { review: string | { id: string } } | [review: string 
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-deleteMethod.delete = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+deleteMethod.delete = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: deleteMethod.url(args, options),
     method: 'delete',
 })
@@ -142,7 +142,7 @@ deleteMethod.delete = (args: { review: string | { id: string } } | [review: stri
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-const deleteMethodForm = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const deleteMethodForm = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: deleteMethod.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -157,7 +157,7 @@ const deleteMethodForm = (args: { review: string | { id: string } } | [review: s
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-deleteMethodForm.delete = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+deleteMethodForm.delete = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: deleteMethod.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
