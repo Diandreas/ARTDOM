@@ -8,9 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ShoppingCart, Trash2, Tag, CreditCard, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import removeItem from '@/actions/App/Http/Controllers/CartController/removeItem';
-import applyCoupon from '@/actions/App/Http/Controllers/CartController/applyCoupon';
-import clear from '@/actions/App/Http/Controllers/CartController/clear';
+import { removeItem, applyCoupon, clear } from '@/actions/App/Http/Controllers/CartController';
 
 interface Artist {
     id: string;
