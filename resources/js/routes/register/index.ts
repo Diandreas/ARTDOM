@@ -55,9 +55,9 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     
     store.form = storeForm
 /**
-* @see routes/web.php:120
-* @route '/register/selection'
-*/
+ * @see routes/web.php:156
+ * @route '/register/selection'
+ */
 export const selection = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: selection.url(options),
     method: 'get',
@@ -69,41 +69,41 @@ selection.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:120
-* @route '/register/selection'
-*/
+ * @see routes/web.php:156
+ * @route '/register/selection'
+ */
 selection.url = (options?: RouteQueryOptions) => {
     return selection.definition.url + queryParams(options)
 }
 
 /**
-* @see routes/web.php:120
-* @route '/register/selection'
-*/
+ * @see routes/web.php:156
+ * @route '/register/selection'
+ */
 selection.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: selection.url(options),
     method: 'get',
 })
 /**
-* @see routes/web.php:120
-* @route '/register/selection'
-*/
+ * @see routes/web.php:156
+ * @route '/register/selection'
+ */
 selection.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: selection.url(options),
     method: 'head',
 })
 
-/**
-* @see routes/web.php:120
-* @route '/register/selection'
-*/
-const selectionForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: selection.url(options),
-    method: 'get',
-})
+    /**
+ * @see routes/web.php:156
+ * @route '/register/selection'
+ */
+    const selectionForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: selection.url(options),
+        method: 'get',
+    })
 
             /**
- * @see routes/web.php:127
+ * @see routes/web.php:156
  * @route '/register/selection'
  */
         selectionForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -111,7 +111,7 @@ const selectionForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> 
             method: 'get',
         })
             /**
- * @see routes/web.php:127
+ * @see routes/web.php:156
  * @route '/register/selection'
  */
         selectionForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -126,34 +126,9 @@ const selectionForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> 
     
     selection.form = selectionForm
 /**
-* @see routes/web.php:120
-* @route '/register/selection'
-*/
-selectionForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: selection.url(options),
-    method: 'get',
-})
-
-/**
-* @see routes/web.php:120
-* @route '/register/selection'
-*/
-selectionForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: selection.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-selection.form = selectionForm
-
-/**
-* @see routes/web.php:124
-* @route '/register/artist'
-*/
+ * @see routes/web.php:160
+ * @route '/register/artist'
+ */
 export const artist = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: artist.url(options),
     method: 'get',
@@ -165,66 +140,41 @@ artist.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:124
-* @route '/register/artist'
-*/
+ * @see routes/web.php:160
+ * @route '/register/artist'
+ */
 artist.url = (options?: RouteQueryOptions) => {
     return artist.definition.url + queryParams(options)
 }
 
 /**
-* @see routes/web.php:124
-* @route '/register/artist'
-*/
+ * @see routes/web.php:160
+ * @route '/register/artist'
+ */
 artist.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: artist.url(options),
     method: 'get',
 })
 /**
-* @see routes/web.php:124
-* @route '/register/artist'
-*/
+ * @see routes/web.php:160
+ * @route '/register/artist'
+ */
 artist.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: artist.url(options),
     method: 'head',
 })
 
-/**
-* @see routes/web.php:124
-* @route '/register/artist'
-*/
-const artistForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: artist.url(options),
-    method: 'get',
-})
-
-/**
-* @see routes/web.php:124
-* @route '/register/artist'
-*/
-artistForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: artist.url(options),
-    method: 'get',
-})
-
-/**
-* @see routes/web.php:124
-* @route '/register/artist'
-*/
-artistForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: artist.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-artist.form = artistForm
+    /**
+ * @see routes/web.php:160
+ * @route '/register/artist'
+ */
+    const artistForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: artist.url(options),
+        method: 'get',
+    })
 
             /**
- * @see routes/web.php:131
+ * @see routes/web.php:160
  * @route '/register/artist'
  */
         artistForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -232,7 +182,7 @@ artist.form = artistForm
             method: 'get',
         })
             /**
- * @see routes/web.php:131
+ * @see routes/web.php:160
  * @route '/register/artist'
  */
         artistForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

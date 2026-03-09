@@ -367,9 +367,9 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     
     dashboard.form = dashboardForm
 /**
-* @see routes/web.php:128
-* @route '/splash'
-*/
+ * @see routes/web.php:164
+ * @route '/splash'
+ */
 export const splash = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: splash.url(options),
     method: 'get',
@@ -381,41 +381,41 @@ splash.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:128
-* @route '/splash'
-*/
+ * @see routes/web.php:164
+ * @route '/splash'
+ */
 splash.url = (options?: RouteQueryOptions) => {
     return splash.definition.url + queryParams(options)
 }
 
 /**
-* @see routes/web.php:128
-* @route '/splash'
-*/
+ * @see routes/web.php:164
+ * @route '/splash'
+ */
 splash.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: splash.url(options),
     method: 'get',
 })
 /**
-* @see routes/web.php:128
-* @route '/splash'
-*/
+ * @see routes/web.php:164
+ * @route '/splash'
+ */
 splash.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: splash.url(options),
     method: 'head',
 })
 
-/**
-* @see routes/web.php:128
-* @route '/splash'
-*/
-const splashForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: splash.url(options),
-    method: 'get',
-})
+    /**
+ * @see routes/web.php:164
+ * @route '/splash'
+ */
+    const splashForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: splash.url(options),
+        method: 'get',
+    })
 
             /**
- * @see routes/web.php:135
+ * @see routes/web.php:164
  * @route '/splash'
  */
         splashForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -423,7 +423,7 @@ const splashForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
             method: 'get',
         })
             /**
- * @see routes/web.php:135
+ * @see routes/web.php:164
  * @route '/splash'
  */
         splashForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -438,34 +438,9 @@ const splashForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => 
     
     splash.form = splashForm
 /**
-* @see routes/web.php:128
-* @route '/splash'
-*/
-splashForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: splash.url(options),
-    method: 'get',
-})
-
-/**
-* @see routes/web.php:128
-* @route '/splash'
-*/
-splashForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: splash.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-splash.form = splashForm
-
-/**
-* @see routes/web.php:132
-* @route '/onboarding'
-*/
+ * @see routes/web.php:168
+ * @route '/onboarding'
+ */
 export const onboarding = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: onboarding.url(options),
     method: 'get',
@@ -477,60 +452,59 @@ onboarding.definition = {
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see routes/web.php:132
-* @route '/onboarding'
-*/
+ * @see routes/web.php:168
+ * @route '/onboarding'
+ */
 onboarding.url = (options?: RouteQueryOptions) => {
     return onboarding.definition.url + queryParams(options)
 }
 
 /**
-* @see routes/web.php:132
-* @route '/onboarding'
-*/
+ * @see routes/web.php:168
+ * @route '/onboarding'
+ */
 onboarding.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: onboarding.url(options),
     method: 'get',
 })
 /**
-* @see routes/web.php:132
-* @route '/onboarding'
-*/
+ * @see routes/web.php:168
+ * @route '/onboarding'
+ */
 onboarding.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: onboarding.url(options),
     method: 'head',
 })
 
-/**
-* @see routes/web.php:132
-* @route '/onboarding'
-*/
-const onboardingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: onboarding.url(options),
-    method: 'get',
-})
+    /**
+ * @see routes/web.php:168
+ * @route '/onboarding'
+ */
+    const onboardingForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: onboarding.url(options),
+        method: 'get',
+    })
 
-/**
-* @see routes/web.php:132
-* @route '/onboarding'
-*/
-onboardingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: onboarding.url(options),
-    method: 'get',
-})
-
-/**
-* @see routes/web.php:132
-* @route '/onboarding'
-*/
-onboardingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: onboarding.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-onboarding.form = onboardingForm
+            /**
+ * @see routes/web.php:168
+ * @route '/onboarding'
+ */
+        onboardingForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: onboarding.url(options),
+            method: 'get',
+        })
+            /**
+ * @see routes/web.php:168
+ * @route '/onboarding'
+ */
+        onboardingForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: onboarding.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    onboarding.form = onboardingForm

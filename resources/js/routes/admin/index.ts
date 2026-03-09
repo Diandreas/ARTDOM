@@ -222,17 +222,17 @@ dashboard.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     dashboard.form = dashboardForm
 const admin = {
     login: Object.assign(login, loginDf2c2a),
-    logout: Object.assign(logout, logout),
-    dashboard: Object.assign(dashboard, dashboard),
-    artists: Object.assign(artists, artists),
-    tickets: Object.assign(tickets, tickets),
-    moderation: Object.assign(moderation, moderation),
-    reports: Object.assign(reports, reports),
-    broadcast: Object.assign(broadcast, broadcast),
-    clientActivity: Object.assign(clientActivity, clientActivity),
-    financialOverview: Object.assign(financialOverview, financialOverview),
-    users: Object.assign(users, users),
-    superCrud: Object.assign(superCrud, superCrud),
+logout: Object.assign(logout, logout),
+dashboard: Object.assign(dashboard, dashboard),
+artists: Object.assign(artists, artists),
+tickets: Object.assign(tickets, tickets),
+moderation: Object.assign(moderation, moderation),
+reports: Object.assign(reports, reports),
+broadcast: Object.assign(broadcast, broadcast),
+clientActivity: Object.assign(clientActivity, clientActivity),
+financialOverview: Object.assign(financialOverview, financialOverview),
+users: Object.assign(users, users),
+superCrud: Object.assign(superCrud, superCrud),
 }
 
 export default admin

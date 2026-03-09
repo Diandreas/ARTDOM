@@ -8,8 +8,13 @@ import SubscriptionController from './SubscriptionController'
 import AlbumUploadController from './AlbumUploadController'
 const Artist = {
     DashboardController: Object.assign(DashboardController, DashboardController),
-    ProfileController: Object.assign(ProfileController, ProfileController),
-    AlbumUploadController: Object.assign(AlbumUploadController, AlbumUploadController),
+ServiceController: Object.assign(ServiceController, ServiceController),
+OrderController: Object.assign(OrderController, OrderController),
+AvailabilityController: Object.assign(AvailabilityController, AvailabilityController),
+ProfileController: Object.assign(ProfileController, ProfileController),
+WalletController: Object.assign(WalletController, WalletController),
+SubscriptionController: Object.assign(SubscriptionController, SubscriptionController),
+AlbumUploadController: Object.assign(AlbumUploadController, AlbumUploadController),
 }
 
 export default Artist

@@ -29,7 +29,11 @@
       "mcp__chrome-devtools__get_console_message",
       "mcp__chrome-devtools__evaluate_script",
       "Bash(composer require:*)",
-      "Bash(composer show:*)"
+      "Bash(composer show:*)",
+      "Read(//d/project/ARTDOM/public/**)",
+      "Read(//d/project/ARTDOM/public/build/**)",
+      "Read(//d/project/ARTDOM/resources/**)",
+      "Read(//d/project/ARTDOM/**)"
     ]
   },
   "enableAllProjectMcpServers": true,

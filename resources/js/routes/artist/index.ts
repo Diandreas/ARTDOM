@@ -1,4 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import services from './services'
+import orders from './orders'
+import availability from './availability'
 import profile from './profile'
 import wallet from './wallet'
 import subscription from './subscription'
@@ -180,9 +183,14 @@ show.head = (args: { id: string | number } | [id: string | number ] | string | n
     show.form = showForm
 const artist = {
     dashboard: Object.assign(dashboard, dashboard),
-    profile: Object.assign(profile, profile),
-    albums: Object.assign(albums, albums),
-    show: Object.assign(show, show),
+services: Object.assign(services, services),
+orders: Object.assign(orders, orders),
+availability: Object.assign(availability, availability),
+profile: Object.assign(profile, profile),
+wallet: Object.assign(wallet, wallet),
+subscription: Object.assign(subscription, subscription),
+albums: Object.assign(albums, albums),
+show: Object.assign(show, show),
 }
 
 export default artist

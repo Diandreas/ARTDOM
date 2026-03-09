@@ -1,8 +1,8 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
-* @see \App\Http\Controllers\Admin\FinancialOverviewController::index
- * @see app/Http/Controllers/Admin/FinancialOverviewController.php:15
- * @route '/admin/financial-overview'
+* @see \App\Http\Controllers\LibraryController::index
+ * @see app/Http/Controllers/LibraryController.php:13
+ * @route '/library'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
@@ -11,31 +11,31 @@ export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 index.definition = {
     methods: ["get","head"],
-    url: '/admin/financial-overview',
+    url: '/library',
 } satisfies RouteDefinition<["get","head"]>
 
 /**
-* @see \App\Http\Controllers\Admin\FinancialOverviewController::index
- * @see app/Http/Controllers/Admin/FinancialOverviewController.php:15
- * @route '/admin/financial-overview'
+* @see \App\Http\Controllers\LibraryController::index
+ * @see app/Http/Controllers/LibraryController.php:13
+ * @route '/library'
  */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
-* @see \App\Http\Controllers\Admin\FinancialOverviewController::index
- * @see app/Http/Controllers/Admin/FinancialOverviewController.php:15
- * @route '/admin/financial-overview'
+* @see \App\Http\Controllers\LibraryController::index
+ * @see app/Http/Controllers/LibraryController.php:13
+ * @route '/library'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
 /**
-* @see \App\Http\Controllers\Admin\FinancialOverviewController::index
- * @see app/Http/Controllers/Admin/FinancialOverviewController.php:15
- * @route '/admin/financial-overview'
+* @see \App\Http\Controllers\LibraryController::index
+ * @see app/Http/Controllers/LibraryController.php:13
+ * @route '/library'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
@@ -43,9 +43,9 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 })
 
     /**
-* @see \App\Http\Controllers\Admin\FinancialOverviewController::index
- * @see app/Http/Controllers/Admin/FinancialOverviewController.php:15
- * @route '/admin/financial-overview'
+* @see \App\Http\Controllers\LibraryController::index
+ * @see app/Http/Controllers/LibraryController.php:13
+ * @route '/library'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
         action: index.url(options),
@@ -53,18 +53,18 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     })
 
             /**
-* @see \App\Http\Controllers\Admin\FinancialOverviewController::index
- * @see app/Http/Controllers/Admin/FinancialOverviewController.php:15
- * @route '/admin/financial-overview'
+* @see \App\Http\Controllers\LibraryController::index
+ * @see app/Http/Controllers/LibraryController.php:13
+ * @route '/library'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url(options),
             method: 'get',
         })
             /**
-* @see \App\Http\Controllers\Admin\FinancialOverviewController::index
- * @see app/Http/Controllers/Admin/FinancialOverviewController.php:15
- * @route '/admin/financial-overview'
+* @see \App\Http\Controllers\LibraryController::index
+ * @see app/Http/Controllers/LibraryController.php:13
+ * @route '/library'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
             action: index.url({
@@ -77,8 +77,8 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
     
     index.form = indexForm
-const financialOverview = {
+const library = {
     index: Object.assign(index, index),
 }
 
-export default financialOverview
+export default library
