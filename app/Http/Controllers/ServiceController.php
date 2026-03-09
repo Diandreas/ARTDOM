@@ -10,7 +10,7 @@ class ServiceController extends Controller
 {
     public function show(string $id): Response
     {
-        $service = Service::with(['artist.artistProfile'])
+        $service = Service::with(['artist.artistProfile', 'serviceOptions'])
             ->findOrFail($id);
 
         return Inertia::render('Service/detail', [
@@ -25,6 +25,14 @@ class ServiceController extends Controller
                 'location_type' => $service->location_type,
                 'category' => $service->category,
                 'is_active' => $service->is_active,
+                'options' => $service->serviceOptions->map(function ($option) {
+                    return [
+                        'id' => $option->id,
+                        'name' => $option->name,
+                        'description' => $option->description,
+                        'price' => (float) $option->price,
+                    ];
+                }),
             ],
             'artist' => [
                 'id' => $service->artist->id,
