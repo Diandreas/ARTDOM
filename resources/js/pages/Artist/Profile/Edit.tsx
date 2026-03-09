@@ -10,10 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Camera, User, Mail, Phone, MapPin, Star, Globe, Facebook, Instagram, Youtube, Music, Trash2, Upload } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FormEvent, useState } from 'react';
-import update from '@/actions/App/Http/Controllers/Artist/ProfileController/update';
-import uploadMedia from '@/actions/App/Http/Controllers/Artist/ProfileController/uploadMedia';
-import deleteMedia from '@/actions/App/Http/Controllers/Artist/ProfileController/deleteMedia';
-import uploadAvatar from '@/actions/App/Http/Controllers/Artist/ProfileController/uploadAvatar';
+import { update, uploadMedia, deleteMedia, uploadAvatar } from '@/actions/App/Http/Controllers/Artist/ProfileController';
 import { ImageCropper } from '@/components/ImageCropper';
 import { useRef } from 'react';
 
