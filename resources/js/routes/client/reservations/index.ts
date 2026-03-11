@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Client\ReservationController::index
- * @see app/Http/Controllers/Client/ReservationController.php:15
- * @route '/client/reservations'
- */
+* @see app/Http/Controllers/Client/ReservationController.php:15
+* @route '/client/reservations'
+*/
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
@@ -16,67 +16,70 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::index
- * @see app/Http/Controllers/Client/ReservationController.php:15
- * @route '/client/reservations'
- */
+* @see app/Http/Controllers/Client/ReservationController.php:15
+* @route '/client/reservations'
+*/
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
 * @see \App\Http\Controllers\Client\ReservationController::index
- * @see app/Http/Controllers/Client/ReservationController.php:15
- * @route '/client/reservations'
- */
+* @see app/Http/Controllers/Client/ReservationController.php:15
+* @route '/client/reservations'
+*/
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
+
 /**
 * @see \App\Http\Controllers\Client\ReservationController::index
- * @see app/Http/Controllers/Client/ReservationController.php:15
- * @route '/client/reservations'
- */
+* @see app/Http/Controllers/Client/ReservationController.php:15
+* @route '/client/reservations'
+*/
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
     method: 'head',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Client\ReservationController::index
- * @see app/Http/Controllers/Client/ReservationController.php:15
- * @route '/client/reservations'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
+* @see app/Http/Controllers/Client/ReservationController.php:15
+* @route '/client/reservations'
+*/
+const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\Client\ReservationController::index
- * @see app/Http/Controllers/Client/ReservationController.php:15
- * @route '/client/reservations'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
+* @see app/Http/Controllers/Client/ReservationController.php:15
+* @route '/client/reservations'
+*/
+indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
+
+/**
 * @see \App\Http\Controllers\Client\ReservationController::index
- * @see app/Http/Controllers/Client/ReservationController.php:15
- * @route '/client/reservations'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
+* @see app/Http/Controllers/Client/ReservationController.php:15
+* @route '/client/reservations'
+*/
+indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+index.form = indexForm
+
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
  * @see app/Http/Controllers/Client/ReservationController.php:103
@@ -102,18 +105,17 @@ show.url = (args: { reservation: string | number } | [reservation: string | numb
         args = { reservation: args }
     }
 
-    
     if (Array.isArray(args)) {
         args = {
-                    reservation: args[0],
-                }
+            reservation: args[0],
+        }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        reservation: args.reservation,
-                }
+        reservation: args.reservation,
+    }
 
     return show.definition.url
             .replace('{reservation}', parsedArgs.reservation.toString())
@@ -129,6 +131,7 @@ show.get = (args: { reservation: string | number } | [reservation: string | numb
     url: show.url(args, options),
     method: 'get',
 })
+
 /**
 * @see \App\Http\Controllers\Client\ReservationController::show
  * @see app/Http/Controllers/Client/ReservationController.php:103
@@ -139,7 +142,7 @@ show.head = (args: { reservation: string | number } | [reservation: string | num
     method: 'head',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Client\ReservationController::show
  * @see app/Http/Controllers/Client/ReservationController.php:103
  * @route '/client/reservations/{reservation}'
@@ -149,7 +152,7 @@ show.head = (args: { reservation: string | number } | [reservation: string | num
         method: 'get',
     })
 
-            /**
+/**
 * @see \App\Http\Controllers\Client\ReservationController::show
  * @see app/Http/Controllers/Client/ReservationController.php:103
  * @route '/client/reservations/{reservation}'
@@ -199,18 +202,17 @@ cancel.url = (args: { reservation: string | number } | [reservation: string | nu
         args = { reservation: args }
     }
 
-    
     if (Array.isArray(args)) {
         args = {
-                    reservation: args[0],
-                }
+            reservation: args[0],
+        }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        reservation: args.reservation,
-                }
+        reservation: args.reservation,
+    }
 
     return cancel.definition.url
             .replace('{reservation}', parsedArgs.reservation.toString())
@@ -227,7 +229,7 @@ cancel.post = (args: { reservation: string | number } | [reservation: string | n
     method: 'post',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Client\ReservationController::cancel
  * @see app/Http/Controllers/Client/ReservationController.php:158
  * @route '/client/reservations/{reservation}/cancel'
@@ -237,7 +239,7 @@ cancel.post = (args: { reservation: string | number } | [reservation: string | n
         method: 'post',
     })
 
-            /**
+/**
 * @see \App\Http\Controllers\Client\ReservationController::cancel
  * @see app/Http/Controllers/Client/ReservationController.php:158
  * @route '/client/reservations/{reservation}/cancel'
@@ -273,18 +275,17 @@ review.url = (args: { reservation: string | number } | [reservation: string | nu
         args = { reservation: args }
     }
 
-    
     if (Array.isArray(args)) {
         args = {
-                    reservation: args[0],
-                }
+            reservation: args[0],
+        }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        reservation: args.reservation,
-                }
+        reservation: args.reservation,
+    }
 
     return review.definition.url
             .replace('{reservation}', parsedArgs.reservation.toString())
@@ -301,7 +302,7 @@ review.post = (args: { reservation: string | number } | [reservation: string | n
     method: 'post',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Client\ReservationController::review
  * @see app/Http/Controllers/Client/ReservationController.php:195
  * @route '/client/reservations/{reservation}/review'
@@ -311,7 +312,7 @@ review.post = (args: { reservation: string | number } | [reservation: string | n
         method: 'post',
     })
 
-            /**
+/**
 * @see \App\Http\Controllers\Client\ReservationController::review
  * @see app/Http/Controllers/Client/ReservationController.php:195
  * @route '/client/reservations/{reservation}/review'
@@ -324,9 +325,9 @@ review.post = (args: { reservation: string | number } | [reservation: string | n
     review.form = reviewForm
 const reservations = {
     index: Object.assign(index, index),
-show: Object.assign(show, show),
-cancel: Object.assign(cancel, cancel),
-review: Object.assign(review, review),
+    show: Object.assign(show, show),
+    cancel: Object.assign(cancel, cancel),
+    review: Object.assign(review, review),
 }
 
 export default reservations

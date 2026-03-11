@@ -103,6 +103,18 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
+        $testAudioUrls = [
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+            'https://archive.org/download/mythium/mythium_-_10_-_away.mp3',
+            'https://archive.org/download/mythium/mythium_-_11_-_not_afraid.mp3',
+            'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3',
+            'https://cdn.pixabay.com/download/audio/2022/03/10/audio_2cff3e0e03.mp3',
+        ];
+
         // Create albums with covers
         $this->command->info('Creating 30 albums with covers...');
         for ($i = 0; $i < 30; $i++) {
@@ -129,7 +141,7 @@ class DatabaseSeeder extends Seeder
                     'title' => $trackNames[($j - 1) % count($trackNames)],
                     'duration_seconds' => rand(120, 360),
                     'track_number' => $j,
-                    'file_url' => "https://example.com/audio/track{$album->id}_{$j}.mp3",
+                    'file_url' => $testAudioUrls[array_rand($testAudioUrls)],
                     'plays' => rand(0, 50000),
                 ]);
             }

@@ -4,13 +4,13 @@ import Pusher from 'pusher-js';
 declare global {
     interface Window {
         Pusher: typeof Pusher;
-        Echo: Echo;
+        Echo: Echo<string>;
     }
 }
 
-if (import.meta.env.VITE_REVERB_APP_KEY) {
-    window.Pusher = Pusher;
+window.Pusher = Pusher;
 
+if (import.meta.env.VITE_REVERB_APP_KEY) {
     window.Echo = new Echo({
         broadcaster: 'reverb',
         key: import.meta.env.VITE_REVERB_APP_KEY,
@@ -21,3 +21,4 @@ if (import.meta.env.VITE_REVERB_APP_KEY) {
         enabledTransports: ['ws', 'wss'],
     });
 }
+
