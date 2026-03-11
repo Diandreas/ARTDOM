@@ -12,9 +12,11 @@ class HomeController extends Controller
     public function index(): Response
     {
         // Fetch featured/trending artists (verified with profiles)
-        $featuredArtists = User::whereHas('artistProfile', function ($query) {
-            $query->where('is_verified', true);
-        })
+        $featuredArtists = User::where('is_active', true)
+            ->whereHas('artistProfile', function ($query) {
+                $query->where('is_verified', true)
+                    ->where('verification_status', 'approved');
+            })
             ->with(['artistProfile'])
             ->withCount('services')
             ->limit(10)

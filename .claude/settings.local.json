@@ -33,7 +33,14 @@
       "Read(//d/project/ARTDOM/public/**)",
       "Read(//d/project/ARTDOM/public/build/**)",
       "Read(//d/project/ARTDOM/resources/**)",
-      "Read(//d/project/ARTDOM/**)"
+      "Read(//d/project/ARTDOM/**)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_pages",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__click",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__fill"
     ]
   },
   "enableAllProjectMcpServers": true,

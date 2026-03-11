@@ -1,4 +1,5 @@
 import { Head, router, useForm } from '@inertiajs/react';
+import { store as albumsStore, destroy as albumsDestroy, toggle as albumsToggle } from '@/routes/artist/albums';
 import MainLayout from '@/layouts/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -51,7 +52,7 @@ export default function UploadAlbums({ albums }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    post(route('artist.albums.store'), {
+    post(albumsStore().url, {
       onSuccess: () => {
         reset();
         setCoverPreview(null);
@@ -74,12 +75,12 @@ export default function UploadAlbums({ albums }: Props) {
 
   const deleteAlbum = (albumId: string) => {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet album ?')) {
-      router.delete(route('artist.albums.destroy', albumId));
+      router.delete(albumsDestroy(albumId).url);
     }
   };
 
   const togglePublication = (albumId: string) => {
-    router.patch(route('artist.albums.toggle', albumId));
+    router.patch(albumsToggle(albumId).url);
   };
 
   return (
