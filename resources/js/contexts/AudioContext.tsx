@@ -124,7 +124,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
             }
 
             if (isPlaying) {
-                audio.play().catch(e => console.error("Playback failed", e));
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        if (e.name !== 'AbortError') {
+                            console.error('Playback failed', e);
+                        }
+                    });
+                }
             } else {
                 audio.pause();
             }
