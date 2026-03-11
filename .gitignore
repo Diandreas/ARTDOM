@@ -28,3 +28,7 @@ Homestead.json
 .env.production
 .phpactor.json
 auth.json
+
+# Wayfinder generated files (auto-generated TypeScript route files)
+resources/js/actions/
+resources/js/routes/
