@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ClientSubscription extends Model
+class Subscription extends Model
 {
     use HasFactory, HasUuids;
 
@@ -69,7 +69,7 @@ class ClientSubscription extends Model
      */
     public function isExpired(): bool
     {
-        if (!$this->ends_at) {
+        if (! $this->ends_at) {
             return false; // Abonnement sans fin
         }
 
@@ -81,7 +81,7 @@ class ClientSubscription extends Model
      */
     public function daysRemaining(): ?int
     {
-        if (!$this->ends_at) {
+        if (! $this->ends_at) {
             return null; // Abonnement sans fin
         }
 

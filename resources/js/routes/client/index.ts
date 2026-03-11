@@ -3,7 +3,7 @@ import reservations from './reservations'
 
 const client = {
     cart: Object.assign(cart, cart),
-reservations: Object.assign(reservations, reservations),
+    reservations: Object.assign(reservations, reservations),
 }
 
 export default client
