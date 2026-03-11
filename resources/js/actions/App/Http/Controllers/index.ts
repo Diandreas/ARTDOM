@@ -7,6 +7,7 @@ import ArtistController from './ArtistController'
 import ServiceController from './ServiceController'
 import ArtStreamController from './ArtStreamController'
 import FavoriteController from './FavoriteController'
+import LibraryController from './LibraryController'
 import PlaylistController from './PlaylistController'
 import Stream from './Stream'
 import BookingController from './BookingController'
@@ -14,6 +15,7 @@ import ConversationController from './ConversationController'
 import NotificationController from './NotificationController'
 import SupportController from './SupportController'
 import Settings from './Settings'
+
 const Controllers = {
     HomeController: Object.assign(HomeController, HomeController),
     Admin: Object.assign(Admin, Admin),
@@ -24,10 +26,13 @@ const Controllers = {
     ServiceController: Object.assign(ServiceController, ServiceController),
     ArtStreamController: Object.assign(ArtStreamController, ArtStreamController),
     FavoriteController: Object.assign(FavoriteController, FavoriteController),
+    LibraryController: Object.assign(LibraryController, LibraryController),
     PlaylistController: Object.assign(PlaylistController, PlaylistController),
     Stream: Object.assign(Stream, Stream),
     BookingController: Object.assign(BookingController, BookingController),
     ConversationController: Object.assign(ConversationController, ConversationController),
+    NotificationController: Object.assign(NotificationController, NotificationController),
+    SupportController: Object.assign(SupportController, SupportController),
     Settings: Object.assign(Settings, Settings),
 }
 

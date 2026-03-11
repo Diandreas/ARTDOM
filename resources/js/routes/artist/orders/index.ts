@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Artist\OrderController::index
- * @see app/Http/Controllers/Artist/OrderController.php:27
- * @route '/artist/orders'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:27
+* @route '/artist/orders'
+*/
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
@@ -16,72 +16,75 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::index
- * @see app/Http/Controllers/Artist/OrderController.php:27
- * @route '/artist/orders'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:27
+* @route '/artist/orders'
+*/
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::index
- * @see app/Http/Controllers/Artist/OrderController.php:27
- * @route '/artist/orders'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:27
+* @route '/artist/orders'
+*/
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
+
 /**
 * @see \App\Http\Controllers\Artist\OrderController::index
- * @see app/Http/Controllers/Artist/OrderController.php:27
- * @route '/artist/orders'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:27
+* @route '/artist/orders'
+*/
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
     method: 'head',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::index
- * @see app/Http/Controllers/Artist/OrderController.php:27
- * @route '/artist/orders'
- */
-    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: index.url(options),
-        method: 'get',
-    })
+* @see app/Http/Controllers/Artist/OrderController.php:27
+* @route '/artist/orders'
+*/
+const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::index
- * @see app/Http/Controllers/Artist/OrderController.php:27
- * @route '/artist/orders'
- */
-        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url(options),
-            method: 'get',
-        })
-            /**
+* @see app/Http/Controllers/Artist/OrderController.php:27
+* @route '/artist/orders'
+*/
+indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url(options),
+    method: 'get',
+})
+
+/**
 * @see \App\Http\Controllers\Artist\OrderController::index
- * @see app/Http/Controllers/Artist/OrderController.php:27
- * @route '/artist/orders'
- */
-        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: index.url({
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    index.form = indexForm
+* @see app/Http/Controllers/Artist/OrderController.php:27
+* @route '/artist/orders'
+*/
+indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: index.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+index.form = indexForm
+
 /**
 * @see \App\Http\Controllers\Artist\OrderController::show
- * @see app/Http/Controllers/Artist/OrderController.php:63
- * @route '/artist/orders/{reservation}'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:63
+* @route '/artist/orders/{reservation}'
+*/
 export const show = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
@@ -94,31 +97,31 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::show
- * @see app/Http/Controllers/Artist/OrderController.php:63
- * @route '/artist/orders/{reservation}'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:63
+* @route '/artist/orders/{reservation}'
+*/
 show.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { reservation: args.id }
-        }
-    
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { reservation: args.id }
+    }
+
     if (Array.isArray(args)) {
         args = {
-                    reservation: args[0],
-                }
+            reservation: args[0],
+        }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        reservation: typeof args.reservation === 'object'
-                ? args.reservation.id
-                : args.reservation,
-                }
+        reservation: typeof args.reservation === 'object'
+        ? args.reservation.id
+        : args.reservation,
+    }
 
     return show.definition.url
             .replace('{reservation}', parsedArgs.reservation.toString())
@@ -127,63 +130,66 @@ show.url = (args: { reservation: string | { id: string } } | [reservation: strin
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::show
- * @see app/Http/Controllers/Artist/OrderController.php:63
- * @route '/artist/orders/{reservation}'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:63
+* @route '/artist/orders/{reservation}'
+*/
 show.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
+
 /**
 * @see \App\Http\Controllers\Artist\OrderController::show
- * @see app/Http/Controllers/Artist/OrderController.php:63
- * @route '/artist/orders/{reservation}'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:63
+* @route '/artist/orders/{reservation}'
+*/
 show.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::show
- * @see app/Http/Controllers/Artist/OrderController.php:63
- * @route '/artist/orders/{reservation}'
- */
-    const showForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: show.url(args, options),
-        method: 'get',
-    })
+* @see app/Http/Controllers/Artist/OrderController.php:63
+* @route '/artist/orders/{reservation}'
+*/
+const showForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, options),
+    method: 'get',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::show
- * @see app/Http/Controllers/Artist/OrderController.php:63
- * @route '/artist/orders/{reservation}'
- */
-        showForm.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: show.url(args, options),
-            method: 'get',
-        })
-            /**
+* @see app/Http/Controllers/Artist/OrderController.php:63
+* @route '/artist/orders/{reservation}'
+*/
+showForm.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, options),
+    method: 'get',
+})
+
+/**
 * @see \App\Http\Controllers\Artist\OrderController::show
- * @see app/Http/Controllers/Artist/OrderController.php:63
- * @route '/artist/orders/{reservation}'
- */
-        showForm.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: show.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
-        })
-    
-    show.form = showForm
+* @see app/Http/Controllers/Artist/OrderController.php:63
+* @route '/artist/orders/{reservation}'
+*/
+showForm.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: show.url(args, {
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+show.form = showForm
+
 /**
 * @see \App\Http\Controllers\Artist\OrderController::accept
- * @see app/Http/Controllers/Artist/OrderController.php:92
- * @route '/artist/orders/{reservation}/accept'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:92
+* @route '/artist/orders/{reservation}/accept'
+*/
 export const accept = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: accept.url(args, options),
     method: 'post',
@@ -196,31 +202,31 @@ accept.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::accept
- * @see app/Http/Controllers/Artist/OrderController.php:92
- * @route '/artist/orders/{reservation}/accept'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:92
+* @route '/artist/orders/{reservation}/accept'
+*/
 accept.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { reservation: args.id }
-        }
-    
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { reservation: args.id }
+    }
+
     if (Array.isArray(args)) {
         args = {
-                    reservation: args[0],
-                }
+            reservation: args[0],
+        }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        reservation: typeof args.reservation === 'object'
-                ? args.reservation.id
-                : args.reservation,
-                }
+        reservation: typeof args.reservation === 'object'
+        ? args.reservation.id
+        : args.reservation,
+    }
 
     return accept.definition.url
             .replace('{reservation}', parsedArgs.reservation.toString())
@@ -229,40 +235,41 @@ accept.url = (args: { reservation: string | { id: string } } | [reservation: str
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::accept
- * @see app/Http/Controllers/Artist/OrderController.php:92
- * @route '/artist/orders/{reservation}/accept'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:92
+* @route '/artist/orders/{reservation}/accept'
+*/
 accept.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: accept.url(args, options),
     method: 'post',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::accept
- * @see app/Http/Controllers/Artist/OrderController.php:92
- * @route '/artist/orders/{reservation}/accept'
- */
-    const acceptForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: accept.url(args, options),
-        method: 'post',
-    })
+* @see app/Http/Controllers/Artist/OrderController.php:92
+* @route '/artist/orders/{reservation}/accept'
+*/
+const acceptForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: accept.url(args, options),
+    method: 'post',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::accept
- * @see app/Http/Controllers/Artist/OrderController.php:92
- * @route '/artist/orders/{reservation}/accept'
- */
-        acceptForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: accept.url(args, options),
-            method: 'post',
-        })
-    
-    accept.form = acceptForm
+* @see app/Http/Controllers/Artist/OrderController.php:92
+* @route '/artist/orders/{reservation}/accept'
+*/
+acceptForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: accept.url(args, options),
+    method: 'post',
+})
+
+accept.form = acceptForm
+
 /**
 * @see \App\Http\Controllers\Artist\OrderController::decline
- * @see app/Http/Controllers/Artist/OrderController.php:122
- * @route '/artist/orders/{reservation}/decline'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:122
+* @route '/artist/orders/{reservation}/decline'
+*/
 export const decline = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: decline.url(args, options),
     method: 'post',
@@ -275,31 +282,31 @@ decline.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::decline
- * @see app/Http/Controllers/Artist/OrderController.php:122
- * @route '/artist/orders/{reservation}/decline'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:122
+* @route '/artist/orders/{reservation}/decline'
+*/
 decline.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { reservation: args.id }
-        }
-    
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { reservation: args.id }
+    }
+
     if (Array.isArray(args)) {
         args = {
-                    reservation: args[0],
-                }
+            reservation: args[0],
+        }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        reservation: typeof args.reservation === 'object'
-                ? args.reservation.id
-                : args.reservation,
-                }
+        reservation: typeof args.reservation === 'object'
+        ? args.reservation.id
+        : args.reservation,
+    }
 
     return decline.definition.url
             .replace('{reservation}', parsedArgs.reservation.toString())
@@ -308,40 +315,41 @@ decline.url = (args: { reservation: string | { id: string } } | [reservation: st
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::decline
- * @see app/Http/Controllers/Artist/OrderController.php:122
- * @route '/artist/orders/{reservation}/decline'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:122
+* @route '/artist/orders/{reservation}/decline'
+*/
 decline.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: decline.url(args, options),
     method: 'post',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::decline
- * @see app/Http/Controllers/Artist/OrderController.php:122
- * @route '/artist/orders/{reservation}/decline'
- */
-    const declineForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: decline.url(args, options),
-        method: 'post',
-    })
+* @see app/Http/Controllers/Artist/OrderController.php:122
+* @route '/artist/orders/{reservation}/decline'
+*/
+const declineForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: decline.url(args, options),
+    method: 'post',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::decline
- * @see app/Http/Controllers/Artist/OrderController.php:122
- * @route '/artist/orders/{reservation}/decline'
- */
-        declineForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: decline.url(args, options),
-            method: 'post',
-        })
-    
-    decline.form = declineForm
+* @see app/Http/Controllers/Artist/OrderController.php:122
+* @route '/artist/orders/{reservation}/decline'
+*/
+declineForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: decline.url(args, options),
+    method: 'post',
+})
+
+decline.form = declineForm
+
 /**
 * @see \App\Http\Controllers\Artist\OrderController::checkin
- * @see app/Http/Controllers/Artist/OrderController.php:168
- * @route '/artist/orders/{reservation}/checkin'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:168
+* @route '/artist/orders/{reservation}/checkin'
+*/
 export const checkin = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkin.url(args, options),
     method: 'post',
@@ -354,31 +362,31 @@ checkin.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::checkin
- * @see app/Http/Controllers/Artist/OrderController.php:168
- * @route '/artist/orders/{reservation}/checkin'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:168
+* @route '/artist/orders/{reservation}/checkin'
+*/
 checkin.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { reservation: args.id }
-        }
-    
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { reservation: args.id }
+    }
+
     if (Array.isArray(args)) {
         args = {
-                    reservation: args[0],
-                }
+            reservation: args[0],
+        }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        reservation: typeof args.reservation === 'object'
-                ? args.reservation.id
-                : args.reservation,
-                }
+        reservation: typeof args.reservation === 'object'
+        ? args.reservation.id
+        : args.reservation,
+    }
 
     return checkin.definition.url
             .replace('{reservation}', parsedArgs.reservation.toString())
@@ -387,40 +395,41 @@ checkin.url = (args: { reservation: string | { id: string } } | [reservation: st
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::checkin
- * @see app/Http/Controllers/Artist/OrderController.php:168
- * @route '/artist/orders/{reservation}/checkin'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:168
+* @route '/artist/orders/{reservation}/checkin'
+*/
 checkin.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkin.url(args, options),
     method: 'post',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::checkin
- * @see app/Http/Controllers/Artist/OrderController.php:168
- * @route '/artist/orders/{reservation}/checkin'
- */
-    const checkinForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: checkin.url(args, options),
-        method: 'post',
-    })
+* @see app/Http/Controllers/Artist/OrderController.php:168
+* @route '/artist/orders/{reservation}/checkin'
+*/
+const checkinForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: checkin.url(args, options),
+    method: 'post',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::checkin
- * @see app/Http/Controllers/Artist/OrderController.php:168
- * @route '/artist/orders/{reservation}/checkin'
- */
-        checkinForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: checkin.url(args, options),
-            method: 'post',
-        })
-    
-    checkin.form = checkinForm
+* @see app/Http/Controllers/Artist/OrderController.php:168
+* @route '/artist/orders/{reservation}/checkin'
+*/
+checkinForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: checkin.url(args, options),
+    method: 'post',
+})
+
+checkin.form = checkinForm
+
 /**
 * @see \App\Http\Controllers\Artist\OrderController::checkout
- * @see app/Http/Controllers/Artist/OrderController.php:206
- * @route '/artist/orders/{reservation}/checkout'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:206
+* @route '/artist/orders/{reservation}/checkout'
+*/
 export const checkout = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkout.url(args, options),
     method: 'post',
@@ -433,31 +442,31 @@ checkout.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::checkout
- * @see app/Http/Controllers/Artist/OrderController.php:206
- * @route '/artist/orders/{reservation}/checkout'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:206
+* @route '/artist/orders/{reservation}/checkout'
+*/
 checkout.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { reservation: args.id }
-        }
-    
+    if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
+        args = { reservation: args.id }
+    }
+
     if (Array.isArray(args)) {
         args = {
-                    reservation: args[0],
-                }
+            reservation: args[0],
+        }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        reservation: typeof args.reservation === 'object'
-                ? args.reservation.id
-                : args.reservation,
-                }
+        reservation: typeof args.reservation === 'object'
+        ? args.reservation.id
+        : args.reservation,
+    }
 
     return checkout.definition.url
             .replace('{reservation}', parsedArgs.reservation.toString())
@@ -466,42 +475,43 @@ checkout.url = (args: { reservation: string | { id: string } } | [reservation: s
 
 /**
 * @see \App\Http\Controllers\Artist\OrderController::checkout
- * @see app/Http/Controllers/Artist/OrderController.php:206
- * @route '/artist/orders/{reservation}/checkout'
- */
+* @see app/Http/Controllers/Artist/OrderController.php:206
+* @route '/artist/orders/{reservation}/checkout'
+*/
 checkout.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkout.url(args, options),
     method: 'post',
 })
 
-    /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::checkout
- * @see app/Http/Controllers/Artist/OrderController.php:206
- * @route '/artist/orders/{reservation}/checkout'
- */
-    const checkoutForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-        action: checkout.url(args, options),
-        method: 'post',
-    })
+* @see app/Http/Controllers/Artist/OrderController.php:206
+* @route '/artist/orders/{reservation}/checkout'
+*/
+const checkoutForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: checkout.url(args, options),
+    method: 'post',
+})
 
-            /**
+/**
 * @see \App\Http\Controllers\Artist\OrderController::checkout
- * @see app/Http/Controllers/Artist/OrderController.php:206
- * @route '/artist/orders/{reservation}/checkout'
- */
-        checkoutForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-            action: checkout.url(args, options),
-            method: 'post',
-        })
-    
-    checkout.form = checkoutForm
+* @see app/Http/Controllers/Artist/OrderController.php:206
+* @route '/artist/orders/{reservation}/checkout'
+*/
+checkoutForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: checkout.url(args, options),
+    method: 'post',
+})
+
+checkout.form = checkoutForm
+
 const orders = {
     index: Object.assign(index, index),
-show: Object.assign(show, show),
-accept: Object.assign(accept, accept),
-decline: Object.assign(decline, decline),
-checkin: Object.assign(checkin, checkin),
-checkout: Object.assign(checkout, checkout),
+    show: Object.assign(show, show),
+    accept: Object.assign(accept, accept),
+    decline: Object.assign(decline, decline),
+    checkin: Object.assign(checkin, checkin),
+    checkout: Object.assign(checkout, checkout),
 }
 
 export default orders
