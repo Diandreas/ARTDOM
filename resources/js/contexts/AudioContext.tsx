@@ -37,6 +37,7 @@ interface AudioContextType {
     isMuted: boolean;
     toggleMute: () => void;
     clearQueue: () => void;
+    updateTrackFavorite: (trackId: string, isFavorited: boolean) => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -124,7 +125,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
             }
 
             if (isPlaying) {
-                audio.play().catch(e => console.error("Playback failed", e));
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        if (e.name !== 'AbortError') {
+                            console.error('Playback failed', e);
+                        }
+                    });
+                }
             } else {
                 audio.pause();
             }
@@ -296,6 +304,26 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         setIsPlaying(false);
     }, []);
 
+    const updateTrackFavorite = useCallback((trackId: string, isFavorited: boolean) => {
+        // Update current track if it's the one
+        setCurrentTrack(prev => {
+            if (prev?.id === trackId) {
+                return { ...prev, is_favorited: isFavorited };
+            }
+            return prev;
+        });
+
+        // Update in queue
+        setQueueState(prev => prev.map(track =>
+            track.id === trackId ? { ...track, is_favorited: isFavorited } : track
+        ));
+
+        // Update in original queue
+        setOriginalQueue(prev => prev.map(track =>
+            track.id === trackId ? { ...track, is_favorited: isFavorited } : track
+        ));
+    }, []);
+
     return (
         <AudioContext.Provider value={{
             currentTrack,
@@ -319,6 +347,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
             isMuted,
             toggleMute,
             clearQueue,
+            updateTrackFavorite,
         }}>
             {children}
         </AudioContext.Provider>

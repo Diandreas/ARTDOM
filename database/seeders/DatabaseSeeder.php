@@ -86,6 +86,7 @@ class DatabaseSeeder extends Seeder
                 'categories' => json_encode([$data['category']]),
                 'base_rate' => $data['rate'],
                 'is_verified' => $index < 15,
+                'verification_status' => $index < 15 ? 'approved' : 'pending',
                 'portfolio_urls' => json_encode(["https://picsum.photos/seed/artist{$index}/1200/400"]),
             ]);
 
@@ -102,6 +103,18 @@ class DatabaseSeeder extends Seeder
                 'category' => $data['category'],
             ]);
         });
+
+        $testAudioUrls = [
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+            'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+            'https://cdn.pixabay.com/download/audio/2022/10/30/audio_bd4dca90c3.mp3',
+            'https://cdn.pixabay.com/download/audio/2021/11/13/audio_cb4f13847f.mp3',
+            'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3',
+            'https://cdn.pixabay.com/download/audio/2022/03/10/audio_2cff3e0e03.mp3',
+        ];
 
         // Create albums with covers
         $this->command->info('Creating 30 albums with covers...');
@@ -129,7 +142,7 @@ class DatabaseSeeder extends Seeder
                     'title' => $trackNames[($j - 1) % count($trackNames)],
                     'duration_seconds' => rand(120, 360),
                     'track_number' => $j,
-                    'file_url' => "https://example.com/audio/track{$album->id}_{$j}.mp3",
+                    'file_url' => $testAudioUrls[array_rand($testAudioUrls)],
                     'plays' => rand(0, 50000),
                 ]);
             }

@@ -16,6 +16,7 @@ import { Search, Menu, User, LogOut, Settings, Home, Music, Grid, Bell, Calendar
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import MiniPlayer from '@/components/Player/MiniPlayer';
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const user = (usePage().props as any).auth.user;
@@ -177,9 +178,9 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem asChild>
-                                        <Link href={profile.edit()} className="cursor-pointer">
+                                        <Link href={user.role === 'artist' ? '/artist/profile' : '/client/profile'} className="cursor-pointer">
                                             <User className="mr-2 h-4 w-4" />
-                                            <span>Profil</span>
+                                            <span>Mon Profil</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
@@ -195,7 +196,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <Link href="#" className="cursor-pointer">
+                                        <Link href="/settings" className="cursor-pointer">
                                             <Settings className="mr-2 h-4 w-4" />
                                             <span>Paramètres</span>
                                         </Link>
@@ -285,6 +286,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                     )}
                 </nav>
             </div>
+            <MiniPlayer />
         </div>
     );
 }

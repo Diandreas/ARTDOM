@@ -58,11 +58,11 @@ export default function Artists({ artists, cities, categories, filters }: Artist
     };
 
     const applyFilters = (newFilters: Partial<Filters>) => {
-        router.get(
-            '/artists',
-            { ...filters, ...newFilters },
-            { preserveState: true, preserveScroll: true }
+        const merged = { ...filters, ...newFilters };
+        const cleaned = Object.fromEntries(
+            Object.entries(merged).filter(([, v]) => v !== undefined && v !== null && v !== false && v !== '')
         );
+        router.get('/artists', cleaned, { preserveState: true, preserveScroll: true });
     };
 
     const clearFilters = () => {
@@ -150,16 +150,16 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                                     <div className="space-y-2">
                                         <Label>Ville</Label>
                                         <Select
-                                            value={filters.city || ''}
+                                            value={filters.city || 'all'}
                                             onValueChange={(value) =>
-                                                applyFilters({ city: value || undefined })
+                                                applyFilters({ city: value === 'all' ? undefined : value })
                                             }
                                         >
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Toutes les villes" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="">Toutes les villes</SelectItem>
+                                                <SelectItem value="all">Toutes les villes</SelectItem>
                                                 {cities.map((city) => (
                                                     <SelectItem key={city} value={city}>
                                                         {city}
@@ -173,16 +173,16 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                                     <div className="space-y-2">
                                         <Label>Tarif maximum</Label>
                                         <Select
-                                            value={filters.max_rate?.toString() || ''}
+                                            value={filters.max_rate?.toString() || 'all'}
                                             onValueChange={(value) =>
-                                                applyFilters({ max_rate: value ? parseInt(value) : undefined })
+                                                applyFilters({ max_rate: value === 'all' ? undefined : parseInt(value) })
                                             }
                                         >
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Tous les tarifs" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="">Tous les tarifs</SelectItem>
+                                                <SelectItem value="all">Tous les tarifs</SelectItem>
                                                 <SelectItem value="25000">Jusqu'à 25,000 FCFA</SelectItem>
                                                 <SelectItem value="50000">Jusqu'à 50,000 FCFA</SelectItem>
                                                 <SelectItem value="75000">Jusqu'à 75,000 FCFA</SelectItem>

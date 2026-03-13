@@ -29,7 +29,6 @@ createInertiaApp({
             <StrictMode>
                 <AudioProvider>
                     <App {...props} />
-                    <MiniPlayer />
                     <Toaster richColors position="bottom-right" />
                 </AudioProvider>
             </StrictMode>,

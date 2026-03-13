@@ -17,6 +17,12 @@ interface Service {
     location_type: string;
     category: string;
     is_active: boolean;
+    options?: {
+        id: string;
+        name: string;
+        description: string | null;
+        price: number;
+    }[];
 }
 
 interface Artist {
@@ -128,7 +134,6 @@ export default function ServiceDetail({ service, artist }: ServiceDetailProps) {
                             </Link>
                         </div>
 
-                        {/* Description */}
                         <Card>
                             <CardHeader>
                                 <CardTitle>Description du service</CardTitle>
@@ -139,6 +144,32 @@ export default function ServiceDetail({ service, artist }: ServiceDetailProps) {
                                 </p>
                             </CardContent>
                         </Card>
+
+                        {/* Options supplémentaires */}
+                        {service.options && service.options.length > 0 && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Options supplémentaires</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-4">
+                                        {service.options.map(option => (
+                                            <div key={option.id} className="flex justify-between items-start border-b border-border/40 pb-4 last:border-0 last:pb-0">
+                                                <div>
+                                                    <h4 className="font-semibold text-foreground">{option.name}</h4>
+                                                    {option.description && (
+                                                        <p className="text-sm text-muted-foreground mt-1">{option.description}</p>
+                                                    )}
+                                                </div>
+                                                <div className="font-medium text-primary ml-4 shrink-0">
+                                                    +{option.price.toLocaleString()} FCFA
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
 
                         {/* Service Details */}
                         <Card>

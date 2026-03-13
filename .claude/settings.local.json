@@ -29,7 +29,18 @@
       "mcp__chrome-devtools__get_console_message",
       "mcp__chrome-devtools__evaluate_script",
       "Bash(composer require:*)",
-      "Bash(composer show:*)"
+      "Bash(composer show:*)",
+      "Read(//d/project/ARTDOM/public/**)",
+      "Read(//d/project/ARTDOM/public/build/**)",
+      "Read(//d/project/ARTDOM/resources/**)",
+      "Read(//d/project/ARTDOM/**)",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_pages",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__click",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__fill"
     ]
   },
   "enableAllProjectMcpServers": true,

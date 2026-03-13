@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Banknote, BarChart3, Database, LogOut, ShieldCheck, ShoppingCart, Ticket, UserCheck, Users } from 'lucide-react';
+import MiniPlayer from '@/components/Player/MiniPlayer';
 
 type AdminLayoutProps = PropsWithChildren<{
     title: string;
@@ -136,7 +137,7 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
                     <section className="p-4 md:p-8">{children}</section>
                 </main>
             </div>
+            <MiniPlayer />
         </div>
     );
 }
-

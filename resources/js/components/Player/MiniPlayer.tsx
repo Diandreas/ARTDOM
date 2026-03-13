@@ -1,17 +1,19 @@
 
 import { useAudio } from '@/contexts/AudioContext';
 import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
-import { Play, Pause, SkipBack, SkipForward, Heart, Maximize2, ListMusic } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Heart, Maximize2, ListMusic, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import QueueSidebar from '@/components/Player/QueueSidebar';
+import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
 
 export default function MiniPlayer() {
-    const { currentTrack, isPlaying, togglePlay, progress, duration, seek } = useAudio();
+    const { auth } = usePage().props as { auth?: { user?: any } };
+    const { currentTrack, isPlaying, togglePlay, progress, duration, seek, updateTrackFavorite } = useAudio();
     const [localProgress, setLocalProgress] = useState(progress);
     const [isDragging, setIsDragging] = useState(false);
+    const [isFavoriting, setIsFavoriting] = useState(false);
 
     useEffect(() => {
         if (!isDragging) {
@@ -29,7 +31,33 @@ export default function MiniPlayer() {
     const handleSeekCommit = (value: number[]) => {
         seek(value[0]);
         setIsDragging(false);
-    }
+    };
+
+    const handleToggleFavorite = () => {
+        if (!auth?.user) {
+            router.visit('/login');
+            return;
+        }
+
+        setIsFavoriting(true);
+        const newState = !currentTrack.is_favorited;
+
+        // Optimistic update
+        updateTrackFavorite(currentTrack.id, newState);
+
+        router.post(
+            toggleFavorite.url({ track: currentTrack.id }),
+            {},
+            {
+                preserveScroll: true,
+                onFinish: () => setIsFavoriting(false),
+                onError: () => {
+                    // Revert on error
+                    updateTrackFavorite(currentTrack.id, !newState);
+                },
+            }
+        );
+    };
 
     const formatTime = (seconds: number) => {
         if (!seconds) return '0:00';
@@ -41,7 +69,7 @@ export default function MiniPlayer() {
     const percentage = duration ? (localProgress / duration) * 100 : 0;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md border-t border-border/40 p-2 md:p-3 shadow-2xl z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-md border-t border-border/40 p-2 md:p-3 shadow-2xl z-50 mb-16 md:mb-0">
             <div className="container flex items-center justify-between gap-4">
                 {/* Track Info */}
                 <div className="flex items-center gap-3 w-1/3 md:w-1/4 truncate">
@@ -56,8 +84,21 @@ export default function MiniPlayer() {
                         <h4 className="text-sm font-bold truncate text-foreground">{currentTrack.title}</h4>
                         <p className="text-xs text-muted-foreground truncate">{currentTrack.artist}</p>
                     </div>
-                    <Button size="icon" variant="ghost" className="hidden sm:flex h-8 w-8 text-muted-foreground hover:text-primary">
-                        <Heart className="h-4 w-4" />
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className={cn(
+                            "hidden sm:flex h-8 w-8 transition-colors",
+                            currentTrack.is_favorited ? "text-primary" : "text-muted-foreground hover:text-primary"
+                        )}
+                        onClick={handleToggleFavorite}
+                        disabled={isFavoriting}
+                    >
+                        {isFavoriting ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                            <Heart className={cn("h-4 w-4", currentTrack.is_favorited && "fill-current")} />
+                        )}
                     </Button>
                 </div>
 
@@ -85,11 +126,8 @@ export default function MiniPlayer() {
 
                     <div className="w-full flex items-center gap-2 text-xs text-muted-foreground hidden sm:flex">
                         <span className="w-8 text-right font-mono">{formatTime(localProgress)}</span>
-                        <div className="flex-1 h-1.5 bg-muted rounded-full relative cursor-pointer group" onClick={(e) => {
-                            // Simple click seek implementation could go here, but slider is better
-                        }}>
-                            {/* Custom Slider Implementation since Shadcn slider might be tricky with just created file */}
-                            <div className="absolute inset-y-0 left-0 bg-primary rounded-full" style={{ width: `${percentage}%` }} />
+                        <div className="flex-1 h-1.5 bg-muted rounded-full relative cursor-pointer group">
+                            <div className="absolute inset-y-0 left-0 bg-primary rounded-full transition-all duration-100" style={{ width: `${percentage}%` }} />
                             <input
                                 type="range"
                                 min="0"
@@ -124,7 +162,7 @@ export default function MiniPlayer() {
 
             {/* Mobile progress bar (slim, at top of player) */}
             <div className="sm:hidden absolute top-0 left-0 right-0 h-0.5 bg-muted">
-                <div className="h-full bg-primary" style={{ width: `${percentage}%` }} />
+                <div className="h-full bg-primary transition-all duration-100" style={{ width: `${percentage}%` }} />
             </div>
         </div>
     );

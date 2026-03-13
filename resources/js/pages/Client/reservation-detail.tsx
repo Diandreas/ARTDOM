@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { format, parseISO, differenceInSeconds } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import cancel from '@/actions/App/Http/Controllers/Client/ReservationController/cancel';
+import { cancel } from '@/actions/App/Http/Controllers/Client/ReservationController';
 
 interface Artist {
     id: string;

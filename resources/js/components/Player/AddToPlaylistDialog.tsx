@@ -13,21 +13,20 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ListMusic, Plus, Music, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
 interface Playlist {
-    id: number;
+    id: string; // Changed from number to string for UUID support
     title: string;
     cover_url: string | null;
     tracks_count: number;
 }
 
 interface AddToPlaylistDialogProps {
-    trackId: number;
+    trackId: string; // Changed from number to string
     trackTitle?: string;
     trigger?: React.ReactNode;
     onSuccess?: () => void;
@@ -44,7 +43,7 @@ export default function AddToPlaylistDialog({
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [isLoadingPlaylists, setIsLoadingPlaylists] = useState(false);
     const [showCreateForm, setShowCreateForm] = useState(false);
-    const [addingToPlaylist, setAddingToPlaylist] = useState<number | null>(null);
+    const [addingToPlaylist, setAddingToPlaylist] = useState<string | null>(null);
 
     const createForm = useForm({
         title: '',
@@ -80,7 +79,7 @@ export default function AddToPlaylistDialog({
         }
     };
 
-    const handleAddToPlaylist = (playlistId: number) => {
+    const handleAddToPlaylist = (playlistId: string) => {
         if (!auth?.user) {
             router.visit('/login');
             return;
@@ -88,7 +87,6 @@ export default function AddToPlaylistDialog({
 
         setAddingToPlaylist(playlistId);
 
-        // Use Inertia router for proper CSRF handling
         router.post(
             `/playlists/${playlistId}/tracks/${trackId}`,
             {},
@@ -115,12 +113,24 @@ export default function AddToPlaylistDialog({
 
         createForm.post('/playlists', {
             preserveScroll: true,
-            onSuccess: () => {
-                createForm.reset();
-                setShowCreateForm(false);
-                loadPlaylists();
-                toast.success('Playlist créée');
+            onSuccess: (page) => {
+                const props = page.props as any;
+                // If the backend returns the new playlist info in the session/props
+                const newPlaylistId = props.flash?.playlist?.id;
+                
+                if (newPlaylistId) {
+                    handleAddToPlaylist(newPlaylistId);
+                } else {
+                    createForm.reset();
+                    setShowCreateForm(false);
+                    loadPlaylists();
+                    toast.success('Playlist créée');
+                }
             },
+            onError: (errors) => {
+                const errorMessage = Object.values(errors)[0] as string || 'Erreur lors de la création';
+                toast.error(errorMessage);
+            }
         });
     };
 
@@ -182,7 +192,7 @@ export default function AddToPlaylistDialog({
                                                 onClick={() => handleAddToPlaylist(playlist.id)}
                                                 disabled={addingToPlaylist === playlist.id}
                                                 className={cn(
-                                                    'w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-left',
+                                                    'w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-left group',
                                                     addingToPlaylist === playlist.id && 'opacity-50'
                                                 )}
                                             >
@@ -198,7 +208,7 @@ export default function AddToPlaylistDialog({
                                                     )}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <h4 className="font-semibold truncate">{playlist.title}</h4>
+                                                    <h4 className="font-semibold truncate group-hover:text-primary transition-colors">{playlist.title}</h4>
                                                     <p className="text-sm text-muted-foreground">
                                                         {playlist.tracks_count} titre{playlist.tracks_count !== 1 ? 's' : ''}
                                                     </p>
@@ -214,7 +224,7 @@ export default function AddToPlaylistDialog({
                                 <Button
                                     variant="outline"
                                     onClick={() => setShowCreateForm(true)}
-                                    className="w-full gap-2 mt-2"
+                                    className="w-full gap-2 mt-4"
                                 >
                                     <Plus className="w-4 h-4" />
                                     Créer une nouvelle playlist
