@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/Artist/WalletController.php:210
 * @route '/artist/wallet/withdrawals/{withdrawal}'
 */
-export const show = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { withdrawal: string | number | { id: string | number } } | [withdrawal: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ show.definition = {
 * @see app/Http/Controllers/Artist/WalletController.php:210
 * @route '/artist/wallet/withdrawals/{withdrawal}'
 */
-show.url = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+show.url = (args: { withdrawal: string | number | { id: string | number } } | [withdrawal: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { withdrawal: args }
     }
@@ -52,7 +52,7 @@ show.url = (args: { withdrawal: string | { id: string } } | [withdrawal: string 
 * @see app/Http/Controllers/Artist/WalletController.php:210
 * @route '/artist/wallet/withdrawals/{withdrawal}'
 */
-show.get = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { withdrawal: string | number | { id: string | number } } | [withdrawal: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -62,7 +62,7 @@ show.get = (args: { withdrawal: string | { id: string } } | [withdrawal: string 
 * @see app/Http/Controllers/Artist/WalletController.php:210
 * @route '/artist/wallet/withdrawals/{withdrawal}'
 */
-show.head = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { withdrawal: string | number | { id: string | number } } | [withdrawal: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -72,7 +72,7 @@ show.head = (args: { withdrawal: string | { id: string } } | [withdrawal: string
 * @see app/Http/Controllers/Artist/WalletController.php:210
 * @route '/artist/wallet/withdrawals/{withdrawal}'
 */
-const showForm = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { withdrawal: string | number | { id: string | number } } | [withdrawal: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -82,7 +82,7 @@ const showForm = (args: { withdrawal: string | { id: string } } | [withdrawal: s
 * @see app/Http/Controllers/Artist/WalletController.php:210
 * @route '/artist/wallet/withdrawals/{withdrawal}'
 */
-showForm.get = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { withdrawal: string | number | { id: string | number } } | [withdrawal: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -92,7 +92,7 @@ showForm.get = (args: { withdrawal: string | { id: string } } | [withdrawal: str
 * @see app/Http/Controllers/Artist/WalletController.php:210
 * @route '/artist/wallet/withdrawals/{withdrawal}'
 */
-showForm.head = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { withdrawal: string | number | { id: string | number } } | [withdrawal: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',

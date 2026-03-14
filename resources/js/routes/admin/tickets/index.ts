@@ -85,7 +85,7 @@ index.form = indexForm
 * @see app/Http/Controllers/Admin/TicketController.php:53
 * @route '/admin/tickets/{ticket}'
 */
-export const show = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -100,7 +100,7 @@ show.definition = {
 * @see app/Http/Controllers/Admin/TicketController.php:53
 * @route '/admin/tickets/{ticket}'
 */
-show.url = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+show.url = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ticket: args }
     }
@@ -133,7 +133,7 @@ show.url = (args: { ticket: string | { id: string } } | [ticket: string | { id: 
 * @see app/Http/Controllers/Admin/TicketController.php:53
 * @route '/admin/tickets/{ticket}'
 */
-show.get = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -143,7 +143,7 @@ show.get = (args: { ticket: string | { id: string } } | [ticket: string | { id: 
 * @see app/Http/Controllers/Admin/TicketController.php:53
 * @route '/admin/tickets/{ticket}'
 */
-show.head = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -153,7 +153,7 @@ show.head = (args: { ticket: string | { id: string } } | [ticket: string | { id:
 * @see app/Http/Controllers/Admin/TicketController.php:53
 * @route '/admin/tickets/{ticket}'
 */
-const showForm = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -163,7 +163,7 @@ const showForm = (args: { ticket: string | { id: string } } | [ticket: string | 
 * @see app/Http/Controllers/Admin/TicketController.php:53
 * @route '/admin/tickets/{ticket}'
 */
-showForm.get = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -173,7 +173,7 @@ showForm.get = (args: { ticket: string | { id: string } } | [ticket: string | { 
 * @see app/Http/Controllers/Admin/TicketController.php:53
 * @route '/admin/tickets/{ticket}'
 */
-showForm.head = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -190,7 +190,7 @@ show.form = showForm
 * @see app/Http/Controllers/Admin/TicketController.php:73
 * @route '/admin/tickets/{ticket}/respond'
 */
-export const respond = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const respond = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: respond.url(args, options),
     method: 'post',
 })
@@ -205,7 +205,7 @@ respond.definition = {
 * @see app/Http/Controllers/Admin/TicketController.php:73
 * @route '/admin/tickets/{ticket}/respond'
 */
-respond.url = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+respond.url = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ticket: args }
     }
@@ -238,7 +238,7 @@ respond.url = (args: { ticket: string | { id: string } } | [ticket: string | { i
 * @see app/Http/Controllers/Admin/TicketController.php:73
 * @route '/admin/tickets/{ticket}/respond'
 */
-respond.post = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+respond.post = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: respond.url(args, options),
     method: 'post',
 })
@@ -248,7 +248,7 @@ respond.post = (args: { ticket: string | { id: string } } | [ticket: string | { 
 * @see app/Http/Controllers/Admin/TicketController.php:73
 * @route '/admin/tickets/{ticket}/respond'
 */
-const respondForm = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const respondForm = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: respond.url(args, options),
     method: 'post',
 })
@@ -258,7 +258,7 @@ const respondForm = (args: { ticket: string | { id: string } } | [ticket: string
 * @see app/Http/Controllers/Admin/TicketController.php:73
 * @route '/admin/tickets/{ticket}/respond'
 */
-respondForm.post = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+respondForm.post = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: respond.url(args, options),
     method: 'post',
 })
@@ -270,7 +270,7 @@ respond.form = respondForm
 * @see app/Http/Controllers/Admin/TicketController.php:95
 * @route '/admin/tickets/{ticket}/close'
 */
-export const close = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const close = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: close.url(args, options),
     method: 'patch',
 })
@@ -285,7 +285,7 @@ close.definition = {
 * @see app/Http/Controllers/Admin/TicketController.php:95
 * @route '/admin/tickets/{ticket}/close'
 */
-close.url = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+close.url = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { ticket: args }
     }
@@ -318,7 +318,7 @@ close.url = (args: { ticket: string | { id: string } } | [ticket: string | { id:
 * @see app/Http/Controllers/Admin/TicketController.php:95
 * @route '/admin/tickets/{ticket}/close'
 */
-close.patch = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+close.patch = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: close.url(args, options),
     method: 'patch',
 })
@@ -328,7 +328,7 @@ close.patch = (args: { ticket: string | { id: string } } | [ticket: string | { i
 * @see app/Http/Controllers/Admin/TicketController.php:95
 * @route '/admin/tickets/{ticket}/close'
 */
-const closeForm = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const closeForm = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: close.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -343,7 +343,7 @@ const closeForm = (args: { ticket: string | { id: string } } | [ticket: string |
 * @see app/Http/Controllers/Admin/TicketController.php:95
 * @route '/admin/tickets/{ticket}/close'
 */
-closeForm.patch = (args: { ticket: string | { id: string } } | [ticket: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+closeForm.patch = (args: { ticket: string | number | { id: string | number } } | [ticket: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: close.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',

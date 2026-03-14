@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-export const favorite = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const favorite = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: favorite.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ favorite.definition = {
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-favorite.url = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+favorite.url = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { track: args }
     }
@@ -52,7 +52,7 @@ favorite.url = (args: { track: string | { id: string } } | [track: string | { id
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-favorite.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+favorite.post = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: favorite.url(args, options),
     method: 'post',
 })
@@ -62,7 +62,7 @@ favorite.post = (args: { track: string | { id: string } } | [track: string | { i
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-const favoriteForm = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const favoriteForm = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: favorite.url(args, options),
     method: 'post',
 })
@@ -72,7 +72,7 @@ const favoriteForm = (args: { track: string | { id: string } } | [track: string 
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-favoriteForm.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+favoriteForm.post = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: favorite.url(args, options),
     method: 'post',
 })

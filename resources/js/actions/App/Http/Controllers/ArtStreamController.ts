@@ -85,7 +85,7 @@ index.form = indexForm
 * @see app/Http/Controllers/ArtStreamController.php:112
 * @route '/artstream/album/{album}'
 */
-export const album = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const album = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: album.url(args, options),
     method: 'get',
 })
@@ -100,7 +100,7 @@ album.definition = {
 * @see app/Http/Controllers/ArtStreamController.php:112
 * @route '/artstream/album/{album}'
 */
-album.url = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+album.url = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { album: args }
     }
@@ -133,7 +133,7 @@ album.url = (args: { album: string | { id: string } } | [album: string | { id: s
 * @see app/Http/Controllers/ArtStreamController.php:112
 * @route '/artstream/album/{album}'
 */
-album.get = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+album.get = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: album.url(args, options),
     method: 'get',
 })
@@ -143,7 +143,7 @@ album.get = (args: { album: string | { id: string } } | [album: string | { id: s
 * @see app/Http/Controllers/ArtStreamController.php:112
 * @route '/artstream/album/{album}'
 */
-album.head = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+album.head = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: album.url(args, options),
     method: 'head',
 })
@@ -153,7 +153,7 @@ album.head = (args: { album: string | { id: string } } | [album: string | { id: 
 * @see app/Http/Controllers/ArtStreamController.php:112
 * @route '/artstream/album/{album}'
 */
-const albumForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const albumForm = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: album.url(args, options),
     method: 'get',
 })
@@ -163,7 +163,7 @@ const albumForm = (args: { album: string | { id: string } } | [album: string | {
 * @see app/Http/Controllers/ArtStreamController.php:112
 * @route '/artstream/album/{album}'
 */
-albumForm.get = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+albumForm.get = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: album.url(args, options),
     method: 'get',
 })
@@ -173,7 +173,7 @@ albumForm.get = (args: { album: string | { id: string } } | [album: string | { i
 * @see app/Http/Controllers/ArtStreamController.php:112
 * @route '/artstream/album/{album}'
 */
-albumForm.head = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+albumForm.head = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: album.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',

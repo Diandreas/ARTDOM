@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/Stream/VideoController.php:81
 * @route '/arttube/videos/{video}'
 */
-export const show = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ show.definition = {
 * @see app/Http/Controllers/Stream/VideoController.php:81
 * @route '/arttube/videos/{video}'
 */
-show.url = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+show.url = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { video: args }
     }
@@ -52,7 +52,7 @@ show.url = (args: { video: string | { id: string } } | [video: string | { id: st
 * @see app/Http/Controllers/Stream/VideoController.php:81
 * @route '/arttube/videos/{video}'
 */
-show.get = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -62,7 +62,7 @@ show.get = (args: { video: string | { id: string } } | [video: string | { id: st
 * @see app/Http/Controllers/Stream/VideoController.php:81
 * @route '/arttube/videos/{video}'
 */
-show.head = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -72,7 +72,7 @@ show.head = (args: { video: string | { id: string } } | [video: string | { id: s
 * @see app/Http/Controllers/Stream/VideoController.php:81
 * @route '/arttube/videos/{video}'
 */
-const showForm = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -82,7 +82,7 @@ const showForm = (args: { video: string | { id: string } } | [video: string | { 
 * @see app/Http/Controllers/Stream/VideoController.php:81
 * @route '/arttube/videos/{video}'
 */
-showForm.get = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -92,7 +92,7 @@ showForm.get = (args: { video: string | { id: string } } | [video: string | { id
 * @see app/Http/Controllers/Stream/VideoController.php:81
 * @route '/arttube/videos/{video}'
 */
-showForm.head = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -109,7 +109,7 @@ show.form = showForm
 * @see app/Http/Controllers/Stream/VideoController.php:157
 * @route '/arttube/videos/{video}/like'
 */
-export const like = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const like = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: like.url(args, options),
     method: 'post',
 })
@@ -124,7 +124,7 @@ like.definition = {
 * @see app/Http/Controllers/Stream/VideoController.php:157
 * @route '/arttube/videos/{video}/like'
 */
-like.url = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+like.url = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { video: args }
     }
@@ -157,7 +157,7 @@ like.url = (args: { video: string | { id: string } } | [video: string | { id: st
 * @see app/Http/Controllers/Stream/VideoController.php:157
 * @route '/arttube/videos/{video}/like'
 */
-like.post = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+like.post = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: like.url(args, options),
     method: 'post',
 })
@@ -167,7 +167,7 @@ like.post = (args: { video: string | { id: string } } | [video: string | { id: s
 * @see app/Http/Controllers/Stream/VideoController.php:157
 * @route '/arttube/videos/{video}/like'
 */
-const likeForm = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const likeForm = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: like.url(args, options),
     method: 'post',
 })
@@ -177,7 +177,7 @@ const likeForm = (args: { video: string | { id: string } } | [video: string | { 
 * @see app/Http/Controllers/Stream/VideoController.php:157
 * @route '/arttube/videos/{video}/like'
 */
-likeForm.post = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+likeForm.post = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: like.url(args, options),
     method: 'post',
 })
@@ -189,7 +189,7 @@ like.form = likeForm
 * @see app/Http/Controllers/Stream/VideoController.php:132
 * @route '/arttube/videos/{video}/comments'
 */
-export const comments = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const comments = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: comments.url(args, options),
     method: 'post',
 })
@@ -204,7 +204,7 @@ comments.definition = {
 * @see app/Http/Controllers/Stream/VideoController.php:132
 * @route '/arttube/videos/{video}/comments'
 */
-comments.url = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+comments.url = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { video: args }
     }
@@ -237,7 +237,7 @@ comments.url = (args: { video: string | { id: string } } | [video: string | { id
 * @see app/Http/Controllers/Stream/VideoController.php:132
 * @route '/arttube/videos/{video}/comments'
 */
-comments.post = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+comments.post = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: comments.url(args, options),
     method: 'post',
 })
@@ -247,7 +247,7 @@ comments.post = (args: { video: string | { id: string } } | [video: string | { i
 * @see app/Http/Controllers/Stream/VideoController.php:132
 * @route '/arttube/videos/{video}/comments'
 */
-const commentsForm = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const commentsForm = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: comments.url(args, options),
     method: 'post',
 })
@@ -257,7 +257,7 @@ const commentsForm = (args: { video: string | { id: string } } | [video: string 
 * @see app/Http/Controllers/Stream/VideoController.php:132
 * @route '/arttube/videos/{video}/comments'
 */
-commentsForm.post = (args: { video: string | { id: string } } | [video: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+commentsForm.post = (args: { video: string | number | { id: string | number } } | [video: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: comments.url(args, options),
     method: 'post',
 })

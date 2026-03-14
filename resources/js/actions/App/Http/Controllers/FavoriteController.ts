@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-export const toggle = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const toggle = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: toggle.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ toggle.definition = {
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-toggle.url = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+toggle.url = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { track: args }
     }
@@ -52,7 +52,7 @@ toggle.url = (args: { track: string | { id: string } } | [track: string | { id: 
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-toggle.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+toggle.post = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: toggle.url(args, options),
     method: 'post',
 })
@@ -62,7 +62,7 @@ toggle.post = (args: { track: string | { id: string } } | [track: string | { id:
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-const toggleForm = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const toggleForm = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: toggle.url(args, options),
     method: 'post',
 })
@@ -72,7 +72,7 @@ const toggleForm = (args: { track: string | { id: string } } | [track: string | 
 * @see app/Http/Controllers/FavoriteController.php:11
 * @route '/tracks/{track}/favorite'
 */
-toggleForm.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+toggleForm.post = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: toggle.url(args, options),
     method: 'post',
 })

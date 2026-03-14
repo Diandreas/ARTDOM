@@ -141,7 +141,7 @@ store.form = storeForm
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:80
 * @route '/artist/albums/{album}'
 */
-export const destroy = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -156,7 +156,7 @@ destroy.definition = {
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:80
 * @route '/artist/albums/{album}'
 */
-destroy.url = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+destroy.url = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { album: args }
     }
@@ -189,7 +189,7 @@ destroy.url = (args: { album: string | { id: string } } | [album: string | { id:
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:80
 * @route '/artist/albums/{album}'
 */
-destroy.delete = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -199,7 +199,7 @@ destroy.delete = (args: { album: string | { id: string } } | [album: string | { 
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:80
 * @route '/artist/albums/{album}'
 */
-const destroyForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -214,7 +214,7 @@ const destroyForm = (args: { album: string | { id: string } } | [album: string |
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:80
 * @route '/artist/albums/{album}'
 */
-destroyForm.delete = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -231,7 +231,7 @@ destroy.form = destroyForm
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:107
 * @route '/artist/albums/{album}/toggle-publication'
 */
-export const togglePublication = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+export const togglePublication = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: togglePublication.url(args, options),
     method: 'patch',
 })
@@ -246,7 +246,7 @@ togglePublication.definition = {
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:107
 * @route '/artist/albums/{album}/toggle-publication'
 */
-togglePublication.url = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+togglePublication.url = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { album: args }
     }
@@ -279,7 +279,7 @@ togglePublication.url = (args: { album: string | { id: string } } | [album: stri
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:107
 * @route '/artist/albums/{album}/toggle-publication'
 */
-togglePublication.patch = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
+togglePublication.patch = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: togglePublication.url(args, options),
     method: 'patch',
 })
@@ -289,7 +289,7 @@ togglePublication.patch = (args: { album: string | { id: string } } | [album: st
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:107
 * @route '/artist/albums/{album}/toggle-publication'
 */
-const togglePublicationForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const togglePublicationForm = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: togglePublication.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',
@@ -304,7 +304,7 @@ const togglePublicationForm = (args: { album: string | { id: string } } | [album
 * @see app/Http/Controllers/Artist/AlbumUploadController.php:107
 * @route '/artist/albums/{album}/toggle-publication'
 */
-togglePublicationForm.patch = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+togglePublicationForm.patch = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: togglePublication.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'PATCH',

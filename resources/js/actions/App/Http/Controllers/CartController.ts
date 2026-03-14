@@ -141,7 +141,7 @@ addItem.form = addItemForm
 * @see app/Http/Controllers/CartController.php:130
 * @route '/client/cart/items/{item}'
 */
-export const removeItem = (args: { item: string | { id: string } } | [item: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const removeItem = (args: { item: string | number | { id: string | number } } | [item: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: removeItem.url(args, options),
     method: 'delete',
 })
@@ -156,7 +156,7 @@ removeItem.definition = {
 * @see app/Http/Controllers/CartController.php:130
 * @route '/client/cart/items/{item}'
 */
-removeItem.url = (args: { item: string | { id: string } } | [item: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+removeItem.url = (args: { item: string | number | { id: string | number } } | [item: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { item: args }
     }
@@ -189,7 +189,7 @@ removeItem.url = (args: { item: string | { id: string } } | [item: string | { id
 * @see app/Http/Controllers/CartController.php:130
 * @route '/client/cart/items/{item}'
 */
-removeItem.delete = (args: { item: string | { id: string } } | [item: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+removeItem.delete = (args: { item: string | number | { id: string | number } } | [item: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: removeItem.url(args, options),
     method: 'delete',
 })
@@ -199,7 +199,7 @@ removeItem.delete = (args: { item: string | { id: string } } | [item: string | {
 * @see app/Http/Controllers/CartController.php:130
 * @route '/client/cart/items/{item}'
 */
-const removeItemForm = (args: { item: string | { id: string } } | [item: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const removeItemForm = (args: { item: string | number | { id: string | number } } | [item: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: removeItem.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -214,7 +214,7 @@ const removeItemForm = (args: { item: string | { id: string } } | [item: string 
 * @see app/Http/Controllers/CartController.php:130
 * @route '/client/cart/items/{item}'
 */
-removeItemForm.delete = (args: { item: string | { id: string } } | [item: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+removeItemForm.delete = (args: { item: string | number | { id: string | number } } | [item: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: removeItem.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/ConversationController.php:92
 * @route '/reservation/{reservation}/contact'
 */
-export const contact = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const contact = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: contact.url(args, options),
     method: 'get',
 })
@@ -19,7 +19,7 @@ contact.definition = {
 * @see app/Http/Controllers/ConversationController.php:92
 * @route '/reservation/{reservation}/contact'
 */
-contact.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+contact.url = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
@@ -52,7 +52,7 @@ contact.url = (args: { reservation: string | { id: string } } | [reservation: st
 * @see app/Http/Controllers/ConversationController.php:92
 * @route '/reservation/{reservation}/contact'
 */
-contact.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+contact.get = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: contact.url(args, options),
     method: 'get',
 })
@@ -62,7 +62,7 @@ contact.get = (args: { reservation: string | { id: string } } | [reservation: st
 * @see app/Http/Controllers/ConversationController.php:92
 * @route '/reservation/{reservation}/contact'
 */
-contact.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+contact.head = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: contact.url(args, options),
     method: 'head',
 })
@@ -72,7 +72,7 @@ contact.head = (args: { reservation: string | { id: string } } | [reservation: s
 * @see app/Http/Controllers/ConversationController.php:92
 * @route '/reservation/{reservation}/contact'
 */
-const contactForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const contactForm = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: contact.url(args, options),
     method: 'get',
 })
@@ -82,7 +82,7 @@ const contactForm = (args: { reservation: string | { id: string } } | [reservati
 * @see app/Http/Controllers/ConversationController.php:92
 * @route '/reservation/{reservation}/contact'
 */
-contactForm.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+contactForm.get = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: contact.url(args, options),
     method: 'get',
 })
@@ -92,7 +92,7 @@ contactForm.get = (args: { reservation: string | { id: string } } | [reservation
 * @see app/Http/Controllers/ConversationController.php:92
 * @route '/reservation/{reservation}/contact'
 */
-contactForm.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+contactForm.head = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: contact.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',

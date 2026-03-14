@@ -85,7 +85,7 @@ index.form = indexForm
 * @see app/Http/Controllers/Artist/OrderController.php:63
 * @route '/artist/orders/{reservation}'
 */
-export const show = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+export const show = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -100,7 +100,7 @@ show.definition = {
 * @see app/Http/Controllers/Artist/OrderController.php:63
 * @route '/artist/orders/{reservation}'
 */
-show.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+show.url = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
@@ -133,7 +133,7 @@ show.url = (args: { reservation: string | { id: string } } | [reservation: strin
 * @see app/Http/Controllers/Artist/OrderController.php:63
 * @route '/artist/orders/{reservation}'
 */
-show.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+show.get = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
@@ -143,7 +143,7 @@ show.get = (args: { reservation: string | { id: string } } | [reservation: strin
 * @see app/Http/Controllers/Artist/OrderController.php:63
 * @route '/artist/orders/{reservation}'
 */
-show.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+show.head = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
@@ -153,7 +153,7 @@ show.head = (args: { reservation: string | { id: string } } | [reservation: stri
 * @see app/Http/Controllers/Artist/OrderController.php:63
 * @route '/artist/orders/{reservation}'
 */
-const showForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+const showForm = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -163,7 +163,7 @@ const showForm = (args: { reservation: string | { id: string } } | [reservation:
 * @see app/Http/Controllers/Artist/OrderController.php:63
 * @route '/artist/orders/{reservation}'
 */
-showForm.get = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.get = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, options),
     method: 'get',
 })
@@ -173,7 +173,7 @@ showForm.get = (args: { reservation: string | { id: string } } | [reservation: s
 * @see app/Http/Controllers/Artist/OrderController.php:63
 * @route '/artist/orders/{reservation}'
 */
-showForm.head = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+showForm.head = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
     action: show.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'HEAD',
@@ -190,7 +190,7 @@ show.form = showForm
 * @see app/Http/Controllers/Artist/OrderController.php:92
 * @route '/artist/orders/{reservation}/accept'
 */
-export const accept = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const accept = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: accept.url(args, options),
     method: 'post',
 })
@@ -205,7 +205,7 @@ accept.definition = {
 * @see app/Http/Controllers/Artist/OrderController.php:92
 * @route '/artist/orders/{reservation}/accept'
 */
-accept.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+accept.url = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
@@ -238,7 +238,7 @@ accept.url = (args: { reservation: string | { id: string } } | [reservation: str
 * @see app/Http/Controllers/Artist/OrderController.php:92
 * @route '/artist/orders/{reservation}/accept'
 */
-accept.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+accept.post = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: accept.url(args, options),
     method: 'post',
 })
@@ -248,7 +248,7 @@ accept.post = (args: { reservation: string | { id: string } } | [reservation: st
 * @see app/Http/Controllers/Artist/OrderController.php:92
 * @route '/artist/orders/{reservation}/accept'
 */
-const acceptForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const acceptForm = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: accept.url(args, options),
     method: 'post',
 })
@@ -258,7 +258,7 @@ const acceptForm = (args: { reservation: string | { id: string } } | [reservatio
 * @see app/Http/Controllers/Artist/OrderController.php:92
 * @route '/artist/orders/{reservation}/accept'
 */
-acceptForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+acceptForm.post = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: accept.url(args, options),
     method: 'post',
 })
@@ -270,7 +270,7 @@ accept.form = acceptForm
 * @see app/Http/Controllers/Artist/OrderController.php:122
 * @route '/artist/orders/{reservation}/decline'
 */
-export const decline = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const decline = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: decline.url(args, options),
     method: 'post',
 })
@@ -285,7 +285,7 @@ decline.definition = {
 * @see app/Http/Controllers/Artist/OrderController.php:122
 * @route '/artist/orders/{reservation}/decline'
 */
-decline.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+decline.url = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
@@ -318,7 +318,7 @@ decline.url = (args: { reservation: string | { id: string } } | [reservation: st
 * @see app/Http/Controllers/Artist/OrderController.php:122
 * @route '/artist/orders/{reservation}/decline'
 */
-decline.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+decline.post = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: decline.url(args, options),
     method: 'post',
 })
@@ -328,7 +328,7 @@ decline.post = (args: { reservation: string | { id: string } } | [reservation: s
 * @see app/Http/Controllers/Artist/OrderController.php:122
 * @route '/artist/orders/{reservation}/decline'
 */
-const declineForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const declineForm = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: decline.url(args, options),
     method: 'post',
 })
@@ -338,7 +338,7 @@ const declineForm = (args: { reservation: string | { id: string } } | [reservati
 * @see app/Http/Controllers/Artist/OrderController.php:122
 * @route '/artist/orders/{reservation}/decline'
 */
-declineForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+declineForm.post = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: decline.url(args, options),
     method: 'post',
 })
@@ -350,7 +350,7 @@ decline.form = declineForm
 * @see app/Http/Controllers/Artist/OrderController.php:168
 * @route '/artist/orders/{reservation}/checkin'
 */
-export const checkin = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const checkin = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkin.url(args, options),
     method: 'post',
 })
@@ -365,7 +365,7 @@ checkin.definition = {
 * @see app/Http/Controllers/Artist/OrderController.php:168
 * @route '/artist/orders/{reservation}/checkin'
 */
-checkin.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+checkin.url = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
@@ -398,7 +398,7 @@ checkin.url = (args: { reservation: string | { id: string } } | [reservation: st
 * @see app/Http/Controllers/Artist/OrderController.php:168
 * @route '/artist/orders/{reservation}/checkin'
 */
-checkin.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+checkin.post = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkin.url(args, options),
     method: 'post',
 })
@@ -408,7 +408,7 @@ checkin.post = (args: { reservation: string | { id: string } } | [reservation: s
 * @see app/Http/Controllers/Artist/OrderController.php:168
 * @route '/artist/orders/{reservation}/checkin'
 */
-const checkinForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const checkinForm = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: checkin.url(args, options),
     method: 'post',
 })
@@ -418,7 +418,7 @@ const checkinForm = (args: { reservation: string | { id: string } } | [reservati
 * @see app/Http/Controllers/Artist/OrderController.php:168
 * @route '/artist/orders/{reservation}/checkin'
 */
-checkinForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+checkinForm.post = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: checkin.url(args, options),
     method: 'post',
 })
@@ -430,7 +430,7 @@ checkin.form = checkinForm
 * @see app/Http/Controllers/Artist/OrderController.php:206
 * @route '/artist/orders/{reservation}/checkout'
 */
-export const checkout = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const checkout = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkout.url(args, options),
     method: 'post',
 })
@@ -445,7 +445,7 @@ checkout.definition = {
 * @see app/Http/Controllers/Artist/OrderController.php:206
 * @route '/artist/orders/{reservation}/checkout'
 */
-checkout.url = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+checkout.url = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { reservation: args }
     }
@@ -478,7 +478,7 @@ checkout.url = (args: { reservation: string | { id: string } } | [reservation: s
 * @see app/Http/Controllers/Artist/OrderController.php:206
 * @route '/artist/orders/{reservation}/checkout'
 */
-checkout.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+checkout.post = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: checkout.url(args, options),
     method: 'post',
 })
@@ -488,7 +488,7 @@ checkout.post = (args: { reservation: string | { id: string } } | [reservation: 
 * @see app/Http/Controllers/Artist/OrderController.php:206
 * @route '/artist/orders/{reservation}/checkout'
 */
-const checkoutForm = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const checkoutForm = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: checkout.url(args, options),
     method: 'post',
 })
@@ -498,7 +498,7 @@ const checkoutForm = (args: { reservation: string | { id: string } } | [reservat
 * @see app/Http/Controllers/Artist/OrderController.php:206
 * @route '/artist/orders/{reservation}/checkout'
 */
-checkoutForm.post = (args: { reservation: string | { id: string } } | [reservation: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+checkoutForm.post = (args: { reservation: string | number | { id: string | number } } | [reservation: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: checkout.url(args, options),
     method: 'post',
 })
