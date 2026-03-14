@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { home, login, register, logout } from '@/routes';
+import { index as artistsIndex } from '@/routes/artists';
 import profile from '@/routes/profile';
 import { Button } from '@/components/ui/button';
 import {
@@ -90,10 +91,10 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                             Dashboard
                                         </Link>
                                     )}
-                                    <Link href="#" className="text-lg font-semibold hover:text-primary transition-colors">
+                                    <Link href={artistsIndex.url()} className="text-lg font-semibold hover:text-primary transition-colors">
                                         Artistes
                                     </Link>
-                                    <Link href="#" className="text-lg font-semibold hover:text-primary transition-colors">
+                                    <Link href={artistsIndex.url()} className="text-lg font-semibold hover:text-primary transition-colors">
                                         Catégories
                                     </Link>
                                     <Link href="/artstream" className="text-lg font-semibold hover:text-primary transition-colors">
@@ -122,10 +123,10 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                 Dashboard
                             </Link>
                         )}
-                        <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
+                        <Link href={artistsIndex.url()} className="text-sm font-medium hover:text-primary transition-colors">
                             Artistes
                         </Link>
-                        <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
+                        <Link href={artistsIndex.url()} className="text-sm font-medium hover:text-primary transition-colors">
                             Catégories
                         </Link>
                         <Link href="/artstream" className="text-sm font-medium hover:text-primary transition-colors">

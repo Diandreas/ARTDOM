@@ -110,6 +110,23 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
         );
     };
 
+    const handleShare = async () => {
+        const track = currentTrack || initialTrack;
+        const shareUrl = window.location.href;
+        const shareTitle = track ? `${track.title} — ${track.artist}` : 'ARTDOM';
+
+        if (navigator.share) {
+            try {
+                await navigator.share({ title: shareTitle, url: shareUrl });
+            } catch {
+                // User cancelled share, do nothing
+            }
+        } else {
+            await navigator.clipboard.writeText(shareUrl);
+            toast.success('Lien copié dans le presse-papiers');
+        }
+    };
+
     const formatTime = (seconds: number) => {
         if (!seconds || isNaN(seconds)) return '0:00';
         const mins = Math.floor(seconds / 60);
@@ -281,7 +298,7 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                             className="w-24 cursor-pointer"
                         />
                     </div>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground">
+                    <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={handleShare}>
                         <Share2 className="w-5 h-5" />
                     </Button>
                     {displayTrack && (

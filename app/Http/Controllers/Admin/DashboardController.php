@@ -10,7 +10,7 @@ use App\Models\Payment;
 use App\Models\Reservation;
 use App\Models\Review;
 use App\Models\Service;
-use App\Models\Subscription;
+use App\Models\ClientSubscription;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Models\Video;
@@ -104,7 +104,7 @@ class DashboardController extends Controller
             ->groupBy('day')
             ->pluck('amount', 'day');
 
-        $subscriptionRevenueByDay = Subscription::where('created_at', '>=', $start7d)
+        $subscriptionRevenueByDay = ClientSubscription::where('created_at', '>=', $start7d)
             ->selectRaw('DATE(created_at) as day, SUM(price) as amount')
             ->groupBy('day')
             ->pluck('amount', 'day');
