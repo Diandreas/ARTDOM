@@ -13,10 +13,10 @@ class TicketController extends Controller
 {
     /**
      * Affiche la liste des tickets de support
-     * 
+     *
      * Route: GET /admin/tickets
      * Middleware: auth, role:admin
-     * 
+     *
      * Affiche tous les tickets avec filtres :
      * - Par statut (open, in_progress, resolved, closed)
      * - Par type
@@ -46,7 +46,7 @@ class TicketController extends Controller
 
     /**
      * Affiche les détails d'un ticket
-     * 
+     *
      * Route: GET /admin/tickets/{ticket}
      * Middleware: auth, role:admin
      */
@@ -61,10 +61,10 @@ class TicketController extends Controller
 
     /**
      * Répond à un ticket
-     * 
+     *
      * Route: POST /admin/tickets/{ticket}/respond
      * Middleware: auth, role:admin
-     * 
+     *
      * Logique:
      * 1. Ajoute la réponse admin
      * 2. Change le statut à "in_progress" si ouvert
@@ -88,7 +88,7 @@ class TicketController extends Controller
 
     /**
      * Ferme un ticket
-     * 
+     *
      * Route: PATCH /admin/tickets/{ticket}/close
      * Middleware: auth, role:admin
      */

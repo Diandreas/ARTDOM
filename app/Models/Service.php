@@ -52,7 +52,7 @@ class Service extends Model
     /**
      * Relation : Service appartient à UN User (artiste)
      * Relation N-1 (belongsTo) : Un service appartient à un artiste
-     * 
+     *
      * Note : 'artist_id' dans services pointe vers 'id' dans users
      */
     public function artist(): BelongsTo

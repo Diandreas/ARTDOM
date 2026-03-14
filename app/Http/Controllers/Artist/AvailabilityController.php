@@ -14,10 +14,10 @@ class AvailabilityController extends Controller
 {
     /**
      * Affiche l'agenda de l'artiste
-     * 
+     *
      * Route: GET /artist/availability
      * Middleware: auth, role:artist
-     * 
+     *
      * Affiche le calendrier avec :
      * - Créneaux disponibles (verts)
      * - Créneaux réservés (bleus)
@@ -48,10 +48,10 @@ class AvailabilityController extends Controller
 
     /**
      * Ajoute des créneaux de disponibilité
-     * 
+     *
      * Route: POST /artist/availability
      * Middleware: auth, role:artist
-     * 
+     *
      * Permet d'ajouter :
      * - Un créneau unique (date + heures)
      * - Des créneaux répétés (ex: tous les lundis de 9h à 17h)
@@ -86,10 +86,10 @@ class AvailabilityController extends Controller
 
     /**
      * Bloque un créneau (rend indisponible)
-     * 
+     *
      * Route: POST /artist/availability/block
      * Middleware: auth, role:artist
-     * 
+     *
      * Crée un créneau bloqué (vacances, événement personnel, etc.)
      */
     public function block(Request $request): RedirectResponse
@@ -117,7 +117,7 @@ class AvailabilityController extends Controller
 
     /**
      * Supprime un créneau de disponibilité
-     * 
+     *
      * Route: DELETE /artist/availability/{availability}
      * Middleware: auth, role:artist
      */
@@ -167,7 +167,7 @@ class AvailabilityController extends Controller
      */
     private function matchesRepeatRule($date, $startDate, ?string $rule): bool
     {
-        if (!$rule) {
+        if (! $rule) {
             return $date->isSameDay($startDate);
         }
 

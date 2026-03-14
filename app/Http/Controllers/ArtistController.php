@@ -14,63 +14,51 @@ class ArtistController extends Controller
 {
     public function index(Request $request): Response
     {
-        $query = User::where('is_active', true)
-            ->whereHas('artistProfile', function ($query) {
-                $query->where('is_verified', true)
-                    ->where('verification_status', 'approved');
-            })
+        $sortBy = $request->input('sort', 'rating');
+
+        $query = User::where('users.is_active', true)
+            ->join('artist_profiles', 'users.id', '=', 'artist_profiles.user_id')
+            ->where('artist_profiles.is_verified', true)
+            ->where('artist_profiles.verification_status', 'approved')
             ->with(['artistProfile']);
 
         // Filtre par catégorie
         if ($request->filled('category')) {
-            $query->whereHas('artistProfile', function ($q) use ($request) {
-                $q->whereRaw("json_extract(categories, '$[0]') = ?", [$request->category])
-                    ->orWhereRaw("json_extract(categories, '$[1]') = ?", [$request->category])
-                    ->orWhereRaw("json_extract(categories, '$[2]') = ?", [$request->category]);
-            });
+            $category = $request->input('category');
+            $query->where('artist_profiles.categories', 'LIKE', "%{$category}%");
         }
 
         // Filtre par ville
         if ($request->filled('city')) {
-            $query->where('city', $request->city);
+            $query->where('users.city', $request->city);
         }
 
         // Filtre par tarif max
         if ($request->filled('max_rate')) {
-            $query->whereHas('artistProfile', function ($q) use ($request) {
-                $q->where('base_rate', '<=', $request->max_rate);
-            });
+            $query->where('artist_profiles.base_rate', '<=', $request->max_rate);
         }
 
         // Filtre vérifiés uniquement
         if ($request->boolean('verified')) {
-            $query->whereHas('artistProfile', function ($q) {
-                $q->where('is_verified', true);
-            });
+            $query->where('artist_profiles.is_verified', true);
         }
 
         // Recherche par nom
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhereHas('artistProfile', function ($q) use ($search) {
-                        $q->where('stage_name', 'like', "%{$search}%");
-                    });
+                $q->where('users.name', 'like', "%{$search}%")
+                    ->orWhere('artist_profiles.stage_name', 'like', "%{$search}%");
             });
         }
 
         // Tri
-        $sortBy = $request->input('sort', 'rating');
-        if ($sortBy === 'rating') {
-            $query->join('artist_profiles', 'users.id', '=', 'artist_profiles.user_id')
-                ->orderByDesc('artist_profiles.rating');
-        } elseif ($sortBy === 'rate_asc') {
-            $query->join('artist_profiles', 'users.id', '=', 'artist_profiles.user_id')
-                ->orderBy('artist_profiles.base_rate');
+        if ($sortBy === 'rate_asc') {
+            $query->orderBy('artist_profiles.base_rate');
         } elseif ($sortBy === 'rate_desc') {
-            $query->join('artist_profiles', 'users.id', '=', 'artist_profiles.user_id')
-                ->orderByDesc('artist_profiles.base_rate');
+            $query->orderByDesc('artist_profiles.base_rate');
+        } else {
+            $query->orderByDesc('artist_profiles.rating');
         }
 
         $artists = $query->select('users.*')

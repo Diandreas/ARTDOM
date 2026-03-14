@@ -19,10 +19,10 @@ class AlbumController extends Controller
 {
     /**
      * Affiche le hub de streaming musical
-     * 
+     *
      * Route: GET /stream
      * Middleware: auth
-     * 
+     *
      * Affiche :
      * - Derniers albums publiés
      * - Top artistes
@@ -88,10 +88,10 @@ class AlbumController extends Controller
 
     /**
      * Affiche les détails d'un album
-     * 
+     *
      * Route: GET /stream/albums/{album}
      * Middleware: auth
-     * 
+     *
      * Affiche :
      * - Informations de l'album
      * - Liste des pistes
@@ -119,15 +119,15 @@ class AlbumController extends Controller
 
     /**
      * Achète un album
-     * 
+     *
      * Route: POST /stream/albums/{album}/purchase
      * Middleware: auth, role:client
-     * 
+     *
      * Crée un achat d'album et initie le paiement
      */
     public function purchase(Request $request, Album $album): RedirectResponse
     {
-        if (!$album->is_purchasable || $album->price <= 0) {
+        if (! $album->is_purchasable || $album->price <= 0) {
             return back()->withErrors(['message' => 'Cet album n\'est pas disponible à l\'achat.']);
         }
 
@@ -162,10 +162,10 @@ class AlbumController extends Controller
 
     /**
      * Génère une URL signée pour jouer une piste
-     * 
+     *
      * Route: GET /stream/albums/{album}/tracks/{track}/play
      * Middleware: auth
-     * 
+     *
      * Logique:
      * 1. Vérifie que l'album est streamable ou acheté
      * 2. Génère une URL signée temporaire pour le fichier audio
@@ -181,7 +181,7 @@ class AlbumController extends Controller
         }
 
         // Vérifier l'accès (streamable ou acheté)
-        if (!$album->is_streamable && !$album->isPurchasedBy($client->id)) {
+        if (! $album->is_streamable && ! $album->isPurchasedBy($client->id)) {
             abort(403, 'Vous devez acheter cet album pour y accéder.');
         }
 

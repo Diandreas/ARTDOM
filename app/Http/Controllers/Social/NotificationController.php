@@ -13,10 +13,10 @@ class NotificationController extends Controller
 {
     /**
      * Affiche la liste des notifications
-     * 
+     *
      * Route: GET /notifications
      * Middleware: auth
-     * 
+     *
      * Affiche les notifications groupées par type :
      * - Toutes
      * - Réservations
@@ -46,7 +46,7 @@ class NotificationController extends Controller
 
     /**
      * Marque une notification comme lue
-     * 
+     *
      * Route: PATCH /notifications/{id}/read
      * Middleware: auth
      */
@@ -62,7 +62,7 @@ class NotificationController extends Controller
 
     /**
      * Marque toutes les notifications comme lues
-     * 
+     *
      * Route: PATCH /notifications/read-all
      * Middleware: auth
      */
@@ -76,7 +76,7 @@ class NotificationController extends Controller
 
     /**
      * Supprime une notification
-     * 
+     *
      * Route: DELETE /notifications/{id}
      * Middleware: auth
      */

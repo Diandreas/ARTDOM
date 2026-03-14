@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Artist;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Artist\StoreAlbumRequest;
 use App\Models\Album;
+use App\Models\AlbumPurchase;
+use App\Models\Track;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -47,16 +50,63 @@ class AlbumUploadController extends Controller
     }
 
     /**
+     * Display a single album with its tracks and stats.
+     */
+    public function show(Album $album): Response
+    {
+        if ($album->artist_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $album->load('tracks');
+
+        $purchases = AlbumPurchase::where('album_id', $album->id)->count();
+        $revenue = (float) AlbumPurchase::where('album_id', $album->id)->sum('price_paid');
+        $revenueThisMonth = (float) AlbumPurchase::where('album_id', $album->id)
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->sum('price_paid');
+
+        return Inertia::render('Artist/AlbumDetail', [
+            'album' => [
+                'id' => $album->id,
+                'title' => $album->title,
+                'year' => $album->year,
+                'genre' => $album->genre,
+                'cover_url' => $album->cover_url,
+                'price' => $album->price,
+                'is_streamable' => $album->is_streamable,
+                'is_purchasable' => $album->is_purchasable,
+                'total_plays' => $album->total_plays,
+                'published_at' => $album->published_at,
+                'created_at' => $album->created_at->format('d/m/Y'),
+                'tracks' => $album->tracks->map(fn ($t) => [
+                    'id' => $t->id,
+                    'title' => $t->title,
+                    'track_number' => $t->track_number,
+                    'duration_seconds' => $t->duration_seconds,
+                    'plays' => $t->plays,
+                    'file_url' => $t->file_url,
+                    'lyrics' => $t->lyrics,
+                ]),
+            ],
+            'stats' => [
+                'total_plays' => $album->total_plays,
+                'purchases' => $purchases,
+                'revenue_total' => $revenue,
+                'revenue_this_month' => $revenueThisMonth,
+            ],
+        ]);
+    }
+
+    /**
      * Store a new album.
      */
     public function store(StoreAlbumRequest $request): RedirectResponse
     {
         $artist = Auth::user();
 
-        // Upload cover image
         $coverPath = $request->file('cover')->store('albums/covers', 'public');
 
-        // Create album
         $album = Album::create([
             'artist_id' => $artist->id,
             'title' => $request->title,
@@ -75,24 +125,63 @@ class AlbumUploadController extends Controller
     }
 
     /**
+     * Update album metadata and optionally the cover image.
+     */
+    public function update(Request $request, Album $album): RedirectResponse
+    {
+        if ($album->artist_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'year' => ['required', 'integer', 'min:1900', 'max:'.(now()->year + 1)],
+            'genre' => ['required', 'string', 'max:255'],
+            'cover' => ['nullable', 'image', 'max:2048'],
+            'price' => ['nullable', 'numeric', 'min:0'],
+            'is_free' => ['boolean'],
+        ]);
+
+        if ($request->hasFile('cover')) {
+            if ($album->cover_url) {
+                $oldPath = str_replace('/storage/', '', parse_url($album->cover_url, PHP_URL_PATH));
+                Storage::disk('public')->delete($oldPath);
+            }
+            $coverPath = $request->file('cover')->store('albums/covers', 'public');
+            $validated['cover_url'] = Storage::url($coverPath);
+        }
+
+        $isFree = $validated['is_free'] ?? false;
+
+        $album->update([
+            'title' => $validated['title'],
+            'year' => $validated['year'],
+            'genre' => $validated['genre'],
+            'cover_url' => $validated['cover_url'] ?? $album->cover_url,
+            'price' => $isFree ? 0 : ($validated['price'] ?? $album->price),
+            'is_streamable' => $isFree ? true : $album->is_streamable,
+            'is_purchasable' => ! $isFree,
+        ]);
+
+        return back()->with('success', 'Album mis à jour.');
+    }
+
+    /**
      * Delete an album.
      */
     public function destroy(Album $album): RedirectResponse
     {
         $artist = Auth::user();
 
-        // Ensure the artist owns this album
         if ($album->artist_id !== $artist->id) {
             abort(403, 'Vous n\'êtes pas autorisé à supprimer cet album.');
         }
 
-        // Delete cover image from storage
         if ($album->cover_url) {
-            $coverPath = str_replace('/storage/', '', $album->cover_url);
+            $coverPath = str_replace('/storage/', '', parse_url($album->cover_url, PHP_URL_PATH));
             Storage::disk('public')->delete($coverPath);
         }
 
-        // Delete album and related tracks (cascade)
         $title = $album->title;
         $album->delete();
 
@@ -118,8 +207,58 @@ class AlbumUploadController extends Controller
 
         $status = $album->published_at ? 'publié' : 'dépublié';
 
-        return redirect()
-            ->back()
-            ->with('success', "L'album a été {$status} avec succès.");
+        return back()->with('success', "L'album a été {$status} avec succès.");
+    }
+
+    /**
+     * Add a track to an album.
+     */
+    public function addTrack(Request $request, Album $album): RedirectResponse
+    {
+        if ($album->artist_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'file' => ['required', 'file', 'mimes:mp3,wav', 'max:51200'],
+            'lyrics' => ['nullable', 'string'],
+        ]);
+
+        $trackPath = $request->file('file')->store(
+            'albums/'.$album->id.'/tracks',
+            'public'
+        );
+
+        $trackNumber = $album->tracks()->max('track_number') + 1;
+
+        Track::create([
+            'album_id' => $album->id,
+            'title' => $validated['title'],
+            'duration_seconds' => 0,
+            'file_url' => Storage::url($trackPath),
+            'lyrics' => $validated['lyrics'] ?? null,
+            'track_number' => $trackNumber,
+        ]);
+
+        return back()->with('success', 'Piste ajoutée.');
+    }
+
+    /**
+     * Remove a track from an album.
+     */
+    public function removeTrack(Album $album, Track $track): RedirectResponse
+    {
+        if ($album->artist_id !== Auth::id() || $track->album_id !== $album->id) {
+            abort(403);
+        }
+
+        Storage::disk('public')->delete(
+            str_replace('/storage/', '', parse_url($track->file_url, PHP_URL_PATH))
+        );
+
+        $track->delete();
+
+        return back()->with('success', 'Piste supprimée.');
     }
 }

@@ -40,7 +40,10 @@
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages",
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot",
       "mcp__plugin_chrome-devtools-mcp_chrome-devtools__click",
-      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__fill"
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__fill",
+      "Bash(sed -i 's/use App\\\\\\\\Models\\\\\\\\Subscription;/use App\\\\\\\\Models\\\\\\\\ClientSubscription;/' app/Http/Controllers/Admin/DashboardController.php)",
+      "Bash(sed -i 's/Subscription::where/ClientSubscription::where/' app/Http/Controllers/Admin/DashboardController.php)",
+      "Bash(composer dump-autoload:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

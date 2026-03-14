@@ -43,7 +43,7 @@ class Review extends Model
     /**
      * Relation : Review appartient à UN Reservation
      * Relation N-1 (belongsTo) : Un avis appartient à une réservation
-     * 
+     *
      * Note : Relation unique (une réservation = un seul avis)
      */
     public function reservation(): BelongsTo

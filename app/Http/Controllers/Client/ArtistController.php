@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Models\Album;
 use App\Models\Review;
-use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,12 +15,12 @@ class ArtistController extends Controller
 {
     /**
      * Affiche le profil public d'un artiste
-     * 
+     *
      * Route: GET /artists/{artist}
      * Middleware: auth, role:client
-     * 
-     * @param User $artist L'artiste (résolu automatiquement par Laravel)
-     * 
+     *
+     * @param  User  $artist  L'artiste (résolu automatiquement par Laravel)
+     *
      * Logique:
      * 1. Charge le profil artiste avec toutes les données
      * 2. Charge les services actifs
@@ -34,7 +32,7 @@ class ArtistController extends Controller
     public function show(User $artist): Response
     {
         // Vérifier que c'est bien un artiste
-        if (!$artist->isArtist() || !$artist->artistProfile) {
+        if (! $artist->isArtist() || ! $artist->artistProfile) {
             abort(404);
         }
 
@@ -87,17 +85,17 @@ class ArtistController extends Controller
 
     /**
      * Permet au client de suivre un artiste
-     * 
+     *
      * Route: POST /artists/{artist}/follow
      * Middleware: auth, role:client
-     * 
+     *
      * Logique:
      * 1. Vérifie que le client ne suit pas déjà l'artiste
      * 2. Ajoute la relation dans la table pivot artist_followers
      */
     public function follow(User $artist): RedirectResponse
     {
-        if (!$artist->isArtist()) {
+        if (! $artist->isArtist()) {
             abort(404);
         }
 
@@ -116,13 +114,13 @@ class ArtistController extends Controller
 
     /**
      * Permet au client de ne plus suivre un artiste
-     * 
+     *
      * Route: DELETE /artists/{artist}/follow
      * Middleware: auth, role:client
      */
     public function unfollow(User $artist): RedirectResponse
     {
-        if (!$artist->isArtist()) {
+        if (! $artist->isArtist()) {
             abort(404);
         }
 
@@ -134,10 +132,10 @@ class ArtistController extends Controller
 
     /**
      * Permet au client de signaler un artiste
-     * 
+     *
      * Route: POST /artists/{artist}/report
      * Middleware: auth, role:client
-     * 
+     *
      * TODO: Implémenter la logique de signalement (créer un ticket)
      */
     public function report(Request $request, User $artist): RedirectResponse

@@ -44,7 +44,7 @@ class Coupon extends Model
 
     /**
      * Vérifie si le coupon est valide
-     * 
+     *
      * Un coupon est valide si :
      * - Il est actif
      * - Il n'est pas expiré (ou n'a pas de date d'expiration)
@@ -52,7 +52,7 @@ class Coupon extends Model
      */
     public function isValid(): bool
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
@@ -69,8 +69,8 @@ class Coupon extends Model
 
     /**
      * Applique le coupon à un montant et retourne le montant de la réduction
-     * 
-     * @param float $amount Le montant total
+     *
+     * @param  float  $amount  Le montant total
      * @return float Le montant de la réduction
      */
     public function applyTo(float $amount): float

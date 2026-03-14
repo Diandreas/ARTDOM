@@ -13,10 +13,10 @@ class PreferencesController extends Controller
 {
     /**
      * Affiche la page des préférences
-     * 
+     *
      * Route: GET /settings
      * Middleware: auth
-     * 
+     *
      * Affiche les préférences de l'utilisateur :
      * - Thème (clair/sombre)
      * - Langue
@@ -46,7 +46,7 @@ class PreferencesController extends Controller
 
     /**
      * Met à jour les préférences
-     * 
+     *
      * Route: PUT /settings
      * Middleware: auth
      */

@@ -14,10 +14,10 @@ class LoginController extends Controller
 {
     /**
      * Affiche le formulaire de connexion
-     * 
+     *
      * Route: GET /login
      * Middleware: guest
-     * 
+     *
      * Retourne la page Inertia 'Auth/Login'
      */
     public function showForm(): Response
@@ -27,10 +27,10 @@ class LoginController extends Controller
 
     /**
      * Traite la connexion d'un utilisateur
-     * 
+     *
      * Route: POST /login
      * Middleware: guest
-     * 
+     *
      * Logique:
      * 1. Valide les identifiants (email/phone + password)
      * 2. Tente l'authentification
@@ -58,8 +58,9 @@ class LoginController extends Controller
             $user = Auth::user();
 
             // Vérifier que le compte est actif
-            if (!$user->is_active) {
+            if (! $user->is_active) {
                 Auth::logout();
+
                 return back()->withErrors([
                     'email' => 'Votre compte a été désactivé. Veuillez contacter le support.',
                 ]);
@@ -81,10 +82,10 @@ class LoginController extends Controller
 
     /**
      * Déconnecte l'utilisateur
-     * 
+     *
      * Route: DELETE /logout
      * Middleware: auth (seulement pour les utilisateurs connectés)
-     * 
+     *
      * Logique:
      * 1. Déconnecte l'utilisateur
      * 2. Invalide la session

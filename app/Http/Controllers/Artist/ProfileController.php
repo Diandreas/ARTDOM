@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Artist;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Artist\UpdateProfileRequest;
-use App\Models\ArtistProfile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -114,7 +113,7 @@ class ProfileController extends Controller
 
     /**
      * Upload de la photo de profil (Avatar)
-     * 
+     *
      * Route: POST /artist/profile/avatar
      * Middleware: auth, role:artist
      */
@@ -127,16 +126,16 @@ class ProfileController extends Controller
         $artist = Auth::user();
 
         // Supprimer l'ancienne photo si elle existe et n'est pas celle par défaut
-        if ($artist->profile_photo && !str_starts_with($artist->profile_photo, 'http')) {
+        if ($artist->profile_photo && ! str_starts_with($artist->profile_photo, 'http')) {
             $oldPath = str_replace('/storage/', '', $artist->profile_photo);
             Storage::disk('public')->delete($oldPath);
         }
 
         // Upload de la nouvelle photo
         $path = $request->file('avatar')->store('users/'.$artist->id.'/avatar', 'public');
-        
+
         $artist->update([
-            'profile_photo' => Storage::url($path)
+            'profile_photo' => Storage::url($path),
         ]);
 
         return back()->with('message', 'Photo de profil mise à jour avec succès.');
@@ -144,10 +143,10 @@ class ProfileController extends Controller
 
     /**
      * Upload des médias (photos/vidéos) pour le portfolio
-     * 
+     *
      * Route: POST /artist/profile/media
      * Middleware: auth, role:artist
-     * 
+     *
      * Upload des fichiers média et les ajoute au portfolio
      */
     public function uploadMedia(Request $request): RedirectResponse
@@ -174,11 +173,11 @@ class ProfileController extends Controller
 
     /**
      * Supprime un média du portfolio
-     * 
+     *
      * Route: DELETE /artist/profile/media/{media}
      * Middleware: auth, role:artist
-     * 
-     * @param string $media L'URL ou l'index du média à supprimer
+     *
+     * @param  string  $media  L'URL ou l'index du média à supprimer
      */
     public function deleteMedia(Request $request, string $media): RedirectResponse
     {

@@ -14,10 +14,10 @@ class ServiceController extends Controller
 {
     /**
      * Affiche la liste des services de l'artiste
-     * 
+     *
      * Route: GET /artist/services
      * Middleware: auth, role:artist
-     * 
+     *
      * Affiche tous les services avec possibilité de :
      * - Ajouter un nouveau service
      * - Modifier un service existant
@@ -34,6 +34,7 @@ class ServiceController extends Controller
             ->get()->map(function ($service) {
                 $data = $service->toArray();
                 $data['options'] = $service->serviceOptions;
+
                 return $data;
             });
 
@@ -44,10 +45,10 @@ class ServiceController extends Controller
 
     /**
      * Crée un nouveau service
-     * 
+     *
      * Route: POST /artist/services
      * Middleware: auth, role:artist
-     * 
+     *
      * Crée un nouveau service avec :
      * - Titre, description, catégorie
      * - Prix et type de prix (fixe, à partir de, horaire)
@@ -91,7 +92,7 @@ class ServiceController extends Controller
             'order' => $maxOrder + 1,
         ]);
 
-        if (!empty($validated['options'])) {
+        if (! empty($validated['options'])) {
             foreach ($validated['options'] as $option) {
                 $service->serviceOptions()->create([
                     'name' => $option['name'],
@@ -107,7 +108,7 @@ class ServiceController extends Controller
 
     /**
      * Met à jour un service
-     * 
+     *
      * Route: PUT /artist/services/{service}
      * Middleware: auth, role:artist
      */
@@ -148,8 +149,8 @@ class ServiceController extends Controller
         // This is a simple sync: delete all and recreate
         // In reality, updating existing would be better if IDs were provided and matched, but deleting is quicker for nested arrays
         $service->serviceOptions()->delete();
-        
-        if (!empty($validated['options'])) {
+
+        if (! empty($validated['options'])) {
             foreach ($validated['options'] as $option) {
                 $service->serviceOptions()->create([
                     'name' => $option['name'],
@@ -165,7 +166,7 @@ class ServiceController extends Controller
 
     /**
      * Supprime un service
-     * 
+     *
      * Route: DELETE /artist/services/{service}
      * Middleware: auth, role:artist
      */
@@ -187,7 +188,7 @@ class ServiceController extends Controller
 
     /**
      * Active ou désactive un service
-     * 
+     *
      * Route: PATCH /artist/services/{service}/toggle
      * Middleware: auth, role:artist
      */
@@ -197,17 +198,17 @@ class ServiceController extends Controller
             abort(403);
         }
 
-        $service->update(['is_active' => !$service->is_active]);
+        $service->update(['is_active' => ! $service->is_active]);
 
         return back()->with('message', $service->is_active ? 'Service activé.' : 'Service désactivé.');
     }
 
     /**
      * Réorganise l'ordre des services
-     * 
+     *
      * Route: POST /artist/services/reorder
      * Middleware: auth, role:artist
-     * 
+     *
      * Reçoit un tableau d'IDs dans le nouvel ordre
      */
     public function reorder(Request $request): RedirectResponse

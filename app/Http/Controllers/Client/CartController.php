@@ -19,10 +19,10 @@ class CartController extends Controller
 {
     /**
      * Affiche le panier du client
-     * 
+     *
      * Route: GET /cart
      * Middleware: auth, role:client
-     * 
+     *
      * Affiche tous les articles du panier avec :
      * - Détails de chaque item
      * - Sous-total
@@ -35,7 +35,7 @@ class CartController extends Controller
         $cart = $client->clientProfile->cart;
 
         // Créer un panier vide si n'existe pas
-        if (!$cart) {
+        if (! $cart) {
             $cart = $client->clientProfile->cart()->create();
         }
 
@@ -48,10 +48,10 @@ class CartController extends Controller
 
     /**
      * Ajoute un article au panier
-     * 
+     *
      * Route: POST /cart/items
      * Middleware: auth, role:client
-     * 
+     *
      * Logique:
      * 1. Valide les données (service, quantité, date)
      * 2. Vérifie la disponibilité
@@ -96,7 +96,7 @@ class CartController extends Controller
 
     /**
      * Supprime un article du panier
-     * 
+     *
      * Route: DELETE /cart/items/{item}
      * Middleware: auth, role:client
      */
@@ -118,7 +118,7 @@ class CartController extends Controller
 
     /**
      * Applique un coupon de réduction
-     * 
+     *
      * Route: POST /cart/coupon
      * Middleware: auth, role:client
      */
@@ -131,7 +131,7 @@ class CartController extends Controller
         $client = Auth::user();
         $cart = $client->clientProfile->cart;
 
-        if (!$cart || $cart->items->isEmpty()) {
+        if (! $cart || $cart->items->isEmpty()) {
             return back()->withErrors(['code' => 'Votre panier est vide.']);
         }
 
@@ -144,7 +144,7 @@ class CartController extends Controller
 
     /**
      * Retire le coupon du panier
-     * 
+     *
      * Route: DELETE /cart/coupon
      * Middleware: auth, role:client
      */
@@ -166,10 +166,10 @@ class CartController extends Controller
 
     /**
      * Procède au checkout (création des réservations et paiement)
-     * 
+     *
      * Route: POST /cart/checkout
      * Middleware: auth, role:client
-     * 
+     *
      * Logique:
      * 1. Vérifie que le panier n'est pas vide
      * 2. Crée une réservation pour chaque item
@@ -182,7 +182,7 @@ class CartController extends Controller
         $client = Auth::user();
         $cart = $client->clientProfile->cart;
 
-        if (!$cart || $cart->items->isEmpty()) {
+        if (! $cart || $cart->items->isEmpty()) {
             return back()->withErrors(['message' => 'Votre panier est vide.']);
         }
 

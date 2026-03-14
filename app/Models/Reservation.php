@@ -99,7 +99,7 @@ class Reservation extends Model
     /**
      * Relation : Reservation a UN Payment
      * Relation 1-1 (hasOne) : Une réservation a un seul paiement
-     * 
+     *
      * Note : Relation optionnelle (nullable) car le paiement peut être créé après
      */
     public function payment(): HasOne
@@ -110,7 +110,7 @@ class Reservation extends Model
     /**
      * Relation : Reservation a UN Review
      * Relation 1-1 (hasOne) : Une réservation peut avoir un seul avis
-     * 
+     *
      * Note : L'avis est créé après la réservation terminée
      */
     public function review(): HasOne
@@ -121,7 +121,7 @@ class Reservation extends Model
     /**
      * Relation : Reservation a UN Conversation
      * Relation 1-1 (hasOne) : Une réservation peut avoir une conversation associée
-     * 
+     *
      * Note : La conversation permet au client et à l'artiste de communiquer
      */
     public function conversation(): HasOne

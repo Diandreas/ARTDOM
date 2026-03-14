@@ -72,7 +72,7 @@ class ArtistProfile extends Model
     /**
      * Relation : Un ArtistProfile peut avoir PLUSIEURS Services
      * Relation 1-N (hasMany) : Un artiste peut proposer plusieurs services
-     * 
+     *
      * Note : 'artist_id' dans services pointe vers 'user_id' dans users
      */
     public function services(): HasMany
@@ -137,7 +137,7 @@ class ArtistProfile extends Model
     /**
      * Relation : Un ArtistProfile peut être suivi par PLUSIEURS Clients (Users)
      * Relation N-N inverse (belongsToMany) : Un artiste peut être suivi par plusieurs clients
-     * 
+     *
      * Table pivot : artist_followers
      * Clé locale : artist_id (dans artist_followers)
      * Clé étrangère : client_id (dans artist_followers)

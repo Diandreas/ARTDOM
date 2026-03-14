@@ -52,6 +52,9 @@ export default function Artists({ artists, cities, categories, filters }: Artist
     const [showFilters, setShowFilters] = useState(false);
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
 
+    const categoryLabel = (key: string) =>
+        categories.find((c) => c.key === key)?.label ?? key;
+
     const handleSearch = (e: FormEvent) => {
         e.preventDefault();
         applyFilters({ search: searchTerm });
@@ -275,8 +278,8 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                                         <CardContent>
                                             <div className="flex flex-wrap gap-2 mb-3">
                                                 {artist.categories.slice(0, 2).map((category) => (
-                                                    <Badge key={category} variant="secondary" className="text-xs capitalize">
-                                                        {category}
+                                                    <Badge key={category} variant="secondary" className="text-xs">
+                                                        {categoryLabel(category)}
                                                     </Badge>
                                                 ))}
                                             </div>

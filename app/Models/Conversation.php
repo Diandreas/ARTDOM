@@ -42,7 +42,7 @@ class Conversation extends Model
     /**
      * Relation : Conversation a PLUSIEURS Users (participants)
      * Relation N-N (belongsToMany) : Une conversation a plusieurs participants
-     * 
+     *
      * Table pivot : conversation_user
      * Colonnes pivot : unread_count, last_read_at
      */

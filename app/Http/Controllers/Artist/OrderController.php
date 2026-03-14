@@ -15,10 +15,10 @@ class OrderController extends Controller
 {
     /**
      * Affiche la liste des commandes/réservations de l'artiste
-     * 
+     *
      * Route: GET /artist/orders
      * Middleware: auth, role:artist
-     * 
+     *
      * Affiche les réservations groupées par statut :
      * - En attente (pending) : nouvelles demandes à accepter/refuser
      * - Confirmées (confirmed) : réservations acceptées
@@ -56,7 +56,7 @@ class OrderController extends Controller
 
     /**
      * Affiche les détails d'une réservation
-     * 
+     *
      * Route: GET /artist/orders/{reservation}
      * Middleware: auth, role:artist
      */
@@ -80,10 +80,10 @@ class OrderController extends Controller
 
     /**
      * Accepte une réservation en attente
-     * 
+     *
      * Route: POST /artist/orders/{reservation}/accept
      * Middleware: auth, role:artist
-     * 
+     *
      * Logique:
      * 1. Vérifie que la réservation est en attente
      * 2. Confirme la réservation
@@ -110,10 +110,10 @@ class OrderController extends Controller
 
     /**
      * Refuse une réservation en attente
-     * 
+     *
      * Route: POST /artist/orders/{reservation}/decline
      * Middleware: auth, role:artist
-     * 
+     *
      * Logique:
      * 1. Annule la réservation
      * 2. Libère la disponibilité
@@ -143,7 +143,7 @@ class OrderController extends Controller
         // TODO: Libérer la disponibilité
 
         // TODO: Rembourser le client si paiement effectué
-        
+
         // Annuler les fonds en attente dans le portefeuille
         $wallet = \App\Models\Wallet::where('artist_id', $reservation->artist_id)->first();
         if ($wallet) {
@@ -155,10 +155,10 @@ class OrderController extends Controller
 
     /**
      * Check-in : Démarre une prestation
-     * 
+     *
      * Route: POST /artist/orders/{reservation}/checkin
      * Middleware: auth, role:artist
-     * 
+     *
      * Logique:
      * 1. Vérifie que la réservation est confirmée
      * 2. Enregistre l'heure de check-in
@@ -192,10 +192,10 @@ class OrderController extends Controller
 
     /**
      * Check-out : Termine une prestation
-     * 
+     *
      * Route: POST /artist/orders/{reservation}/checkout
      * Middleware: auth, role:artist
-     * 
+     *
      * Logique:
      * 1. Vérifie que la réservation est en cours
      * 2. Enregistre l'heure de check-out

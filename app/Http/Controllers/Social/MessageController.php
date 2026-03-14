@@ -14,10 +14,10 @@ class MessageController extends Controller
 {
     /**
      * Envoie un message dans une conversation
-     * 
+     *
      * Route: POST /messages/{conversation}/send
      * Middleware: auth
-     * 
+     *
      * Logique:
      * 1. Vérifie que l'utilisateur est participant
      * 2. Crée le message
@@ -30,7 +30,7 @@ class MessageController extends Controller
         $user = Auth::user();
 
         // Vérifier que l'utilisateur est participant
-        if (!$conversation->participants()->where('users.id', $user->id)->exists()) {
+        if (! $conversation->participants()->where('users.id', $user->id)->exists()) {
             abort(403);
         }
 
@@ -79,10 +79,10 @@ class MessageController extends Controller
 
     /**
      * Supprime un message
-     * 
+     *
      * Route: DELETE /messages/{conversation}/messages/{message}
      * Middleware: auth
-     * 
+     *
      * Logique:
      * - Si < 1h : peut supprimer pour tous
      * - Sinon : supprime seulement pour soi (soft delete)
@@ -119,7 +119,7 @@ class MessageController extends Controller
 
     /**
      * Marque tous les messages d'une conversation comme lus
-     * 
+     *
      * Route: PATCH /messages/{conversation}/read
      * Middleware: auth
      */
@@ -127,7 +127,7 @@ class MessageController extends Controller
     {
         $user = Auth::user();
 
-        if (!$conversation->participants()->where('users.id', $user->id)->exists()) {
+        if (! $conversation->participants()->where('users.id', $user->id)->exists()) {
             abort(403);
         }
 

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClientSubscription;
 use App\Models\Payment;
 use App\Models\Reservation;
-use App\Models\Subscription;
 use App\Models\Withdrawal;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,7 +27,7 @@ class FinancialOverviewController extends Controller
                 ->where('status', 'completed')
                 ->sum('amount');
 
-            $subscriptionsTotal = (float) Subscription::query()
+            $subscriptionsTotal = (float) ClientSubscription::query()
                 ->whereBetween('created_at', [$start, $end])
                 ->where('is_active', true)
                 ->sum('price');
@@ -66,8 +66,8 @@ class FinancialOverviewController extends Controller
                 'payments_completed_total' => (float) Payment::query()->where('status', 'completed')->sum('amount'),
                 'payments_completed_month' => (float) Payment::query()->where('status', 'completed')->where('created_at', '>=', $startMonth)->sum('amount'),
                 'payments_completed_year' => (float) Payment::query()->where('status', 'completed')->where('created_at', '>=', $startYear)->sum('amount'),
-                'subscriptions_revenue_total' => (float) Subscription::query()->sum('price'),
-                'subscriptions_revenue_month' => (float) Subscription::query()->where('created_at', '>=', $startMonth)->sum('price'),
+                'subscriptions_revenue_total' => (float) ClientSubscription::query()->sum('price'),
+                'subscriptions_revenue_month' => (float) ClientSubscription::query()->where('created_at', '>=', $startMonth)->sum('price'),
                 'reservations_gross_total' => (float) Reservation::query()->sum('total_amount'),
                 'platform_commissions_total' => (float) Reservation::query()->sum('commission_amount'),
                 'artists_earnings_total' => (float) Reservation::query()->sum('artist_earnings'),

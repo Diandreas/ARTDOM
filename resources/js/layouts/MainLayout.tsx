@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { home, login, register, logout } from '@/routes';
+import { index as artistsIndex } from '@/routes/artists';
 import profile from '@/routes/profile';
 import { Button } from '@/components/ui/button';
 import {
@@ -85,20 +86,48 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                     <Link href={home()} className="text-lg font-semibold hover:text-primary transition-colors">
                                         Accueil
                                     </Link>
-                                    {user && (
-                                        <Link href="/dashboard" className="text-lg font-semibold hover:text-primary transition-colors">
-                                            Dashboard
-                                        </Link>
+                                    {user ? (
+                                        user.role === 'artist' ? (
+                                            <>
+                                                <Link href="/artist/dashboard" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                    Dashboard Artiste
+                                                </Link>
+                                                <Link href="/artist/albums" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                    Mes Albums
+                                                </Link>
+                                                <Link href="/artist/services" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                    Mes Services
+                                                </Link>
+                                                <Link href="/artist/wallet" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                    Portefeuille
+                                                </Link>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Link href="/dashboard" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                    Dashboard Client
+                                                </Link>
+                                                <Link href={artistsIndex.url()} className="text-lg font-semibold hover:text-primary transition-colors">
+                                                    Artistes
+                                                </Link>
+                                                <Link href="/artstream" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                    ArtStream
+                                                </Link>
+                                                <Link href="/client/reservations" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                    Mes Réservations
+                                                </Link>
+                                            </>
+                                        )
+                                    ) : (
+                                        <>
+                                            <Link href={artistsIndex.url()} className="text-lg font-semibold hover:text-primary transition-colors">
+                                                Artistes
+                                            </Link>
+                                            <Link href="/artstream" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                ArtStream
+                                            </Link>
+                                        </>
                                     )}
-                                    <Link href="#" className="text-lg font-semibold hover:text-primary transition-colors">
-                                        Artistes
-                                    </Link>
-                                    <Link href="#" className="text-lg font-semibold hover:text-primary transition-colors">
-                                        Catégories
-                                    </Link>
-                                    <Link href="/artstream" className="text-lg font-semibold hover:text-primary transition-colors">
-                                        ArtStream
-                                    </Link>
                                 </nav>
                             </SheetContent>
                         </Sheet>
@@ -117,20 +146,50 @@ export default function MainLayout({ children }: PropsWithChildren) {
                         <Link href={home()} className="text-sm font-medium hover:text-primary transition-colors">
                             Accueil
                         </Link>
-                        {user && (
-                            <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
-                                Dashboard
-                            </Link>
+                        {user ? (
+                            <>
+                                {user.role === 'artist' ? (
+                                    <>
+                                        <Link href="/artist/dashboard" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artist/dashboard') ? 'text-primary' : ''}`}>
+                                            Dashboard Artiste
+                                        </Link>
+                                        <Link href="/artist/albums" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artist/albums') ? 'text-primary' : ''}`}>
+                                            Mes Albums
+                                        </Link>
+                                        <Link href="/artist/services" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artist/services') ? 'text-primary' : ''}`}>
+                                            Mes Services
+                                        </Link>
+                                        <Link href="/artist/wallet" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artist/wallet') ? 'text-primary' : ''}`}>
+                                            Portefeuille
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link href="/dashboard" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/dashboard') ? 'text-primary' : ''}`}>
+                                            Dashboard Client
+                                        </Link>
+                                        <Link href={artistsIndex.url()} className={`text-sm font-medium hover:text-primary transition-colors ${isActive(artistsIndex.url()) ? 'text-primary' : ''}`}>
+                                            Artistes
+                                        </Link>
+                                        <Link href="/artstream" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artstream') ? 'text-primary' : ''}`}>
+                                            ArtStream
+                                        </Link>
+                                        <Link href="/client/reservations" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/client/reservations') ? 'text-primary' : ''}`}>
+                                            Mes Réservations
+                                        </Link>
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <Link href={artistsIndex.url()} className="text-sm font-medium hover:text-primary transition-colors">
+                                    Artistes
+                                </Link>
+                                <Link href="/artstream" className="text-sm font-medium hover:text-primary transition-colors">
+                                    ArtStream
+                                </Link>
+                            </>
                         )}
-                        <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-                            Artistes
-                        </Link>
-                        <Link href="#" className="text-sm font-medium hover:text-primary transition-colors">
-                            Catégories
-                        </Link>
-                        <Link href="/artstream" className="text-sm font-medium hover:text-primary transition-colors">
-                            ArtStream
-                        </Link>
                     </nav>
 
                     {/* Right Actions: Search & Profile */}
@@ -190,9 +249,9 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <Link href="/reservations" className="cursor-pointer">
+                                        <Link href={user.role === 'artist' ? '/artist/orders' : '/client/reservations'} className="cursor-pointer">
                                             <Calendar className="mr-2 h-4 w-4" />
-                                            <span>Mes réservations</span>
+                                            <span>{user.role === 'artist' ? 'Mes Commandes' : 'Mes réservations'}</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
@@ -267,8 +326,8 @@ export default function MainLayout({ children }: PropsWithChildren) {
                     </Link>
                     {user ? (
                         <Link
-                            href="/dashboard"
-                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/dashboard') || isActive('/client') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                            href={user.role === 'artist' ? '/artist/dashboard' : '/dashboard'}
+                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/dashboard') || isActive('/artist/dashboard') || isActive('/client') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
                                 }`}
                         >
                             <Grid className="h-5 w-5" />

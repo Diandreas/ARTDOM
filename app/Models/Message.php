@@ -67,7 +67,7 @@ class Message extends Model
     /**
      * Relation : Message peut répondre à UN autre Message
      * Relation N-1 (belongsTo) : Un message peut répondre à un autre message
-     * 
+     *
      * Note : Relation auto-référentielle (le modèle Message référence lui-même)
      */
     public function replyTo(): BelongsTo

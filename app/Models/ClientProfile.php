@@ -50,7 +50,7 @@ class ClientProfile extends Model
     /**
      * Relation : ClientProfile appartient à UN User
      * Relation 1-1 inverse (belongsTo) : Le profil client appartient à un utilisateur
-     * 
+     *
      * Note : La clé étrangère 'user_id' est dans la table client_profiles
      */
     public function user()
@@ -61,7 +61,7 @@ class ClientProfile extends Model
     /**
      * Relation : Un ClientProfile peut avoir PLUSIEURS Reservations
      * Relation 1-N (hasMany) : Un client peut faire plusieurs réservations
-     * 
+     *
      * Note : On utilise 'client_id' dans reservations qui pointe vers 'user_id' dans users
      * Donc on passe par user_id pour faire le lien
      */
@@ -73,7 +73,7 @@ class ClientProfile extends Model
     /**
      * Relation : Un ClientProfile a UN Cart
      * Relation 1-1 (hasOne) : Un client a un seul panier
-     * 
+     *
      * Note : Même principe, on passe par user_id
      */
     public function cart()
@@ -120,11 +120,11 @@ class ClientProfile extends Model
     /**
      * Relation : Un ClientProfile peut suivre PLUSIEURS Artists (Users)
      * Relation N-N (belongsToMany) : Un client peut suivre plusieurs artistes
-     * 
+     *
      * Table pivot : artist_followers
      * Clé locale : client_id (dans artist_followers)
      * Clé étrangère : artist_id (dans artist_followers)
-     * 
+     *
      * Note : On passe par user_id car les artistes sont aussi des Users
      */
     public function followedArtists()

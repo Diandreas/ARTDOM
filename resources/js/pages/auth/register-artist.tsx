@@ -43,6 +43,8 @@ export default function RegisterArtist() {
                             {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
                         </div>
 
+                        <input type="hidden" name="role" value="artist" />
+
                         {/* Artist Info */}
                         <div className="grid gap-2">
                             <Label htmlFor="stage_name">Nom de scène</Label>

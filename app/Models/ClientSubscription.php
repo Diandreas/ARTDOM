@@ -69,7 +69,7 @@ class ClientSubscription extends Model
      */
     public function isExpired(): bool
     {
-        if (!$this->ends_at) {
+        if (! $this->ends_at) {
             return false; // Abonnement sans fin
         }
 
@@ -81,7 +81,7 @@ class ClientSubscription extends Model
      */
     public function daysRemaining(): ?int
     {
-        if (!$this->ends_at) {
+        if (! $this->ends_at) {
             return null; // Abonnement sans fin
         }
 

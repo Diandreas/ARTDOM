@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Client;
 
 use App\Enums\PaymentStatus;
-use App\Enums\ReservationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\Reservation;
@@ -17,10 +16,10 @@ class PaymentController extends Controller
 {
     /**
      * Affiche la page de paiement pour une réservation
-     * 
+     *
      * Route: GET /payment/{reservation}
      * Middleware: auth, role:client
-     * 
+     *
      * Affiche les options de paiement disponibles :
      * - Mobile Money (Orange, MTN)
      * - Carte bancaire (Stripe/Paystack)
@@ -50,10 +49,10 @@ class PaymentController extends Controller
 
     /**
      * Initie le processus de paiement
-     * 
+     *
      * Route: POST /payment/{reservation}
      * Middleware: auth, role:client
-     * 
+     *
      * Logique:
      * 1. Valide le moyen de paiement choisi
      * 2. Crée ou met à jour le paiement
@@ -104,9 +103,9 @@ class PaymentController extends Controller
 
     /**
      * Gère le callback du provider de paiement
-     * 
+     *
      * Route: GET /payment/callback
-     * 
+     *
      * Appelé après le paiement pour confirmer le statut
      */
     public function callback(Request $request): RedirectResponse
@@ -120,9 +119,9 @@ class PaymentController extends Controller
 
     /**
      * Gère les webhooks des providers de paiement
-     * 
+     *
      * Route: POST /payment/webhook/{provider}
-     * 
+     *
      * Appelé de manière asynchrone par les providers
      */
     public function webhook(Request $request, string $provider): \Illuminate\Http\Response
@@ -136,7 +135,7 @@ class PaymentController extends Controller
 
     /**
      * Télécharge le reçu de paiement en PDF
-     * 
+     *
      * Route: GET /payment/{payment}/receipt
      */
     public function receipt(Payment $payment): \Illuminate\Http\Response

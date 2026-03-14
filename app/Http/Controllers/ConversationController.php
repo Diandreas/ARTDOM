@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\Reservation;
-use App\Events\MessageSent;
 use App\Notifications\NewMessageNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Auth;
 
 class ConversationController extends Controller
 {
@@ -32,7 +32,7 @@ class ConversationController extends Controller
     public function show(Conversation $conversation): Response
     {
         // Security check: user must be participant
-        if (!$conversation->participants->contains(Auth::id())) {
+        if (! $conversation->participants->contains(Auth::id())) {
             abort(403);
         }
 
@@ -55,7 +55,7 @@ class ConversationController extends Controller
             'content' => 'required|string|max:2000',
         ]);
 
-        if (!$conversation->participants->contains(Auth::id())) {
+        if (! $conversation->participants->contains(Auth::id())) {
             abort(403);
         }
 
@@ -94,7 +94,7 @@ class ConversationController extends Controller
         // Try to find existing conversation for this reservation
         $conversation = Conversation::where('reservation_id', $reservation->id)->first();
 
-        if (!$conversation) {
+        if (! $conversation) {
             $conversation = Conversation::create([
                 'reservation_id' => $reservation->id,
                 'last_message_at' => now(),
@@ -103,7 +103,7 @@ class ConversationController extends Controller
             // Add participants: client and artist
             $conversation->participants()->attach([
                 $reservation->client_id,
-                $reservation->artist_id
+                $reservation->artist_id,
             ]);
         }
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlbumPurchase;
-use App\Models\Playlist;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;

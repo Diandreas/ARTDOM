@@ -15,7 +15,7 @@ class VideoController extends Controller
 {
     /**
      * Affiche la liste des vidéos de l'artiste
-     * 
+     *
      * Route: GET /artist/videos
      * Middleware: auth, role:artist
      */
@@ -34,10 +34,10 @@ class VideoController extends Controller
 
     /**
      * Upload une nouvelle vidéo
-     * 
+     *
      * Route: POST /artist/videos
      * Middleware: auth, role:artist
-     * 
+     *
      * Logique:
      * 1. Upload la vidéo
      * 2. Génère la thumbnail (ou upload)
@@ -88,7 +88,7 @@ class VideoController extends Controller
 
     /**
      * Met à jour une vidéo
-     * 
+     *
      * Route: PUT /artist/videos/{video}
      */
     public function update(Request $request, Video $video): RedirectResponse
@@ -125,7 +125,7 @@ class VideoController extends Controller
 
     /**
      * Supprime une vidéo
-     * 
+     *
      * Route: DELETE /artist/videos/{video}
      */
     public function destroy(Video $video): RedirectResponse
@@ -150,7 +150,7 @@ class VideoController extends Controller
 
     /**
      * Publie une vidéo (la rend visible)
-     * 
+     *
      * Route: POST /artist/videos/{video}/publish
      */
     public function publish(Video $video): RedirectResponse

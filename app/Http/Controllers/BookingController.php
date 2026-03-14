@@ -58,7 +58,7 @@ class BookingController extends Controller
         $date = $request->query('date');
         $time = $request->query('time');
 
-        $service = Service::with(['artist.artistProfile', 'serviceOptions' => function($q) {
+        $service = Service::with(['artist.artistProfile', 'serviceOptions' => function ($q) {
             $q->where('is_active', true);
         }])->findOrFail($serviceId);
 
@@ -106,7 +106,7 @@ class BookingController extends Controller
 
         if ($request->hasFile('file_url')) {
             $path = $request->file('file_url')->store('booking/files', 'public');
-            $data['file_url'] = '/storage/' . $path;
+            $data['file_url'] = '/storage/'.$path;
         } else {
             // Keep the string if it was passed via query/previous step or null
             $data['file_url'] = $request->input('file_url');
@@ -120,10 +120,10 @@ class BookingController extends Controller
     public function payment(Request $request): Response
     {
         $bookingData = session('booking_checkout') ?? $request->all();
-        
+
         $serviceId = $bookingData['service_id'] ?? null;
-        if (!$serviceId) {
-            abort(400, "Données de réservation manquantes");
+        if (! $serviceId) {
+            abort(400, 'Données de réservation manquantes');
         }
 
         $date = $bookingData['date'] ?? null;
@@ -139,12 +139,12 @@ class BookingController extends Controller
         $service = Service::with(['artist.artistProfile', 'serviceOptions'])->findOrFail($serviceId);
 
         $selectedOptions = [];
-        if (!empty($selectedOptionIds)) {
+        if (! empty($selectedOptionIds)) {
             $ids = explode(',', $selectedOptionIds);
             $selectedOptions = $service->serviceOptions->whereIn('id', $ids)->values()->toArray();
         }
 
-        $optionsTotal = array_reduce($selectedOptions, function($carry, $opt) {
+        $optionsTotal = array_reduce($selectedOptions, function ($carry, $opt) {
             return $carry + $opt['price'];
         }, 0);
 
@@ -208,7 +208,7 @@ class BookingController extends Controller
 
         // If file_url is present, store it via media or JSON options. For now we use custom_message to store extras
         if ($request->file_url) {
-            $reservation->custom_message .= "\n\n[Fichier joint: " . $request->file_url . "]";
+            $reservation->custom_message .= "\n\n[Fichier joint: ".$request->file_url.']';
             $reservation->save();
         }
 
@@ -230,7 +230,7 @@ class BookingController extends Controller
             'balance' => 0,
             'pending_balance' => 0,
         ]);
-        
+
         $wallet->addPending((float) $request->total_amount, 'reservation', $reservation->id);
 
         return redirect()->route('client.reservations.show', $reservation->id)
