@@ -51,7 +51,7 @@ class Track extends Model
     /**
      * Relation : Track peut être dans PLUSIEURS Playlists
      * Relation N-N (belongsToMany) : Une piste peut être dans plusieurs playlists
-     * 
+     *
      * Table pivot : playlist_track
      * Colonne pivot : order (pour l'ordre dans la playlist)
      */

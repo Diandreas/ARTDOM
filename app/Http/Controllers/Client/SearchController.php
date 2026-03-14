@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Models\Availability;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,10 +13,10 @@ class SearchController extends Controller
 {
     /**
      * Affiche la page de recherche avec les filtres
-     * 
+     *
      * Route: GET /search
      * Middleware: auth, role:client
-     * 
+     *
      * Affiche le formulaire de recherche avec tous les filtres disponibles
      */
     public function index(): Response
@@ -46,15 +45,15 @@ class SearchController extends Controller
 
     /**
      * Retourne les résultats de recherche paginés
-     * 
+     *
      * Route: GET /search/results
      * Middleware: auth, role:client
-     * 
+     *
      * Logique:
      * 1. Applique les filtres (ville, catégorie, budget, note, date)
      * 2. Recherche les artistes correspondants
      * 3. Retourne les résultats paginés
-     * 
+     *
      * Filtres disponibles:
      * - city: Ville de l'artiste
      * - category: Catégorie de service

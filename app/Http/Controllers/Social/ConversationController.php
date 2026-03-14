@@ -16,10 +16,10 @@ class ConversationController extends Controller
 {
     /**
      * Affiche la liste des conversations
-     * 
+     *
      * Route: GET /messages
      * Middleware: auth
-     * 
+     *
      * Affiche toutes les conversations de l'utilisateur :
      * - Triées par date du dernier message
      * - Avec le nombre de messages non lus
@@ -44,10 +44,10 @@ class ConversationController extends Controller
 
     /**
      * Affiche une conversation avec ses messages
-     * 
+     *
      * Route: GET /messages/{conversation}
      * Middleware: auth
-     * 
+     *
      * Affiche :
      * - Tous les messages de la conversation
      * - Les participants
@@ -58,7 +58,7 @@ class ConversationController extends Controller
         $user = Auth::user();
 
         // Vérifier que l'utilisateur est participant
-        if (!$conversation->participants()->where('users.id', $user->id)->exists()) {
+        if (! $conversation->participants()->where('users.id', $user->id)->exists()) {
             abort(403);
         }
 
@@ -91,10 +91,10 @@ class ConversationController extends Controller
 
     /**
      * Crée ou trouve une conversation
-     * 
+     *
      * Route: POST /messages
      * Middleware: auth
-     * 
+     *
      * Logique:
      * 1. Si réservation_id fourni : trouve ou crée la conversation liée
      * 2. Sinon : trouve ou crée une conversation entre deux utilisateurs
@@ -122,10 +122,10 @@ class ConversationController extends Controller
             ]);
 
             // Ajouter les participants si pas déjà présents
-            if (!$conversation->participants()->where('users.id', $reservation->client_id)->exists()) {
+            if (! $conversation->participants()->where('users.id', $reservation->client_id)->exists()) {
                 $conversation->participants()->attach($reservation->client_id);
             }
-            if (!$conversation->participants()->where('users.id', $reservation->artist_id)->exists()) {
+            if (! $conversation->participants()->where('users.id', $reservation->artist_id)->exists()) {
                 $conversation->participants()->attach($reservation->artist_id);
             }
         } else {
@@ -143,7 +143,7 @@ class ConversationController extends Controller
                 ->first();
 
             // Créer si n'existe pas
-            if (!$conversation) {
+            if (! $conversation) {
                 $conversation = Conversation::create();
                 $conversation->participants()->attach([$user->id, $otherUser->id]);
             }
@@ -154,7 +154,7 @@ class ConversationController extends Controller
 
     /**
      * Archive une conversation
-     * 
+     *
      * Route: PATCH /messages/{conversation}/archive
      * Middleware: auth
      */
@@ -162,7 +162,7 @@ class ConversationController extends Controller
     {
         $user = Auth::user();
 
-        if (!$conversation->participants()->where('users.id', $user->id)->exists()) {
+        if (! $conversation->participants()->where('users.id', $user->id)->exists()) {
             abort(403);
         }
 

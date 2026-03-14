@@ -133,8 +133,12 @@ Route::middleware(['auth', 'role.artist'])->prefix('artist')->name('artist.')->g
     // Album upload management
     Route::get('/albums', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'index'])->name('albums.index');
     Route::post('/albums', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'store'])->name('albums.store');
+    Route::get('/albums/{album}', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'show'])->name('albums.show');
+    Route::put('/albums/{album}', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'update'])->name('albums.update');
     Route::delete('/albums/{album}', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'destroy'])->name('albums.destroy');
     Route::patch('/albums/{album}/toggle-publication', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'togglePublication'])->name('albums.toggle');
+    Route::post('/albums/{album}/tracks', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'addTrack'])->name('albums.tracks.store');
+    Route::delete('/albums/{album}/tracks/{track}', [\App\Http\Controllers\Artist\AlbumUploadController::class, 'removeTrack'])->name('albums.tracks.destroy');
 });
 
 // Client routes

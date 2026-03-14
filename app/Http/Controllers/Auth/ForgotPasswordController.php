@@ -17,9 +17,9 @@ class ForgotPasswordController extends Controller
 {
     /**
      * Affiche le formulaire de mot de passe oublié
-     * 
+     *
      * Route: GET /forgot-password
-     * 
+     *
      * Retourne la page Inertia 'Auth/ForgotPassword'
      */
     public function showForm(): Response
@@ -29,9 +29,9 @@ class ForgotPasswordController extends Controller
 
     /**
      * Envoie un code OTP par SMS/Email
-     * 
+     *
      * Route: POST /forgot-password
-     * 
+     *
      * Logique:
      * 1. Valide l'email ou le téléphone
      * 2. Génère un code OTP à 6 chiffres
@@ -70,7 +70,7 @@ class ForgotPasswordController extends Controller
 
     /**
      * Affiche le formulaire de vérification OTP
-     * 
+     *
      * Route: GET /verify-otp
      */
     public function showVerifyOtpForm(): Response
@@ -80,9 +80,9 @@ class ForgotPasswordController extends Controller
 
     /**
      * Vérifie le code OTP et génère un token de réinitialisation
-     * 
+     *
      * Route: POST /verify-otp
-     * 
+     *
      * Logique:
      * 1. Valide le code OTP
      * 2. Vérifie que le code correspond à celui en cache
@@ -100,7 +100,7 @@ class ForgotPasswordController extends Controller
         $cacheKey = "password_reset_otp_{$request->value}";
         $storedOtp = Cache::get($cacheKey);
 
-        if (!$storedOtp || $storedOtp !== $request->otp) {
+        if (! $storedOtp || $storedOtp !== $request->otp) {
             throw ValidationException::withMessages([
                 'otp' => 'Le code OTP est invalide ou a expiré.',
             ]);
@@ -109,7 +109,7 @@ class ForgotPasswordController extends Controller
         // Trouver l'utilisateur
         $user = User::where($request->field, $request->value)->first();
 
-        if (!$user) {
+        if (! $user) {
             throw ValidationException::withMessages([
                 'value' => 'Utilisateur non trouvé.',
             ]);
@@ -130,7 +130,7 @@ class ForgotPasswordController extends Controller
 
     /**
      * Affiche le formulaire de réinitialisation du mot de passe
-     * 
+     *
      * Route: GET /reset-password
      */
     public function showResetForm(Request $request): Response
@@ -143,9 +143,9 @@ class ForgotPasswordController extends Controller
 
     /**
      * Réinitialise le mot de passe
-     * 
+     *
      * Route: POST /reset-password
-     * 
+     *
      * Logique:
      * 1. Valide le token et le nouveau mot de passe
      * 2. Met à jour le mot de passe de l'utilisateur

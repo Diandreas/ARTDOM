@@ -10,7 +10,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,10 +18,10 @@ class RegisterController extends Controller
 {
     /**
      * Affiche le formulaire d'inscription
-     * 
+     *
      * Route: GET /register
      * Middleware: guest (seulement pour les utilisateurs non connectés)
-     * 
+     *
      * Retourne la page Inertia 'Auth/Register' qui sera rendue côté frontend
      */
     public function showForm(): Response
@@ -32,10 +31,10 @@ class RegisterController extends Controller
 
     /**
      * Traite l'inscription d'un nouvel utilisateur
-     * 
+     *
      * Route: POST /register
      * Middleware: guest
-     * 
+     *
      * Logique:
      * 1. Valide les données du formulaire
      * 2. Crée l'utilisateur (User)

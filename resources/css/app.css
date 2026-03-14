@@ -155,6 +155,17 @@
 }
 
 @layer utilities {
+    /* Hide scrollbar but keep scroll functionality */
+    .scrollbar-hide {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none; /* Chrome/Safari/Opera */
+    }
+
+
     /* African Earth Gradient - adapts to light/dark mode */
     .bg-gradient-earth {
         background: linear-gradient(135deg,

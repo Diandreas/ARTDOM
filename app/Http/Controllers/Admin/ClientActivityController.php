@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AlbumPurchase;
 use App\Models\Cart;
+use App\Models\ClientSubscription;
 use App\Models\Payment;
 use App\Models\Reservation;
 use App\Models\Review;
-use App\Models\Subscription;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,7 +35,7 @@ class ClientActivityController extends Controller
             ->withCount('items')
             ->latest('updated_at');
 
-        $subscriptionsQuery = Subscription::query()
+        $subscriptionsQuery = ClientSubscription::query()
             ->with(['client.clientProfile', 'payment'])
             ->when($clientId !== '', fn ($query) => $query->where('client_id', $clientId))
             ->when($subscriptionStatus === 'active', fn ($query) => $query->where('is_active', true))
@@ -91,7 +91,7 @@ class ClientActivityController extends Controller
         $subscriptions = $subscriptionsQuery
             ->paginate(20, ['*'], 'subscriptions_page')
             ->withQueryString()
-            ->through(function (Subscription $subscription): array {
+            ->through(function (ClientSubscription $subscription): array {
                 $clientFullName = trim((string) (($subscription->client?->clientProfile?->first_name ?? '').' '.($subscription->client?->clientProfile?->last_name ?? '')));
 
                 return [
@@ -141,12 +141,12 @@ class ClientActivityController extends Controller
                 ]);
             });
 
-        Subscription::query()
+        ClientSubscription::query()
             ->when($clientId !== '', fn ($query) => $query->where('client_id', $clientId))
             ->latest('created_at')
             ->limit(50)
             ->get(['id', 'client_id', 'plan', 'is_active', 'created_at'])
-            ->each(function (Subscription $subscription) use ($activity): void {
+            ->each(function (ClientSubscription $subscription) use ($activity): void {
                 $activity->push([
                     'type' => 'subscription',
                     'title' => 'Abonnement '.$subscription->plan,

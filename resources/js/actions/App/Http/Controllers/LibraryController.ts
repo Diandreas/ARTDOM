@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\LibraryController::index
- * @see app/Http/Controllers/LibraryController.php:13
+ * @see app/Http/Controllers/LibraryController.php:12
  * @route '/library'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\LibraryController::index
- * @see app/Http/Controllers/LibraryController.php:13
+ * @see app/Http/Controllers/LibraryController.php:12
  * @route '/library'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\LibraryController::index
- * @see app/Http/Controllers/LibraryController.php:13
+ * @see app/Http/Controllers/LibraryController.php:12
  * @route '/library'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\LibraryController::index
- * @see app/Http/Controllers/LibraryController.php:13
+ * @see app/Http/Controllers/LibraryController.php:12
  * @route '/library'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\LibraryController::index
- * @see app/Http/Controllers/LibraryController.php:13
+ * @see app/Http/Controllers/LibraryController.php:12
  * @route '/library'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\LibraryController::index
- * @see app/Http/Controllers/LibraryController.php:13
+ * @see app/Http/Controllers/LibraryController.php:12
  * @route '/library'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\LibraryController::index
- * @see app/Http/Controllers/LibraryController.php:13
+ * @see app/Http/Controllers/LibraryController.php:12
  * @route '/library'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

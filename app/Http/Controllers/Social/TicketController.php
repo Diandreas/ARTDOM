@@ -16,10 +16,10 @@ class TicketController extends Controller
 {
     /**
      * Affiche la liste des tickets de support
-     * 
+     *
      * Route: GET /support
      * Middleware: auth
-     * 
+     *
      * Affiche l'historique des tickets de l'utilisateur
      */
     public function index(): Response
@@ -37,10 +37,10 @@ class TicketController extends Controller
 
     /**
      * Crée un nouveau ticket de support
-     * 
+     *
      * Route: POST /support
      * Middleware: auth
-     * 
+     *
      * Logique:
      * 1. Valide les données
      * 2. Upload les pièces jointes
@@ -90,7 +90,7 @@ class TicketController extends Controller
 
     /**
      * Affiche les détails d'un ticket
-     * 
+     *
      * Route: GET /support/{ticket}
      * Middleware: auth
      */

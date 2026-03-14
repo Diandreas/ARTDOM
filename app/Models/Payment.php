@@ -52,7 +52,7 @@ class Payment extends Model
     /**
      * Relation : Payment appartient à UN Reservation (optionnel)
      * Relation N-1 (belongsTo) : Un paiement peut être lié à une réservation
-     * 
+     *
      * Note : Nullable car un paiement peut être pour un abonnement aussi
      */
     public function reservation(): BelongsTo

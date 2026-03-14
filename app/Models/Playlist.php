@@ -49,10 +49,10 @@ class Playlist extends Model
     /**
      * Relation : Playlist peut contenir PLUSIEURS Tracks
      * Relation N-N (belongsToMany) : Une playlist contient plusieurs pistes
-     * 
+     *
      * Table pivot : playlist_track
      * Colonne pivot : order (pour l'ordre dans la playlist)
-     * 
+     *
      * Note : Ordonné par la colonne pivot 'order' pour respecter l'ordre de la playlist
      */
     public function tracks(): BelongsToMany

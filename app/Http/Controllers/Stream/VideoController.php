@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Stream;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Video;
 use App\Models\VideoComment;
 use Illuminate\Http\RedirectResponse;
@@ -16,10 +15,10 @@ class VideoController extends Controller
 {
     /**
      * Affiche le hub ArtTube (vidéos/tutos)
-     * 
+     *
      * Route: GET /arttube
      * Middleware: auth
-     * 
+     *
      * Affiche :
      * - Vidéos tendances
      * - Vidéos des artistes suivis
@@ -68,10 +67,10 @@ class VideoController extends Controller
 
     /**
      * Affiche le lecteur vidéo avec commentaires
-     * 
+     *
      * Route: GET /arttube/videos/{video}
      * Middleware: auth
-     * 
+     *
      * Affiche :
      * - Lecteur vidéo
      * - Informations de la vidéo
@@ -87,7 +86,7 @@ class VideoController extends Controller
 
         if ($video->visibility === 'subscribers') {
             $client = Auth::user();
-            if (!$client->isClient() || !$client->clientProfile->followedArtists()->where('artist_id', $video->artist_id)->exists()) {
+            if (! $client->isClient() || ! $client->clientProfile->followedArtists()->where('artist_id', $video->artist_id)->exists()) {
                 abort(403, 'Cette vidéo est réservée aux abonnés.');
             }
         }
@@ -125,7 +124,7 @@ class VideoController extends Controller
 
     /**
      * Ajoute un commentaire à une vidéo
-     * 
+     *
      * Route: POST /arttube/videos/{video}/comments
      * Middleware: auth
      */
@@ -148,10 +147,10 @@ class VideoController extends Controller
 
     /**
      * Like/Unlike une vidéo
-     * 
+     *
      * Route: POST /arttube/videos/{video}/like
      * Middleware: auth
-     * 
+     *
      * TODO: Implémenter un système de likes (table pivot ou champ JSON)
      */
     public function like(Video $video): RedirectResponse

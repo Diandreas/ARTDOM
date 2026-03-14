@@ -34,10 +34,10 @@ class CartController extends Controller
 
         $items = $cart->items->map(function ($item) {
             $selectedOptions = [];
-            if (!empty($item->customization['selected_options'])) {
+            if (! empty($item->customization['selected_options'])) {
                 $selectedOptions = $item->service->serviceOptions
                     ->whereIn('id', $item->customization['selected_options'])
-                    ->map(fn($opt) => ['id' => $opt->id, 'name' => $opt->name, 'price' => $opt->price])
+                    ->map(fn ($opt) => ['id' => $opt->id, 'name' => $opt->name, 'price' => $opt->price])
                     ->values()
                     ->toArray();
             }
@@ -97,7 +97,7 @@ class CartController extends Controller
 
         $optionsTotal = 0;
         $selectedOptions = [];
-        if (!empty($validated['selected_options'])) {
+        if (! empty($validated['selected_options'])) {
             $options = $service->serviceOptions->whereIn('id', $validated['selected_options']);
             $optionsTotal = $options->sum('price');
             $selectedOptions = $options->pluck('id')->toArray();

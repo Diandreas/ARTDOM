@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Album;
-use App\Models\ArtistProfile;
 use App\Models\Story;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,10 +14,10 @@ class HomeController extends Controller
 {
     /**
      * Affiche la page d'accueil du client
-     * 
+     *
      * Route: GET /
      * Middleware: auth, role:client
-     * 
+     *
      * Cette méthode charge toutes les données nécessaires pour la page d'accueil:
      * - Stories actives des artistes (24h)
      * - Contenu à la une (promotions, événements)
@@ -26,7 +25,7 @@ class HomeController extends Controller
      * - Artistes tendances (par note/avis)
      * - Derniers albums publiés
      * - Vidéos populaires
-     * 
+     *
      * Toutes ces données sont passées à Inertia pour le rendu côté frontend
      */
     public function index(Request $request): Response

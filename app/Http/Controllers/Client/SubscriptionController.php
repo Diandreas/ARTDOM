@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Client;
 
 use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
+use App\Models\ClientSubscription;
 use App\Models\Payment;
-use App\Models\Subscription;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,10 +16,10 @@ class SubscriptionController extends Controller
 {
     /**
      * Affiche la page d'abonnement
-     * 
+     *
      * Route: GET /subscription
      * Middleware: auth, role:client
-     * 
+     *
      * Affiche :
      * - Plans disponibles (Free, Monthly, Annual)
      * - Avantages de chaque plan
@@ -73,10 +73,10 @@ class SubscriptionController extends Controller
 
     /**
      * Crée un nouvel abonnement
-     * 
+     *
      * Route: POST /subscription
      * Middleware: auth, role:client
-     * 
+     *
      * Logique:
      * 1. Valide le plan choisi
      * 2. Crée l'abonnement
@@ -109,7 +109,7 @@ class SubscriptionController extends Controller
         };
 
         // Créer l'abonnement
-        $subscription = Subscription::create([
+        $subscription = ClientSubscription::create([
             'client_id' => $client->id,
             'plan' => $validated['plan'],
             'price' => $price,
@@ -136,10 +136,10 @@ class SubscriptionController extends Controller
 
     /**
      * Annule un abonnement actif
-     * 
+     *
      * Route: DELETE /subscription
      * Middleware: auth, role:client
-     * 
+     *
      * L'abonnement reste actif jusqu'à la fin de la période payée
      */
     public function cancel(): RedirectResponse
@@ -150,7 +150,7 @@ class SubscriptionController extends Controller
             ->where('is_active', true)
             ->first();
 
-        if (!$subscription) {
+        if (! $subscription) {
             return back()->withErrors(['message' => 'Aucun abonnement actif trouvé.']);
         }
 
@@ -164,7 +164,7 @@ class SubscriptionController extends Controller
 
     /**
      * Change de plan d'abonnement
-     * 
+     *
      * Route: PUT /subscription
      * Middleware: auth, role:client
      */
@@ -176,6 +176,7 @@ class SubscriptionController extends Controller
 
         // Annuler l'abonnement actuel et créer le nouveau
         $this->cancel();
+
         return $this->store($request);
     }
 }

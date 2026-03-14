@@ -59,7 +59,7 @@ class Cart extends Model
     /**
      * Relation : Cart peut avoir UN Coupon
      * Relation N-1 (belongsTo) : Un panier peut avoir un coupon appliqué
-     * 
+     *
      * Note : La clé étrangère est 'coupon_code' (pas 'coupon_id')
      * On utilise 'code' comme clé de référence dans Coupon
      */
@@ -86,7 +86,7 @@ class Cart extends Model
     {
         $coupon = Coupon::where('code', $code)->first();
 
-        if (!$coupon || !$coupon->isValid()) {
+        if (! $coupon || ! $coupon->isValid()) {
             return false;
         }
 

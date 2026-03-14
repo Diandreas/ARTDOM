@@ -59,7 +59,7 @@ class VideoComment extends Model
     /**
      * Relation : VideoComment peut répondre à UN autre VideoComment (parent)
      * Relation N-1 (belongsTo) : Un commentaire peut répondre à un autre
-     * 
+     *
      * Note : Relation auto-référentielle pour créer des threads de commentaires
      */
     public function parent(): BelongsTo

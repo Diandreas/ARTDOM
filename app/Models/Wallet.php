@@ -67,10 +67,10 @@ class Wallet extends Model
 
     /**
      * Crédite le portefeuille d'un montant
-     * 
-     * @param float $amount Le montant à créditer
-     * @param string $source La source du crédit (ex: 'prestation', 'album_sale')
-     * @param string|null $referenceId L'ID de référence (ex: reservation_id)
+     *
+     * @param  float  $amount  Le montant à créditer
+     * @param  string  $source  La source du crédit (ex: 'prestation', 'album_sale')
+     * @param  string|null  $referenceId  L'ID de référence (ex: reservation_id)
      */
     public function credit(float $amount, string $source, ?string $referenceId = null): WalletTransaction
     {
@@ -145,20 +145,20 @@ class Wallet extends Model
             ->where('type', 'like', 'pending_%')
             ->first();
 
-        if (!$pendingTx) {
+        if (! $pendingTx) {
             return null;
         }
 
         // Transférer du pending_balance vers balance
         $netAmount = $pendingTx->net_amount;
-        
+
         $this->pending_balance = max(0, $this->pending_balance - $netAmount);
         $this->balance += $netAmount;
         $this->save();
 
         // Créer la transaction de libération (release)
         $source = str_replace('pending_', '', $pendingTx->type);
-        
+
         return $this->transactions()->create([
             'type' => 'credit_'.$source,
             'amount' => $pendingTx->amount,
@@ -181,7 +181,7 @@ class Wallet extends Model
             ->where('type', 'like', 'pending_%')
             ->first();
 
-        if (!$pendingTx) {
+        if (! $pendingTx) {
             return null;
         }
 

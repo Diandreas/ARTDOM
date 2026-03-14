@@ -16,7 +16,7 @@ class AlbumController extends Controller
 {
     /**
      * Affiche la liste des albums de l'artiste
-     * 
+     *
      * Route: GET /artist/albums
      * Middleware: auth, role:artist
      */
@@ -36,10 +36,10 @@ class AlbumController extends Controller
 
     /**
      * Crée un nouvel album avec ses pistes
-     * 
+     *
      * Route: POST /artist/albums
      * Middleware: auth, role:artist
-     * 
+     *
      * Logique:
      * 1. Crée l'album
      * 2. Upload la cover
@@ -106,7 +106,7 @@ class AlbumController extends Controller
 
     /**
      * Met à jour un album
-     * 
+     *
      * Route: PUT /artist/albums/{album}
      */
     public function update(Request $request, Album $album): RedirectResponse
@@ -144,7 +144,7 @@ class AlbumController extends Controller
 
     /**
      * Supprime un album
-     * 
+     *
      * Route: DELETE /artist/albums/{album}
      */
     public function destroy(Album $album): RedirectResponse
@@ -163,7 +163,7 @@ class AlbumController extends Controller
 
     /**
      * Ajoute une piste à un album
-     * 
+     *
      * Route: POST /artist/albums/{album}/tracks
      */
     public function addTrack(Request $request, Album $album): RedirectResponse
@@ -199,7 +199,7 @@ class AlbumController extends Controller
 
     /**
      * Supprime une piste d'un album
-     * 
+     *
      * Route: DELETE /artist/albums/{album}/tracks/{track}
      */
     public function removeTrack(Album $album, Track $track): RedirectResponse
@@ -219,7 +219,7 @@ class AlbumController extends Controller
 
     /**
      * Publie un album (le rend visible publiquement)
-     * 
+     *
      * Route: POST /artist/albums/{album}/publish
      */
     public function publish(Album $album): RedirectResponse

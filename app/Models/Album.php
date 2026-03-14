@@ -58,7 +58,7 @@ class Album extends Model
     /**
      * Relation : Album a PLUSIEURS Tracks
      * Relation 1-N (hasMany) : Un album contient plusieurs pistes
-     * 
+     *
      * Note : Ordonné par track_number pour respecter l'ordre de l'album
      */
     public function tracks(): HasMany

@@ -8,14 +8,12 @@ use App\Models\Track;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use Inertia\Response;
 
 class PlaylistController extends Controller
 {
     /**
      * Crée une nouvelle playlist
-     * 
+     *
      * Route: POST /playlists
      * Middleware: auth, role:client
      */
@@ -36,7 +34,7 @@ class PlaylistController extends Controller
 
     /**
      * Met à jour une playlist
-     * 
+     *
      * Route: PUT /playlists/{playlist}
      * Middleware: auth, role:client
      */
@@ -59,7 +57,7 @@ class PlaylistController extends Controller
 
     /**
      * Supprime une playlist
-     * 
+     *
      * Route: DELETE /playlists/{playlist}
      * Middleware: auth, role:client
      */
@@ -76,7 +74,7 @@ class PlaylistController extends Controller
 
     /**
      * Ajoute une piste à une playlist
-     * 
+     *
      * Route: POST /playlists/{playlist}/tracks
      * Middleware: auth, role:client
      */
@@ -105,7 +103,7 @@ class PlaylistController extends Controller
 
     /**
      * Retire une piste d'une playlist
-     * 
+     *
      * Route: DELETE /playlists/{playlist}/tracks/{track}
      * Middleware: auth, role:client
      */
@@ -122,7 +120,7 @@ class PlaylistController extends Controller
 
     /**
      * Réorganise l'ordre des pistes dans une playlist
-     * 
+     *
      * Route: POST /playlists/{playlist}/tracks/reorder
      * Middleware: auth, role:client
      */

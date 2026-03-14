@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Artist\WalletController::index
- * @see app/Http/Controllers/Artist/WalletController.php:31
+ * @see app/Http/Controllers/Artist/WalletController.php:30
  * @route '/artist/wallet'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::index
- * @see app/Http/Controllers/Artist/WalletController.php:31
+ * @see app/Http/Controllers/Artist/WalletController.php:30
  * @route '/artist/wallet'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::index
- * @see app/Http/Controllers/Artist/WalletController.php:31
+ * @see app/Http/Controllers/Artist/WalletController.php:30
  * @route '/artist/wallet'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Artist\WalletController::index
- * @see app/Http/Controllers/Artist/WalletController.php:31
+ * @see app/Http/Controllers/Artist/WalletController.php:30
  * @route '/artist/wallet'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Artist\WalletController::index
- * @see app/Http/Controllers/Artist/WalletController.php:31
+ * @see app/Http/Controllers/Artist/WalletController.php:30
  * @route '/artist/wallet'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Artist\WalletController::index
- * @see app/Http/Controllers/Artist/WalletController.php:31
+ * @see app/Http/Controllers/Artist/WalletController.php:30
  * @route '/artist/wallet'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Artist\WalletController::index
- * @see app/Http/Controllers/Artist/WalletController.php:31
+ * @see app/Http/Controllers/Artist/WalletController.php:30
  * @route '/artist/wallet'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Artist\WalletController::transactions
- * @see app/Http/Controllers/Artist/WalletController.php:67
+ * @see app/Http/Controllers/Artist/WalletController.php:66
  * @route '/artist/wallet/transactions'
  */
 export const transactions = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -94,7 +94,7 @@ transactions.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::transactions
- * @see app/Http/Controllers/Artist/WalletController.php:67
+ * @see app/Http/Controllers/Artist/WalletController.php:66
  * @route '/artist/wallet/transactions'
  */
 transactions.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ transactions.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::transactions
- * @see app/Http/Controllers/Artist/WalletController.php:67
+ * @see app/Http/Controllers/Artist/WalletController.php:66
  * @route '/artist/wallet/transactions'
  */
 transactions.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -112,7 +112,7 @@ transactions.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Artist\WalletController::transactions
- * @see app/Http/Controllers/Artist/WalletController.php:67
+ * @see app/Http/Controllers/Artist/WalletController.php:66
  * @route '/artist/wallet/transactions'
  */
 transactions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -122,7 +122,7 @@ transactions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Artist\WalletController::transactions
- * @see app/Http/Controllers/Artist/WalletController.php:67
+ * @see app/Http/Controllers/Artist/WalletController.php:66
  * @route '/artist/wallet/transactions'
  */
     const transactionsForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -132,7 +132,7 @@ transactions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Artist\WalletController::transactions
- * @see app/Http/Controllers/Artist/WalletController.php:67
+ * @see app/Http/Controllers/Artist/WalletController.php:66
  * @route '/artist/wallet/transactions'
  */
         transactionsForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -141,7 +141,7 @@ transactions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Artist\WalletController::transactions
- * @see app/Http/Controllers/Artist/WalletController.php:67
+ * @see app/Http/Controllers/Artist/WalletController.php:66
  * @route '/artist/wallet/transactions'
  */
         transactionsForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -157,7 +157,7 @@ transactions.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     transactions.form = transactionsForm
 /**
 * @see \App\Http\Controllers\Artist\WalletController::exportCsv
- * @see app/Http/Controllers/Artist/WalletController.php:105
+ * @see app/Http/Controllers/Artist/WalletController.php:104
  * @route '/artist/wallet/export'
  */
 export const exportCsv = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -172,7 +172,7 @@ exportCsv.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::exportCsv
- * @see app/Http/Controllers/Artist/WalletController.php:105
+ * @see app/Http/Controllers/Artist/WalletController.php:104
  * @route '/artist/wallet/export'
  */
 exportCsv.url = (options?: RouteQueryOptions) => {
@@ -181,7 +181,7 @@ exportCsv.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::exportCsv
- * @see app/Http/Controllers/Artist/WalletController.php:105
+ * @see app/Http/Controllers/Artist/WalletController.php:104
  * @route '/artist/wallet/export'
  */
 exportCsv.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -190,7 +190,7 @@ exportCsv.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Artist\WalletController::exportCsv
- * @see app/Http/Controllers/Artist/WalletController.php:105
+ * @see app/Http/Controllers/Artist/WalletController.php:104
  * @route '/artist/wallet/export'
  */
 exportCsv.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -200,7 +200,7 @@ exportCsv.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Artist\WalletController::exportCsv
- * @see app/Http/Controllers/Artist/WalletController.php:105
+ * @see app/Http/Controllers/Artist/WalletController.php:104
  * @route '/artist/wallet/export'
  */
     const exportCsvForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -210,7 +210,7 @@ exportCsv.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Artist\WalletController::exportCsv
- * @see app/Http/Controllers/Artist/WalletController.php:105
+ * @see app/Http/Controllers/Artist/WalletController.php:104
  * @route '/artist/wallet/export'
  */
         exportCsvForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -219,7 +219,7 @@ exportCsv.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Artist\WalletController::exportCsv
- * @see app/Http/Controllers/Artist/WalletController.php:105
+ * @see app/Http/Controllers/Artist/WalletController.php:104
  * @route '/artist/wallet/export'
  */
         exportCsvForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -235,7 +235,7 @@ exportCsv.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     exportCsv.form = exportCsvForm
 /**
 * @see \App\Http\Controllers\Artist\WalletController::withdraw
- * @see app/Http/Controllers/Artist/WalletController.php:165
+ * @see app/Http/Controllers/Artist/WalletController.php:164
  * @route '/artist/wallet/withdraw'
  */
 export const withdraw = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -250,7 +250,7 @@ withdraw.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::withdraw
- * @see app/Http/Controllers/Artist/WalletController.php:165
+ * @see app/Http/Controllers/Artist/WalletController.php:164
  * @route '/artist/wallet/withdraw'
  */
 withdraw.url = (options?: RouteQueryOptions) => {
@@ -259,7 +259,7 @@ withdraw.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::withdraw
- * @see app/Http/Controllers/Artist/WalletController.php:165
+ * @see app/Http/Controllers/Artist/WalletController.php:164
  * @route '/artist/wallet/withdraw'
  */
 withdraw.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -269,7 +269,7 @@ withdraw.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Artist\WalletController::withdraw
- * @see app/Http/Controllers/Artist/WalletController.php:165
+ * @see app/Http/Controllers/Artist/WalletController.php:164
  * @route '/artist/wallet/withdraw'
  */
     const withdrawForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -279,7 +279,7 @@ withdraw.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Artist\WalletController::withdraw
- * @see app/Http/Controllers/Artist/WalletController.php:165
+ * @see app/Http/Controllers/Artist/WalletController.php:164
  * @route '/artist/wallet/withdraw'
  */
         withdrawForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -290,7 +290,7 @@ withdraw.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     withdraw.form = withdrawForm
 /**
 * @see \App\Http\Controllers\Artist\WalletController::withdrawalStatus
- * @see app/Http/Controllers/Artist/WalletController.php:210
+ * @see app/Http/Controllers/Artist/WalletController.php:209
  * @route '/artist/wallet/withdrawals/{withdrawal}'
  */
 export const withdrawalStatus = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -305,7 +305,7 @@ withdrawalStatus.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::withdrawalStatus
- * @see app/Http/Controllers/Artist/WalletController.php:210
+ * @see app/Http/Controllers/Artist/WalletController.php:209
  * @route '/artist/wallet/withdrawals/{withdrawal}'
  */
 withdrawalStatus.url = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -338,7 +338,7 @@ withdrawalStatus.url = (args: { withdrawal: string | { id: string } } | [withdra
 
 /**
 * @see \App\Http\Controllers\Artist\WalletController::withdrawalStatus
- * @see app/Http/Controllers/Artist/WalletController.php:210
+ * @see app/Http/Controllers/Artist/WalletController.php:209
  * @route '/artist/wallet/withdrawals/{withdrawal}'
  */
 withdrawalStatus.get = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -347,7 +347,7 @@ withdrawalStatus.get = (args: { withdrawal: string | { id: string } } | [withdra
 })
 /**
 * @see \App\Http\Controllers\Artist\WalletController::withdrawalStatus
- * @see app/Http/Controllers/Artist/WalletController.php:210
+ * @see app/Http/Controllers/Artist/WalletController.php:209
  * @route '/artist/wallet/withdrawals/{withdrawal}'
  */
 withdrawalStatus.head = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -357,7 +357,7 @@ withdrawalStatus.head = (args: { withdrawal: string | { id: string } } | [withdr
 
     /**
 * @see \App\Http\Controllers\Artist\WalletController::withdrawalStatus
- * @see app/Http/Controllers/Artist/WalletController.php:210
+ * @see app/Http/Controllers/Artist/WalletController.php:209
  * @route '/artist/wallet/withdrawals/{withdrawal}'
  */
     const withdrawalStatusForm = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -367,7 +367,7 @@ withdrawalStatus.head = (args: { withdrawal: string | { id: string } } | [withdr
 
             /**
 * @see \App\Http\Controllers\Artist\WalletController::withdrawalStatus
- * @see app/Http/Controllers/Artist/WalletController.php:210
+ * @see app/Http/Controllers/Artist/WalletController.php:209
  * @route '/artist/wallet/withdrawals/{withdrawal}'
  */
         withdrawalStatusForm.get = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -376,7 +376,7 @@ withdrawalStatus.head = (args: { withdrawal: string | { id: string } } | [withdr
         })
             /**
 * @see \App\Http\Controllers\Artist\WalletController::withdrawalStatus
- * @see app/Http/Controllers/Artist/WalletController.php:210
+ * @see app/Http/Controllers/Artist/WalletController.php:209
  * @route '/artist/wallet/withdrawals/{withdrawal}'
  */
         withdrawalStatusForm.head = (args: { withdrawal: string | { id: string } } | [withdrawal: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

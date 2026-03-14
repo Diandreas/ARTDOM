@@ -15,12 +15,12 @@ class SocialLoginController extends Controller
 {
     /**
      * Redirige vers le fournisseur OAuth (Google, Facebook, Apple)
-     * 
+     *
      * Route: GET /auth/{provider}
      * Middleware: guest
-     * 
-     * @param string $provider Le fournisseur OAuth (google, facebook, apple)
-     * 
+     *
+     * @param  string  $provider  Le fournisseur OAuth (google, facebook, apple)
+     *
      * Logique:
      * 1. Redirige vers la page de connexion du fournisseur
      * 2. Le fournisseur redirigera vers /auth/{provider}/callback
@@ -29,7 +29,7 @@ class SocialLoginController extends Controller
     {
         // Valider que le provider est supporté
         $allowedProviders = ['google', 'facebook', 'apple'];
-        if (!in_array($provider, $allowedProviders)) {
+        if (! in_array($provider, $allowedProviders)) {
             abort(404, 'Provider non supporté');
         }
 
@@ -38,12 +38,12 @@ class SocialLoginController extends Controller
 
     /**
      * Traite le callback du fournisseur OAuth
-     * 
+     *
      * Route: GET /auth/{provider}/callback
      * Middleware: guest
-     * 
-     * @param string $provider Le fournisseur OAuth
-     * 
+     *
+     * @param  string  $provider  Le fournisseur OAuth
+     *
      * Logique:
      * 1. Récupère les données utilisateur du fournisseur
      * 2. Cherche un utilisateur existant avec cet email

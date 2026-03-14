@@ -13,10 +13,10 @@ class StoryController extends Controller
 {
     /**
      * Upload une story (expire automatiquement après 24h)
-     * 
+     *
      * Route: POST /artist/stories
      * Middleware: auth, role:artist
-     * 
+     *
      * Logique:
      * 1. Upload le média (image ou vidéo)
      * 2. Crée la story avec expiration automatique (24h)
@@ -50,7 +50,7 @@ class StoryController extends Controller
 
     /**
      * Supprime une story
-     * 
+     *
      * Route: DELETE /artist/stories/{story}
      * Middleware: auth, role:artist
      */

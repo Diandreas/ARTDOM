@@ -43,6 +43,8 @@ export default function Register() {
                                 />
                             </div>
 
+                            <input type="hidden" name="role" value="client" />
+
                             <div className="grid gap-2">
                                 <Label htmlFor="email">Email</Label>
                                 <Input

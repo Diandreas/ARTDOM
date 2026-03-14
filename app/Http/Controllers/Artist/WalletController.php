@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Artist;
 
 use App\Http\Controllers\Controller;
 use App\Models\Wallet;
-use App\Models\WalletTransaction;
 use App\Models\Withdrawal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,10 +16,10 @@ class WalletController extends Controller
 {
     /**
      * Affiche le portefeuille de l'artiste
-     * 
+     *
      * Route: GET /artist/wallet
      * Middleware: auth, role:artist
-     * 
+     *
      * Affiche :
      * - Solde disponible
      * - Solde en attente
@@ -34,7 +33,7 @@ class WalletController extends Controller
         $wallet = $artist->artistProfile->wallet;
 
         // Créer le portefeuille s'il n'existe pas
-        if (!$wallet) {
+        if (! $wallet) {
             $wallet = Wallet::create([
                 'artist_id' => $artist->id,
                 'balance' => 0,
@@ -56,10 +55,10 @@ class WalletController extends Controller
 
     /**
      * Retourne les transactions paginées avec filtres
-     * 
+     *
      * Route: GET /artist/wallet/transactions
      * Middleware: auth, role:artist
-     * 
+     *
      * Filtres disponibles:
      * - type: Type de transaction
      * - date_from / date_to: Période
@@ -69,7 +68,7 @@ class WalletController extends Controller
         $artist = Auth::user();
         $wallet = $artist->artistProfile->wallet;
 
-        if (!$wallet) {
+        if (! $wallet) {
             return response()->json(['transactions' => []]);
         }
 
@@ -98,7 +97,7 @@ class WalletController extends Controller
 
     /**
      * Exporte les transactions en CSV
-     * 
+     *
      * Route: GET /artist/wallet/export
      * Middleware: auth, role:artist
      */
@@ -152,10 +151,10 @@ class WalletController extends Controller
 
     /**
      * Crée une demande de retrait
-     * 
+     *
      * Route: POST /artist/wallet/withdraw
      * Middleware: auth, role:artist
-     * 
+     *
      * Logique:
      * 1. Vérifie que le solde est suffisant
      * 2. Valide les coordonnées bancaires
@@ -176,7 +175,7 @@ class WalletController extends Controller
         $artist = Auth::user();
         $wallet = $artist->artistProfile->wallet;
 
-        if (!$wallet || $wallet->balance < $validated['amount']) {
+        if (! $wallet || $wallet->balance < $validated['amount']) {
             return back()->withErrors(['amount' => 'Solde insuffisant.']);
         }
 
@@ -204,7 +203,7 @@ class WalletController extends Controller
 
     /**
      * Affiche le statut d'un retrait
-     * 
+     *
      * Route: GET /artist/wallet/withdrawals/{withdrawal}
      */
     public function withdrawalStatus(Withdrawal $withdrawal): Response

@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::store
- * @see app/Http/Controllers/Artist/ServiceController.php:59
+ * @see app/Http/Controllers/Artist/ServiceController.php:60
  * @route '/artist/services'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::store
- * @see app/Http/Controllers/Artist/ServiceController.php:59
+ * @see app/Http/Controllers/Artist/ServiceController.php:60
  * @route '/artist/services'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::store
- * @see app/Http/Controllers/Artist/ServiceController.php:59
+ * @see app/Http/Controllers/Artist/ServiceController.php:60
  * @route '/artist/services'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Artist\ServiceController::store
- * @see app/Http/Controllers/Artist/ServiceController.php:59
+ * @see app/Http/Controllers/Artist/ServiceController.php:60
  * @route '/artist/services'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Artist\ServiceController::store
- * @see app/Http/Controllers/Artist/ServiceController.php:59
+ * @see app/Http/Controllers/Artist/ServiceController.php:60
  * @route '/artist/services'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -134,7 +134,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::update
- * @see app/Http/Controllers/Artist/ServiceController.php:114
+ * @see app/Http/Controllers/Artist/ServiceController.php:115
  * @route '/artist/services/{service}'
  */
 export const update = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -149,7 +149,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::update
- * @see app/Http/Controllers/Artist/ServiceController.php:114
+ * @see app/Http/Controllers/Artist/ServiceController.php:115
  * @route '/artist/services/{service}'
  */
 update.url = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -182,7 +182,7 @@ update.url = (args: { service: string | { id: string } } | [service: string | { 
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::update
- * @see app/Http/Controllers/Artist/ServiceController.php:114
+ * @see app/Http/Controllers/Artist/ServiceController.php:115
  * @route '/artist/services/{service}'
  */
 update.put = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -192,7 +192,7 @@ update.put = (args: { service: string | { id: string } } | [service: string | { 
 
     /**
 * @see \App\Http\Controllers\Artist\ServiceController::update
- * @see app/Http/Controllers/Artist/ServiceController.php:114
+ * @see app/Http/Controllers/Artist/ServiceController.php:115
  * @route '/artist/services/{service}'
  */
     const updateForm = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -207,7 +207,7 @@ update.put = (args: { service: string | { id: string } } | [service: string | { 
 
             /**
 * @see \App\Http\Controllers\Artist\ServiceController::update
- * @see app/Http/Controllers/Artist/ServiceController.php:114
+ * @see app/Http/Controllers/Artist/ServiceController.php:115
  * @route '/artist/services/{service}'
  */
         updateForm.put = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -223,7 +223,7 @@ update.put = (args: { service: string | { id: string } } | [service: string | { 
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::destroy
- * @see app/Http/Controllers/Artist/ServiceController.php:172
+ * @see app/Http/Controllers/Artist/ServiceController.php:173
  * @route '/artist/services/{service}'
  */
 export const destroy = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -238,7 +238,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::destroy
- * @see app/Http/Controllers/Artist/ServiceController.php:172
+ * @see app/Http/Controllers/Artist/ServiceController.php:173
  * @route '/artist/services/{service}'
  */
 destroy.url = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -271,7 +271,7 @@ destroy.url = (args: { service: string | { id: string } } | [service: string | {
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::destroy
- * @see app/Http/Controllers/Artist/ServiceController.php:172
+ * @see app/Http/Controllers/Artist/ServiceController.php:173
  * @route '/artist/services/{service}'
  */
 destroy.delete = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -281,7 +281,7 @@ destroy.delete = (args: { service: string | { id: string } } | [service: string 
 
     /**
 * @see \App\Http\Controllers\Artist\ServiceController::destroy
- * @see app/Http/Controllers/Artist/ServiceController.php:172
+ * @see app/Http/Controllers/Artist/ServiceController.php:173
  * @route '/artist/services/{service}'
  */
     const destroyForm = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -296,7 +296,7 @@ destroy.delete = (args: { service: string | { id: string } } | [service: string 
 
             /**
 * @see \App\Http\Controllers\Artist\ServiceController::destroy
- * @see app/Http/Controllers/Artist/ServiceController.php:172
+ * @see app/Http/Controllers/Artist/ServiceController.php:173
  * @route '/artist/services/{service}'
  */
         destroyForm.delete = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -312,7 +312,7 @@ destroy.delete = (args: { service: string | { id: string } } | [service: string 
     destroy.form = destroyForm
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::toggle
- * @see app/Http/Controllers/Artist/ServiceController.php:194
+ * @see app/Http/Controllers/Artist/ServiceController.php:195
  * @route '/artist/services/{service}/toggle'
  */
 export const toggle = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -327,7 +327,7 @@ toggle.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::toggle
- * @see app/Http/Controllers/Artist/ServiceController.php:194
+ * @see app/Http/Controllers/Artist/ServiceController.php:195
  * @route '/artist/services/{service}/toggle'
  */
 toggle.url = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -360,7 +360,7 @@ toggle.url = (args: { service: string | { id: string } } | [service: string | { 
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::toggle
- * @see app/Http/Controllers/Artist/ServiceController.php:194
+ * @see app/Http/Controllers/Artist/ServiceController.php:195
  * @route '/artist/services/{service}/toggle'
  */
 toggle.patch = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -370,7 +370,7 @@ toggle.patch = (args: { service: string | { id: string } } | [service: string | 
 
     /**
 * @see \App\Http\Controllers\Artist\ServiceController::toggle
- * @see app/Http/Controllers/Artist/ServiceController.php:194
+ * @see app/Http/Controllers/Artist/ServiceController.php:195
  * @route '/artist/services/{service}/toggle'
  */
     const toggleForm = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -385,7 +385,7 @@ toggle.patch = (args: { service: string | { id: string } } | [service: string | 
 
             /**
 * @see \App\Http\Controllers\Artist\ServiceController::toggle
- * @see app/Http/Controllers/Artist/ServiceController.php:194
+ * @see app/Http/Controllers/Artist/ServiceController.php:195
  * @route '/artist/services/{service}/toggle'
  */
         toggleForm.patch = (args: { service: string | { id: string } } | [service: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -401,7 +401,7 @@ toggle.patch = (args: { service: string | { id: string } } | [service: string | 
     toggle.form = toggleForm
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::reorder
- * @see app/Http/Controllers/Artist/ServiceController.php:213
+ * @see app/Http/Controllers/Artist/ServiceController.php:214
  * @route '/artist/services/reorder'
  */
 export const reorder = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -416,7 +416,7 @@ reorder.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::reorder
- * @see app/Http/Controllers/Artist/ServiceController.php:213
+ * @see app/Http/Controllers/Artist/ServiceController.php:214
  * @route '/artist/services/reorder'
  */
 reorder.url = (options?: RouteQueryOptions) => {
@@ -425,7 +425,7 @@ reorder.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\ServiceController::reorder
- * @see app/Http/Controllers/Artist/ServiceController.php:213
+ * @see app/Http/Controllers/Artist/ServiceController.php:214
  * @route '/artist/services/reorder'
  */
 reorder.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -435,7 +435,7 @@ reorder.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Artist\ServiceController::reorder
- * @see app/Http/Controllers/Artist/ServiceController.php:213
+ * @see app/Http/Controllers/Artist/ServiceController.php:214
  * @route '/artist/services/reorder'
  */
     const reorderForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -445,7 +445,7 @@ reorder.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Artist\ServiceController::reorder
- * @see app/Http/Controllers/Artist/ServiceController.php:213
+ * @see app/Http/Controllers/Artist/ServiceController.php:214
  * @route '/artist/services/reorder'
  */
         reorderForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

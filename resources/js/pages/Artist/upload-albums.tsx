@@ -1,5 +1,6 @@
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { store as albumsStore, destroy as albumsDestroy, toggle as albumsToggle } from '@/routes/artist/albums';
+import { show as albumShow } from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
 import MainLayout from '@/layouts/MainLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,8 @@ import {
   Eye,
   EyeOff,
   Plus,
-  AlertCircle
+  AlertCircle,
+  Settings2
 } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -53,6 +55,7 @@ export default function UploadAlbums({ albums }: Props) {
     e.preventDefault();
 
     post(albumsStore().url, {
+      forceFormData: true,
       onSuccess: () => {
         reset();
         setCoverPreview(null);
@@ -308,14 +311,18 @@ export default function UploadAlbums({ albums }: Props) {
                   </div>
 
                   <div className="flex gap-2">
+                    <Link href={albumShow(album.id).url} className="flex-1">
+                      <Button variant="default" size="sm" className="w-full">
+                        <Settings2 className="mr-1 h-3 w-3" />
+                        Gérer
+                      </Button>
+                    </Link>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => togglePublication(album.id)}
-                      className="flex-1"
                     >
-                      {album.published_at ? <EyeOff className="mr-1 h-3 w-3" /> : <Eye className="mr-1 h-3 w-3" />}
-                      {album.published_at ? 'Dépublier' : 'Publier'}
+                      {album.published_at ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                     </Button>
                     <Button
                       variant="destructive"
