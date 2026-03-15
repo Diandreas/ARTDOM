@@ -1,5 +1,5 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { index as albumsIndex } from '@/routes/artist/albums';
+import { index as albumsIndex } from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
 import MainLayout from '@/layouts/MainLayout';
 import { DashboardSkeleton } from '@/components/Skeletons';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
