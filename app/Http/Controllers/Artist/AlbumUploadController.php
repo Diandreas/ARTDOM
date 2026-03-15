@@ -223,6 +223,8 @@ class AlbumUploadController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'file' => ['required', 'file', 'mimes:mp3,wav', 'max:51200'],
             'lyrics' => ['nullable', 'string'],
+        ], [
+            'file.uploaded' => "Le fichier est trop lourd pour le serveur. Vérifiez les limites 'upload_max_filesize' et 'post_max_size' de votre configuration PHP (actuellement 2Mo).",
         ]);
 
         $trackPath = $request->file('file')->store(

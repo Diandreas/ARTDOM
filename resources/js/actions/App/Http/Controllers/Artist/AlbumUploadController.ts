@@ -593,7 +593,7 @@ addTrack.form = addTrackForm
 
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::removeTrack
-* @see app/Http/Controllers/Artist/AlbumUploadController.php:250
+* @see app/Http/Controllers/Artist/AlbumUploadController.php:252
 * @route '/artist/albums/{album}/tracks/{track}'
 */
 export const removeTrack = (args: { album: string | { id: string }, track: string | { id: string } } | [album: string | { id: string }, track: string | { id: string } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -608,7 +608,7 @@ removeTrack.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::removeTrack
-* @see app/Http/Controllers/Artist/AlbumUploadController.php:250
+* @see app/Http/Controllers/Artist/AlbumUploadController.php:252
 * @route '/artist/albums/{album}/tracks/{track}'
 */
 removeTrack.url = (args: { album: string | { id: string }, track: string | { id: string } } | [album: string | { id: string }, track: string | { id: string } ], options?: RouteQueryOptions) => {
@@ -638,7 +638,7 @@ removeTrack.url = (args: { album: string | { id: string }, track: string | { id:
 
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::removeTrack
-* @see app/Http/Controllers/Artist/AlbumUploadController.php:250
+* @see app/Http/Controllers/Artist/AlbumUploadController.php:252
 * @route '/artist/albums/{album}/tracks/{track}'
 */
 removeTrack.delete = (args: { album: string | { id: string }, track: string | { id: string } } | [album: string | { id: string }, track: string | { id: string } ], options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -648,7 +648,7 @@ removeTrack.delete = (args: { album: string | { id: string }, track: string | { 
 
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::removeTrack
-* @see app/Http/Controllers/Artist/AlbumUploadController.php:250
+* @see app/Http/Controllers/Artist/AlbumUploadController.php:252
 * @route '/artist/albums/{album}/tracks/{track}'
 */
 const removeTrackForm = (args: { album: string | { id: string }, track: string | { id: string } } | [album: string | { id: string }, track: string | { id: string } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -663,7 +663,7 @@ const removeTrackForm = (args: { album: string | { id: string }, track: string |
 
 /**
 * @see \App\Http\Controllers\Artist\AlbumUploadController::removeTrack
-* @see app/Http/Controllers/Artist/AlbumUploadController.php:250
+* @see app/Http/Controllers/Artist/AlbumUploadController.php:252
 * @route '/artist/albums/{album}/tracks/{track}'
 */
 removeTrackForm.delete = (args: { album: string | { id: string }, track: string | { id: string } } | [album: string | { id: string }, track: string | { id: string } ], options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
