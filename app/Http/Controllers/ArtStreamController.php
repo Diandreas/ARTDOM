@@ -329,10 +329,8 @@ class ArtStreamController extends Controller
 
         // Search Artists
         if (in_array($type, ['all', 'artists'])) {
-            $results['artists'] = \App\Models\User::whereHas('roles', function ($q) {
-                $q->where('name', 'artist');
-            })
-                ->with(['artistProfile', 'artistAlbums'])
+            $results['artists'] = \App\Models\User::where('role', 'artist')
+                ->with(['artistProfile'])
                 ->where(function ($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%")
                         ->orWhereHas('artistProfile', function ($profileQ) use ($query) {
@@ -340,7 +338,7 @@ class ArtStreamController extends Controller
                                 ->orWhere('bio', 'like', "%{$query}%");
                         });
                 })
-                ->withCount('artistAlbums')
+                ->withCount('albums')
                 ->limit(12)
                 ->get()
                 ->map(function ($artist) {
@@ -350,7 +348,7 @@ class ArtStreamController extends Controller
                         'stage_name' => $artist->artistProfile->stage_name ?? $artist->name,
                         'profile_photo' => $artist->profile_photo,
                         'bio' => $artist->artistProfile->bio ?? null,
-                        'albums_count' => $artist->artist_albums_count,
+                        'albums_count' => $artist->albums_count,
                     ];
                 });
         }
