@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Calendar, Clock, MapPin, User, Package, Search } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { index, show } from '@/actions/App/Http/Controllers/Client/ReservationController';
 
 interface Stats {
     upcoming: number;
@@ -62,8 +63,8 @@ export default function ClientReservations({ reservations, stats, filters }: Res
 
     const handleTabChange = (value: string) => {
         router.get(
-            route('client.reservations.index'),
-            { status: value === 'all' ? undefined : value },
+            index.url({ status: value === 'all' ? undefined : value }),
+            {},
             { preserveState: true, preserveScroll: true }
         );
     };
@@ -71,8 +72,8 @@ export default function ClientReservations({ reservations, stats, filters }: Res
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         router.get(
-            route('client.reservations.index'),
-            { ...filters, search: searchQuery },
+            index.url({ ...filters, search: searchQuery }),
+            {},
             { preserveState: true, preserveScroll: true }
         );
     };
@@ -209,7 +210,7 @@ export default function ClientReservations({ reservations, stats, filters }: Res
                                                         <div className="text-lg font-bold text-primary">
                                                             {reservation.total_amount.toLocaleString('fr-FR')} FCFA
                                                         </div>
-                                                        <Link href={route('client.reservations.show', reservation.id)}>
+                                                        <Link href={show.url(reservation.id)}>
                                                             <Button variant="outline" size="sm">
                                                                 Voir les détails
                                                             </Button>

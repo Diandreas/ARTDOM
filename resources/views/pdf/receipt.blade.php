@@ -126,8 +126,8 @@
         <div class="info-row">
             <span class="info-label">Statut :</span>
             <span class="info-value">
-                <span class="status-badge status-{{ $reservation->status }}">
-                    {{ ucfirst($reservation->status) }}
+                <span class="status-badge status-{{ $reservation->status->value }}">
+                    {{ ucfirst($reservation->status->value) }}
                 </span>
             </span>
         </div>
