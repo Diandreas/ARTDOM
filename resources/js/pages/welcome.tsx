@@ -99,11 +99,11 @@ export default function Welcome() {
                             <span className="bg-secondary w-2 h-6 rounded-full inline-block"></span>
                             Catégories
                         </h2>
-                        <Link href="#" className="text-sm text-primary hover:underline">Voir tout</Link>
+                        <Link href="/artists" className="text-sm text-primary hover:underline">Voir tout</Link>
                     </div>
                     <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
                         {categories.map((category, idx) => (
-                            <Link key={idx} href="#" className="flex flex-col items-center gap-3 group">
+                            <Link key={idx} href={`/artists?category=${category.name?.toLowerCase()}`} className="flex flex-col items-center gap-3 group">
                                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${category.color} bg-opacity-10 group-hover:bg-opacity-20 transition-all shadow-sm group-hover:shadow-md border border-border/50`}>
                                     <category.icon className={`w-8 h-8 opacity-80 group-hover:scale-110 transition-transform ${category.color.replace('bg-', 'text-')}`} />
                                 </div>
