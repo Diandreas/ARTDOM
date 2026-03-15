@@ -164,9 +164,9 @@
     .scrollbar-hide::-webkit-scrollbar {
         display: none; /* Chrome/Safari/Opera */
     }
+}
 
-
-    /* African Earth Gradient - adapts to light/dark mode */
+/* African Earth Gradient - adapts to light/dark mode */
     .bg-gradient-earth {
         background: linear-gradient(135deg,
             oklch(0.9 0.02 50) 0%,
@@ -205,3 +205,4 @@
         padding-bottom: env(safe-area-inset-bottom, 0);
     }
 }
+

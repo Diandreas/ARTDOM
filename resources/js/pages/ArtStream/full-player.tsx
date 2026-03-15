@@ -1,6 +1,6 @@
 
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -21,7 +21,12 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
     const [isFavorited, setIsFavorited] = useState(false);
     const [localProgress, setLocalProgress] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
+    const [freqBars, setFreqBars] = useState<number[]>(Array(28).fill(4));
     const hasLoadedInitialTrack = useRef(false);
+    const webAudioCtxRef = useRef<globalThis.AudioContext | null>(null);
+    const analyserRef = useRef<AnalyserNode | null>(null);
+    const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+    const animFrameRef = useRef<number>(0);
 
     const {
         currentTrack,
@@ -42,7 +47,60 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
         toggleMute,
         playTrack,
         setQueue,
+        audioRef,
     } = useAudio();
+
+    // Web Audio analyser setup
+    const setupAnalyser = useCallback(() => {
+        if (!audioRef.current) return;
+        if (sourceRef.current) return; // already connected
+
+        try {
+            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const analyser = ctx.createAnalyser();
+            analyser.fftSize = 64;
+            const source = ctx.createMediaElementSource(audioRef.current);
+            source.connect(analyser);
+            analyser.connect(ctx.destination);
+            webAudioCtxRef.current = ctx;
+            analyserRef.current = analyser;
+            sourceRef.current = source;
+        } catch (e) {
+            // CORS or browser restriction — fall back to CSS animation
+        }
+    }, [audioRef]);
+
+    // Animation loop
+    useEffect(() => {
+        if (!isPlaying) {
+            cancelAnimationFrame(animFrameRef.current);
+            setFreqBars(Array(28).fill(4));
+            return;
+        }
+
+        setupAnalyser();
+
+        const draw = () => {
+            if (!analyserRef.current) {
+                // Fallback: random bars when analyser unavailable
+                setFreqBars(Array(28).fill(0).map(() => 15 + Math.random() * 85));
+                animFrameRef.current = requestAnimationFrame(draw);
+                return;
+            }
+            const data = new Uint8Array(analyserRef.current.frequencyBinCount);
+            analyserRef.current.getByteFrequencyData(data);
+            // Map 32 frequency bins → 28 bars
+            const bars = Array(28).fill(0).map((_, i) => {
+                const binIndex = Math.floor(i * data.length / 28);
+                return Math.max(4, (data[binIndex] / 255) * 100);
+            });
+            setFreqBars(bars);
+            animFrameRef.current = requestAnimationFrame(draw);
+        };
+
+        animFrameRef.current = requestAnimationFrame(draw);
+        return () => cancelAnimationFrame(animFrameRef.current);
+    }, [isPlaying, setupAnalyser]);
 
     // Sync local progress with audio progress when not dragging
     useEffect(() => {
@@ -195,8 +253,25 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                     <img
                         src={displayTrack.image || 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=800&auto=format&fit=crop'}
                         alt={displayTrack.title}
-                        className="w-full h-full object-cover"
+                        className={cn('w-full h-full object-cover transition-transform duration-700', isPlaying && 'scale-105')}
                     />
+                    {/* Visualizer overlay — real frequency data */}
+                    <div className="absolute bottom-0 left-0 right-0 h-16 flex items-end justify-center gap-[3px] px-4 pb-3 z-10">
+                        {freqBars.map((height, i) => (
+                            <div
+                                key={i}
+                                className="w-1 rounded-full transition-all duration-75"
+                                style={{
+                                    height: `${height}%`,
+                                    background: isPlaying
+                                        ? `rgba(255,255,255,${0.4 + (height / 100) * 0.6})`
+                                        : 'rgba(255,255,255,0.2)',
+                                }}
+                            />
+                        ))}
+                    </div>
+                    {/* Gradient overlay for visualizer readability */}
+                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent rounded-b-2xl" />
                 </div>
 
                 {/* Track Info */}
