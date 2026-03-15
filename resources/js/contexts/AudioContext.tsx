@@ -38,6 +38,7 @@ interface AudioContextType {
     toggleMute: () => void;
     clearQueue: () => void;
     updateTrackFavorite: (trackId: string, isFavorited: boolean) => void;
+    audioRef: React.RefObject<HTMLAudioElement | null>;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -348,6 +349,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
             toggleMute,
             clearQueue,
             updateTrackFavorite,
+            audioRef,
         }}>
             {children}
         </AudioContext.Provider>
