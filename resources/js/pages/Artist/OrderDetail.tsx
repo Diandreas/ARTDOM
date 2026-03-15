@@ -24,6 +24,7 @@ import {
 import { format, parseISO, differenceInSeconds } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { index, accept, decline, checkIn, checkOut } from '@/actions/App/Http/Controllers/Artist/OrderController';
 
 interface Client {
     id: string;
@@ -105,7 +106,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
     });
 
     const handleAccept = () => {
-        router.post(route('artist.orders.accept', reservation.id), {}, {
+        router.post(accept.url(reservation.id), {}, {
             preserveScroll: true,
             onSuccess: () => toast.success('Réservation acceptée'),
         });
@@ -113,7 +114,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
 
     const handleDeclineSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        postForm(route('artist.orders.decline', reservation.id), {
+        postForm(decline.url(reservation.id), {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Réservation refusée');
@@ -146,7 +147,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
 
     const submitCheckIn = (lat: number | null, lng: number | null) => {
         if (confirm('Êtes-vous sûr de vouloir démarrer cette prestation maintenant ?')) {
-            router.post(route('artist.orders.checkin', reservation.id), {
+            router.post(checkIn.url(reservation.id), {
                 latitude: lat,
                 longitude: lng
             }, {
@@ -158,7 +159,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
 
     const handleCheckOut = () => {
         if (confirm('Avez-vous terminé la prestation ?')) {
-            router.post(route('artist.orders.checkout', reservation.id), {}, {
+            router.post(checkOut.url(reservation.id), {}, {
                 preserveScroll: true,
                 onSuccess: () => toast.success('Check-out effectué, prestation terminée'),
             });
@@ -173,7 +174,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
 
             <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 md:pb-12">
                 <Link
-                    href={route('artist.orders.index')}
+                    href={index.url()}
                     className="flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
                 >
                     <ChevronLeft className="w-4 h-4 mr-1" />

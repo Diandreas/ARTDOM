@@ -1,14 +1,14 @@
 
 import { useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
+import { onboarding } from '@/routes/index';
 
 export default function Splash() {
     useEffect(() => {
         const timer = setTimeout(() => {
             // Check if user is authenticated or has seen onboarding (mock logic)
             // For now, redirect to Onboarding
-            // @ts-ignore
-            router.visit(route('onboarding'));
+            router.visit(onboarding.url());
         }, 3000);
 
         return () => clearTimeout(timer);

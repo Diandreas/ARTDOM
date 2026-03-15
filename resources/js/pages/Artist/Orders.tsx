@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar, Clock, MapPin, User, Package, ChevronRight } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { show } from '@/actions/App/Http/Controllers/Artist/OrderController';
 
 interface Client {
     id: string;
@@ -93,7 +94,7 @@ export default function ArtistOrders({ pending, confirmed, completed }: OrdersPr
                         </div>
 
                         <div className="flex justify-end mt-2">
-                            <Link href={route('artist.orders.show', reservation.id)}>
+                            <Link href={show.url(reservation.id)}>
                                 <Button variant="outline" size="sm" className="gap-2">
                                     Gérer la commande
                                     <ChevronRight className="w-4 h-4" />

@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
 import { ChevronRight } from 'lucide-react';
+import { selection } from '@/routes/register';
 
 export default function Onboarding() {
     const [api, setApi] = useState<CarouselApi>();
@@ -44,8 +45,7 @@ export default function Onboarding() {
     ];
 
     const handleFinish = () => {
-        // @ts-ignore
-        router.visit(route('register.selection'));
+        router.visit(selection.url());
     };
 
     return (

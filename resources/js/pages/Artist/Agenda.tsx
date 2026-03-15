@@ -13,6 +13,7 @@ import { format, parseISO, isSameDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { store, block, destroy } from '@/actions/App/Http/Controllers/Artist/AvailabilityController';
 
 interface Availability {
     id: string;
@@ -62,7 +63,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
 
     const handleAddAvailability = (e: React.FormEvent) => {
         e.preventDefault();
-        postAdd(route('artist.availability.store'), {
+        postAdd(store.url(), {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Disponibilité ajoutée avec succès');
@@ -74,7 +75,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
 
     const handleBlockAvailability = (e: React.FormEvent) => {
         e.preventDefault();
-        postBlock(route('artist.availability.block'), {
+        postBlock(block.url(), {
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Créneau bloqué avec succès');
@@ -91,7 +92,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
         }
 
         if (confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?')) {
-            router.delete(route('artist.availability.destroy', id), {
+            router.delete(destroy.url(id), {
                 preserveScroll: true,
                 onSuccess: () => toast.success('Créneau supprimé'),
             });
