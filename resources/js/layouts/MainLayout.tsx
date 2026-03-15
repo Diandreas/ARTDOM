@@ -1,5 +1,5 @@
-import { Link, usePage } from '@inertiajs/react';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { Link, router, usePage } from '@inertiajs/react';
+import { PropsWithChildren, useEffect, useState, FormEvent } from 'react';
 import { home, login, register, logout } from '@/routes';
 import { index as artistsIndex } from '@/routes/artists';
 import profile from '@/routes/profile';
@@ -32,6 +32,14 @@ export default function MainLayout({ children }: PropsWithChildren) {
     };
 
     const [unreadNotifications, setUnreadNotifications] = useState(0);
+    const [headerSearch, setHeaderSearch] = useState('');
+
+    const handleHeaderSearch = (e: FormEvent) => {
+        e.preventDefault();
+        if (headerSearch.trim()) {
+            router.get('/artists', { search: headerSearch.trim() }, { preserveState: false });
+        }
+    };
 
     useEffect(() => {
         if (user && typeof window !== 'undefined' && (window as any).Echo) {
@@ -194,16 +202,18 @@ export default function MainLayout({ children }: PropsWithChildren) {
 
                     {/* Right Actions: Search & Profile */}
                     <div className="flex items-center gap-2 md:gap-4">
-                        <div className="relative hidden sm:block">
+                        <form onSubmit={handleHeaderSearch} className="relative hidden sm:block">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                                 type="search"
-                                placeholder="Rechercher..."
+                                placeholder="Rechercher un artiste..."
                                 className="w-[200px] lg:w-[300px] pl-9 bg-muted border-none focus-visible:ring-primary h-9"
+                                value={headerSearch}
+                                onChange={(e) => setHeaderSearch(e.target.value)}
                             />
-                        </div>
+                        </form>
 
-                        <Button variant="ghost" size="icon" className="sm:hidden text-foreground">
+                        <Button variant="ghost" size="icon" className="sm:hidden text-foreground" onClick={() => router.get('/artists')}>
                             <Search className="h-5 w-5" />
                         </Button>
 
