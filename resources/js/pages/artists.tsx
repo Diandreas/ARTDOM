@@ -1,13 +1,14 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState, FormEvent } from 'react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
 import { Search, MapPin, Star, SlidersHorizontal, X } from 'lucide-react';
+import type { FormEvent } from 'react';
+import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
     id: string;

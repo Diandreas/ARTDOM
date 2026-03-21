@@ -1,19 +1,19 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
+import { format, parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { ChevronLeft, ChevronRight, Star, MapPin, Calendar as CalendarIcon, Clock, Plus, Upload } from 'lucide-react';
+import { useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronLeft, ChevronRight, Star, MapPin, Calendar as CalendarIcon, Clock, Plus, Upload } from 'lucide-react';
-import { fr } from 'date-fns/locale';
-import { format, parseISO } from 'date-fns';
-import { useState } from 'react';
+import { Textarea } from '@/components/ui/textarea';
+import MainLayout from '@/layouts/MainLayout';
 
 interface ServiceOption {
     id: string;

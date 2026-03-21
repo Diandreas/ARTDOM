@@ -1,8 +1,8 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { Play, Heart, MoreVertical, Share2, Globe, Lock, Music, Clock, Trash2, ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,8 +10,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Play, Heart, MoreVertical, Share2, Globe, Lock, Music, Clock, Trash2, ChevronLeft } from 'lucide-react';
 import { useAudio, type Track as AudioTrack } from '@/contexts/AudioContext';
+import MainLayout from '@/layouts/MainLayout';
 import { cn } from '@/lib/utils';
 
 interface Artist {

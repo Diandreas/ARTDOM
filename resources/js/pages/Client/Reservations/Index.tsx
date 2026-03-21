@@ -1,11 +1,11 @@
 import { Head } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import ReservationCard from '@/components/Reservation/ReservationCard';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import ReservationCard from '@/components/Reservation/ReservationCard';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Reservation {
     id: string;

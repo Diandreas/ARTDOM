@@ -1,15 +1,8 @@
+import { router } from '@inertiajs/react';
+import { ListMusic, X, Play, Pause, Trash2, Save, Music } from 'lucide-react';
 import { useState, useRef } from 'react';
-import { useAudio } from '@/contexts/AudioContext';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from '@/components/ui/sheet';
 import {
     Dialog,
     DialogContent,
@@ -20,11 +13,18 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
-import { ListMusic, X, Play, Pause, Trash2, Save, Music } from 'lucide-react';
+import { useAudio } from '@/contexts/AudioContext';
 import { cn } from '@/lib/utils';
-import { router } from '@inertiajs/react';
-import { toast } from 'sonner';
 
 interface QueueSidebarProps {
     trigger?: React.ReactNode;

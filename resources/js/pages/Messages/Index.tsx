@@ -1,9 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { User, MessageSquare, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Conversation {
     id: string;

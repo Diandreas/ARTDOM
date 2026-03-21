@@ -1,12 +1,6 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { FormEvent, useEffect, useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { format, parseISO, differenceInSeconds } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import {
     ChevronLeft,
     Calendar,
@@ -21,10 +15,16 @@ import {
     User,
     Timer,
 } from 'lucide-react';
-import { format, parseISO, differenceInSeconds } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { index, accept, decline, checkIn, checkOut } from '@/actions/App/Http/Controllers/Artist/OrderController';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Client {
     id: string;

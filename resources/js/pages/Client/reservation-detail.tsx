@@ -1,18 +1,11 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { FormEvent, useEffect, useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { format, parseISO, differenceInSeconds } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import {
     ChevronLeft,
     Calendar,
     Clock,
     MapPin,
-    CreditCard,
     Star,
     MessageCircle,
     XCircle,
@@ -20,10 +13,28 @@ import {
     QrCode as QrCodeIcon,
     CheckCircle2,
     Circle,
+    AlertTriangle,
 } from 'lucide-react';
-import { format, parseISO, differenceInSeconds } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import type { FormEvent} from 'react';
+import { useEffect, useState } from 'react';
+import { report } from '@/actions/App/Http/Controllers/Client/ArtistController';
 import { cancel } from '@/actions/App/Http/Controllers/Client/ReservationController';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
     id: string;
@@ -66,6 +77,13 @@ interface Reservation {
 }
 
 interface ReservationDetailProps {
+    auth: {
+        user: {
+            id: string;
+            name: string;
+            role: string;
+        } | null;
+    };
     reservation: Reservation;
 }
 
@@ -84,8 +102,13 @@ const emotionLabels: Record<string, string> = {
     Fierté: 'Fierté',
 };
 
-export default function ReservationDetail({ reservation }: ReservationDetailProps) {
+export default function ReservationDetail({ auth, reservation }: ReservationDetailProps) {
     const [timeLeft, setTimeLeft] = useState('');
+    const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
+    const [reportReason, setReportReason] = useState('');
+    const [isReporting, setIsReporting] = useState(false);
+
+    const showReportButton = auth.user?.role === 'client';
 
     useEffect(() => {
         if (reservation.status !== 'upcoming' && reservation.status !== 'confirmed' && reservation.status !== 'pending') {
@@ -121,6 +144,23 @@ export default function ReservationDetail({ reservation }: ReservationDetailProp
         if (confirm('Êtes-vous sûr de vouloir annuler cette réservation ? Vous serez remboursé sous 3-5 jours ouvrés.')) {
             router.post(cancel({ id: reservation.id }));
         }
+    };
+
+    const handleReportSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsReporting(true);
+        router.post(report({ artist: reservation.artist.id }), {
+            reason: reportReason,
+        }, {
+            onSuccess: () => {
+                setIsReportDialogOpen(false);
+                setReportReason('');
+                setIsReporting(false);
+            },
+            onError: () => {
+                setIsReporting(false);
+            },
+        });
     };
 
     const handleReview = (e: FormEvent<HTMLFormElement>) => {
@@ -217,7 +257,7 @@ export default function ReservationDetail({ reservation }: ReservationDetailProp
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-4">
-                                        {timelineSteps.map((step, index) => (
+                                        {timelineSteps.map((step) => (
                                             <div key={step.key} className="flex items-center gap-4">
                                                 <div className="flex-shrink-0">
                                                     {step.completed ? (
@@ -401,6 +441,48 @@ export default function ReservationDetail({ reservation }: ReservationDetailProp
                                 <MessageCircle className="w-4 h-4" />
                                 Contacter l'artiste
                             </Button>
+
+                            {showReportButton && (
+                                <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" className="w-full gap-2 text-muted-foreground hover:text-destructive">
+                                            <AlertTriangle className="w-4 h-4" />
+                                            Signaler l'artiste
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Signaler l'artiste</DialogTitle>
+                                            <DialogDescription>
+                                                Veuillez expliquer la raison de votre signalement. Un administrateur examinera votre demande.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <form onSubmit={handleReportSubmit}>
+                                            <div className="space-y-4 py-4">
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="reason">Motif du signalement</Label>
+                                                    <Textarea
+                                                        id="reason"
+                                                        placeholder="Détaillez le problème rencontré avec cet artiste..."
+                                                        value={reportReason}
+                                                        onChange={(e) => setReportReason(e.target.value)}
+                                                        required
+                                                        rows={5}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <DialogFooter>
+                                                <Button type="button" variant="ghost" onClick={() => setIsReportDialogOpen(false)}>
+                                                    Annuler
+                                                </Button>
+                                                <Button type="submit" variant="destructive" disabled={isReporting || !reportReason.trim()}>
+                                                    {isReporting ? 'Envoi en cours...' : 'Envoyer le signalement'}
+                                                </Button>
+                                            </DialogFooter>
+                                        </form>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
 
                             {canCancel && (
                                 <Button variant="outline" className="w-full gap-2 text-destructive hover:text-destructive" onClick={handleCancel}>

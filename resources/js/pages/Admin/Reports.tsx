@@ -1,10 +1,10 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
-import AdminLayout from '@/layouts/admin-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import AdminLayout from '@/layouts/admin-layout';
 
 type Summary = {
     users_total: number;

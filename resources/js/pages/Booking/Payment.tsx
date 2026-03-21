@@ -1,15 +1,15 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
+import { format, parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { ChevronLeft, ChevronRight, CreditCard, Wallet, Landmark, Info, Building } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronLeft, ChevronRight, CreditCard, Wallet, Landmark, Info, Building } from 'lucide-react';
-import { fr } from 'date-fns/locale';
-import { format, parseISO } from 'date-fns';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Service {
     id: string;

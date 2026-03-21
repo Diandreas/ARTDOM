@@ -1,5 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
-import AdminLayout from '@/layouts/admin-layout';
+import type { FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { FormEvent } from 'react';
+import AdminLayout from '@/layouts/admin-layout';
 
 export default function BroadcastNotification() {
     const form = useForm({

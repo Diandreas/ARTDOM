@@ -1,12 +1,12 @@
 
-import { useAudio } from '@/contexts/AudioContext';
-import { Button } from '@/components/ui/button';
-import { Play, Pause, SkipBack, SkipForward, Heart, Maximize2, ListMusic, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useEffect, useState } from 'react';
 import { Link, router, usePage } from '@inertiajs/react';
-import QueueSidebar from '@/components/Player/QueueSidebar';
+import { Play, Pause, SkipBack, SkipForward, Heart, Maximize2, ListMusic, Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
+import QueueSidebar from '@/components/Player/QueueSidebar';
+import { Button } from '@/components/ui/button';
+import { useAudio } from '@/contexts/AudioContext';
+import { cn } from '@/lib/utils';
 
 export default function MiniPlayer() {
     const { auth } = usePage().props as { auth?: { user?: any } };

@@ -1,9 +1,9 @@
 import { Link, usePage } from '@inertiajs/react';
-import { PropsWithChildren } from 'react';
+import { Banknote, BarChart3, Database, LogOut, ShieldCheck, ShoppingCart, Ticket, UserCheck, Users } from 'lucide-react';
+import type { PropsWithChildren } from 'react';
+import MiniPlayer from '@/components/Player/MiniPlayer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Banknote, BarChart3, Database, LogOut, ShieldCheck, ShoppingCart, Ticket, UserCheck, Users } from 'lucide-react';
-import MiniPlayer from '@/components/Player/MiniPlayer';
 
 type AdminLayoutProps = PropsWithChildren<{
     title: string;

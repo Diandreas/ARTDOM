@@ -1,11 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
+import { Music, Play, Disc3, Download, GraduationCap, Lock, Globe, FileVideo } from 'lucide-react';
 import { useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Music, Play, Disc3, Download, GraduationCap, Lock, Globe, FileVideo } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Playlist {
     id: number;

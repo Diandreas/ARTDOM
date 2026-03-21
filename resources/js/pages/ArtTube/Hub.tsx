@@ -1,11 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
+import { Play, Eye, Clock, TrendingUp, Heart } from 'lucide-react';
 import { useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, Eye, Clock, TrendingUp, Heart } from 'lucide-react';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
     id: string;

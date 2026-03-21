@@ -1,10 +1,12 @@
 import { Head, Link } from '@inertiajs/react';
-import AdminLayout from '@/layouts/admin-layout';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import AdminLayout from '@/layouts/admin-layout';
 
 type Ticket = {
     id: string;
+    ticket_number?: string;
+    type?: string;
     subject?: string;
     status: string;
 };
@@ -22,6 +24,22 @@ type Props = {
 };
 
 export default function Tickets({ tickets, filters }: Props) {
+    const typeLabel = (type?: string) => {
+        const labels: Record<string, string> = {
+            complaint: 'Signalement',
+            bug: 'Bug',
+            suggestion: 'Suggestion',
+            question: 'Question',
+            other: 'Autre',
+        };
+
+        if (! type) {
+            return 'Non defini';
+        }
+
+        return labels[type] ?? type;
+    };
+
     const openCount = tickets.data.filter((ticket) => ticket.status === 'open').length;
     const inProgressCount = tickets.data.filter((ticket) => ticket.status === 'in_progress').length;
     const closedCount = tickets.data.filter((ticket) => ticket.status === 'closed').length;
@@ -77,8 +95,17 @@ export default function Tickets({ tickets, filters }: Props) {
                     >
                         Fermes
                     </Link>
+                    <Link
+                        href="/admin/tickets?type=complaint"
+                        className="rounded-md border px-3 py-1 text-sm"
+                    >
+                        Signalements
+                    </Link>
                     {filters?.status ? (
                         <Badge variant="outline">Filtre actif: {filters.status}</Badge>
+                    ) : null}
+                    {filters?.type ? (
+                        <Badge variant="outline">Type: {typeLabel(filters.type)}</Badge>
                     ) : null}
                 </div>
 
@@ -91,6 +118,8 @@ export default function Tickets({ tickets, filters }: Props) {
                                 </CardTitle>
                                 <CardDescription className="flex items-center gap-2">
                                     Statut: <Badge variant="secondary">{ticket.status}</Badge>
+                                    <Badge variant="outline">{typeLabel(ticket.type)}</Badge>
+                                    {ticket.ticket_number ? <span>{ticket.ticket_number}</span> : null}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -116,4 +145,3 @@ export default function Tickets({ tickets, filters }: Props) {
         </AdminLayout>
     );
 }
-

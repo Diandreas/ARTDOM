@@ -1,8 +1,10 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { Play, Heart, Clock, Music, Shuffle, TrendingUp } from 'lucide-react';
 import { useState, useMemo } from 'react';
-import MainLayout from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
+import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
+import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Select,
     SelectContent,
@@ -10,11 +12,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Play, Heart, Clock, Music, Shuffle, TrendingUp } from 'lucide-react';
 import { useAudio, type Track as AudioTrack } from '@/contexts/AudioContext';
+import MainLayout from '@/layouts/MainLayout';
 import { cn } from '@/lib/utils';
-import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
-import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 
 interface Artist {
     id: number;

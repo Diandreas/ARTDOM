@@ -1,10 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
+import { ChevronLeft, Clock, MapPin, Calendar as CalendarIcon, CreditCard, Star } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronLeft, Clock, MapPin, Calendar as CalendarIcon, CreditCard, Star } from 'lucide-react';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Service {
     id: string;

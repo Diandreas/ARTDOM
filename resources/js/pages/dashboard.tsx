@@ -1,11 +1,12 @@
 import { Head, Link, router } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Music, Calendar, Users, Star, DollarSign, Play, TrendingUp, Shuffle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { useAudio, Track } from '@/contexts/AudioContext';
+import type { Track } from '@/contexts/AudioContext';
+import { useAudio } from '@/contexts/AudioContext';
+import MainLayout from '@/layouts/MainLayout';
 
 interface TrendingTrack {
     id: string;

@@ -1,11 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Plus, Ticket, ArrowRight, MessageSquareWarning } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Plus, Ticket, ArrowRight, MessageSquareWarning } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import MainLayout from '@/layouts/MainLayout';
 
 interface SupportTicket {
     id: string;

@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
 import { router, useForm, usePage } from '@inertiajs/react';
+import { ListMusic, Plus, Music, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -12,10 +14,8 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ListMusic, Plus, Music, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 
 interface Playlist {

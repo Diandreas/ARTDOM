@@ -1,11 +1,11 @@
 
-import { useState, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
+import { ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
-import { ChevronRight } from 'lucide-react';
 import { selection } from '@/routes/register';
 
 export default function Onboarding() {

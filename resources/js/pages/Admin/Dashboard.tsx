@@ -1,8 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import AdminLayout from '@/layouts/admin-layout';
 import {
     AlertTriangle,
     ArrowRight,
@@ -14,6 +10,10 @@ import {
     UserCheck2,
     Users,
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import AdminLayout from '@/layouts/admin-layout';
 
 type Kpis = {
     users: {

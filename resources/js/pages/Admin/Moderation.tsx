@@ -1,8 +1,8 @@
 import { Head, router } from '@inertiajs/react';
-import AdminLayout from '@/layouts/admin-layout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import AdminLayout from '@/layouts/admin-layout';
 
 type ReviewReport = {
     id: string;

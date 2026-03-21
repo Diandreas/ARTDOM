@@ -1,13 +1,13 @@
 import { Head, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Clock, MapPin, User, Package, ChevronRight } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Calendar, Clock, MapPin, User, Package, ChevronRight } from 'lucide-react';
 import { show } from '@/actions/App/Http/Controllers/Artist/OrderController';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Client {
     id: string;

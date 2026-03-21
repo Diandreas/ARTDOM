@@ -189,6 +189,7 @@ class ArtistController extends Controller
             'services' => $services,
             'albums' => $albums,
             'stats' => $stats,
+            'can_report' => Auth::check() && Auth::user()->isClient(),
         ]);
     }
 }

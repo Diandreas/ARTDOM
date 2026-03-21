@@ -1,10 +1,4 @@
 import { Head, Link, usePage } from '@inertiajs/react';
-import { index as albumsIndex } from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
-import MainLayout from '@/layouts/MainLayout';
-import { DashboardSkeleton } from '@/components/Skeletons';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
     TrendingUp,
     Music,
@@ -18,8 +12,14 @@ import {
     Calendar,
     User
 } from 'lucide-react';
-
 import { useState, useEffect } from 'react';
+import { index as albumsIndex } from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
+import { DashboardSkeleton } from '@/components/Skeletons';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import MainLayout from '@/layouts/MainLayout';
+
 
 interface Service {
     id: string;

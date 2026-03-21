@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Review;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -135,17 +136,25 @@ class ArtistController extends Controller
      *
      * Route: POST /artists/{artist}/report
      * Middleware: auth, role:client
-     *
-     * TODO: Implémenter la logique de signalement (créer un ticket)
      */
     public function report(Request $request, User $artist): RedirectResponse
     {
+        if (! $artist->isArtist()) {
+            abort(404);
+        }
+
         $request->validate([
             'reason' => ['required', 'string', 'max:500'],
         ]);
 
-        // TODO: Créer un ticket de signalement
-        // Ticket::create([...])
+        Ticket::create([
+            'ticket_number' => 'TCK-'.strtoupper(\Illuminate\Support\Str::random(8)),
+            'user_id' => Auth::id(),
+            'type' => 'complaint',
+            'subject' => 'Signalement artiste: '.($artist->artistProfile?->stage_name ?? $artist->name),
+            'message' => "Artiste ID: {$artist->id}\nMotif du signalement :\n\n".$request->reason,
+            'status' => 'open',
+        ]);
 
         return back()->with('message', 'Votre signalement a été enregistré. Merci.');
     }

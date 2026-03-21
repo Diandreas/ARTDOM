@@ -1,14 +1,14 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
+import { ShoppingCart, Trash2, Tag, CreditCard, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
+import { toast } from 'sonner';
+import { removeItem, applyCoupon, clear } from '@/actions/App/Http/Controllers/CartController';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingCart, Trash2, Tag, CreditCard, AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
-import { removeItem, applyCoupon, clear } from '@/actions/App/Http/Controllers/CartController';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
     id: string;

@@ -1,18 +1,20 @@
 import { Head, useForm } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { User} from 'lucide-react';
+import { Camera, Mail, Phone, MapPin, Star, Globe, Facebook, Instagram, Youtube, Music, Trash2, Upload } from 'lucide-react';
+import type { FormEvent} from 'react';
+import { useState } from 'react';
+import { useRef } from 'react';
+import { update, uploadMedia, deleteMedia, uploadAvatar } from '@/actions/App/Http/Controllers/Artist/ProfileController';
+import { ImageCropper } from '@/components/ImageCropper';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Camera, User, Mail, Phone, MapPin, Star, Globe, Facebook, Instagram, Youtube, Music, Trash2, Upload } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import { FormEvent, useState } from 'react';
-import { update, uploadMedia, deleteMedia, uploadAvatar } from '@/actions/App/Http/Controllers/Artist/ProfileController';
-import { ImageCropper } from '@/components/ImageCropper';
-import { useRef } from 'react';
+import MainLayout from '@/layouts/MainLayout';
 
 interface User {
     id: string;

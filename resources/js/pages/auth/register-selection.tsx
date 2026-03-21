@@ -1,7 +1,7 @@
 
 import { Link, Head } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
 import { User, Palette, Mic, Music } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import AuthLayout from '@/layouts/auth-layout';
 import { login } from '@/routes';
 import register from '@/routes/register';

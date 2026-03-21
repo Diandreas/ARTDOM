@@ -1,10 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, Ticket, Calendar, Paperclip, MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { ChevronLeft, Ticket, Calendar, Paperclip, MessageSquare } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import MainLayout from '@/layouts/MainLayout';
 
 interface SupportTicket {
     id: string;

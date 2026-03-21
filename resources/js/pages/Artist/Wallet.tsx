@@ -1,11 +1,12 @@
-import MainLayout from '@/layouts/MainLayout';
 import { Head, useForm, router, usePage } from '@inertiajs/react';
-import { WalletSkeleton } from '@/components/Skeletons';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Wallet as WalletIcon, ArrowUpRight, ArrowDownRight, Clock, Building, Download, CreditCard, Banknote } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Wallet as WalletIcon, ArrowUpRight, ArrowDownRight, Clock, Building, Download, CreditCard, Banknote } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import { WalletSkeleton } from '@/components/Skeletons';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -24,8 +25,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { useState, useEffect } from 'react';
-import { toast } from 'sonner';
+import MainLayout from '@/layouts/MainLayout';
 
 interface WalletProps {
     wallet: any;

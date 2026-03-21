@@ -1,8 +1,8 @@
-import MainLayout from '@/layouts/MainLayout';
 import { Head, useForm, router } from '@inertiajs/react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Check, Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import MainLayout from '@/layouts/MainLayout';
 
 interface SubscriptionProps {
     currentSubscription: any;

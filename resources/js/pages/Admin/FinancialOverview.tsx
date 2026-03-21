@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
-import AdminLayout from '@/layouts/admin-layout';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import AdminLayout from '@/layouts/admin-layout';
 
 type Props = {
     global: {

@@ -1,11 +1,4 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { store as albumsStore, destroy as albumsDestroy, toggle as albumsToggle } from '@/routes/artist/albums';
-import { show as albumShow } from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Upload,
   Music,
@@ -17,7 +10,14 @@ import {
   Settings2
 } from 'lucide-react';
 import { useState } from 'react';
+import { show as albumShow } from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import MainLayout from '@/layouts/MainLayout';
+import { store as albumsStore, destroy as albumsDestroy, toggle as albumsToggle } from '@/routes/artist/albums';
 
 interface Album {
   id: string;

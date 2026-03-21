@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
-import AdminLayout from '@/layouts/admin-layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import AdminLayout from '@/layouts/admin-layout';
 
 type ResourceRow = {
     resource: string;

@@ -1,10 +1,10 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { User, Send, ChevronLeft, Calendar } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Message {
     id: string;

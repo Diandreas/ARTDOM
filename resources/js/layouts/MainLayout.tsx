@@ -1,8 +1,10 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { PropsWithChildren, useEffect, useState, FormEvent } from 'react';
-import { home, login, register, logout } from '@/routes';
-import { index as artistsIndex } from '@/routes/artists';
-import profile from '@/routes/profile';
+import { Search, Menu, User, LogOut, Settings, Home, Music, Grid, Bell, Calendar } from 'lucide-react';
+import type { PropsWithChildren, FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import MiniPlayer from '@/components/Player/MiniPlayer';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -12,12 +14,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Search, Menu, User, LogOut, Settings, Home, Music, Grid, Bell, Calendar } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
-import MiniPlayer from '@/components/Player/MiniPlayer';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { home, login, register, logout } from '@/routes';
+import { index as artistsIndex } from '@/routes/artists';
+import profile from '@/routes/profile';
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const user = (usePage().props as any).auth.user;

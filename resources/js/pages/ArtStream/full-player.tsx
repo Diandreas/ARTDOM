@@ -1,15 +1,16 @@
 
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, Heart, ListMusic, Share2, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
-import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, Heart, ListMusic, Share2, Volume2, VolumeX } from 'lucide-react';
+import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
 import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 import QueueSidebar from '@/components/Player/QueueSidebar';
-import { useAudio, Track } from '@/contexts/AudioContext';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
+import type { Track } from '@/contexts/AudioContext';
+import { useAudio } from '@/contexts/AudioContext';
 import { cn } from '@/lib/utils';
-import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
 
 interface FullPlayerProps {
     initialTrack?: Track;

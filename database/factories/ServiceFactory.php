@@ -42,7 +42,7 @@ class ServiceFactory extends Factory
         $service = fake()->randomElement($services[$category]);
 
         return [
-            'artist_id' => null, // Will be set in seeder
+            'artist_id' => \App\Models\User::factory()->artist(),
             'title' => $service['name'],
             'description' => $service['desc'],
             'price' => fake()->randomElement([10000, 15000, 20000, 25000, 30000, 40000, 50000, 75000, 100000]),

@@ -1,11 +1,24 @@
-import { Head, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Head, Link, router } from '@inertiajs/react';
+import { Star, MapPin, Music, Share2, MessageCircle, Clock, Play, TrendingUp, AlertTriangle } from 'lucide-react';
+import { useState } from 'react';
+import { report } from '@/actions/App/Http/Controllers/Client/ArtistController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star, MapPin, Music, Share2, MessageCircle, Clock, Play, TrendingUp } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
     id: string;
@@ -53,10 +66,18 @@ interface Stats {
 }
 
 interface ProfileProps {
+    auth: {
+        user: {
+            id: string;
+            name: string;
+            role: string;
+        } | null;
+    };
     artist: Artist;
     services: Service[];
     albums: Album[];
     stats: Stats;
+    can_report?: boolean;
 }
 
 const locationTypes: Record<string, string> = {
@@ -66,11 +87,35 @@ const locationTypes: Record<string, string> = {
     any: 'Flexible',
 };
 
-export default function ArtistProfile({ artist, services, albums, stats }: ProfileProps) {
+export default function ArtistProfile({ auth, artist, services, albums, stats, can_report = false }: ProfileProps) {
+    const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
+    const [reportReason, setReportReason] = useState('');
+    const [isReporting, setIsReporting] = useState(false);
+
+    // Final can_report check
+    const showReportButton = can_report || (auth.user?.role === 'client');
+
     const formatNumber = (num: number) => {
         if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
         if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
         return num.toString();
+    };
+
+    const handleReportSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsReporting(true);
+        router.post(report({ artist: artist.id }), {
+            reason: reportReason,
+        }, {
+            onSuccess: () => {
+                setIsReportDialogOpen(false);
+                setReportReason('');
+                setIsReporting(false);
+            },
+            onError: () => {
+                setIsReporting(false);
+            },
+        });
     };
 
     return (
@@ -141,6 +186,48 @@ export default function ArtistProfile({ artist, services, albums, stats }: Profi
                         <Button variant="outline" size="icon">
                             <Share2 className="w-4 h-4" />
                         </Button>
+
+                        {showReportButton && (
+                            <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button variant="destructive" className="gap-2">
+                                        <AlertTriangle className="w-4 h-4" />
+                                        Signaler
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Signaler {artist.stage_name}</DialogTitle>
+                                        <DialogDescription>
+                                            Veuillez expliquer la raison de votre signalement. Un administrateur examinera votre demande.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <form onSubmit={handleReportSubmit}>
+                                        <div className="space-y-4 py-4">
+                                            <div className="space-y-2">
+                                                <Label htmlFor="reason">Motif du signalement</Label>
+                                                <Textarea
+                                                    id="reason"
+                                                    placeholder="Détaillez le problème rencontré avec cet artiste..."
+                                                    value={reportReason}
+                                                    onChange={(e) => setReportReason(e.target.value)}
+                                                    required
+                                                    rows={5}
+                                                />
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button type="button" variant="ghost" onClick={() => setIsReportDialogOpen(false)}>
+                                                Annuler
+                                            </Button>
+                                            <Button type="submit" variant="destructive" disabled={isReporting || !reportReason.trim()}>
+                                                {isReporting ? 'Envoi en cours...' : 'Envoyer le signalement'}
+                                            </Button>
+                                        </DialogFooter>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
+                        )}
                     </div>
                 </div>
 

@@ -1,9 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { format, parseISO } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import {
     CheckCircle2,
     Download,
@@ -15,9 +12,12 @@ import {
     Star,
     QrCode as QrCodeIcon,
 } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { QRCodeSVG } from 'qrcode.react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
     id: string;

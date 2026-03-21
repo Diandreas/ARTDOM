@@ -1,14 +1,14 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp, ListMusic, Search } from 'lucide-react';
 import { useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
+import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp, ListMusic, Search } from 'lucide-react';
 import { useAudio, type Track as AudioTrack } from '@/contexts/AudioContext';
-import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
     id: string;

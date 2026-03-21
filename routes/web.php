@@ -156,6 +156,9 @@ Route::middleware(['auth', 'role.client'])->prefix('client')->name('client.')->g
     Route::post('/reservations/{reservation}/cancel', [\App\Http\Controllers\Client\ReservationController::class, 'cancel'])->name('reservations.cancel');
     Route::post('/reservations/{reservation}/review', [\App\Http\Controllers\Client\ReservationController::class, 'review'])->name('reservations.review');
 
+    // Report route
+    Route::post('/artists/{artist}/report', [\App\Http\Controllers\Client\ArtistController::class, 'report'])->name('artists.report');
+
     // Profile route
     Route::get('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'index'])->name('client.profile');
 });

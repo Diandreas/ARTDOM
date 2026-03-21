@@ -1,11 +1,12 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { FormEvent, useMemo } from 'react';
-import AdminLayout from '@/layouts/admin-layout';
+import type { FormEvent} from 'react';
+import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import AdminLayout from '@/layouts/admin-layout';
 
 type RecordRow = {
     id: string;

@@ -1,19 +1,5 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import {
-    show as albumShow,
-    togglePublication,
-    update as albumUpdate,
-    addTrack,
-    removeTrack,
-} from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
-import { index as albumsIndex } from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import {
     ArrowLeft,
     Music,
     Upload,
@@ -31,6 +17,20 @@ import {
     Check,
 } from 'lucide-react';
 import { useState } from 'react';
+import {
+    show as albumShow,
+    togglePublication,
+    update as albumUpdate,
+    addTrack,
+    removeTrack,
+} from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
+import { index as albumsIndex } from '@/actions/App/Http/Controllers/Artist/AlbumUploadController';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Track {
     id: string;

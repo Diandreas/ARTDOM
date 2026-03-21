@@ -1,10 +1,4 @@
 import { Head, Link, router } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 import {
     Play,
     Heart,
@@ -17,12 +11,18 @@ import {
     Headphones,
 } from 'lucide-react';
 import { useState } from 'react';
+import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Track {
     id: string;

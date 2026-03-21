@@ -1,11 +1,11 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Bell, Check, Trash2, MessageCircle, CalendarDays, Info } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Bell, Check, Trash2, MessageCircle, CalendarDays, Info } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import MainLayout from '@/layouts/MainLayout';
 
 interface NotificationData {
     id: string;

@@ -1,10 +1,10 @@
 import { Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent } from '@/components/ui/card';
+import { Star, MapPin, Mic, Disc, Music, Palette, Camera, Users, Play, Heart } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { Star, MapPin, Mic, Disc, Music, Palette, Camera, Users, Play, Heart } from 'lucide-react';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
     id: string;

@@ -39,10 +39,37 @@ class AvailabilityController extends Controller
             ->orderBy('start_time')
             ->get();
 
+        // Récupérer les réservations du mois pour les afficher dans l'agenda
+        $reservations = \App\Models\Reservation::where('artist_id', $artist->id)
+            ->whereYear('scheduled_at', $year)
+            ->whereMonth('scheduled_at', $month)
+            ->whereNotIn('status', ['cancelled'])
+            ->get();
+
+        // Convertir les réservations en format "availability" pour le frontend
+        $mappedReservations = $reservations->map(function ($res) {
+            return [
+                'id' => 'res-'.$res->id,
+                'date' => $res->scheduled_at->format('Y-m-d'),
+                'start_time' => $res->scheduled_at->format('H:i:s'),
+                'end_time' => $res->scheduled_at->copy()->addMinutes($res->duration_minutes)->format('H:i:s'),
+                'is_booked' => true,
+                'is_blocked' => false,
+                'block_reason' => null,
+                'repeat_rule' => null,
+            ];
+        });
+
+        // Fusionner et trier
+        $allAvailabilities = $availabilities->toArray();
+        foreach ($mappedReservations as $mappedRes) {
+            $allAvailabilities[] = $mappedRes;
+        }
+
         return Inertia::render('Artist/Agenda', [
-            'availabilities' => $availabilities,
-            'currentMonth' => $month,
-            'currentYear' => $year,
+            'availabilities' => $allAvailabilities,
+            'currentMonth' => (int) $month,
+            'currentYear' => (int) $year,
         ]);
     }
 

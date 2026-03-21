@@ -1,14 +1,14 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronLeft, Clock, MapPin, Calendar as CalendarIcon, Star, ChevronRight } from 'lucide-react';
-import { fr } from 'date-fns/locale';
 import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { ChevronLeft, Clock, MapPin, Calendar as CalendarIcon, Star, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Service {
     id: string;
@@ -49,6 +49,26 @@ const locationTypes: Record<string, string> = {
 export default function BookingCalendar({ service, artist, availableSlots }: BookingCalendarProps) {
     const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
+    const isFirstRender = useRef(true);
+
+    // Charger les créneaux quand la date change
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        if (selectedDate) {
+            const dateStr = format(selectedDate, 'yyyy-MM-dd');
+            router.reload({
+                data: { date: dateStr },
+                only: ['availableSlots'],
+                preserveState: true,
+                preserveScroll: true,
+            });
+            setSelectedTime(null);
+        }
+    }, [selectedDate]);
 
     const handleContinue = () => {
         if (selectedDate && selectedTime) {

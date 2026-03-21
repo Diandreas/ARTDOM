@@ -10,6 +10,7 @@ use App\Models\Track;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -217,6 +218,12 @@ class AlbumUploadController extends Controller
     {
         if ($album->artist_id !== Auth::id()) {
             abort(403);
+        }
+
+        if (! $request->hasFile('file')) {
+            Log::error("Pas de fichier détecté dans la requête addTrack pour l'album {$album->id}.");
+        } elseif (! $request->file('file')->isValid()) {
+            Log::error("Fichier d'upload invalide pour l'album {$album->id}. Code d'erreur PHP : ".$request->file('file')->getError());
         }
 
         $validated = $request->validate([

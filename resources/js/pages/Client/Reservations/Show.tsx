@@ -1,11 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
-import StatusTimeline from '@/components/Reservation/StatusTimeline';
-import QRCodeDisplay from '@/components/Reservation/QRCodeDisplay';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 import {
     Calendar,
     MapPin,
@@ -17,9 +12,9 @@ import {
     Star,
     Edit,
 } from 'lucide-react';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { useState } from 'react';
+import QRCodeDisplay from '@/components/Reservation/QRCodeDisplay';
+import StatusTimeline from '@/components/Reservation/StatusTimeline';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -30,6 +25,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Reservation {
     id: string;

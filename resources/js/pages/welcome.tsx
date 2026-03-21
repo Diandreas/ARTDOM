@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
+import { Play, Star, Music, Mic, Palette, Video } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -9,8 +10,7 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from '@/components/ui/carousel';
-import { Badge } from '@/components/ui/badge';
-import { Play, Star, Music, Mic, Palette, Video } from 'lucide-react';
+import MainLayout from '@/layouts/MainLayout';
 
 export default function Welcome() {
     const stories = [

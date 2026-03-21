@@ -82,7 +82,7 @@ index.form = indexForm
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::store
-* @see app/Http/Controllers/Artist/AvailabilityController.php:59
+* @see app/Http/Controllers/Artist/AvailabilityController.php:86
 * @route '/artist/availability'
 */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +97,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::store
-* @see app/Http/Controllers/Artist/AvailabilityController.php:59
+* @see app/Http/Controllers/Artist/AvailabilityController.php:86
 * @route '/artist/availability'
 */
 store.url = (options?: RouteQueryOptions) => {
@@ -106,7 +106,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::store
-* @see app/Http/Controllers/Artist/AvailabilityController.php:59
+* @see app/Http/Controllers/Artist/AvailabilityController.php:86
 * @route '/artist/availability'
 */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -116,7 +116,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::store
-* @see app/Http/Controllers/Artist/AvailabilityController.php:59
+* @see app/Http/Controllers/Artist/AvailabilityController.php:86
 * @route '/artist/availability'
 */
 const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -126,7 +126,7 @@ const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::store
-* @see app/Http/Controllers/Artist/AvailabilityController.php:59
+* @see app/Http/Controllers/Artist/AvailabilityController.php:86
 * @route '/artist/availability'
 */
 storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -138,7 +138,7 @@ store.form = storeForm
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::block
-* @see app/Http/Controllers/Artist/AvailabilityController.php:95
+* @see app/Http/Controllers/Artist/AvailabilityController.php:122
 * @route '/artist/availability/block'
 */
 export const block = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -153,7 +153,7 @@ block.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::block
-* @see app/Http/Controllers/Artist/AvailabilityController.php:95
+* @see app/Http/Controllers/Artist/AvailabilityController.php:122
 * @route '/artist/availability/block'
 */
 block.url = (options?: RouteQueryOptions) => {
@@ -162,7 +162,7 @@ block.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::block
-* @see app/Http/Controllers/Artist/AvailabilityController.php:95
+* @see app/Http/Controllers/Artist/AvailabilityController.php:122
 * @route '/artist/availability/block'
 */
 block.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -172,7 +172,7 @@ block.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::block
-* @see app/Http/Controllers/Artist/AvailabilityController.php:95
+* @see app/Http/Controllers/Artist/AvailabilityController.php:122
 * @route '/artist/availability/block'
 */
 const blockForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -182,7 +182,7 @@ const blockForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => 
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::block
-* @see app/Http/Controllers/Artist/AvailabilityController.php:95
+* @see app/Http/Controllers/Artist/AvailabilityController.php:122
 * @route '/artist/availability/block'
 */
 blockForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -194,7 +194,7 @@ block.form = blockForm
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::destroy
-* @see app/Http/Controllers/Artist/AvailabilityController.php:124
+* @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
 export const destroy = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -209,7 +209,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::destroy
-* @see app/Http/Controllers/Artist/AvailabilityController.php:124
+* @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
 destroy.url = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -242,7 +242,7 @@ destroy.url = (args: { availability: string | { id: string } } | [availability: 
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::destroy
-* @see app/Http/Controllers/Artist/AvailabilityController.php:124
+* @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
 destroy.delete = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -252,7 +252,7 @@ destroy.delete = (args: { availability: string | { id: string } } | [availabilit
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::destroy
-* @see app/Http/Controllers/Artist/AvailabilityController.php:124
+* @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
 const destroyForm = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -267,7 +267,7 @@ const destroyForm = (args: { availability: string | { id: string } } | [availabi
 
 /**
 * @see \App\Http\Controllers\Artist\AvailabilityController::destroy
-* @see app/Http/Controllers/Artist/AvailabilityController.php:124
+* @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
 destroyForm.delete = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

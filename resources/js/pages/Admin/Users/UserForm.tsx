@@ -1,5 +1,6 @@
 import { useForm } from '@inertiajs/react';
-import { FormEvent, useMemo } from 'react';
+import type { FormEvent} from 'react';
+import { useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';

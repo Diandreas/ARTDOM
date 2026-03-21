@@ -1,14 +1,14 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { Search, Play, Heart, Clock, TrendingUp, Music, Disc, User, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import MainLayout from '@/layouts/MainLayout';
+import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Search, Play, Heart, Clock, TrendingUp, Music, Disc, User, X } from 'lucide-react';
 import { useAudio, type Track as AudioTrack } from '@/contexts/AudioContext';
+import MainLayout from '@/layouts/MainLayout';
 import { cn } from '@/lib/utils';
-import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 
 interface Artist {
     id: number;

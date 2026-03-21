@@ -1,15 +1,15 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
-import MainLayout from '@/layouts/MainLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Calendar, Clock, MapPin, User, Package, Search } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Calendar, Clock, MapPin, User, Package, Search } from 'lucide-react';
+import { useState } from 'react';
 import { index, show } from '@/actions/App/Http/Controllers/Client/ReservationController';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import MainLayout from '@/layouts/MainLayout';
 
 interface Stats {
     upcoming: number;

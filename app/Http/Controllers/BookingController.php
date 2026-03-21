@@ -4,32 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\Service;
+use App\Services\AvailabilityService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class BookingController extends Controller
 {
+    public function __construct(
+        protected AvailabilityService $availabilityService
+    ) {}
+
     public function calendar(Request $request): Response
     {
         $serviceId = $request->query('service');
         $service = Service::with(['artist.artistProfile'])->findOrFail($serviceId);
 
-        // Generate available time slots (example - should be based on artist availability)
-        $availableSlots = [
-            ['time' => '09:00', 'available' => true],
-            ['time' => '10:00', 'available' => true],
-            ['time' => '11:00', 'available' => false],
-            ['time' => '12:00', 'available' => true],
-            ['time' => '14:00', 'available' => true],
-            ['time' => '15:00', 'available' => true],
-            ['time' => '16:00', 'available' => false],
-            ['time' => '17:00', 'available' => true],
-            ['time' => '18:00', 'available' => true],
-            ['time' => '19:00', 'available' => true],
-            ['time' => '20:00', 'available' => false],
-            ['time' => '21:00', 'available' => true],
-        ];
+        $date = $request->query('date', now()->format('Y-m-d'));
+
+        // Generate available time slots based on artist availability and reservations
+        $availableSlots = $this->availabilityService->getAvailableSlots(
+            $service->artist,
+            $date,
+            $service->duration_minutes
+        );
 
         return Inertia::render('Booking/Calendar', [
             'service' => [
