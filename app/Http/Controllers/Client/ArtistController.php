@@ -139,7 +139,14 @@ class ArtistController extends Controller
      */
     public function report(Request $request, User $artist): RedirectResponse
     {
+        \Illuminate\Support\Facades\Log::info('Report attempt', [
+            'artist_id' => $artist->id,
+            'is_artist' => $artist->isArtist(),
+            'user_role' => $artist->role,
+        ]);
+
         if (! $artist->isArtist()) {
+            \Illuminate\Support\Facades\Log::warning('Report failed: User is not an artist', ['id' => $artist->id]);
             abort(404);
         }
 
