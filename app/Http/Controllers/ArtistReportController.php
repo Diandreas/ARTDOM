@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Client;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Review;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ArtistController extends Controller
+class ArtistReportController extends Controller
 {
     /**
      * Affiche le profil public d'un artiste

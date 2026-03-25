@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import type { FormEvent} from 'react';
 import { useEffect, useState } from 'react';
-import { report } from '@/actions/App/Http/Controllers/Client/ArtistController';
+import { report } from '@/manual-actions/ArtistReportController';
 import { cancel } from '@/actions/App/Http/Controllers/Client/ReservationController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';

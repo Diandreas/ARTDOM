@@ -1,4 +1,4 @@
-# ARTDOM - PLAN D'IMPLÉMENTATION
+# ARTEMO - PLAN D'IMPLÉMENTATION
 **Date de création**: 2026-02-15
 **Objectif**: Implémenter les bases de chaque module avec données réalistes
 
@@ -187,7 +187,7 @@
   - [ ] Nouveautés (carrousel albums)
   - [ ] Top Artistes (classement)
   - [ ] Genres (grille)
-  - [ ] Playlists ARTDOM
+  - [ ] Playlists ARTEMO
   - [ ] Recommandations personnalisées
 - [ ] Mini Player (persistant)
 

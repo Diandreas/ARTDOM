@@ -74,7 +74,7 @@ class Wallet extends Model
      */
     public function credit(float $amount, string $source, ?string $referenceId = null): WalletTransaction
     {
-        $commissionRate = config('artdom.commission_rate', 0.15); // 15% par défaut
+        $commissionRate = config('artemo.commission_rate', 0.15); // 15% par défaut
         $commission = $amount * $commissionRate;
         $netAmount = $amount - $commission;
 
@@ -114,7 +114,7 @@ class Wallet extends Model
      */
     public function addPending(float $amount, string $source, ?string $referenceId = null): WalletTransaction
     {
-        $commissionRate = config('artdom.commission_rate', 0.15); // 15% par défaut
+        $commissionRate = config('artemo.commission_rate', 0.15); // 15% par défaut
         $commission = $amount * $commissionRate;
         $netAmount = $amount - $commission;
 

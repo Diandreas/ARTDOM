@@ -24,7 +24,7 @@ export default function Login({
 }: Props) {
     return (
         <AuthLayout
-            title="Connexion à ARTDOM"
+            title="Connexion à ARTEMO"
             description="Entrez vos identifiants pour accéder à votre espace"
         >
             <Head title="Connexion" />

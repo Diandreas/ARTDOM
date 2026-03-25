@@ -11,7 +11,7 @@ export default function AdminLogin() {
     return (
         <AuthLayout
             title="Connexion administrateur"
-            description="Acces reserve aux administrateurs ARTDOM"
+            description="Acces reserve aux administrateurs ARTEMO"
         >
             <Head title="Connexion admin" />
 
@@ -33,7 +33,7 @@ export default function AdminLogin() {
                                 autoFocus
                                 tabIndex={1}
                                 autoComplete="email"
-                                placeholder="admin@artdom.ci"
+                                placeholder="admin@artemo.ci"
                             />
                             <InputError message={errors.email} />
                         </div>

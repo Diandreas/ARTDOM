@@ -1,4 +1,4 @@
-# ARTDOM - PROGRESSION DU DÉVELOPPEMENT
+# ARTEMO - PROGRESSION DU DÉVELOPPEMENT
 
 **Dernière mise à jour**: 2026-02-15
 **Session actuelle**: 6 MODULES COMPLÉTÉS (Home, ArtStream, Dashboard, Profil, Service, Liste) ✅✅✅

@@ -31,7 +31,7 @@ class ArtistValidationApprovedNotification extends Notification
             ->line('Votre profil artiste a ete approuve par notre equipe.')
             ->line('Votre badge verifie est maintenant actif.')
             ->action('Voir mon profil', url('/artist/dashboard'))
-            ->line('Vous pouvez desormais etre visible publiquement sur ARTDOM.');
+            ->line('Vous pouvez desormais etre visible publiquement sur ARTEMO.');
     }
 
     /**

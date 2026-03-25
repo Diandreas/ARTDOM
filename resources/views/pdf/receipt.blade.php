@@ -107,7 +107,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="logo">ARTDOM</div>
+        <div class="logo">ARTEMO</div>
         <div class="tagline">Artistes d'émotions, messagers de cœurs</div>
     </div>
 
@@ -236,11 +236,11 @@
     </div>
 
     <div class="footer">
-        <p><strong>ARTDOM</strong> - Plateforme de réservation d'artistes</p>
-        <p style="margin-top: 5px;">Abidjan, Côte d'Ivoire | contact@artdom.ci | +225 XX XX XX XX XX</p>
+        <p><strong>ARTEMO</strong> - Plateforme de réservation d'artistes</p>
+        <p style="margin-top: 5px;">Abidjan, Côte d'Ivoire | contact@artemo.ci | +225 XX XX XX XX XX</p>
         <p style="margin-top: 10px; font-size: 9px;">
             Ce document est un reçu officiel de votre réservation.<br>
-            Pour toute question, veuillez nous contacter à support@artdom.ci
+            Pour toute question, veuillez nous contacter à support@artemo.ci
         </p>
     </div>
 </body>

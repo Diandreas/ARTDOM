@@ -1,7 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Star, MapPin, Music, Share2, MessageCircle, Clock, Play, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
-import { report } from '@/actions/App/Http/Controllers/Client/ArtistController';
+import { report } from '@/manual-actions/ArtistReportController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

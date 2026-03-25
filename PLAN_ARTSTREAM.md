@@ -236,7 +236,7 @@
 - [ ] Section "Récemment écoutés"
 - [ ] Section "Pour vous" (recommandations)
 - [ ] Section "Tendances cette semaine"
-- [ ] Playlists éditoriales ARTDOM
+- [ ] Playlists éditoriales ARTEMO
 - [ ] Filtres par genre (rapide)
 
 **Backend requis**:

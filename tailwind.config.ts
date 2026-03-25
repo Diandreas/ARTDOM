@@ -11,7 +11,7 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				// Palette Afro-centrée ARTDOM
+				// Palette Afro-centrée ARTEMO
 				background: {
 					DEFAULT: '#1A0F0A', // Brun foncé chaud (terre africaine)
 					secondary: '#2C1810', // Brun chocolat

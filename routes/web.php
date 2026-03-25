@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Artist\DashboardController as ArtistDashboardController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\ArtistReportController;
 use App\Http\Controllers\ArtStreamController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServiceController;
@@ -157,7 +158,7 @@ Route::middleware(['auth', 'role.client'])->prefix('client')->name('client.')->g
     Route::post('/reservations/{reservation}/review', [\App\Http\Controllers\Client\ReservationController::class, 'review'])->name('reservations.review');
 
     // Report route
-    Route::post('/artists/{artist}/report', [\App\Http\Controllers\Client\ArtistController::class, 'report'])->name('artists.report');
+    Route::post('/artists/{artist}/report', [ArtistReportController::class, 'report'])->name('artists.report');
 
     // Profile route
     Route::get('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'index'])->name('client.profile');

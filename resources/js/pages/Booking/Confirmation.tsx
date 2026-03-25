@@ -116,7 +116,7 @@ export default function BookingConfirmation({ reservation, artist, service }: Co
                                     />
                                 ) : (
                                     <QRCodeSVG
-                                        value={`ARTDOM-${reservation.reservation_number}`}
+                                        value={`ARTEMO-${reservation.reservation_number}`}
                                         size={150}
                                         level="H"
                                         includeMargin

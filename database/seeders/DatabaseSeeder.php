@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->command->info('🌱 Seeding ARTDOM database with realistic data...');
+        $this->command->info('🌱 Seeding ARTEMO database with realistic data...');
 
         // Create admin user
         $this->command->info('Creating admin user...');
         User::factory()->admin()->create([
-            'email' => 'admin@artdom.ci',
+            'email' => 'admin@artemo.ci',
             'city' => 'Abidjan',
             'profile_photo' => 'https://i.pravatar.cc/400?img=1',
         ]);
@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
 
         $artistUsers = collect($artistsData)->map(function ($data, $index) {
             $user = User::factory()->artist()->create([
-                'email' => "artist{$index}@artdom.ci",
+                'email' => "artist{$index}@ARTEMO.ci",
                 'city' => $data['city'],
                 'profile_photo' => $data['img'],
             ]);
@@ -149,8 +149,8 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->command->info('✅ Database seeded successfully with realistic data and real images!');
-        $this->command->info('📧 Admin: admin@artdom.ci | Password: password');
+        $this->command->info('📧 Admin: admin@artemo.ci | Password: password');
         $this->command->info('📧 Test Client: client@test.com | Password: password');
-        $this->command->info('📧 Artists: artist0@artdom.ci - artist19@artdom.ci | Password: password');
+        $this->command->info('📧 Artists: artist0@artemo.ci - artist19@artemo.ci | Password: password');
     }
 }
