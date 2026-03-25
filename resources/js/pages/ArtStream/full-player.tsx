@@ -172,7 +172,7 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
     const handleShare = async () => {
         const track = currentTrack || initialTrack;
         const shareUrl = window.location.href;
-        const shareTitle = track ? `${track.title} — ${track.artist}` : 'ARTDOM';
+        const shareTitle = track ? `${track.title} — ${track.artist}` : 'ARTEMO';
 
         if (navigator.share) {
             try {

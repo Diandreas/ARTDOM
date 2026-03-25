@@ -9,7 +9,7 @@ import register from '@/routes/register';
 export default function RegisterSelection() {
     return (
         <AuthLayout
-            title="Bienvenue sur ARTDOM"
+            title="Bienvenue sur ARTEMO"
             description="Choisissez votre profil pour commencer l'aventure"
         >
             <Head title="Choix du profil" />

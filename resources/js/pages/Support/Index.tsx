@@ -47,7 +47,7 @@ export default function SupportIndex({ auth, tickets }: { auth: any; tickets: Su
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                     <div>
                         <h1 className="text-3xl font-bold font-heading">Support & Assistance</h1>
-                        <p className="text-muted-foreground mt-1">Gérez vos demandes et suggestions pour ARTDOM.</p>
+                        <p className="text-muted-foreground mt-1">Gérez vos demandes et suggestions pour ARTEMO.</p>
                     </div>
                     <Button asChild className="bg-primary text-primary-foreground">
                         <Link href="/support/create">

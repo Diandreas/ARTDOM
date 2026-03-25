@@ -1,4 +1,4 @@
-ARTDOM - SPÉCIFICATIONS DÉTAILLÉES PAR INTERFACE
+ARTEMO - SPÉCIFICATIONS DÉTAILLÉES PAR INTERFACE
 Date : 15 janvier 2026
 Version : 1.1
 Dernière mise à jour : 15 février 2026
@@ -89,7 +89,7 @@ ________________________________________
 1. AUTHENTIFICATION & ONBOARDING
 1.1 Splash Screen [x]
 Fonctionnalités :
-•	Animation du logo ARTDOM (2-3 secondes) [x]
+•	Animation du logo ARTEMO (2-3 secondes) [x]
 •	Affichage du slogan "Artistes d'émotions, messagers de cœurs" [x]
 •	Vérification automatique de la session utilisateur [x]
 •	Redirection vers Home si connecté, sinon vers Onboarding [x]
@@ -250,7 +250,7 @@ Fonctionnalités :
 •	Section Coupons : Champ code promo + Bouton "Appliquer" [x]
 •	Récapitulatif financier : [x]
 o	Sous-total [x]
-o	Frais de service ARTDOM (%) [x]
+o	Frais de service ARTEMO (%) [x]
 o	Réduction éventuelle [x]
 o	Total TTC [x]
 •	Bouton "Procéder au paiement" [x]
@@ -290,7 +290,7 @@ Fonctionnalités :
 •	Section "Nouveautés" : Carrousel d'albums/singles récents [x]
 •	Section "Top Artistes" : Classement des artistes les plus écoutés (semaine/mois) [x]
 •	Section "Genres" : Grille de catégories (Afrobeat, Hip-Hop, Gospel, Jazz, etc.) [x]
-•	Section "Playlists ARTDOM" : Playlists éditoriales (ex : "Talents émergents") [x]
+•	Section "Playlists ARTEMO" : Playlists éditoriales (ex : "Talents émergents") [x]
 •	Section "Recommandé pour vous" : Algorithme basé sur l'historique d'écoute [x]
 •	Bottom Player : Lecteur mini persistant [x] ✅ Fonctionnel avec queue et streaming
 •	Accès au mode hors-ligne (si abonnement Premium) [x]
@@ -616,7 +616,7 @@ Fonctionnalités :
 o	Graphique des revenus (jour/semaine/mois/année) [x]
 o	Filtres par source : Prestations, Ventes d'albums, Cours, Streaming [x]
 •	Historique des transactions : [x]
-o	Tableau : Date, Type (Prestation/Vente/Cours), Client/Source, Montant brut, Commission ARTDOM, Net [x]
+o	Tableau : Date, Type (Prestation/Vente/Cours), Client/Source, Montant brut, Commission ARTEMO, Net [x]
 o	Filtre par date, par type [x]
 o	Export CSV/PDF [x]
 o	Section "En attente" : Montants bloqués (prestations non encore effectuées) [x]

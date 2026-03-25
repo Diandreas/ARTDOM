@@ -47,7 +47,7 @@
 
    Illuminate\Database\QueryException 
 
-  SQLSTATE[HY000]: General error: 1 table "conversations" already exists (Connection: sqlite, Database: D:\project\ARTDOM\database\database.sqlite, SQL: create table "conversations" ("id" integer primary key autoincrement not null, "created_at" datetime, "updated_at" datetime))
+  SQLSTATE[HY000]: General error: 1 table "conversations" already exists (Connection: sqlite, Database: D:\project\ARTEMO\database\database.sqlite, SQL: create table "conversations" ("id" integer primary key autoincrement not null, "created_at" datetime, "updated_at" datetime))
 
   at vendor\laravel\framework\src\Illuminate\Database\Connection.php:838
     834▕             $exceptionType = $this->isUniqueConstraintError($e)

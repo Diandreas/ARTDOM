@@ -35,7 +35,7 @@ class AdminGlobalMessageNotification extends Notification
     {
         $mail = (new MailMessage)
             ->subject($this->title)
-            ->greeting('Message ARTDOM')
+            ->greeting('Message ARTEMO')
             ->line($this->message);
 
         if (! empty($this->actionUrl)) {

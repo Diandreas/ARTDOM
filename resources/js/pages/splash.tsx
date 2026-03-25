@@ -25,7 +25,7 @@ export default function Splash() {
                 </div>
 
                 <h1 className="text-4xl font-heading font-bold text-primary tracking-tight mb-2">
-                    ARTDOM
+                    ARTEMO
                 </h1>
 
                 <p className="text-lg text-muted-foreground font-medium italic">

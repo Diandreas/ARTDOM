@@ -40,7 +40,7 @@ export default function Welcome() {
 
     return (
         <MainLayout>
-            <Head title="Accueil - ARTDOM" />
+            <Head title="Accueil - ARTEMO" />
 
             <div className="flex flex-col gap-8 pb-20">
                 {/* Hero / Stories Section */}

@@ -1,5 +1,5 @@
 {
-  "project": "ARTDOM",
+  "project": "ARTEMO",
   "stack": {
     "backend": "Laravel 11",
     "frontend": "Inertia.js + React 18 + TypeScript",

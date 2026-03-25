@@ -1,6 +1,6 @@
 {
-    "name": "ARTDOM",
-    "short_name": "ARTDOM",
+    "name": "ARTEMO",
+    "short_name": "ARTEMO",
     "description": "La première plateforme de réservation d'artistes et talents en Afrique",
     "start_url": "/",
     "display": "standalone",

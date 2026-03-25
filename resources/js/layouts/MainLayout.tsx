@@ -146,7 +146,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                                 <span className="text-primary-foreground font-bold">A</span>
                             </div>
-                            <span className="text-xl font-bold tracking-tight text-primary font-heading hidden sm:inline-block">ARTDOM</span>
+                            <span className="text-xl font-bold tracking-tight text-primary font-heading hidden sm:inline-block">ARTEMO</span>
                         </Link>
                     </div>
 
@@ -303,7 +303,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
             <footer className="py-6 md:px-8 md:py-0 border-t border-border/40 bg-muted/30">
                 <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
                     <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
-                        Built by ARTDOM Team.
+                        Built by ARTEMO Team.
                     </p>
                 </div>
             </footer>

@@ -192,7 +192,7 @@ class CartController extends Controller
         foreach ($cart->items as $item) {
             $service = $item->service;
             $totalAmount = $item->getSubtotal();
-            $commissionRate = config('artdom.commission_rate', 0.15);
+            $commissionRate = config('artemo.commission_rate', 0.15);
             $commissionAmount = $totalAmount * $commissionRate;
             $artistEarnings = $totalAmount - $commissionAmount;
 

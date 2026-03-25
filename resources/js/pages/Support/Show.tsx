@@ -124,7 +124,7 @@ export default function SupportShow({ auth, ticket }: { auth: any; ticket: Suppo
                                     <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                                         <span className="text-primary-foreground font-bold text-sm">A</span>
                                     </div>
-                                    <span className="text-primary font-semibold">Service Support ARTDOM</span>
+                                    <span className="text-primary font-semibold">Service Support ARTEMO</span>
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="p-6">

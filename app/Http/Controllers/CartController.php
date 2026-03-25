@@ -64,7 +64,7 @@ class CartController extends Controller
 
         $subtotal = $cart->items->sum(fn ($item) => $item->getSubtotal());
         $discount = (float) $cart->discount ?? 0;
-        $serviceFee = $subtotal * 0.05; // 5% frais de service ARTDOM
+        $serviceFee = $subtotal * 0.05; // 5% frais de service ARTEMO
         $total = $subtotal - $discount + $serviceFee;
 
         return Inertia::render('Client/Cart/Index', [

@@ -1,4 +1,4 @@
-# 📊 ÉTAT DU PROJET ARTDOM
+# 📊 ÉTAT DU PROJET ARTEMO
 **Date de mise à jour** : 15 février 2026
 
 ---

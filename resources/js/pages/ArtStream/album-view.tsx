@@ -93,7 +93,7 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
         if (navigator.share) {
             navigator.share({
                 title: `${album.title} - ${album.artist.stage_name}`,
-                text: `Écoutez ${album.title} sur ARTDOM`,
+                text: `Écoutez ${album.title} sur ARTEMO`,
                 url: window.location.href,
             });
         }
