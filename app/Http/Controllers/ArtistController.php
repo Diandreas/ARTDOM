@@ -63,6 +63,7 @@ class ArtistController extends Controller
 
         $artists = $query->select('users.*')
             ->paginate(12)
+            ->withQueryString()
             ->through(function ($user) {
                 return [
                     'id' => $user->id,

@@ -1,7 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, MapPin, Star, SlidersHorizontal, X } from 'lucide-react';
+import { Search, MapPin, Star, SlidersHorizontal, X, Loader2 } from 'lucide-react';
 import type { FormEvent } from 'react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import MainLayout from '@/layouts/MainLayout';
+import * as ArtistActions from '@/actions/App/Http/Controllers/ArtistController';
 
 interface Artist {
     id: string;
@@ -52,21 +53,50 @@ interface ArtistsProps {
 export default function Artists({ artists, cities, categories, filters }: ArtistsProps) {
     const [showFilters, setShowFilters] = useState(false);
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
+    const [isSearching, setIsSearching] = useState(false);
+    const isFirstRender = useRef(true);
 
     const categoryLabel = (key: string) =>
         categories.find((c) => c.key === key)?.label ?? key;
-
-    const handleSearch = (e: FormEvent) => {
-        e.preventDefault();
-        applyFilters({ search: searchTerm });
-    };
 
     const applyFilters = (newFilters: Partial<Filters>) => {
         const merged = { ...filters, ...newFilters };
         const cleaned = Object.fromEntries(
             Object.entries(merged).filter(([, v]) => v !== undefined && v !== null && v !== false && v !== '')
         );
-        router.get('/artists', cleaned, { preserveState: true, preserveScroll: true });
+        
+        router.get(ArtistActions.index().url, cleaned, { 
+            preserveState: true, 
+            preserveScroll: true,
+            onBefore: () => setIsSearching(true),
+            onFinish: () => setIsSearching(false)
+        });
+    };
+
+    // Debounced search
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            if (searchTerm !== (filters.search || '')) {
+                applyFilters({ search: searchTerm });
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    // Sync searchTerm with filters.search when it changes externally (e.g. back button or clear filters)
+    useEffect(() => {
+        setSearchTerm(filters.search || '');
+    }, [filters.search]);
+
+    const handleSearchSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        applyFilters({ search: searchTerm });
     };
 
     const clearFilters = () => {
@@ -94,8 +124,12 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                 {/* Search & Filters */}
                 <div className="mb-8 space-y-4">
                     {/* Search Bar */}
-                    <form onSubmit={handleSearch} className="relative">
-                        <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                    <form onSubmit={handleSearchSubmit} className="relative">
+                        {isSearching ? (
+                            <Loader2 className="absolute left-3 top-3 h-5 w-5 text-primary animate-spin" />
+                        ) : (
+                            <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                        )}
                         <Input
                             type="search"
                             placeholder="Rechercher un artiste par nom..."
@@ -248,7 +282,7 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                     <>
                         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                             {artists.data.map((artist) => (
-                                <Link key={artist.id} href={`/artist/${artist.id}`}>
+                                <Link key={artist.id} href={ArtistActions.show(artist.id).url}>
                                     <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
                                         <div className="aspect-square relative overflow-hidden bg-muted">
                                             <img

@@ -38,7 +38,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
     const handleHeaderSearch = (e: FormEvent) => {
         e.preventDefault();
         if (headerSearch.trim()) {
-            router.get('/artists', { search: headerSearch.trim() }, { preserveState: false });
+            router.get(artistsIndex.url(), { search: headerSearch.trim() }, { preserveState: false });
         }
     };
 
