@@ -9,9 +9,11 @@ import {
     Download,
     ListMusic,
     Headphones,
+    MessageCircle,
 } from 'lucide-react';
 import { useState } from 'react';
 import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
+import CommentsSidebar from '@/components/Player/CommentsSidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -31,6 +33,8 @@ interface Track {
     plays: number;
     file_url: string;
     track_number: number;
+    is_favorited?: boolean;
+    comments?: any[];
 }
 
 interface Artist {
@@ -250,10 +254,20 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem>
+                                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                                                 <Heart className="w-4 h-4 mr-2" />
                                                 Ajouter aux favoris
                                             </DropdownMenuItem>
+                                            <CommentsSidebar
+                                                trackId={track.id}
+                                                comments={track.comments || []}
+                                                trigger={
+                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                        <MessageCircle className="w-4 h-4 mr-2" />
+                                                        Commentaires ({track.comments?.length || 0})
+                                                    </DropdownMenuItem>
+                                                }
+                                            />
                                             <AddToPlaylistDialog
                                                 trackId={parseInt(track.id)}
                                                 trackTitle={track.title}

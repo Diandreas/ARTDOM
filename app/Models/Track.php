@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Track extends Model
 {
@@ -60,6 +61,14 @@ class Track extends Model
         return $this->belongsToMany(Playlist::class, 'playlist_track')
             ->withPivot('order')
             ->withTimestamps();
+    }
+
+    /**
+     * Relation : Track peut avoir PLUSIEURS Commentaires
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(TrackComment::class)->whereNull('parent_id')->latest();
     }
 
     /**

@@ -10,6 +10,7 @@ export type Track = {
     duration?: number;
     album?: string;
     is_favorited?: boolean;
+    comments?: any[];
 };
 
 export type RepeatMode = 'off' | 'one' | 'all';

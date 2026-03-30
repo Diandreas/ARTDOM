@@ -195,6 +195,7 @@ Route::get('/artstream/search', [ArtStreamController::class, 'search'])->name('a
 // Favorites routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/tracks/{track}/favorite', [\App\Http\Controllers\FavoriteController::class, 'toggle'])->name('tracks.favorite');
+    Route::post('/tracks/{track}/comments', [\App\Http\Controllers\TrackCommentController::class, 'store'])->name('tracks.comments.store');
     Route::get('/favorites', [\App\Http\Controllers\FavoriteController::class, 'index'])->name('favorites.index');
 });
 

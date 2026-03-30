@@ -10,6 +10,33 @@ use Inertia\Response;
 
 class ArtStreamController extends Controller
 {
+    /**
+     * @return array<string, mixed>
+     */
+    private function formatTrackComment($comment): array
+    {
+        return [
+            'id' => $comment->id,
+            'user' => [
+                'id' => $comment->user->id,
+                'name' => $comment->user->name,
+                'profile_photo' => $comment->user->profile_photo,
+            ],
+            'content' => $comment->content,
+            'created_at' => $comment->created_at->diffForHumans(),
+            'replies' => $comment->replies->map(fn ($reply) => [
+                'id' => $reply->id,
+                'user' => [
+                    'id' => $reply->user->id,
+                    'name' => $reply->user->name,
+                    'profile_photo' => $reply->user->profile_photo,
+                ],
+                'content' => $reply->content,
+                'created_at' => $reply->created_at->diffForHumans(),
+            ]),
+        ];
+    }
+
     public function index(): Response
     {
         // Get user's favorited track IDs
@@ -64,7 +91,7 @@ class ArtStreamController extends Controller
             });
 
         // Fetch top tracks (most played)
-        $topTracks = Track::with(['album.artist.artistProfile'])
+        $topTracks = Track::with(['album.artist.artistProfile', 'comments.user', 'comments.replies.user'])
             ->orderByDesc('plays')
             ->limit(20)
             ->get()
@@ -76,6 +103,7 @@ class ArtStreamController extends Controller
                     'plays' => $track->plays,
                     'file_url' => $track->file_url,
                     'is_favorited' => in_array($track->id, $favoritedTrackIds),
+                    'comments' => $track->comments->map(fn ($comment) => $this->formatTrackComment($comment)),
                     'album' => [
                         'id' => $track->album->id,
                         'title' => $track->album->title,
@@ -111,7 +139,12 @@ class ArtStreamController extends Controller
 
     public function album(Album $album): Response
     {
-        $album->load(['artist.artistProfile', 'tracks']);
+        $album->load(['artist.artistProfile', 'tracks.comments.user', 'tracks.comments.replies.user']);
+
+        // Get user's favorited track IDs
+        $favoritedTrackIds = auth()->check()
+            ? auth()->user()->favorites()->pluck('track_id')->toArray()
+            : [];
 
         // Check if user has purchased this album (if authenticated)
         $isPurchased = false;
@@ -138,7 +171,7 @@ class ArtStreamController extends Controller
                     'profile_photo' => $album->artist->profile_photo,
                 ],
             ],
-            'tracks' => $album->tracks->map(function ($track) {
+            'tracks' => $album->tracks->map(function ($track) use ($favoritedTrackIds) {
                 return [
                     'id' => $track->id,
                     'title' => $track->title,
@@ -146,6 +179,8 @@ class ArtStreamController extends Controller
                     'plays' => $track->plays,
                     'file_url' => $track->file_url,
                     'track_number' => $track->track_number,
+                    'is_favorited' => in_array($track->id, $favoritedTrackIds),
+                    'comments' => $track->comments->map(fn ($comment) => $this->formatTrackComment($comment)),
                 ];
             }),
             'isPurchased' => $isPurchased,
@@ -167,7 +202,7 @@ class ArtStreamController extends Controller
             : [];
 
         if ($trackId) {
-            $track = Track::with(['album.artist.artistProfile'])->find($trackId);
+            $track = Track::with(['album.artist.artistProfile', 'comments.user', 'comments.replies.user'])->find($trackId);
 
             if ($track) {
                 $initialTrack = [
@@ -179,10 +214,12 @@ class ArtStreamController extends Controller
                     'artist' => $track->album->artist->artistProfile->stage_name ?? $track->album->artist->name,
                     'image' => $track->album->cover_url,
                     'is_favorited' => in_array($track->id, $favoritedTrackIds),
+                    'comments' => $track->comments->map(fn ($comment) => $this->formatTrackComment($comment)),
                 ];
 
                 // Load all tracks from the album for queue
                 $albumTracks = $track->album->tracks()
+                    ->with(['comments.user', 'comments.replies.user'])
                     ->orderBy('track_number')
                     ->get()
                     ->map(function ($t) use ($favoritedTrackIds) {
@@ -195,6 +232,7 @@ class ArtStreamController extends Controller
                             'artist' => $t->album->artist->artistProfile->stage_name ?? $t->album->artist->name,
                             'image' => $t->album->cover_url,
                             'is_favorited' => in_array($t->id, $favoritedTrackIds),
+                            'comments' => $t->comments->map(fn ($comment) => $this->formatTrackComment($comment)),
                         ];
                     });
             }

@@ -8,6 +8,7 @@ import ArtistController from './ArtistController'
 import ServiceController from './ServiceController'
 import ArtStreamController from './ArtStreamController'
 import FavoriteController from './FavoriteController'
+import TrackCommentController from './TrackCommentController'
 import LibraryController from './LibraryController'
 import PlaylistController from './PlaylistController'
 import Stream from './Stream'
@@ -28,6 +29,7 @@ const Controllers = {
     ServiceController: Object.assign(ServiceController, ServiceController),
     ArtStreamController: Object.assign(ArtStreamController, ArtStreamController),
     FavoriteController: Object.assign(FavoriteController, FavoriteController),
+    TrackCommentController: Object.assign(TrackCommentController, TrackCommentController),
     LibraryController: Object.assign(LibraryController, LibraryController),
     PlaylistController: Object.assign(PlaylistController, PlaylistController),
     Stream: Object.assign(Stream, Stream),

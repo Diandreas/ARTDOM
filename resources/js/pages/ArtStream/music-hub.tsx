@@ -35,6 +35,7 @@ interface Track {
     duration_seconds: number;
     plays: number;
     file_url: string;
+    comments?: unknown[];
     album: {
         id: string;
         title: string;
@@ -67,13 +68,14 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
     };
 
     const convertToAudioTrack = (track: Track): AudioTrack => ({
-        id: parseInt(track.id),
+        id: track.id,
         title: track.title,
         artist: track.album.artist.stage_name,
         image: track.album.cover_url,
         url: track.file_url,
         duration: track.duration_seconds,
         album: track.album.title,
+        comments: track.comments ?? [],
     });
 
     const handlePlayTrack = (track: Track, allTracks?: Track[]) => {

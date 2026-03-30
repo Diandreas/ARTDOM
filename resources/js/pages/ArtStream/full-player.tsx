@@ -5,6 +5,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
 import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
+import CommentsSidebar from '@/components/Player/CommentsSidebar';
 import QueueSidebar from '@/components/Player/QueueSidebar';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -13,7 +14,7 @@ import { useAudio } from '@/contexts/AudioContext';
 import { cn } from '@/lib/utils';
 
 interface FullPlayerProps {
-    initialTrack?: Track;
+    initialTrack?: Track & { comments?: any[] };
     albumTracks?: Track[];
 }
 
@@ -377,6 +378,12 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                     <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={handleShare}>
                         <Share2 className="w-5 h-5" />
                     </Button>
+                    {displayTrack && (
+                        <CommentsSidebar
+                            trackId={displayTrack.id}
+                            comments={displayTrack.comments || []}
+                        />
+                    )}
                     {displayTrack && (
                         <AddToPlaylistDialog
                             trackId={parseInt(displayTrack.id)}
