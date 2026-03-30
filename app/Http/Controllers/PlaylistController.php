@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Playlist;
 use App\Models\Track;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,7 +12,7 @@ use Inertia\Response;
 
 class PlaylistController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request): Response|JsonResponse
     {
         $user = $request->user();
 
@@ -29,6 +30,10 @@ class PlaylistController extends Controller
                     'created_at' => $playlist->created_at->format('d M Y'),
                 ];
             });
+
+        if ($request->wantsJson()) {
+            return response()->json(['playlists' => $playlists]);
+        }
 
         return Inertia::render('ArtStream/playlists', [
             'playlists' => $playlists,

@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     Play,
     Heart,
@@ -12,6 +12,7 @@ import {
     MessageCircle,
 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
 import CommentsSidebar from '@/components/Player/CommentsSidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -63,6 +64,7 @@ interface AlbumViewProps {
 }
 
 export default function AlbumView({ album, tracks, isPurchased = false, isInLibrary = false }: AlbumViewProps) {
+    const { auth } = usePage().props as { auth?: { user?: any } };
     const [inLibrary, setInLibrary] = useState(isInLibrary);
 
     const formatDuration = (seconds: number) => {
@@ -89,8 +91,17 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
     };
 
     const handleToggleLibrary = () => {
-        // API call to add/remove from library
-        setInLibrary(!inLibrary);
+        if (!auth?.user) {
+            router.visit('/login');
+            return;
+        }
+        router.post(`/albums/${album.id}/favorite`, {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setInLibrary(!inLibrary);
+                toast.success(inLibrary ? 'Retiré des favoris' : 'Ajouté aux favoris');
+            },
+        });
     };
 
     const handleShare = () => {

@@ -146,13 +146,10 @@ class ArtStreamController extends Controller
             ? auth()->user()->favorites()->pluck('track_id')->toArray()
             : [];
 
-        // Check if user has purchased this album (if authenticated)
         $isPurchased = false;
         $isInLibrary = false;
         if (auth()->check()) {
-            // TODO: Check purchase status
-            // $isPurchased = auth()->user()->purchasedAlbums()->where('album_id', $album->id)->exists();
-            // $isInLibrary = auth()->user()->libraryAlbums()->where('album_id', $album->id)->exists();
+            $isInLibrary = auth()->user()->favoriteAlbums()->where('album_id', $album->id)->exists();
         }
 
         return Inertia::render('ArtStream/album-view', [

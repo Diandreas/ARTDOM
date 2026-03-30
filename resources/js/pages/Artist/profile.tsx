@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Star, MapPin, Music, Share2, MessageCircle, Clock, Play, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Star, MapPin, Music, Clock, Play, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import { report } from '@/manual-actions/ArtistReportController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -153,13 +153,6 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                                 <MapPin className="w-4 h-4" />
                                 {artist.city}
                             </div>
-                            {artist.rating > 0 && (
-                                <div className="flex items-center gap-1">
-                                    <Star className="w-4 h-4 text-primary fill-primary" />
-                                    <span className="font-bold text-foreground">{artist.rating.toFixed(1)}</span>
-                                    <span>({artist.total_reviews} avis)</span>
-                                </div>
-                            )}
                             <div className="flex items-center gap-1">
                                 <Music className="w-4 h-4" />
                                 {stats.total_albums} album{stats.total_albums > 1 ? 's' : ''}
@@ -179,12 +172,6 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                             <Link href={services.length > 0 ? `/service/${services[0].id}` : '#'}>
                                 Réserver
                             </Link>
-                        </Button>
-                        <Button variant="outline" size="icon">
-                            <MessageCircle className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="icon">
-                            <Share2 className="w-4 h-4" />
                         </Button>
 
                         {showReportButton && (

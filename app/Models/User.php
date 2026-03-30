@@ -134,6 +134,12 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function favoriteAlbums()
+    {
+        return $this->belongsToMany(Album::class, 'album_favorites')
+            ->withTimestamps();
+    }
+
     /**
      * Relation : Un User peut avoir PLUSIEURS Playlists
      * Relation 1-N (hasMany) : Un utilisateur peut avoir plusieurs playlists

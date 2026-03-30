@@ -77,9 +77,19 @@ export default function MainLayout({ children }: PropsWithChildren) {
     }, [user]);
 
     return (
-        <div className="min-h-screen bg-background text-foreground font-sans">
+        <div className="min-h-screen bg-background text-foreground font-sans relative">
+            {/* African Pattern Background */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none fixed inset-0 z-0"
+                style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cdefs%3E%3Cpattern id='kente' x='0' y='0' width='40' height='40' patternUnits='userSpaceOnUse'%3E%3Crect width='40' height='40' fill='none'/%3E%3Cpath d='M0 20 L10 0 L20 20 L10 40 Z' fill='none' stroke='%23d4a017' stroke-width='0.6' opacity='0.18'/%3E%3Cpath d='M20 20 L30 0 L40 20 L30 40 Z' fill='none' stroke='%23d4a017' stroke-width='0.6' opacity='0.18'/%3E%3Ccircle cx='20' cy='20' r='4' fill='none' stroke='%23d4a017' stroke-width='0.5' opacity='0.12'/%3E%3Cpath d='M0 0 L10 10 M40 0 L30 10 M0 40 L10 30 M40 40 L30 30' stroke='%23d4a017' stroke-width='0.5' opacity='0.1'/%3E%3Crect x='15' y='15' width='10' height='10' fill='none' stroke='%23d4a017' stroke-width='0.4' opacity='0.1' transform='rotate(45 20 20)'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='80' height='80' fill='url(%23kente)'/%3E%3C/svg%3E")`,
+                    backgroundSize: '80px 80px',
+                    opacity: 1,
+                }}
+            />
             {/* Header / Navbar */}
-            <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 relative">
                 <div className="container flex h-16 items-center justify-between px-4 md:px-6">
                     {/* Logo & Mobile Menu */}
                     <div className="flex items-center gap-4">
@@ -142,10 +152,11 @@ export default function MainLayout({ children }: PropsWithChildren) {
                         </Sheet>
 
                         <Link href={home()} className="flex items-center gap-2">
-                            {/* Placeholder for Logo - maybe an SVG or Image */}
-                            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-                                <span className="text-primary-foreground font-bold">A</span>
-                            </div>
+                            <img
+                                src="/artemo-logo.png"
+                                alt="Artemo"
+                                className="h-9 w-9 object-contain"
+                            />
                             <span className="text-xl font-bold tracking-tight text-primary font-heading hidden sm:inline-block">ARTEMO</span>
                         </Link>
                     </div>
@@ -295,12 +306,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
             </header>
 
             {/* Main Content */}
-            <main className="flex-1">
+            <main className="flex-1 relative z-10">
                 {children}
             </main>
 
             {/* Footer Placeholder */}
-            <footer className="py-6 md:px-8 md:py-0 border-t border-border/40 bg-muted/30">
+            <footer className="py-6 md:px-8 md:py-0 border-t border-border/40 bg-muted/30 relative z-10">
                 <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
                     <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
                         Built by ARTEMO Team.
@@ -309,7 +320,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
             </footer>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur z-40 pb-safe">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur z-50 pb-safe">
                 <nav className="flex items-center justify-around h-16">
                     <Link
                         href={home()}

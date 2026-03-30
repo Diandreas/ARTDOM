@@ -57,6 +57,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/client-activity', [ClientActivityController::class, 'index'])->name('client-activity.index');
         Route::get('/financial-overview', [FinancialOverviewController::class, 'index'])->name('financial-overview.index');
 
+        Route::get('/carousel', [\App\Http\Controllers\Admin\CarouselController::class, 'index'])->name('carousel.index');
+        Route::post('/carousel', [\App\Http\Controllers\Admin\CarouselController::class, 'store'])->name('carousel.store');
+        Route::put('/carousel/{slide}', [\App\Http\Controllers\Admin\CarouselController::class, 'update'])->name('carousel.update');
+        Route::delete('/carousel/{slide}', [\App\Http\Controllers\Admin\CarouselController::class, 'destroy'])->name('carousel.destroy');
+        Route::post('/carousel/reorder', [\App\Http\Controllers\Admin\CarouselController::class, 'reorder'])->name('carousel.reorder');
+        Route::patch('/carousel/{slide}/toggle', [\App\Http\Controllers\Admin\CarouselController::class, 'toggle'])->name('carousel.toggle');
+
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
         Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
@@ -164,6 +171,14 @@ Route::middleware(['auth', 'role.client'])->prefix('client')->name('client.')->g
     Route::get('/profile', [\App\Http\Controllers\Client\ProfileController::class, 'index'])->name('client.profile');
 });
 
+// Google / Social OAuth
+Route::get('/auth/{provider}', [\App\Http\Controllers\Auth\SocialLoginController::class, 'redirect'])
+    ->middleware('guest')
+    ->name('auth.social.redirect');
+Route::get('/auth/{provider}/callback', [\App\Http\Controllers\Auth\SocialLoginController::class, 'callback'])
+    ->middleware('guest')
+    ->name('auth.social.callback');
+
 Route::get('/register/selection', function () {
     return Inertia::render('auth/register-selection');
 })->name('register.selection');
@@ -195,6 +210,7 @@ Route::get('/artstream/search', [ArtStreamController::class, 'search'])->name('a
 // Favorites routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/tracks/{track}/favorite', [\App\Http\Controllers\FavoriteController::class, 'toggle'])->name('tracks.favorite');
+    Route::post('/albums/{album}/favorite', [\App\Http\Controllers\FavoriteController::class, 'toggleAlbum'])->name('albums.favorite');
     Route::post('/tracks/{track}/comments', [\App\Http\Controllers\TrackCommentController::class, 'store'])->name('tracks.comments.store');
     Route::get('/favorites', [\App\Http\Controllers\FavoriteController::class, 'index'])->name('favorites.index');
 });

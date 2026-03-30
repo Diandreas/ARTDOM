@@ -92,17 +92,6 @@ export default function ArtistDashboard({ stats, services, albums, topAlbum, rec
                                 <p className="text-muted-foreground text-xs md:text-sm mt-0.5">
                                     {(artistProfile.categories || []).join(' • ')}
                                 </p>
-                                {artistProfile.rating > 0 && (
-                                    <div className="flex items-center gap-2 mt-1 text-xs md:text-sm">
-                                        <div className="flex items-center gap-1 text-primary">
-                                            <Star className="w-3 h-3 md:w-4 md:h-4 fill-current" />
-                                            <span className="font-medium">{artistProfile.rating.toFixed(1)}</span>
-                                        </div>
-                                        <span className="text-muted-foreground">
-                                            ({artistProfile.total_reviews} avis)
-                                        </span>
-                                    </div>
-                                )}
                             </div>
                             {/* Mobile: icon-only buttons in a row */}
                             <div className="flex gap-2 md:gap-3">

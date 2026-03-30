@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Banknote, BarChart3, Database, LogOut, ShieldCheck, ShoppingCart, Ticket, UserCheck, Users } from 'lucide-react';
+import { Banknote, BarChart3, Database, Images, LogOut, ShieldCheck, ShoppingCart, Ticket, UserCheck, Users } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import MiniPlayer from '@/components/Player/MiniPlayer';
 import { Badge } from '@/components/ui/badge';
@@ -44,6 +44,11 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
             label: 'Stats financieres',
             href: '/admin/financial-overview',
             icon: Banknote,
+        },
+        {
+            label: 'Carousel accueil',
+            href: '/admin/carousel',
+            icon: Images,
         },
         ...(currentRole === 'super_admin'
             ? [

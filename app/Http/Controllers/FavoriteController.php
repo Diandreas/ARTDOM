@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use App\Models\Track;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -60,6 +62,23 @@ class FavoriteController extends Controller
 
         return inertia('ArtStream/favorites', [
             'tracks' => $favoriteTracks,
+        ]);
+    }
+
+    public function toggleAlbum(Request $request, Album $album): JsonResponse
+    {
+        $user = $request->user();
+
+        $isFavorited = $user->favoriteAlbums()->where('album_id', $album->id)->exists();
+
+        if ($isFavorited) {
+            $user->favoriteAlbums()->detach($album->id);
+        } else {
+            $user->favoriteAlbums()->attach($album->id);
+        }
+
+        return response()->json([
+            'is_favorited' => ! $isFavorited,
         ]);
     }
 }

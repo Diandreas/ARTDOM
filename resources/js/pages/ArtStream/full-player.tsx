@@ -1,6 +1,6 @@
 
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, Heart, ListMusic, Share2, Volume2, VolumeX } from 'lucide-react';
+import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, Heart, ListMusic, Share2, Volume2, VolumeX, MessageCircle } from 'lucide-react';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
@@ -234,18 +234,14 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
 
             {/* Header */}
             <div className="p-4 flex justify-between items-center">
-                <Button variant="ghost" size="icon" asChild>
-                    <Link href="/artstream">
-                        <ChevronDown className="w-6 h-6" />
-                    </Link>
+                <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
+                    <ChevronDown className="w-6 h-6" />
                 </Button>
                 <div className="text-center">
                     <span className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Lecture en cours</span>
                     <p className="text-sm font-semibold">{displayTrack.album || 'Album'}</p>
                 </div>
-                <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="w-6 h-6" />
-                </Button>
+                <div className="w-10" />
             </div>
 
             {/* Main Content */}
@@ -275,6 +271,11 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                     {/* Gradient overlay for visualizer readability */}
                     <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent rounded-b-2xl" />
                 </div>
+
+                {/* Comments Ticker */}
+                {displayTrack.comments && displayTrack.comments.length > 0 && (
+                    <CommentsTicker comments={displayTrack.comments} />
+                )}
 
                 {/* Track Info */}
                 <div className="w-full flex justify-between items-center mb-2">
@@ -386,7 +387,7 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                     )}
                     {displayTrack && (
                         <AddToPlaylistDialog
-                            trackId={parseInt(displayTrack.id)}
+                            trackId={displayTrack.id}
                             trackTitle={displayTrack.title}
                             trigger={
                                 <Button variant="ghost" size="icon" className="text-muted-foreground">
@@ -402,23 +403,39 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
     );
 }
 
-function MoreHorizontal({ className }: { className?: string }) {
+function CommentsTicker({ comments }: { comments: any[] }) {
+    const tickerRef = useRef<HTMLDivElement>(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [visible, setVisible] = useState(true);
+
+    useEffect(() => {
+        if (comments.length === 0) return;
+        const interval = setInterval(() => {
+            setVisible(false);
+            setTimeout(() => {
+                setCurrentIndex((prev) => (prev + 1) % comments.length);
+                setVisible(true);
+            }, 400);
+        }, 4000);
+        return () => clearInterval(interval);
+    }, [comments.length]);
+
+    const comment = comments[currentIndex];
+    if (!comment) return null;
+
     return (
-        <svg
-            className={className}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        <div
+            ref={tickerRef}
+            className="w-full flex items-center gap-2 mb-3 px-2 py-2 rounded-xl bg-black/20 backdrop-blur-sm overflow-hidden"
         >
-            <circle cx="12" cy="12" r="1" />
-            <circle cx="19" cy="12" r="1" />
-            <circle cx="5" cy="12" r="1" />
-        </svg>
-    )
+            <MessageCircle className="w-3.5 h-3.5 text-primary shrink-0" />
+            <div
+                className="flex-1 overflow-hidden transition-opacity duration-400"
+                style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease' }}
+            >
+                <span className="text-xs font-semibold text-primary mr-1.5">{comment.user?.name}</span>
+                <span className="text-xs text-foreground/80 truncate">{comment.content}</span>
+            </div>
+        </div>
+    );
 }

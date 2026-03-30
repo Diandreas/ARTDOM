@@ -1,12 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Play, Heart, MoreHorizontal, Shuffle, Clock, TrendingUp, ListMusic, Search } from 'lucide-react';
+import { Play, Heart, Clock, TrendingUp, ListMusic, Search, Flame, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import AddToPlaylistDialog from '@/components/Player/AddToPlaylistDialog';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAudio, type Track as AudioTrack } from '@/contexts/AudioContext';
 import MainLayout from '@/layouts/MainLayout';
 
@@ -51,8 +46,15 @@ interface MusicHubProps {
     genres: string[];
 }
 
+const GENRE_EMOJIS: Record<string, string> = {
+    afrobeat: '🥁', 'coupé-décalé': '💃', makossa: '🎷', rumba: '🎸',
+    highlife: '✨', gospel: '🙌', 'hip-hop': '🎤', 'r&b': '🎵', jazz: '🎺',
+};
+
 export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genres }: MusicHubProps) {
     const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+    const [activeTab, setActiveTab] = useState<'albums' | 'recent' | 'tracks'>('albums');
+    const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
     const { setQueue, playTrack } = useAudio();
 
     const formatDuration = (seconds: number) => {
@@ -62,8 +64,8 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
     };
 
     const formatPlays = (plays: number) => {
-        if (plays >= 1000000) return `${(plays / 1000000).toFixed(1)}M`;
-        if (plays >= 1000) return `${(plays / 1000).toFixed(1)}K`;
+        if (plays >= 1_000_000) return `${(plays / 1_000_000).toFixed(1)}M`;
+        if (plays >= 1_000) return `${(plays / 1_000).toFixed(1)}K`;
         return plays.toString();
     };
 
@@ -79,86 +81,102 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
     });
 
     const handlePlayTrack = (track: Track, allTracks?: Track[]) => {
-        const audioTrack = convertToAudioTrack(track);
-
         if (allTracks && allTracks.length > 0) {
-            // Set up queue with all tracks
-            const audioTracks = allTracks.map(convertToAudioTrack);
-            const trackIndex = allTracks.findIndex(t => t.id === track.id);
-            setQueue(audioTracks, trackIndex);
+            setQueue(allTracks.map(convertToAudioTrack), allTracks.findIndex(t => t.id === track.id));
         } else {
-            // Just play this single track
-            playTrack(audioTrack);
+            playTrack(convertToAudioTrack(track));
         }
-
-        // Navigate to full player
         router.visit('/artstream/player');
     };
 
-    const handlePlayAlbum = (albumId: string) => {
-        // Navigate to album view which will handle playback
-        router.visit(`/artstream/album/${albumId}`);
-    };
+    const handlePlayAlbum = (albumId: string) => router.visit(`/artstream/album/${albumId}`);
 
     const featuredAlbum = featuredAlbums[0];
+    const filteredFeatured = featuredAlbums.filter(a => !selectedGenre || a.genre === selectedGenre);
+    const filteredRecent = recentAlbums.filter(a => !selectedGenre || a.genre === selectedGenre);
 
     return (
         <MainLayout>
-            <Head title="ArtStream - Hub Musique" />
+            <Head title="ArtStream — Streaming Africa" />
 
-            <div className="pb-24 md:pb-6">
-                {/* Hero Section - Featured Album */}
+            <div className="min-h-screen bg-background text-foreground pb-28 md:pb-8">
+
+                {/* ── KENTE IDENTITY STRIP ── */}
+                <div
+                    aria-hidden="true"
+                    className="h-1 w-full"
+                    style={{
+                        background: 'repeating-linear-gradient(90deg,var(--color-primary) 0,var(--color-primary) 12px,transparent 12px,transparent 16px,#c0392b 16px,#c0392b 28px,transparent 28px,transparent 32px,#27ae60 32px,#27ae60 44px,transparent 44px,transparent 48px)',
+                    }}
+                />
+
+                {/* ── HERO ── */}
                 {featuredAlbum && (
-                    <div className="relative bg-gradient-earth overflow-hidden border-b border-border/40">
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background"></div>
-                        <div className="container max-w-7xl mx-auto px-4 py-12 md:py-16">
-                            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8 md:gap-12">
-                                <div className="w-48 h-48 md:w-64 md:h-64 rounded-lg overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-300">
-                                    <img
-                                        src={featuredAlbum.cover_url}
-                                        alt={featuredAlbum.title}
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                                <div className="text-center md:text-left space-y-4 flex-1">
-                                    <Badge className="bg-primary text-primary-foreground">
-                                        <TrendingUp className="w-3 h-3 mr-1" />
-                                        Album le plus écouté
-                                    </Badge>
-                                    <h1 className="text-4xl md:text-6xl font-black font-heading text-foreground">
+                    <div className="relative overflow-hidden min-h-[440px] md:min-h-[520px] flex items-end">
+                        {/* Blurred album art background */}
+                        <div
+                            aria-hidden="true"
+                            className="absolute inset-0 scale-110"
+                            style={{
+                                backgroundImage: `url(${featuredAlbum.cover_url})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                filter: 'blur(40px) saturate(1.2)',
+                                opacity: 0.25,
+                            }}
+                        />
+                        {/* Gradient overlay — adapts to light/dark */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/60 to-background" />
+
+                        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-14">
+                            <div className="flex flex-col md:flex-row items-end gap-6 md:gap-10">
+                                {/* Album art */}
+                                <button
+                                    onClick={() => handlePlayAlbum(featuredAlbum.id)}
+                                    className="shrink-0 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-primary/20 hover:scale-[1.02] transition-transform duration-300"
+                                    style={{ width: 200, height: 200 }}
+                                >
+                                    <img src={featuredAlbum.cover_url} alt={featuredAlbum.title} className="w-full h-full object-cover" />
+                                </button>
+
+                                {/* Info */}
+                                <div className="flex-1 min-w-0 space-y-3">
+                                    <span className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-primary">
+                                        <Flame size={11} />
+                                        Album du moment
+                                    </span>
+
+                                    <h1 className="text-3xl md:text-5xl font-black tracking-tight text-foreground leading-none">
                                         {featuredAlbum.title}
                                     </h1>
-                                    <p className="text-xl text-muted-foreground">
-                                        {featuredAlbum.artist.stage_name}
-                                    </p>
-                                    <div className="flex flex-wrap gap-3 text-sm text-muted-foreground justify-center md:justify-start">
-                                        <span className="flex items-center gap-1">
-                                            <Badge variant="outline">{featuredAlbum.genre}</Badge>
+                                    <p className="text-lg text-muted-foreground font-medium">{featuredAlbum.artist.stage_name}</p>
+
+                                    <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                                        <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-semibold text-xs uppercase tracking-wide">
+                                            {featuredAlbum.genre}
                                         </span>
-                                        <span>•</span>
                                         <span>{featuredAlbum.year}</span>
-                                        <span>•</span>
-                                        <span>{featuredAlbum.tracks_count} titres</span>
-                                        {featuredAlbum.total_plays && featuredAlbum.total_plays > 0 && (
-                                            <>
-                                                <span>•</span>
-                                                <span>{formatPlays(featuredAlbum.total_plays)} écoutes</span>
-                                            </>
+                                        {featuredAlbum.tracks_count && <><span>·</span><span>{featuredAlbum.tracks_count} titres</span></>}
+                                        {(featuredAlbum.total_plays ?? 0) > 0 && (
+                                            <><span>·</span>
+                                            <span className="flex items-center gap-1 text-primary font-semibold">
+                                                <TrendingUp size={12} />{formatPlays(featuredAlbum.total_plays!)} écoutes
+                                            </span></>
                                         )}
                                     </div>
-                                    <div className="flex gap-4 justify-center md:justify-start pt-2">
-                                        <Button
-                                            size="lg"
+
+                                    <div className="flex gap-3 pt-1">
+                                        <button
                                             onClick={() => handlePlayAlbum(featuredAlbum.id)}
-                                            className="rounded-full px-8 gap-2 bg-primary hover:bg-primary/90"
+                                            className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-primary text-primary-foreground font-bold text-sm shadow-lg shadow-primary/30 hover:bg-primary/90 hover:shadow-primary/50 hover:scale-[1.02] transition-all duration-200"
                                         >
-                                            <Play className="w-5 h-5 fill-current" />
+                                            <Play size={15} fill="currentColor" />
                                             Écouter
-                                        </Button>
-                                        <Button size="lg" variant="outline" className="rounded-full px-8 gap-2">
-                                            <Heart className="w-5 h-5" />
+                                        </button>
+                                        <button className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-border bg-background/50 backdrop-blur text-foreground font-medium text-sm hover:bg-muted transition-colors duration-200">
+                                            <Heart size={15} />
                                             J'aime
-                                        </Button>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -166,230 +184,269 @@ export default function MusicHub({ featuredAlbums, recentAlbums, topTracks, genr
                     </div>
                 )}
 
-                {/* Quick Actions Bar */}
-                <section className="py-4 px-4 bg-muted/30 border-b border-border/40">
-                    <div className="container max-w-7xl mx-auto">
-                        <div className="flex gap-3 justify-center flex-wrap">
-                            <Button variant="outline" size="sm" asChild className="gap-2">
-                                <Link href="/artstream/search">
-                                    <Search className="w-4 h-4" />
-                                    Rechercher
-                                </Link>
-                            </Button>
-                            <Button variant="outline" size="sm" asChild className="gap-2">
-                                <Link href="/playlists">
-                                    <ListMusic className="w-4 h-4" />
-                                    Mes Playlists
-                                </Link>
-                            </Button>
-                            <Button variant="outline" size="sm" asChild className="gap-2">
-                                <Link href="/favorites">
-                                    <Heart className="w-4 h-4" />
-                                    Mes Favoris
-                                </Link>
-                            </Button>
-                        </div>
-                    </div>
-                </section>
+                <div className="max-w-7xl mx-auto px-4 md:px-6 mt-6 space-y-8">
 
-                {/* Genres Filter */}
-                <section className="py-6 px-4 bg-muted/30 border-b border-border/40">
-                    <div className="container max-w-7xl mx-auto">
-                        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-                            <Button
-                                variant={selectedGenre === null ? 'default' : 'outline'}
-                                size="sm"
-                                onClick={() => setSelectedGenre(null)}
-                                className="rounded-full whitespace-nowrap"
+                    {/* ── QUICK LINKS ── */}
+                    <div className="flex gap-2.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
+                        {[
+                            { href: '/artstream/search', icon: <Search size={14} />, label: 'Rechercher' },
+                            { href: '/playlists', icon: <ListMusic size={14} />, label: 'Mes Playlists' },
+                            { href: '/favorites', icon: <Heart size={14} />, label: 'Mes Favoris' },
+                        ].map(({ href, icon, label }) => (
+                            <Link
+                                key={href}
+                                href={href}
+                                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card text-muted-foreground text-sm font-medium whitespace-nowrap hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all duration-150"
                             >
-                                Tous les genres
-                            </Button>
-                            {genres.map((genre) => (
-                                <Button
-                                    key={genre}
-                                    variant={selectedGenre === genre ? 'default' : 'outline'}
-                                    size="sm"
-                                    onClick={() => setSelectedGenre(genre)}
-                                    className="rounded-full whitespace-nowrap capitalize"
-                                >
-                                    {genre}
-                                </Button>
+                                {icon}{label}
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* ── GENRE CHIPS ── */}
+                    <div className="flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
+                        <GenreChip active={selectedGenre === null} onClick={() => setSelectedGenre(null)}>
+                            Tout
+                        </GenreChip>
+                        {genres.map(genre => (
+                            <GenreChip key={genre} active={selectedGenre === genre} onClick={() => setSelectedGenre(genre)}>
+                                {GENRE_EMOJIS[genre] && <span className="mr-1">{GENRE_EMOJIS[genre]}</span>}
+                                <span className="capitalize">{genre}</span>
+                            </GenreChip>
+                        ))}
+                    </div>
+
+                    {/* ── TABS ── */}
+                    <div className="flex gap-1 p-1 rounded-xl bg-muted w-fit">
+                        {(['albums', 'recent', 'tracks'] as const).map(tab => (
+                            <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab)}
+                                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                                    activeTab === tab
+                                        ? 'bg-background text-foreground shadow-sm'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                }`}
+                            >
+                                {tab === 'albums' ? 'Albums populaires' : tab === 'recent' ? 'Nouveautés' : 'Top Titres'}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* ── ALBUMS POPULAIRES ── */}
+                    {activeTab === 'albums' && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                            {filteredFeatured.map(album => (
+                                <AlbumCard key={album.id} album={album} onPlay={handlePlayAlbum} formatPlays={formatPlays} />
                             ))}
                         </div>
-                    </div>
-                </section>
+                    )}
 
-                {/* Tabs Section */}
-                <section className="py-8 px-4">
-                    <div className="container max-w-7xl mx-auto">
-                        <Tabs defaultValue="albums" className="w-full">
-                            <TabsList className="mb-6">
-                                <TabsTrigger value="albums">Albums populaires</TabsTrigger>
-                                <TabsTrigger value="recent">Nouveautés</TabsTrigger>
-                                <TabsTrigger value="tracks">Top Titres</TabsTrigger>
-                            </TabsList>
+                    {/* ── NOUVEAUTÉS ── */}
+                    {activeTab === 'recent' && (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                            {filteredRecent.map(album => (
+                                <AlbumCard key={album.id} album={album} onPlay={handlePlayAlbum} formatPlays={formatPlays} compact />
+                            ))}
+                        </div>
+                    )}
 
-                            {/* Featured Albums Tab */}
-                            <TabsContent value="albums" className="mt-0">
-                                <Carousel
-                                    opts={{
-                                        align: 'start',
-                                        loop: true,
-                                    }}
-                                    className="w-full"
+                    {/* ── TOP TITRES ── */}
+                    {activeTab === 'tracks' && (
+                        <div className="rounded-2xl border border-border bg-card overflow-hidden">
+                            {/* Table header */}
+                            <div className="grid items-center gap-4 px-5 py-3 border-b border-border text-[11px] font-bold tracking-widest uppercase text-muted-foreground"
+                                style={{ gridTemplateColumns: '32px 1fr 80px 60px 36px' }}>
+                                <span className="text-center">#</span>
+                                <span>Titre</span>
+                                <span className="text-right">Écoutes</span>
+                                <span className="text-right">Durée</span>
+                                <span />
+                            </div>
+                            {topTracks.map((track, index) => (
+                                <TrackRow
+                                    key={track.id}
+                                    track={track}
+                                    index={index}
+                                    hovered={hoveredTrack === track.id}
+                                    onHover={setHoveredTrack}
+                                    onPlay={() => handlePlayTrack(track, topTracks)}
+                                    formatPlays={formatPlays}
+                                    formatDuration={formatDuration}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {/* ── TOP 5 TEASER (visible on albums/recent tabs) ── */}
+                    {activeTab !== 'tracks' && topTracks.length > 0 && (
+                        <div>
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-black tracking-tight text-foreground flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_var(--color-primary)]" />
+                                    En ce moment
+                                </h2>
+                                <button
+                                    onClick={() => setActiveTab('tracks')}
+                                    className="flex items-center gap-1 text-sm text-primary font-semibold hover:underline underline-offset-2"
                                 >
-                                    <CarouselContent>
-                                        {featuredAlbums
-                                            .filter((album) => !selectedGenre || album.genre === selectedGenre)
-                                            .map((album) => (
-                                                <CarouselItem key={album.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                                                    <div className="group cursor-pointer space-y-3">
-                                                        <div className="aspect-square rounded-lg overflow-hidden relative bg-muted">
-                                                            <img
-                                                                src={album.cover_url}
-                                                                alt={album.title}
-                                                                className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"
-                                                            />
-                                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                                <Button
-                                                                    size="icon"
-                                                                    onClick={() => handlePlayAlbum(album.id)}
-                                                                    className="w-14 h-14 rounded-full bg-primary hover:bg-primary/90 scale-0 group-hover:scale-100 transition-transform"
-                                                                >
-                                                                    <Play className="w-6 h-6 text-primary-foreground fill-current ml-0.5" />
-                                                                </Button>
-                                                            </div>
-                                                            {album.total_plays && album.total_plays > 0 && (
-                                                                <Badge className="absolute top-3 right-3 bg-black/70 text-white border-none">
-                                                                    {formatPlays(album.total_plays)} écoutes
-                                                                </Badge>
-                                                            )}
-                                                        </div>
-                                                        <div>
-                                                            <h3 className="font-semibold truncate text-foreground">
-                                                                {album.title}
-                                                            </h3>
-                                                            <p className="text-sm text-muted-foreground truncate">
-                                                                {album.artist.stage_name}
-                                                            </p>
-                                                            <div className="flex items-center justify-between mt-1">
-                                                                <Badge variant="outline" className="text-xs capitalize">
-                                                                    {album.genre}
-                                                                </Badge>
-                                                                <span className="text-xs text-muted-foreground">
-                                                                    {album.year}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </CarouselItem>
-                                            ))}
-                                    </CarouselContent>
-                                    <CarouselPrevious className="hidden md:flex -left-4 bg-background border-border hover:bg-muted" />
-                                    <CarouselNext className="hidden md:flex -right-4 bg-background border-border hover:bg-muted" />
-                                </Carousel>
-                            </TabsContent>
+                                    Tout voir <ChevronRight size={14} />
+                                </button>
+                            </div>
+                            <div className="rounded-2xl border border-border bg-card overflow-hidden divide-y divide-border">
+                                {topTracks.slice(0, 5).map((track, index) => (
+                                    <TrackRow
+                                        key={track.id}
+                                        track={track}
+                                        index={index}
+                                        hovered={hoveredTrack === track.id}
+                                        onHover={setHoveredTrack}
+                                        onPlay={() => handlePlayTrack(track, topTracks)}
+                                        formatPlays={formatPlays}
+                                        formatDuration={formatDuration}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
-                            {/* Recent Albums Tab */}
-                            <TabsContent value="recent" className="mt-0">
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-                                    {recentAlbums
-                                        .filter((album) => !selectedGenre || album.genre === selectedGenre)
-                                        .map((album) => (
-                                            <div key={album.id} className="group cursor-pointer space-y-3">
-                                                <div className="aspect-square rounded-lg overflow-hidden relative bg-muted">
-                                                    <img
-                                                        src={album.cover_url}
-                                                        alt={album.title}
-                                                        className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-300"
-                                                    />
-                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                        <Button
-                                                            size="icon"
-                                                            onClick={() => handlePlayAlbum(album.id)}
-                                                            className="rounded-full bg-primary hover:bg-primary/90"
-                                                        >
-                                                            <Play className="w-5 h-5 fill-current ml-0.5" />
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <h3 className="font-semibold truncate text-sm text-foreground">
-                                                        {album.title}
-                                                    </h3>
-                                                    <p className="text-xs text-muted-foreground truncate">
-                                                        {album.artist.stage_name}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                </div>
-                            </TabsContent>
-
-                            {/* Top Tracks Tab */}
-                            <TabsContent value="tracks" className="mt-0">
-                                <div className="space-y-2">
-                                    {topTracks.map((track, index) => (
-                                        <div
-                                            key={track.id}
-                                            onClick={() => handlePlayTrack(track, topTracks)}
-                                            className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
-                                        >
-                                            <span className="w-8 text-center text-muted-foreground font-medium">
-                                                {index + 1}
-                                            </span>
-                                            <img
-                                                src={track.album.cover_url}
-                                                alt={track.album.title}
-                                                className="w-12 h-12 rounded object-cover"
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="font-semibold truncate text-foreground">{track.title}</h4>
-                                                <p className="text-sm text-muted-foreground truncate">
-                                                    {track.album.artist.stage_name}
-                                                </p>
-                                            </div>
-                                            <div className="hidden md:block text-sm text-muted-foreground">
-                                                {track.album.title}
-                                            </div>
-                                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                                <TrendingUp className="w-4 h-4" />
-                                                <span>{formatPlays(track.plays)}</span>
-                                            </div>
-                                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                                <Clock className="w-4 h-4" />
-                                                <span>{formatDuration(track.duration_seconds)}</span>
-                                            </div>
-                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="h-8 w-8"
-                                                    onClick={() => handlePlayTrack(track, topTracks)}
-                                                >
-                                                    <Play className="w-4 h-4 fill-current" />
-                                                </Button>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                    <Heart className="w-4 h-4" />
-                                                </Button>
-                                                <AddToPlaylistDialog
-                                                    trackId={parseInt(track.id)}
-                                                    trackTitle={track.title}
-                                                    trigger={
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                            <ListMusic className="w-4 h-4" />
-                                                        </Button>
-                                                    }
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-                    </div>
-                </section>
+                </div>
             </div>
         </MainLayout>
+    );
+}
+
+/* ── Sub-components ── */
+
+function GenreChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+    return (
+        <button
+            onClick={onClick}
+            className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border whitespace-nowrap transition-all duration-200 ${
+                active
+                    ? 'bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20'
+                    : 'bg-card text-muted-foreground border-border hover:border-primary/50 hover:text-primary hover:bg-primary/5'
+            }`}
+        >
+            {children}
+        </button>
+    );
+}
+
+function AlbumCard({ album, onPlay, formatPlays, compact = false }: {
+    album: Album;
+    onPlay: (id: string) => void;
+    formatPlays: (n: number) => string;
+    compact?: boolean;
+}) {
+    return (
+        <div
+            className="group cursor-pointer"
+            onClick={() => onPlay(album.id)}
+        >
+            <div className="relative aspect-square rounded-xl overflow-hidden bg-muted ring-1 ring-border group-hover:ring-primary/40 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-primary/10 group-hover:-translate-y-1">
+                <img
+                    src={album.cover_url}
+                    alt={album.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-xl shadow-primary/40 scale-75 group-hover:scale-100 transition-transform duration-300">
+                        <Play size={18} fill="currentColor" className="text-primary-foreground ml-0.5" />
+                    </div>
+                </div>
+                {/* Plays badge */}
+                {(album.total_plays ?? 0) > 0 && !compact && (
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur text-white text-[10px] font-bold">
+                        {formatPlays(album.total_plays!)}
+                    </div>
+                )}
+            </div>
+            <div className="mt-2.5 space-y-0.5 px-0.5">
+                <p className="font-semibold text-sm text-foreground truncate leading-tight">{album.title}</p>
+                <p className="text-xs text-muted-foreground truncate">{album.artist.stage_name}</p>
+                {!compact && (
+                    <p className="text-[10px] font-bold text-primary/70 uppercase tracking-wide">{album.genre}</p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function TrackRow({ track, index, hovered, onHover, onPlay, formatPlays, formatDuration }: {
+    track: Track;
+    index: number;
+    hovered: boolean;
+    onHover: (id: string | null) => void;
+    onPlay: () => void;
+    formatPlays: (n: number) => string;
+    formatDuration: (s: number) => string;
+}) {
+    return (
+        <div
+            className={`grid items-center gap-4 px-5 py-3 cursor-pointer transition-colors duration-150 ${hovered ? 'bg-muted/60' : 'hover:bg-muted/40'}`}
+            style={{ gridTemplateColumns: '32px 1fr 80px 60px 36px' }}
+            onMouseEnter={() => onHover(track.id)}
+            onMouseLeave={() => onHover(null)}
+            onClick={onPlay}
+        >
+            {/* Rank / play icon */}
+            <div className="relative w-6 h-6 flex items-center justify-center">
+                <span className={`absolute text-sm font-bold text-muted-foreground transition-opacity duration-150 ${hovered ? 'opacity-0' : 'opacity-100'}`}>
+                    {index + 1}
+                </span>
+                <Play
+                    size={14}
+                    fill="currentColor"
+                    className={`absolute text-primary transition-opacity duration-150 ${hovered ? 'opacity-100' : 'opacity-0'}`}
+                />
+            </div>
+
+            {/* Track info */}
+            <div className="flex items-center gap-3 min-w-0">
+                <img
+                    src={track.album.cover_url}
+                    alt={track.album.title}
+                    className="w-10 h-10 rounded-lg object-cover shrink-0"
+                />
+                <div className="min-w-0">
+                    <p className="font-semibold text-sm text-foreground truncate">{track.title}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                        {track.album.artist.stage_name}
+                        <span className="mx-1.5 opacity-40">·</span>
+                        {track.album.title}
+                    </p>
+                </div>
+            </div>
+
+            {/* Plays */}
+            <div className="flex items-center justify-end gap-1.5 text-sm text-muted-foreground">
+                <TrendingUp size={11} className="text-primary opacity-70 shrink-0" />
+                {formatPlays(track.plays)}
+            </div>
+
+            {/* Duration */}
+            <div className="flex items-center justify-end gap-1 text-xs text-muted-foreground">
+                <Clock size={10} className="shrink-0" />
+                {formatDuration(track.duration_seconds)}
+            </div>
+
+            {/* Actions */}
+            <div
+                className={`flex justify-end transition-opacity duration-150 ${hovered ? 'opacity-100' : 'opacity-0'}`}
+                onClick={e => e.stopPropagation()}
+            >
+                <AddToPlaylistDialog
+                    trackId={track.id}
+                    trackTitle={track.title}
+                    trigger={
+                        <button className="w-7 h-7 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary flex items-center justify-center text-muted-foreground transition-colors">
+                            <ListMusic size={13} />
+                        </button>
+                    }
+                />
+            </div>
+        </div>
     );
 }
