@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeMail;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -78,6 +80,9 @@ class SocialLoginController extends Controller
                     'first_name' => $socialUser->getName() ?? 'Utilisateur',
                     'last_name' => '',
                 ]);
+
+                // Email de bienvenue pour les nouveaux inscrits via Google
+                Mail::to($user->email)->queue(new WelcomeMail($user));
 
                 Auth::login($user, true);
             }

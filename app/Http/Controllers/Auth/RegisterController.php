@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Mail\WelcomeMail;
 use App\Models\ArtistProfile;
 use App\Models\ClientProfile;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -97,6 +99,9 @@ class RegisterController extends Controller
                 'verification_status' => 'pending', // En attente de validation admin
             ]);
         }
+
+        // Email de bienvenue
+        Mail::to($user->email)->queue(new WelcomeMail($user));
 
         // Envoi de l'email de vérification
         $user->sendEmailVerificationNotification();
