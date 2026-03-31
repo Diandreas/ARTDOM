@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\Service;
+use App\Notifications\NewReservationNotification;
 use App\Services\AvailabilityService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -230,6 +231,9 @@ class BookingController extends Controller
         ]);
 
         $wallet->addPending((float) $request->total_amount, 'reservation', $reservation->id);
+
+        // Notifier l'artiste
+        $reservation->artist->notify(new NewReservationNotification($reservation->load('service', 'client.clientProfile')));
 
         return redirect()->route('client.reservations.show', $reservation->id)
             ->with('success', 'Votre réservation a été envoyée avec succès !');

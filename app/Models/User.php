@@ -140,6 +140,18 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'artist_followers', 'artist_id', 'client_id')
+            ->withTimestamps();
+    }
+
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'artist_followers', 'client_id', 'artist_id')
+            ->withTimestamps();
+    }
+
     /**
      * Relation : Un User peut avoir PLUSIEURS Playlists
      * Relation 1-N (hasMany) : Un utilisateur peut avoir plusieurs playlists

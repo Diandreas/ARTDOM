@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Artist;
 use App\Enums\ReservationStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
+use App\Notifications\ReservationConfirmedNotification;
+use App\Notifications\ReservationDeclinedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -103,7 +105,7 @@ class OrderController extends Controller
             'status' => ReservationStatus::Confirmed,
         ]);
 
-        // TODO: Envoyer une notification au client
+        $reservation->client->notify(new ReservationConfirmedNotification($reservation));
 
         return back()->with('message', 'Réservation acceptée. Le client a été notifié.');
     }
@@ -139,10 +141,7 @@ class OrderController extends Controller
             'cancel_reason' => $request->reason ?? 'Refusée par l\'artiste',
         ]);
 
-        // Libérer la disponibilité
-        // TODO: Libérer la disponibilité
-
-        // TODO: Rembourser le client si paiement effectué
+        $reservation->client->notify(new ReservationDeclinedNotification($reservation, $request->reason));
 
         // Annuler les fonds en attente dans le portefeuille
         $wallet = \App\Models\Wallet::where('artist_id', $reservation->artist_id)->first();

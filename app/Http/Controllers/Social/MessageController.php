@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Social;
 
+use App\Events\MessageSent;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Notifications\NewMessageNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,8 +73,14 @@ class MessageController extends Controller
             ->where('users.id', '!=', $user->id)
             ->increment('unread_count');
 
-        // TODO: Broadcast via Reverb pour temps réel
-        // broadcast(new MessageSent($message))->toOthers();
+        // Broadcast via Reverb pour temps réel
+        broadcast(new MessageSent($message))->toOthers();
+
+        // Notifier les autres participants (notification persistante)
+        $otherParticipants = $conversation->participants()->where('users.id', '!=', $user->id)->get();
+        foreach ($otherParticipants as $participant) {
+            $participant->notify(new NewMessageNotification($message));
+        }
 
         return back()->with('message', 'Message envoyé.');
     }

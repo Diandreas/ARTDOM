@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Artist;
 use App\Http\Controllers\Controller;
 use App\Models\Album;
 use App\Models\Track;
+use App\Notifications\NewAlbumReleasedNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -234,6 +236,12 @@ class AlbumController extends Controller
         }
 
         $album->update(['published_at' => now()]);
+
+        // Notifier les followers de l'artiste
+        $followers = $album->artist->followers()->get();
+        if ($followers->isNotEmpty()) {
+            Notification::send($followers, new NewAlbumReleasedNotification($album->load('artist.artistProfile')));
+        }
 
         return back()->with('message', 'Album publié avec succès.');
     }

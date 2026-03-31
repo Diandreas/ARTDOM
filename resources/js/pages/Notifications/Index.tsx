@@ -1,7 +1,7 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { Bell, Check, Trash2, MessageCircle, CalendarDays, Info } from 'lucide-react';
+import { Bell, Check, Trash2, MessageCircle, CalendarDays, Info, Music, CheckCircle, XCircle, ShieldCheck, Mic } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -38,16 +38,40 @@ export default function NotificationsIndex({ auth, notifications, unreadCount }:
     };
 
     const getIcon = (type: string) => {
-        if (type === 'new_message') return <MessageCircle className="w-5 h-5 text-blue-500" />;
-        if (type === 'booking') return <CalendarDays className="w-5 h-5 text-emerald-500" />;
-        return <Info className="w-5 h-5 text-primary" />;
+        switch (type) {
+            case 'new_message': return <MessageCircle className="w-5 h-5 text-blue-500" />;
+            case 'new_reservation': return <CalendarDays className="w-5 h-5 text-orange-500" />;
+            case 'reservation_confirmed': return <CheckCircle className="w-5 h-5 text-emerald-500" />;
+            case 'reservation_declined': return <XCircle className="w-5 h-5 text-destructive" />;
+            case 'new_track_comment': return <Mic className="w-5 h-5 text-purple-500" />;
+            case 'new_album_released': return <Music className="w-5 h-5 text-primary" />;
+            case 'artist_validation_approved': return <ShieldCheck className="w-5 h-5 text-emerald-500" />;
+            case 'artist_validation_rejected': return <XCircle className="w-5 h-5 text-destructive" />;
+            default: return <Info className="w-5 h-5 text-primary" />;
+        }
+    };
+
+    const getTitle = (data: any): string => {
+        return data.title ?? {
+            new_message: `Message de ${data.sender_name ?? 'quelqu\'un'}`,
+            new_reservation: 'Nouvelle réservation',
+            reservation_confirmed: 'Réservation confirmée',
+            reservation_declined: 'Réservation refusée',
+            new_track_comment: 'Nouveau commentaire',
+            new_album_released: 'Nouvel album disponible',
+            artist_validation_approved: 'Compte validé',
+            artist_validation_rejected: 'Validation refusée',
+            admin_global_message: 'Message Artemo',
+        }[data.type as string] ?? 'Notification';
+    };
+
+    const getDescription = (data: any): string => {
+        return data.message ?? data.content ?? '';
     };
 
     const getLink = (notification: NotificationData) => {
-        if (notification.data.type === 'new_message' && notification.data.conversation_id) {
-            return `/messages/${notification.data.conversation_id}`;
-        }
-        return "#";
+        return notification.data.action_url
+            ?? (notification.data.conversation_id ? `/messages/${notification.data.conversation_id}` : '#');
     };
 
     return (
@@ -93,14 +117,14 @@ export default function NotificationsIndex({ auth, notifications, unreadCount }:
                                         >
                                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 mb-1">
                                                 <h3 className={`text-base ${!notification.read_at ? 'font-semibold text-foreground' : 'font-medium text-muted-foreground'}`}>
-                                                    {notification.data.type === 'new_message' ? `Nouveau message de ${notification.data.sender_name}` : 'Notification'}
+                                                    {getTitle(notification.data)}
                                                 </h3>
                                                 <span className="text-xs text-muted-foreground whitespace-nowrap">
                                                     {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true, locale: fr })}
                                                 </span>
                                             </div>
                                             <p className={`text-sm ${!notification.read_at ? 'text-foreground/90' : 'text-muted-foreground'}`}>
-                                                {notification.data.content || "Vous avez reçu une nouvelle notification."}
+                                                {getDescription(notification.data) || 'Vous avez reçu une nouvelle notification.'}
                                             </p>
                                         </Link>
                                     </div>

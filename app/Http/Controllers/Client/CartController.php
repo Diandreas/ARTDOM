@@ -8,6 +8,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\Reservation;
+use App\Notifications\NewReservationNotification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -211,6 +212,9 @@ class CartController extends Controller
                 'location_type' => 'home', // TODO: Récupérer depuis customization
                 'qr_code' => 'qr_'.Str::random(10),
             ]);
+
+            // Notifier l'artiste
+            $reservation->artist->notify(new NewReservationNotification($reservation->load('service', 'client.clientProfile')));
 
             $reservations[] = $reservation;
         }

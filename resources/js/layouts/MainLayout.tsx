@@ -49,24 +49,28 @@ export default function MainLayout({ children }: PropsWithChildren) {
             channel.notification((notification: any) => {
                 setUnreadNotifications(prev => prev + 1);
 
-                toast.info(
-                    notification.type === 'new_message'
-                        ? `Nouveau message de ${notification.sender_name}`
-                        : 'Nouvelle notification',
-                    {
-                        description: notification.content || '',
-                        action: {
-                            label: 'Voir',
-                            onClick: () => {
-                                if (notification.type === 'new_message' && notification.conversation_id) {
-                                    window.location.href = `/messages/${notification.conversation_id}`;
-                                } else {
-                                    window.location.href = '/notifications';
-                                }
-                            }
-                        }
-                    }
-                );
+                const titles: Record<string, string> = {
+                    new_message: `Message de ${notification.sender_name ?? 'quelqu\'un'}`,
+                    new_reservation: 'Nouvelle réservation',
+                    reservation_confirmed: 'Réservation confirmée 🎉',
+                    reservation_declined: 'Réservation refusée',
+                    new_track_comment: 'Nouveau commentaire',
+                    new_album_released: 'Nouvel album disponible 🎵',
+                    artist_validation_approved: 'Compte validé ✅',
+                    artist_validation_rejected: 'Validation refusée',
+                    admin_global_message: notification.title ?? 'Message Artemo',
+                };
+
+                const actionUrl = notification.action_url
+                    ?? (notification.conversation_id ? `/messages/${notification.conversation_id}` : '/notifications');
+
+                toast.info(titles[notification.type] ?? notification.title ?? 'Notification', {
+                    description: notification.message ?? notification.content ?? '',
+                    action: {
+                        label: 'Voir',
+                        onClick: () => { window.location.href = actionUrl; },
+                    },
+                });
             });
 
             return () => {
