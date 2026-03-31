@@ -10,9 +10,12 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from '@/components/ui/carousel';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 export default function Welcome() {
+    const { t } = useAppLocale();
+
     const stories = [
         { id: 1, name: "Koffi", image: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?q=80&w=200&auto=format&fit=crop" },
         { id: 2, name: "Awa", image: "https://images.unsplash.com/photo-1529139574466-a302d2d3f9f4?q=80&w=200&auto=format&fit=crop" },
@@ -23,12 +26,12 @@ export default function Welcome() {
     ];
 
     const categories = [
-        { name: "Chant", icon: Mic, color: "bg-red-500" },
-        { name: "Danse", icon: Music, color: "bg-blue-500" },
-        { name: "Peinture", icon: Palette, color: "bg-yellow-500" },
-        { name: "Théâtre", icon: Video, color: "bg-purple-500" },
-        { name: "Instrument", icon: Music, color: "bg-green-500" },
-        { name: "Comedy", icon: Mic, color: "bg-orange-500" },
+        { name: 'Singing', icon: Mic, color: 'bg-red-500' },
+        { name: 'Dance', icon: Music, color: 'bg-blue-500' },
+        { name: 'Painting', icon: Palette, color: 'bg-yellow-500' },
+        { name: 'Theater', icon: Video, color: 'bg-purple-500' },
+        { name: 'Instrumental music', icon: Music, color: 'bg-green-500' },
+        { name: 'Comedy', icon: Mic, color: 'bg-orange-500' },
     ];
 
     const trendingArtists = [
@@ -40,14 +43,14 @@ export default function Welcome() {
 
     return (
         <MainLayout>
-            <Head title="Accueil - ARTEMO" />
+            <Head title={`${t('Home')} - ARTEMO`} />
 
             <div className="flex flex-col gap-8 pb-20">
                 {/* Hero / Stories Section */}
                 <section className="container px-4 md:px-6 py-6">
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                         <span className="bg-primary w-2 h-6 rounded-full inline-block"></span>
-                        Stories
+                        {t('Stories')}
                     </h2>
                     <Carousel className="w-full" opts={{ align: "start", dragFree: true }}>
                         <CarouselContent className="-ml-4">
@@ -78,15 +81,15 @@ export default function Welcome() {
                         <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent -z-10" />
 
                         <div className="flex flex-col gap-4 items-center max-w-lg">
-                            <Badge variant="secondary" className="bg-primary text-primary-foreground hover:bg-primary/90">À la une</Badge>
+                            <Badge variant="secondary" className="bg-primary text-primary-foreground hover:bg-primary/90">{t('Featured')}</Badge>
                             <h1 className="text-3xl md:text-5xl font-bold font-heading text-foreground drop-shadow-md">
-                                Vivez l'émotion <span className="text-primary">Live</span>
+                                {t('Feel the emotion')} <span className="text-primary">{t('Live')}</span>
                             </h1>
                             <p className="text-muted-foreground md:text-lg text-balance">
-                                Réservez vos artistes préférés pour des moments inoubliables.
+                                {t('Book your favorite artists for unforgettable moments.')}
                             </p>
                             <Button size="lg" className="rounded-full font-semibold" asChild>
-                                <Link href="/splash">Découvrir les talents</Link>
+                                <Link href="/splash">{t('Discover talents')}</Link>
                             </Button>
                         </div>
                     </div>
@@ -97,9 +100,9 @@ export default function Welcome() {
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold flex items-center gap-2">
                             <span className="bg-secondary w-2 h-6 rounded-full inline-block"></span>
-                            Catégories
+                            {t('Categories')}
                         </h2>
-                        <Link href="/artists" className="text-sm text-primary hover:underline">Voir tout</Link>
+                        <Link href="/artists" className="text-sm text-primary hover:underline">{t('See all')}</Link>
                     </div>
                     <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
                         {categories.map((category, idx) => (
@@ -107,7 +110,9 @@ export default function Welcome() {
                                 <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${category.color} bg-opacity-10 group-hover:bg-opacity-20 transition-all shadow-sm group-hover:shadow-md border border-border/50`}>
                                     <category.icon className={`w-8 h-8 opacity-80 group-hover:scale-110 transition-transform ${category.color.replace('bg-', 'text-')}`} />
                                 </div>
-                                <span className="text-sm font-medium">{category.name}</span>
+                                <span className="text-sm font-medium">
+                                    {t(category.name)}
+                                </span>
                             </Link>
                         ))}
                     </div>
@@ -118,9 +123,9 @@ export default function Welcome() {
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold flex items-center gap-2">
                             <span className="bg-accent w-2 h-6 rounded-full inline-block"></span>
-                            Artistes Tendances
+                            {t('Trending artists')}
                         </h2>
-                        <Link href="#" className="text-sm text-primary hover:underline">Voir tout</Link>
+                        <Link href="#" className="text-sm text-primary hover:underline">{t('See all')}</Link>
                     </div>
                     <Carousel className="w-full" opts={{ align: "start" }}>
                         <CarouselContent className="-ml-4">
@@ -145,7 +150,7 @@ export default function Welcome() {
                                                 </Badge>
                                             </div>
                                             <div className="flex gap-2 mt-4">
-                                                <Button className="w-full rounded-full" size="sm">Réserver</Button>
+                                                <Button className="w-full rounded-full" size="sm">{t('Book')}</Button>
                                                 <Button variant="outline" size="icon" className="rounded-full shrink-0">
                                                     <Play className="w-4 h-4" />
                                                 </Button>
@@ -167,7 +172,7 @@ export default function Welcome() {
                 <section className="container px-4 md:px-6">
                     <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                         <span className="bg-primary w-2 h-6 rounded-full inline-block"></span>
-                        Nouveautés Musique
+                        {t('New music releases')}
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {[1, 2, 3].map((item) => (
@@ -183,9 +188,15 @@ export default function Welcome() {
                                     </div>
                                 </div>
                                 <div className="p-4 flex flex-col justify-center">
-                                    <h3 className="font-bold">Titre de la chanson {item}</h3>
-                                    <p className="text-sm text-muted-foreground">Artiste Inconnu</p>
-                                    <p className="text-xs text-muted-foreground mt-1">3:45 • Afrobeat</p>
+                                    <h3 className="font-bold">
+                                        {t('Song title')} {item}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('Unknown artist')}
+                                    </p>
+                                    <p className="mt-1 text-xs text-muted-foreground">
+                                        3:45 • Afrobeat
+                                    </p>
                                 </div>
                             </Card>
                         ))}

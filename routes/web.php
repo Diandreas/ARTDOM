@@ -17,10 +17,12 @@ use App\Http\Controllers\ArtistReportController;
 use App\Http\Controllers\ArtStreamController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\Settings\LanguageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::put('/language', [LanguageController::class, 'update'])->name('language.update');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {

@@ -1,63 +1,80 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Banknote, BarChart3, Database, Images, LogOut, ShieldCheck, ShoppingCart, Ticket, UserCheck, Users } from 'lucide-react';
+import {
+    Banknote,
+    BarChart3,
+    Database,
+    Images,
+    LogOut,
+    ShieldCheck,
+    ShoppingCart,
+    Ticket,
+    UserCheck,
+    Users,
+} from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import MiniPlayer from '@/components/Player/MiniPlayer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useAppLocale } from '@/hooks/use-app-locale';
 
 type AdminLayoutProps = PropsWithChildren<{
     title: string;
     subtitle?: string;
 }>;
 
-export default function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
+export default function AdminLayout({
+    children,
+    title,
+    subtitle,
+}: AdminLayoutProps) {
     const { url, props } = usePage<any>();
+    const { t } = useAppLocale();
     const currentRole = props?.auth?.user?.role;
 
     const navItems = [
         {
-            label: 'Dashboard',
+            label: t('Dashboard'),
             href: '/admin/dashboard',
             icon: BarChart3,
         },
         {
-            label: 'Validation artistes',
+            label: t('Artist validation'),
             href: '/admin/artists/pending',
             icon: UserCheck,
         },
         {
-            label: 'Tickets support',
+            label: t('Support tickets'),
             href: '/admin/tickets',
             icon: Ticket,
         },
         {
-            label: 'Utilisateurs',
+            label: t('Users'),
             href: '/admin/users',
             icon: Users,
         },
         {
-            label: 'Volet client',
+            label: t('Client activity'),
             href: '/admin/client-activity',
             icon: ShoppingCart,
         },
         {
-            label: 'Stats financieres',
+            label: t('Financial overview'),
             href: '/admin/financial-overview',
             icon: Banknote,
         },
         {
-            label: 'Carousel accueil',
+            label: t('Homepage carousel'),
             href: '/admin/carousel',
             icon: Images,
         },
         ...(currentRole === 'super_admin'
             ? [
-                {
-                    label: 'Super CRUD',
-                    href: '/admin/super-crud',
-                    icon: Database,
-                },
-            ]
+                  {
+                      label: t('Super CRUD'),
+                      href: '/admin/super-crud',
+                      icon: Database,
+                  },
+              ]
             : []),
     ];
 
@@ -78,8 +95,12 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
                             <ShieldCheck className="h-5 w-5" />
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Espace</p>
-                            <h2 className="text-lg font-bold">Administration</h2>
+                            <p className="text-sm text-muted-foreground">
+                                {t('Space')}
+                            </p>
+                            <h2 className="text-lg font-bold">
+                                {t('Administration')}
+                            </h2>
                         </div>
                     </div>
 
@@ -106,20 +127,26 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
                     </nav>
 
                     <div className="mt-8 rounded-lg border bg-background p-4">
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                            Statut
+                        <p className="text-xs tracking-wide text-muted-foreground uppercase">
+                            {t('Status')}
                         </p>
                         <div className="mt-2 flex items-center justify-between">
-                            <span className="text-sm font-medium">Session admin</span>
-                            <Badge variant="default">Active</Badge>
+                            <span className="text-sm font-medium">
+                                {t('Admin session')}
+                            </span>
+                            <Badge variant="default">{t('Active')}</Badge>
                         </div>
                     </div>
 
                     <div className="mt-6">
                         <Button variant="outline" className="w-full" asChild>
-                            <Link href="/admin/logout" method="post" as="button">
+                            <Link
+                                href="/admin/logout"
+                                method="post"
+                                as="button"
+                            >
                                 <LogOut className="mr-2 h-4 w-4" />
-                                Deconnexion
+                                {t('Log out')}
                             </Link>
                         </Button>
                     </div>
@@ -131,11 +158,16 @@ export default function AdminLayout({ children, title, subtitle }: AdminLayoutPr
                             <div>
                                 <h1 className="text-2xl font-bold">{title}</h1>
                                 {subtitle ? (
-                                    <p className="text-sm text-muted-foreground">{subtitle}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        {subtitle}
+                                    </p>
                                 ) : null}
                             </div>
-                            <Badge variant="secondary" className="hidden md:inline-flex">
-                                Admin Panel
+                            <Badge
+                                variant="secondary"
+                                className="hidden md:inline-flex"
+                            >
+                                {t('Admin Panel')}
                             </Badge>
                         </div>
                     </header>

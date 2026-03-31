@@ -1,6 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { format, parseISO, differenceInSeconds } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import {
     ChevronLeft,
     Calendar,
@@ -15,7 +14,7 @@ import {
     Circle,
     AlertTriangle,
 } from 'lucide-react';
-import type { FormEvent} from 'react';
+import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { report } from '@/manual-actions/ArtistReportController';
 import { cancel } from '@/actions/App/Http/Controllers/Client/ReservationController';
@@ -34,6 +33,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 interface Artist {
@@ -87,39 +87,54 @@ interface ReservationDetailProps {
     reservation: Reservation;
 }
 
-const statusLabels: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-    pending: { label: 'En attente', variant: 'secondary' },
-    confirmed: { label: 'Confirmée', variant: 'default' },
-    completed: { label: 'Terminée', variant: 'outline' },
-    cancelled: { label: 'Annulée', variant: 'destructive' },
-};
-
-const emotionLabels: Record<string, string> = {
-    Joie: 'Joie / Célébration',
-    Amour: 'Amour / Romance',
-    Soutien: 'Tristesse / Soutien',
-    Hommage: 'Hommage',
-    Fierté: 'Fierté',
-};
-
-export default function ReservationDetail({ auth, reservation }: ReservationDetailProps) {
+export default function ReservationDetail({
+    auth,
+    reservation,
+}: ReservationDetailProps) {
+    const { t, dateLocale } = useAppLocale();
     const [timeLeft, setTimeLeft] = useState('');
     const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
     const [reportReason, setReportReason] = useState('');
     const [isReporting, setIsReporting] = useState(false);
+    const statusLabels: Record<
+        string,
+        {
+            label: string;
+            variant: 'default' | 'secondary' | 'destructive' | 'outline';
+        }
+    > = {
+        pending: { label: t('Pending'), variant: 'secondary' },
+        confirmed: { label: t('Confirmed'), variant: 'default' },
+        completed: { label: t('Completed'), variant: 'outline' },
+        cancelled: { label: t('Cancelled'), variant: 'destructive' },
+    };
+    const emotionLabels: Record<string, string> = {
+        Joie: t('Joy / Celebration'),
+        Amour: t('Love / Romance'),
+        Soutien: t('Sadness / Support'),
+        Hommage: t('Tribute'),
+        Fierté: t('Pride'),
+    };
 
     const showReportButton = auth.user?.role === 'client';
 
     useEffect(() => {
-        if (reservation.status !== 'upcoming' && reservation.status !== 'confirmed' && reservation.status !== 'pending') {
+        if (
+            reservation.status !== 'upcoming' &&
+            reservation.status !== 'confirmed' &&
+            reservation.status !== 'pending'
+        ) {
             return;
         }
 
         const interval = setInterval(() => {
-            const seconds = differenceInSeconds(parseISO(reservation.scheduled_at), new Date());
+            const seconds = differenceInSeconds(
+                parseISO(reservation.scheduled_at),
+                new Date(),
+            );
 
             if (seconds <= 0) {
-                setTimeLeft('Événement en cours');
+                setTimeLeft(t('Event in progress'));
                 clearInterval(interval);
                 return;
             }
@@ -129,19 +144,27 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
             const minutes = Math.floor((seconds % 3600) / 60);
 
             if (days > 0) {
-                setTimeLeft(`${days}j ${hours}h ${minutes}m`);
+                setTimeLeft(
+                    `${days}${t('d')} ${hours}${t('h')} ${minutes}${t('m')}`,
+                );
             } else if (hours > 0) {
-                setTimeLeft(`${hours}h ${minutes}m`);
+                setTimeLeft(`${hours}${t('h')} ${minutes}${t('m')}`);
             } else {
-                setTimeLeft(`${minutes}m`);
+                setTimeLeft(`${minutes}${t('m')}`);
             }
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [reservation.scheduled_at, reservation.status]);
+    }, [reservation.scheduled_at, reservation.status, t]);
 
     const handleCancel = () => {
-        if (confirm('Êtes-vous sûr de vouloir annuler cette réservation ? Vous serez remboursé sous 3-5 jours ouvrés.')) {
+        if (
+            confirm(
+                t(
+                    'Are you sure you want to cancel this reservation? You will be refunded within 3-5 business days.',
+                ),
+            )
+        ) {
             router.post(cancel({ id: reservation.id }));
         }
     };
@@ -149,18 +172,22 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
     const handleReportSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsReporting(true);
-        router.post(report({ artist: reservation.artist.id }), {
-            reason: reportReason,
-        }, {
-            onSuccess: () => {
-                setIsReportDialogOpen(false);
-                setReportReason('');
-                setIsReporting(false);
+        router.post(
+            report({ artist: reservation.artist.id }),
+            {
+                reason: reportReason,
             },
-            onError: () => {
-                setIsReporting(false);
+            {
+                onSuccess: () => {
+                    setIsReportDialogOpen(false);
+                    setReportReason('');
+                    setIsReporting(false);
+                },
+                onError: () => {
+                    setIsReporting(false);
+                },
             },
-        });
+        );
     };
 
     const handleReview = (e: FormEvent<HTMLFormElement>) => {
@@ -182,40 +209,56 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
 
     // Timeline steps
     const timelineSteps = [
-        { key: 'pending', label: 'Demande envoyée', completed: true },
+        { key: 'pending', label: t('Request sent'), completed: true },
         {
             key: 'confirmed',
-            label: 'Confirmée',
+            label: t('Confirmed'),
             completed: ['confirmed', 'completed'].includes(reservation.status),
         },
-        { key: 'completed', label: 'Terminée', completed: reservation.status === 'completed' },
+        {
+            key: 'completed',
+            label: t('Completed'),
+            completed: reservation.status === 'completed',
+        },
     ];
 
     return (
         <MainLayout>
-            <Head title={`Réservation ${reservation.reservation_number}`} />
+            <Head
+                title={`${t('Reservation')} ${reservation.reservation_number}`}
+            />
 
-            <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 md:pb-12">
+            <div className="container mx-auto max-w-7xl px-4 py-8 pb-24 md:px-6 md:pb-12">
                 <Link
                     href="/client/reservations"
-                    className="flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
+                    className="mb-6 flex items-center text-sm text-muted-foreground hover:text-primary"
                 >
-                    <ChevronLeft className="w-4 h-4 mr-1" />
-                    Retour aux réservations
+                    <ChevronLeft className="mr-1 h-4 w-4" />
+                    {t('Back to reservations')}
                 </Link>
 
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid gap-8 md:grid-cols-3">
                     {/* Main Content */}
-                    <div className="md:col-span-2 space-y-6">
+                    <div className="space-y-6 md:col-span-2">
                         {/* Header */}
                         <Card>
                             <CardHeader>
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <CardTitle className="text-2xl mb-2">{reservation.service.title}</CardTitle>
+                                        <CardTitle className="mb-2 text-2xl">
+                                            {reservation.service.title}
+                                        </CardTitle>
                                         <div className="flex items-center gap-2">
-                                            <Badge variant={statusLabels[reservation.status]?.variant || 'secondary'}>
-                                                {statusLabels[reservation.status]?.label || reservation.status}
+                                            <Badge
+                                                variant={
+                                                    statusLabels[
+                                                        reservation.status
+                                                    ]?.variant || 'secondary'
+                                                }
+                                            >
+                                                {statusLabels[
+                                                    reservation.status
+                                                ]?.label || reservation.status}
                                             </Badge>
                                             <span className="text-sm text-muted-foreground">
                                                 {reservation.reservation_number}
@@ -224,8 +267,12 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
                                     </div>
                                     {timeLeft && (
                                         <div className="text-right">
-                                            <div className="text-sm text-muted-foreground">Dans</div>
-                                            <div className="text-2xl font-bold text-primary">{timeLeft}</div>
+                                            <div className="text-sm text-muted-foreground">
+                                                {t('In')}
+                                            </div>
+                                            <div className="text-2xl font-bold text-primary">
+                                                {timeLeft}
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -233,16 +280,28 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
                             <CardContent>
                                 {/* Artist Info */}
                                 <Link href={`/artist/${reservation.artist.id}`}>
-                                    <div className="flex items-center gap-4 p-4 bg-muted rounded-lg hover:bg-muted/80 transition-colors cursor-pointer">
-                                        <Avatar className="w-16 h-16">
-                                            <AvatarImage src={reservation.artist.profile_photo || undefined} />
-                                            <AvatarFallback>{reservation.artist.stage_name.charAt(0)}</AvatarFallback>
+                                    <div className="flex cursor-pointer items-center gap-4 rounded-lg bg-muted p-4 transition-colors hover:bg-muted/80">
+                                        <Avatar className="h-16 w-16">
+                                            <AvatarImage
+                                                src={
+                                                    reservation.artist
+                                                        .profile_photo ||
+                                                    undefined
+                                                }
+                                            />
+                                            <AvatarFallback>
+                                                {reservation.artist.stage_name.charAt(
+                                                    0,
+                                                )}
+                                            </AvatarFallback>
                                         </Avatar>
                                         <div>
                                             <div className="font-semibold text-foreground">
                                                 {reservation.artist.stage_name}
                                             </div>
-                                            <div className="text-sm text-muted-foreground">{reservation.artist.city}</div>
+                                            <div className="text-sm text-muted-foreground">
+                                                {reservation.artist.city}
+                                            </div>
                                         </div>
                                     </div>
                                 </Link>
@@ -253,17 +312,22 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
                         {reservation.status !== 'cancelled' && (
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Statut de la réservation</CardTitle>
+                                    <CardTitle>
+                                        {t('Reservation status')}
+                                    </CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-4">
                                         {timelineSteps.map((step) => (
-                                            <div key={step.key} className="flex items-center gap-4">
+                                            <div
+                                                key={step.key}
+                                                className="flex items-center gap-4"
+                                            >
                                                 <div className="flex-shrink-0">
                                                     {step.completed ? (
-                                                        <CheckCircle2 className="w-6 h-6 text-green-600" />
+                                                        <CheckCircle2 className="h-6 w-6 text-green-600" />
                                                     ) : (
-                                                        <Circle className="w-6 h-6 text-muted-foreground" />
+                                                        <Circle className="h-6 w-6 text-muted-foreground" />
                                                     )}
                                                 </div>
                                                 <div className="flex-1">
@@ -284,17 +348,23 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
                         {reservation.qr_code && (
                             <Card>
                                 <CardContent className="pt-6">
-                                    <div className="flex flex-col md:flex-row gap-6 items-center">
-                                        <div className="flex-shrink-0 bg-white p-4 rounded-lg">
-                                            <img src={reservation.qr_code} alt="QR Code" className="w-[150px] h-[150px]" />
+                                    <div className="flex flex-col items-center gap-6 md:flex-row">
+                                        <div className="flex-shrink-0 rounded-lg bg-white p-4">
+                                            <img
+                                                src={reservation.qr_code}
+                                                alt={t('QR code')}
+                                                className="h-[150px] w-[150px]"
+                                            />
                                         </div>
                                         <div className="flex-1 text-center md:text-left">
-                                            <div className="flex items-center gap-2 text-lg font-semibold mb-2 justify-center md:justify-start">
-                                                <QrCodeIcon className="w-5 h-5 text-primary" />
-                                                QR Code de réservation
+                                            <div className="mb-2 flex items-center justify-center gap-2 text-lg font-semibold md:justify-start">
+                                                <QrCodeIcon className="h-5 w-5 text-primary" />
+                                                {t('Reservation QR code')}
                                             </div>
                                             <p className="text-sm text-muted-foreground">
-                                                Présentez ce QR code à l'artiste le jour de la prestation.
+                                                {t(
+                                                    'Show this QR code to the artist on the day of the service.',
+                                                )}
                                             </p>
                                         </div>
                                     </div>
@@ -305,78 +375,112 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
                         {/* Details */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Détails de la réservation</CardTitle>
+                                <CardTitle>
+                                    {t('Reservation details')}
+                                </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center gap-3">
-                                    <Calendar className="w-5 h-5 text-muted-foreground" />
+                                    <Calendar className="h-5 w-5 text-muted-foreground" />
                                     <div>
                                         <div className="font-medium">
-                                            {format(scheduledDate, 'EEEE d MMMM yyyy', { locale: fr })}
+                                            {format(
+                                                scheduledDate,
+                                                'EEEE d MMMM yyyy',
+                                                { locale: dateLocale },
+                                            )}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-3">
-                                    <Clock className="w-5 h-5 text-muted-foreground" />
+                                    <Clock className="h-5 w-5 text-muted-foreground" />
                                     <div>
                                         <div className="font-medium">
-                                            {format(scheduledDate, 'HH:mm')} • {reservation.duration_minutes} minutes
+                                            {format(scheduledDate, 'HH:mm')} •{' '}
+                                            {reservation.duration_minutes}{' '}
+                                            {t('minutes')}
                                         </div>
                                     </div>
                                 </div>
 
                                 {reservation.location_address && (
                                     <div className="flex items-center gap-3">
-                                        <MapPin className="w-5 h-5 text-muted-foreground" />
+                                        <MapPin className="h-5 w-5 text-muted-foreground" />
                                         <div>
-                                            <div className="font-medium">{reservation.location_address}</div>
+                                            <div className="font-medium">
+                                                {reservation.location_address}
+                                            </div>
                                         </div>
                                     </div>
                                 )}
 
                                 {reservation.recipient_name && (
-                                    <div className="pt-4 border-t">
-                                        <div className="text-sm font-medium text-muted-foreground mb-1">Destinataire</div>
-                                        <div className="font-medium">{reservation.recipient_name}</div>
+                                    <div className="border-t pt-4">
+                                        <div className="mb-1 text-sm font-medium text-muted-foreground">
+                                            {t('Recipient')}
+                                        </div>
+                                        <div className="font-medium">
+                                            {reservation.recipient_name}
+                                        </div>
                                     </div>
                                 )}
 
                                 {reservation.emotion_type && (
                                     <div>
-                                        <div className="text-sm font-medium text-muted-foreground mb-1">Type d'émotion</div>
-                                        <div className="font-medium">{emotionLabels[reservation.emotion_type] || reservation.emotion_type}</div>
+                                        <div className="mb-1 text-sm font-medium text-muted-foreground">
+                                            {t('Emotion type')}
+                                        </div>
+                                        <div className="font-medium">
+                                            {emotionLabels[
+                                                reservation.emotion_type
+                                            ] || reservation.emotion_type}
+                                        </div>
                                     </div>
                                 )}
 
                                 {reservation.custom_message && (
-                                    <div className="pt-4 border-t">
-                                        <div className="text-sm font-medium text-muted-foreground mb-2">
-                                            Message personnalisé
+                                    <div className="border-t pt-4">
+                                        <div className="mb-2 text-sm font-medium text-muted-foreground">
+                                            {t('Custom message')}
                                         </div>
-                                        <div className="text-sm bg-muted/50 p-4 rounded-lg italic">
+                                        <div className="rounded-lg bg-muted/50 p-4 text-sm italic">
                                             "{reservation.custom_message}"
                                         </div>
                                     </div>
                                 )}
 
-                                <div className="pt-4 border-t">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-muted-foreground">Montant de la prestation</span>
+                                <div className="border-t pt-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">
+                                            {t('Service amount')}
+                                        </span>
                                         <span className="font-medium">
-                                            {(reservation.total_amount - reservation.commission_amount).toLocaleString('fr-FR')} FCFA
+                                            {(
+                                                reservation.total_amount -
+                                                reservation.commission_amount
+                                            ).toLocaleString('fr-FR')}{' '}
+                                            FCFA
                                         </span>
                                     </div>
-                                    <div className="flex justify-between items-center mt-2">
-                                        <span className="text-muted-foreground">Frais de plateforme</span>
+                                    <div className="mt-2 flex items-center justify-between">
+                                        <span className="text-muted-foreground">
+                                            {t('Platform fee')}
+                                        </span>
                                         <span className="font-medium">
-                                            {reservation.commission_amount.toLocaleString('fr-FR')} FCFA
+                                            {reservation.commission_amount.toLocaleString(
+                                                'fr-FR',
+                                            )}{' '}
+                                            FCFA
                                         </span>
                                     </div>
-                                    <div className="flex justify-between items-center font-bold text-lg pt-3 mt-3 border-t">
-                                        <span>Total payé</span>
+                                    <div className="mt-3 flex items-center justify-between border-t pt-3 text-lg font-bold">
+                                        <span>{t('Total paid')}</span>
                                         <span className="text-primary">
-                                            {reservation.total_amount.toLocaleString('fr-FR')} FCFA
+                                            {reservation.total_amount.toLocaleString(
+                                                'fr-FR',
+                                            )}{' '}
+                                            FCFA
                                         </span>
                                     </div>
                                 </div>
@@ -387,41 +491,56 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
                         {canReview && (
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Laisser un avis</CardTitle>
+                                    <CardTitle>{t('Leave a review')}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <form onSubmit={handleReview} className="space-y-4">
+                                    <form
+                                        onSubmit={handleReview}
+                                        className="space-y-4"
+                                    >
                                         <div>
-                                            <Label>Note</Label>
-                                            <div className="flex gap-2 mt-2">
-                                                {[1, 2, 3, 4, 5].map((rating) => (
-                                                    <label key={rating} className="cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="rating"
-                                                            value={rating}
-                                                            className="sr-only peer"
-                                                            required
-                                                        />
-                                                        <Star className="w-8 h-8 text-muted-foreground peer-checked:text-primary peer-checked:fill-primary hover:text-primary transition-colors" />
-                                                    </label>
-                                                ))}
+                                            <Label>{t('Rating')}</Label>
+                                            <div className="mt-2 flex gap-2">
+                                                {[1, 2, 3, 4, 5].map(
+                                                    (rating) => (
+                                                        <label
+                                                            key={rating}
+                                                            className="cursor-pointer"
+                                                        >
+                                                            <input
+                                                                type="radio"
+                                                                name="rating"
+                                                                value={rating}
+                                                                className="peer sr-only"
+                                                                required
+                                                            />
+                                                            <Star className="h-8 w-8 text-muted-foreground transition-colors peer-checked:fill-primary peer-checked:text-primary hover:text-primary" />
+                                                        </label>
+                                                    ),
+                                                )}
                                             </div>
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="comment">Commentaire (optionnel)</Label>
+                                            <Label htmlFor="comment">
+                                                {t('Comment (optional)')}
+                                            </Label>
                                             <Textarea
                                                 id="comment"
                                                 name="comment"
-                                                placeholder="Partagez votre expérience..."
+                                                placeholder={t(
+                                                    'Share your experience...',
+                                                )}
                                                 rows={4}
                                                 className="mt-2"
                                             />
                                         </div>
 
-                                        <Button type="submit" className="w-full">
-                                            Publier l'avis
+                                        <Button
+                                            type="submit"
+                                            className="w-full"
+                                        >
+                                            {t('Publish review')}
                                         </Button>
                                     </form>
                                 </CardContent>
@@ -432,51 +551,94 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
                     {/* Sidebar */}
                     <div className="md:col-span-1">
                         <div className="sticky top-24 space-y-4">
-                            <Button variant="default" className="w-full gap-2" onClick={handleDownloadReceipt}>
-                                <Download className="w-4 h-4" />
-                                Télécharger le reçu
+                            <Button
+                                variant="default"
+                                className="w-full gap-2"
+                                onClick={handleDownloadReceipt}
+                            >
+                                <Download className="h-4 w-4" />
+                                {t('Download receipt')}
                             </Button>
 
-                            <Button variant="outline" className="w-full gap-2">
-                                <MessageCircle className="w-4 h-4" />
-                                Contacter l'artiste
+                            <Button
+                                variant="outline"
+                                className="w-full gap-2"
+                                disabled
+                            >
+                                <MessageCircle className="h-4 w-4" />
+                                {t('Contact artist')}
                             </Button>
 
                             {showReportButton && (
-                                <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
+                                <Dialog
+                                    open={isReportDialogOpen}
+                                    onOpenChange={setIsReportDialogOpen}
+                                >
                                     <DialogTrigger asChild>
-                                        <Button variant="outline" className="w-full gap-2 text-muted-foreground hover:text-destructive">
-                                            <AlertTriangle className="w-4 h-4" />
-                                            Signaler l'artiste
+                                        <Button
+                                            variant="outline"
+                                            className="w-full gap-2 text-muted-foreground hover:text-destructive"
+                                        >
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {t('Report artist')}
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>Signaler l'artiste</DialogTitle>
+                                            <DialogTitle>
+                                                {t('Report artist')}
+                                            </DialogTitle>
                                             <DialogDescription>
-                                                Veuillez expliquer la raison de votre signalement. Un administrateur examinera votre demande.
+                                                {t(
+                                                    'Please explain the reason for your report. An administrator will review your request.',
+                                                )}
                                             </DialogDescription>
                                         </DialogHeader>
                                         <form onSubmit={handleReportSubmit}>
                                             <div className="space-y-4 py-4">
                                                 <div className="space-y-2">
-                                                    <Label htmlFor="reason">Motif du signalement</Label>
+                                                    <Label htmlFor="reason">
+                                                        {t('Reason for report')}
+                                                    </Label>
                                                     <Textarea
                                                         id="reason"
-                                                        placeholder="Détaillez le problème rencontré avec cet artiste..."
+                                                        placeholder={t(
+                                                            'Describe the issue you encountered with this artist...',
+                                                        )}
                                                         value={reportReason}
-                                                        onChange={(e) => setReportReason(e.target.value)}
+                                                        onChange={(e) =>
+                                                            setReportReason(
+                                                                e.target.value,
+                                                            )
+                                                        }
                                                         required
                                                         rows={5}
                                                     />
                                                 </div>
                                             </div>
                                             <DialogFooter>
-                                                <Button type="button" variant="ghost" onClick={() => setIsReportDialogOpen(false)}>
-                                                    Annuler
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    onClick={() =>
+                                                        setIsReportDialogOpen(
+                                                            false,
+                                                        )
+                                                    }
+                                                >
+                                                    {t('Cancel')}
                                                 </Button>
-                                                <Button type="submit" variant="destructive" disabled={isReporting || !reportReason.trim()}>
-                                                    {isReporting ? 'Envoi en cours...' : 'Envoyer le signalement'}
+                                                <Button
+                                                    type="submit"
+                                                    variant="destructive"
+                                                    disabled={
+                                                        isReporting ||
+                                                        !reportReason.trim()
+                                                    }
+                                                >
+                                                    {isReporting
+                                                        ? t('Sending...')
+                                                        : t('Send report')}
                                                 </Button>
                                             </DialogFooter>
                                         </form>
@@ -485,9 +647,13 @@ export default function ReservationDetail({ auth, reservation }: ReservationDeta
                             )}
 
                             {canCancel && (
-                                <Button variant="outline" className="w-full gap-2 text-destructive hover:text-destructive" onClick={handleCancel}>
-                                    <XCircle className="w-4 h-4" />
-                                    Annuler la réservation
+                                <Button
+                                    variant="outline"
+                                    className="w-full gap-2 text-destructive hover:text-destructive"
+                                    onClick={handleCancel}
+                                >
+                                    <XCircle className="h-4 w-4" />
+                                    {t('Cancel reservation')}
                                 </Button>
                             )}
                         </div>

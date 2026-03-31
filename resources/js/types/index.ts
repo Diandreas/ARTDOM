@@ -8,5 +8,7 @@ export type SharedData = {
     name: string;
     auth: Auth;
     sidebarOpen: boolean;
+    locale: 'fr' | 'en';
+    availableLocales: Array<'fr' | 'en'>;
     [key: string]: unknown;
 };

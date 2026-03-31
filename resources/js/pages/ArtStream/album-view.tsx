@@ -25,6 +25,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 interface Track {
@@ -63,8 +64,14 @@ interface AlbumViewProps {
     isInLibrary?: boolean;
 }
 
-export default function AlbumView({ album, tracks, isPurchased = false, isInLibrary = false }: AlbumViewProps) {
+export default function AlbumView({
+    album,
+    tracks,
+    isPurchased = false,
+    isInLibrary = false,
+}: AlbumViewProps) {
     const { auth } = usePage().props as { auth?: { user?: any } };
+    const { t } = useAppLocale();
     const [inLibrary, setInLibrary] = useState(isInLibrary);
 
     const formatDuration = (seconds: number) => {
@@ -73,7 +80,10 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
         return `${mins}:${secs.toString().padStart(2, '0')}`;
     };
 
-    const totalDuration = tracks.reduce((sum, track) => sum + track.duration_seconds, 0);
+    const totalDuration = tracks.reduce(
+        (sum, track) => sum + track.duration_seconds,
+        0,
+    );
     const totalDurationFormatted = formatDuration(totalDuration);
 
     const handlePlayAll = () => {
@@ -95,20 +105,28 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
             router.visit('/login');
             return;
         }
-        router.post(`/albums/${album.id}/favorite`, {}, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setInLibrary(!inLibrary);
-                toast.success(inLibrary ? 'Retiré des favoris' : 'Ajouté aux favoris');
+        router.post(
+            `/albums/${album.id}/favorite`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setInLibrary(!inLibrary);
+                    toast.success(
+                        inLibrary
+                            ? t('Removed from favorites')
+                            : t('Added to favorites'),
+                    );
+                },
             },
-        });
+        );
     };
 
     const handleShare = () => {
         if (navigator.share) {
             navigator.share({
                 title: `${album.title} - ${album.artist.stage_name}`,
-                text: `Écoutez ${album.title} sur ARTEMO`,
+                text: `${t('Listen to')} ${album.title} ${t('on ARTEMO')}`,
                 url: window.location.href,
             });
         }
@@ -123,25 +141,28 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
         <MainLayout>
             <Head title={`${album.title} - ${album.artist.stage_name}`} />
 
-            <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 pb-24 md:pb-12">
+            <div className="container mx-auto max-w-7xl px-4 py-8 pb-24 md:px-6 md:py-12 md:pb-12">
                 {/* Album Header */}
-                <div className="grid md:grid-cols-3 gap-8 mb-8">
+                <div className="mb-8 grid gap-8 md:grid-cols-3">
                     {/* Album Cover */}
                     <div className="md:col-span-1">
                         <Card className="overflow-hidden">
-                            <div className="aspect-square relative group">
+                            <div className="group relative aspect-square">
                                 <img
-                                    src={album.cover_url || '/images/default-album.jpg'}
+                                    src={
+                                        album.cover_url ||
+                                        '/images/default-album.jpg'
+                                    }
                                     alt={album.title}
-                                    className="w-full h-full object-cover"
+                                    className="h-full w-full object-cover"
                                 />
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                                     <Button
                                         size="lg"
-                                        className="rounded-full h-16 w-16 p-0"
+                                        className="h-16 w-16 rounded-full p-0"
                                         onClick={handlePlayAll}
                                     >
-                                        <Play className="w-8 h-8 fill-current" />
+                                        <Play className="h-8 w-8 fill-current" />
                                     </Button>
                                 </div>
                             </div>
@@ -149,45 +170,70 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                     </div>
 
                     {/* Album Info */}
-                    <div className="md:col-span-2 flex flex-col justify-between">
+                    <div className="flex flex-col justify-between md:col-span-2">
                         <div>
-                            <Badge className="mb-3 uppercase text-xs">{album.genre}</Badge>
-                            <h1 className="text-4xl md:text-5xl font-bold mb-4">{album.title}</h1>
+                            <Badge className="mb-3 text-xs uppercase">
+                                {album.genre}
+                            </Badge>
+                            <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+                                {album.title}
+                            </h1>
 
                             {/* Artist */}
                             <Link href={`/artist/${album.artist.id}`}>
-                                <div className="flex items-center gap-3 mb-6 hover:opacity-80 transition-opacity w-fit">
-                                    <Avatar className="w-10 h-10">
-                                        <AvatarImage src={album.artist.profile_photo} alt={album.artist.stage_name} />
-                                        <AvatarFallback>{album.artist.stage_name.charAt(0)}</AvatarFallback>
+                                <div className="mb-6 flex w-fit items-center gap-3 transition-opacity hover:opacity-80">
+                                    <Avatar className="h-10 w-10">
+                                        <AvatarImage
+                                            src={album.artist.profile_photo}
+                                            alt={album.artist.stage_name}
+                                        />
+                                        <AvatarFallback>
+                                            {album.artist.stage_name.charAt(0)}
+                                        </AvatarFallback>
                                     </Avatar>
                                     <div>
-                                        <div className="font-semibold">{album.artist.stage_name}</div>
-                                        <div className="text-sm text-muted-foreground">Artiste</div>
+                                        <div className="font-semibold">
+                                            {album.artist.stage_name}
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                            {t('Artist')}
+                                        </div>
                                     </div>
                                 </div>
                             </Link>
 
                             {/* Stats */}
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
+                            <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                                 <span>{album.year}</span>
                                 <span>•</span>
-                                <span>{tracks.length} pistes</span>
+                                <span>
+                                    {tracks.length}{' '}
+                                    {tracks.length > 1
+                                        ? t('tracks')
+                                        : t('track')}
+                                </span>
                                 <span>•</span>
                                 <span>{totalDurationFormatted}</span>
                                 <span>•</span>
                                 <div className="flex items-center gap-1">
-                                    <Headphones className="w-4 h-4" />
-                                    <span>{album.total_plays.toLocaleString()} écoutes</span>
+                                    <Headphones className="h-4 w-4" />
+                                    <span>
+                                        {album.total_plays.toLocaleString()}{' '}
+                                        {t('plays')}
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Action Buttons */}
                         <div className="flex flex-wrap items-center gap-3">
-                            <Button size="lg" className="gap-2" onClick={handlePlayAll}>
-                                <Play className="w-5 h-5 fill-current" />
-                                Lire
+                            <Button
+                                size="lg"
+                                className="gap-2"
+                                onClick={handlePlayAll}
+                            >
+                                <Play className="h-5 w-5 fill-current" />
+                                {t('Play')}
                             </Button>
 
                             <Button
@@ -196,19 +242,33 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                                 className="gap-2"
                                 onClick={handleToggleLibrary}
                             >
-                                <Heart className={`w-5 h-5 ${inLibrary ? 'fill-current' : ''}`} />
-                                {inLibrary ? 'Dans ma bibliothèque' : 'Ajouter'}
+                                <Heart
+                                    className={`h-5 w-5 ${inLibrary ? 'fill-current' : ''}`}
+                                />
+                                {inLibrary ? t('In my library') : t('Add')}
                             </Button>
 
-                            <Button size="lg" variant="outline" className="gap-2" onClick={handleShare}>
-                                <Share2 className="w-5 h-5" />
-                                Partager
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="gap-2"
+                                onClick={handleShare}
+                            >
+                                <Share2 className="h-5 w-5" />
+                                {t('Share')}
                             </Button>
 
                             {!isPurchased && album.price > 0 && (
-                                <Button size="lg" variant="secondary" className="gap-2" onClick={handlePurchase}>
-                                    <ShoppingCart className="w-5 h-5" />
-                                    Acheter {album.price.toLocaleString()} FCFA
+                                <Button
+                                    size="lg"
+                                    variant="secondary"
+                                    className="gap-2"
+                                    onClick={handlePurchase}
+                                >
+                                    <ShoppingCart className="h-5 w-5" />
+                                    {t(
+                                        'Buy',
+                                    )} {album.price.toLocaleString()} FCFA
                                 </Button>
                             )}
                         </div>
@@ -218,37 +278,40 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                 {/* Tracks List */}
                 <Card>
                     <CardContent className="pt-6">
-                        <div className="flex items-center gap-2 mb-4">
-                            <ListMusic className="w-5 h-5 text-primary" />
-                            <h2 className="text-xl font-bold">Pistes</h2>
+                        <div className="mb-4 flex items-center gap-2">
+                            <ListMusic className="h-5 w-5 text-primary" />
+                            <h2 className="text-xl font-bold">{t('Tracks')}</h2>
                         </div>
 
                         <div className="space-y-1">
                             {tracks.map((track, index) => (
                                 <div
                                     key={track.id}
-                                    className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
+                                    className="group flex cursor-pointer items-center gap-4 rounded-lg p-3 transition-colors hover:bg-muted/50"
                                     onClick={() => handlePlayTrack(track.id)}
                                 >
                                     {/* Track Number / Play Button */}
                                     <div className="w-8 text-center">
-                                        <span className="group-hover:hidden text-muted-foreground">
+                                        <span className="text-muted-foreground group-hover:hidden">
                                             {track.track_number || index + 1}
                                         </span>
-                                        <Play className="w-4 h-4 hidden group-hover:block text-primary fill-current mx-auto" />
+                                        <Play className="mx-auto hidden h-4 w-4 fill-current text-primary group-hover:block" />
                                     </div>
 
                                     {/* Track Info */}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="font-medium truncate">{track.title}</div>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="truncate font-medium">
+                                            {track.title}
+                                        </div>
                                         <div className="text-sm text-muted-foreground">
-                                            {track.plays.toLocaleString()} écoutes
+                                            {track.plays.toLocaleString()}{' '}
+                                            {t('plays')}
                                         </div>
                                     </div>
 
                                     {/* Duration */}
-                                    <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                                        <Clock className="w-4 h-4" />
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Clock className="h-4 w-4" />
                                         {formatDuration(track.duration_seconds)}
                                     </div>
 
@@ -259,23 +322,36 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                                                 variant="ghost"
                                                 size="sm"
                                                 className="opacity-0 group-hover:opacity-100"
-                                                onClick={(e) => e.stopPropagation()}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
                                             >
-                                                <MoreHorizontal className="w-4 h-4" />
+                                                <MoreHorizontal className="h-4 w-4" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                <Heart className="w-4 h-4 mr-2" />
-                                                Ajouter aux favoris
+                                            <DropdownMenuItem
+                                                onSelect={(e) =>
+                                                    e.preventDefault()
+                                                }
+                                            >
+                                                <Heart className="mr-2 h-4 w-4" />
+                                                {t('Add to favorites')}
                                             </DropdownMenuItem>
                                             <CommentsSidebar
                                                 trackId={track.id}
                                                 comments={track.comments || []}
                                                 trigger={
-                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                        <MessageCircle className="w-4 h-4 mr-2" />
-                                                        Commentaires ({track.comments?.length || 0})
+                                                    <DropdownMenuItem
+                                                        onSelect={(e) =>
+                                                            e.preventDefault()
+                                                        }
+                                                    >
+                                                        <MessageCircle className="mr-2 h-4 w-4" />
+                                                        {t('Comments')} (
+                                                        {track.comments
+                                                            ?.length || 0}
+                                                        )
                                                     </DropdownMenuItem>
                                                 }
                                             />
@@ -283,21 +359,25 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                                                 trackId={parseInt(track.id)}
                                                 trackTitle={track.title}
                                                 trigger={
-                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                        <ListMusic className="w-4 h-4 mr-2" />
-                                                        Ajouter à une playlist
+                                                    <DropdownMenuItem
+                                                        onSelect={(e) =>
+                                                            e.preventDefault()
+                                                        }
+                                                    >
+                                                        <ListMusic className="mr-2 h-4 w-4" />
+                                                        {t('Add to playlist')}
                                                     </DropdownMenuItem>
                                                 }
                                             />
                                             {isPurchased && (
                                                 <DropdownMenuItem>
-                                                    <Download className="w-4 h-4 mr-2" />
-                                                    Télécharger
+                                                    <Download className="mr-2 h-4 w-4" />
+                                                    {t('Download')}
                                                 </DropdownMenuItem>
                                             )}
                                             <DropdownMenuItem>
-                                                <Share2 className="w-4 h-4 mr-2" />
-                                                Partager
+                                                <Share2 className="mr-2 h-4 w-4" />
+                                                {t('Share')}
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
@@ -306,21 +386,30 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                         </div>
 
                         {/* Total Duration */}
-                        <div className="mt-6 pt-4 border-t flex justify-between items-center text-sm text-muted-foreground">
-                            <span>{tracks.length} pistes</span>
-                            <span>Durée totale : {totalDurationFormatted}</span>
+                        <div className="mt-6 flex items-center justify-between border-t pt-4 text-sm text-muted-foreground">
+                            <span>
+                                {tracks.length}{' '}
+                                {tracks.length > 1 ? t('tracks') : t('track')}
+                            </span>
+                            <span>
+                                {t('Total duration')}: {totalDurationFormatted}
+                            </span>
                         </div>
                     </CardContent>
                 </Card>
 
                 {/* Album Info Section */}
-                <div className="mt-6 grid md:grid-cols-2 gap-6">
+                <div className="mt-6 grid gap-6 md:grid-cols-2">
                     <Card>
                         <CardContent className="pt-6">
-                            <h3 className="font-bold mb-4">À propos de cet album</h3>
+                            <h3 className="mb-4 font-bold">
+                                {t('About this album')}
+                            </h3>
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Artiste:</span>
+                                    <span className="text-muted-foreground">
+                                        {t('Artist')}:
+                                    </span>
                                     <Link
                                         href={`/artist/${album.artist.id}`}
                                         className="font-medium hover:underline"
@@ -329,16 +418,28 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                                     </Link>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Année:</span>
-                                    <span className="font-medium">{album.year}</span>
+                                    <span className="text-muted-foreground">
+                                        {t('Year')}:
+                                    </span>
+                                    <span className="font-medium">
+                                        {album.year}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Genre:</span>
-                                    <span className="font-medium capitalize">{album.genre}</span>
+                                    <span className="text-muted-foreground">
+                                        {t('Genre')}:
+                                    </span>
+                                    <span className="font-medium capitalize">
+                                        {album.genre}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Écoutes totales:</span>
-                                    <span className="font-medium">{album.total_plays.toLocaleString()}</span>
+                                    <span className="text-muted-foreground">
+                                        {t('Total plays')}:
+                                    </span>
+                                    <span className="font-medium">
+                                        {album.total_plays.toLocaleString()}
+                                    </span>
                                 </div>
                             </div>
                         </CardContent>
@@ -347,18 +448,26 @@ export default function AlbumView({ album, tracks, isPurchased = false, isInLibr
                     {!isPurchased && album.price > 0 && (
                         <Card className="border-primary/20">
                             <CardContent className="pt-6">
-                                <h3 className="font-bold mb-4">Acheter cet album</h3>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    Achetez cet album pour le télécharger et l'écouter hors ligne en qualité HD.
+                                <h3 className="mb-4 font-bold">
+                                    {t('Buy this album')}
+                                </h3>
+                                <p className="mb-4 text-sm text-muted-foreground">
+                                    {t(
+                                        'Buy this album to download it and listen offline in HD quality.',
+                                    )}
                                 </p>
-                                <div className="flex items-center justify-between mb-4">
+                                <div className="mb-4 flex items-center justify-between">
                                     <span className="text-2xl font-bold text-primary">
                                         {album.price.toLocaleString()} FCFA
                                     </span>
                                 </div>
-                                <Button className="w-full" size="lg" onClick={handlePurchase}>
-                                    <ShoppingCart className="w-5 h-5 mr-2" />
-                                    Acheter maintenant
+                                <Button
+                                    className="w-full"
+                                    size="lg"
+                                    onClick={handlePurchase}
+                                >
+                                    <ShoppingCart className="mr-2 h-5 w-5" />
+                                    {t('Buy now')}
                                 </Button>
                             </CardContent>
                         </Card>

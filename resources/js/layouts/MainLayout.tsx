@@ -1,9 +1,21 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { Search, Menu, User, LogOut, Settings, Home, Music, Grid, Bell, Calendar } from 'lucide-react';
+import {
+    Search,
+    Menu,
+    User,
+    LogOut,
+    Settings,
+    Home,
+    Music,
+    Grid,
+    Bell,
+    Calendar,
+} from 'lucide-react';
 import type { PropsWithChildren, FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import MiniPlayer from '@/components/Player/MiniPlayer';
+import LanguageSwitcher from '@/components/language-switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,17 +24,18 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-    DropdownMenuTrigger
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { home, login, register, logout } from '@/routes';
+import { useAppLocale } from '@/hooks/use-app-locale';
+import { home, login, logout } from '@/routes';
 import { index as artistsIndex } from '@/routes/artists';
-import profile from '@/routes/profile';
 
 export default function MainLayout({ children }: PropsWithChildren) {
     const user = (usePage().props as any).auth.user;
     const { url } = usePage();
+    const { t } = useAppLocale();
 
     // Helper function to check if link is active
     const isActive = (path: string) => {
@@ -38,50 +51,70 @@ export default function MainLayout({ children }: PropsWithChildren) {
     const handleHeaderSearch = (e: FormEvent) => {
         e.preventDefault();
         if (headerSearch.trim()) {
-            router.get(artistsIndex.url(), { search: headerSearch.trim() }, { preserveState: false });
+            router.get(
+                artistsIndex.url(),
+                { search: headerSearch.trim() },
+                { preserveState: false },
+            );
         }
     };
 
     useEffect(() => {
         if (user && typeof window !== 'undefined' && (window as any).Echo) {
-            const channel = (window as any).Echo.private(`App.Models.User.${user.id}`);
+            const channel = (window as any).Echo.private(
+                `App.Models.User.${user.id}`,
+            );
 
             channel.notification((notification: any) => {
-                setUnreadNotifications(prev => prev + 1);
+                setUnreadNotifications((prev) => prev + 1);
 
                 const titles: Record<string, string> = {
-                    new_message: `Message de ${notification.sender_name ?? 'quelqu\'un'}`,
-                    new_reservation: 'Nouvelle réservation',
-                    reservation_confirmed: 'Réservation confirmée 🎉',
-                    reservation_declined: 'Réservation refusée',
-                    new_track_comment: 'Nouveau commentaire',
-                    new_album_released: 'Nouvel album disponible 🎵',
-                    artist_validation_approved: 'Compte validé ✅',
-                    artist_validation_rejected: 'Validation refusée',
-                    admin_global_message: notification.title ?? 'Message Artemo',
+                    new_message: `${t('Message from')} ${notification.sender_name ?? t('someone')}`,
+                    new_reservation: t('New reservation'),
+                    reservation_confirmed: t('Reservation confirmed'),
+                    reservation_declined: t('Reservation declined'),
+                    new_track_comment: t('New comment'),
+                    new_album_released: t('New album available'),
+                    artist_validation_approved: t('Account approved'),
+                    artist_validation_rejected: t('Validation rejected'),
+                    admin_global_message:
+                        notification.title ?? t('Artemo message'),
                 };
 
-                const actionUrl = notification.action_url
-                    ?? (notification.conversation_id ? `/messages/${notification.conversation_id}` : '/notifications');
+                const actionUrl =
+                    notification.action_url ??
+                    (notification.conversation_id
+                        ? `/messages/${notification.conversation_id}`
+                        : '/notifications');
 
-                toast.info(titles[notification.type] ?? notification.title ?? 'Notification', {
-                    description: notification.message ?? notification.content ?? '',
-                    action: {
-                        label: 'Voir',
-                        onClick: () => { window.location.href = actionUrl; },
+                toast.info(
+                    titles[notification.type] ??
+                        notification.title ??
+                        t('Notification'),
+                    {
+                        description:
+                            notification.message ?? notification.content ?? '',
+                        action: {
+                            label: t('View'),
+                            onClick: () => {
+                                window.location.href = actionUrl;
+                            },
+                        },
                     },
-                });
+                );
             });
 
             return () => {
-                channel.stopListening('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated');
+                channel.stopListening(
+                    '.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated',
+                );
                 (window as any).Echo.leave(`App.Models.User.${user.id}`);
             };
         }
-    }, [user]);
+    }, [t, user]);
 
     return (
-        <div className="min-h-screen bg-background text-foreground font-sans relative">
+        <div className="relative min-h-screen bg-background font-sans text-foreground">
             {/* African Pattern Background */}
             <div
                 aria-hidden="true"
@@ -93,60 +126,100 @@ export default function MainLayout({ children }: PropsWithChildren) {
                 }}
             />
             {/* Header / Navbar */}
-            <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 relative">
+            <header className="relative sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-16 items-center justify-between px-4 md:px-6">
                     {/* Logo & Mobile Menu */}
                     <div className="flex items-center gap-4">
                         <Sheet>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="md:hidden text-primary">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-primary md:hidden"
+                                >
                                     <Menu className="h-6 w-6" />
-                                    <span className="sr-only">Menu</span>
+                                    <span className="sr-only">{t('Menu')}</span>
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="w-[300px] sm:w-[400px] border-r border-border bg-card">
-                                <nav className="flex flex-col gap-4 mt-8">
-                                    <Link href={home()} className="text-lg font-semibold hover:text-primary transition-colors">
-                                        Accueil
+                            <SheetContent
+                                side="left"
+                                className="w-[300px] border-r border-border bg-card sm:w-[400px]"
+                            >
+                                <nav className="mt-8 flex flex-col gap-4">
+                                    <Link
+                                        href={home()}
+                                        className="text-lg font-semibold transition-colors hover:text-primary"
+                                    >
+                                        {t('Home')}
                                     </Link>
                                     {user ? (
                                         user.role === 'artist' ? (
                                             <>
-                                                <Link href="/artist/dashboard" className="text-lg font-semibold hover:text-primary transition-colors">
-                                                    Dashboard Artiste
+                                                <Link
+                                                    href="/artist/dashboard"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('Artist Dashboard')}
                                                 </Link>
-                                                <Link href="/artist/albums" className="text-lg font-semibold hover:text-primary transition-colors">
-                                                    Mes Albums
+                                                <Link
+                                                    href="/artist/albums"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('My Albums')}
                                                 </Link>
-                                                <Link href="/artist/services" className="text-lg font-semibold hover:text-primary transition-colors">
-                                                    Mes Services
+                                                <Link
+                                                    href="/artist/services"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('My Services')}
                                                 </Link>
-                                                <Link href="/artist/wallet" className="text-lg font-semibold hover:text-primary transition-colors">
-                                                    Portefeuille
+                                                <Link
+                                                    href="/artist/wallet"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('Wallet')}
                                                 </Link>
                                             </>
                                         ) : (
                                             <>
-                                                <Link href="/dashboard" className="text-lg font-semibold hover:text-primary transition-colors">
-                                                    Dashboard Client
+                                                <Link
+                                                    href="/dashboard"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('Client Dashboard')}
                                                 </Link>
-                                                <Link href={artistsIndex.url()} className="text-lg font-semibold hover:text-primary transition-colors">
-                                                    Artistes
+                                                <Link
+                                                    href={artistsIndex.url()}
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('Artists')}
                                                 </Link>
-                                                <Link href="/artstream" className="text-lg font-semibold hover:text-primary transition-colors">
+                                                <Link
+                                                    href="/artstream"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
                                                     ArtStream
                                                 </Link>
-                                                <Link href="/client/reservations" className="text-lg font-semibold hover:text-primary transition-colors">
-                                                    Mes Réservations
+                                                <Link
+                                                    href="/client/reservations"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('My Reservations')}
                                                 </Link>
                                             </>
                                         )
                                     ) : (
                                         <>
-                                            <Link href={artistsIndex.url()} className="text-lg font-semibold hover:text-primary transition-colors">
-                                                Artistes
+                                            <Link
+                                                href={artistsIndex.url()}
+                                                className="text-lg font-semibold transition-colors hover:text-primary"
+                                            >
+                                                {t('Artists')}
                                             </Link>
-                                            <Link href="/artstream" className="text-lg font-semibold hover:text-primary transition-colors">
+                                            <Link
+                                                href="/artstream"
+                                                className="text-lg font-semibold transition-colors hover:text-primary"
+                                            >
                                                 ArtStream
                                             </Link>
                                         </>
@@ -161,55 +234,90 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                 alt="Artemo"
                                 className="h-9 w-9 object-contain"
                             />
-                            <span className="text-xl font-bold tracking-tight text-primary font-heading hidden sm:inline-block">ARTEMO</span>
+                            <span className="font-heading hidden text-xl font-bold tracking-tight text-primary sm:inline-block">
+                                ARTEMO
+                            </span>
                         </Link>
                     </div>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden md:flex items-center gap-6">
-                        <Link href={home()} className="text-sm font-medium hover:text-primary transition-colors">
-                            Accueil
+                    <nav className="hidden items-center gap-6 md:flex">
+                        <Link
+                            href={home()}
+                            className="text-sm font-medium transition-colors hover:text-primary"
+                        >
+                            {t('Home')}
                         </Link>
                         {user ? (
                             <>
                                 {user.role === 'artist' ? (
                                     <>
-                                        <Link href="/artist/dashboard" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artist/dashboard') ? 'text-primary' : ''}`}>
-                                            Dashboard Artiste
+                                        <Link
+                                            href="/artist/dashboard"
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/artist/dashboard') ? 'text-primary' : ''}`}
+                                        >
+                                            {t('Artist Dashboard')}
                                         </Link>
-                                        <Link href="/artist/albums" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artist/albums') ? 'text-primary' : ''}`}>
-                                            Mes Albums
+                                        <Link
+                                            href="/artist/albums"
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/artist/albums') ? 'text-primary' : ''}`}
+                                        >
+                                            {t('My Albums')}
                                         </Link>
-                                        <Link href="/artist/services" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artist/services') ? 'text-primary' : ''}`}>
-                                            Mes Services
+                                        <Link
+                                            href="/artist/services"
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/artist/services') ? 'text-primary' : ''}`}
+                                        >
+                                            {t('My Services')}
                                         </Link>
-                                        <Link href="/artist/wallet" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artist/wallet') ? 'text-primary' : ''}`}>
-                                            Portefeuille
+                                        <Link
+                                            href="/artist/wallet"
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/artist/wallet') ? 'text-primary' : ''}`}
+                                        >
+                                            {t('Wallet')}
                                         </Link>
                                     </>
                                 ) : (
                                     <>
-                                        <Link href="/dashboard" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/dashboard') ? 'text-primary' : ''}`}>
-                                            Dashboard Client
+                                        <Link
+                                            href="/dashboard"
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/dashboard') ? 'text-primary' : ''}`}
+                                        >
+                                            {t('Client Dashboard')}
                                         </Link>
-                                        <Link href={artistsIndex.url()} className={`text-sm font-medium hover:text-primary transition-colors ${isActive(artistsIndex.url()) ? 'text-primary' : ''}`}>
-                                            Artistes
+                                        <Link
+                                            href={artistsIndex.url()}
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive(artistsIndex.url()) ? 'text-primary' : ''}`}
+                                        >
+                                            {t('Artists')}
                                         </Link>
-                                        <Link href="/artstream" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/artstream') ? 'text-primary' : ''}`}>
+                                        <Link
+                                            href="/artstream"
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/artstream') ? 'text-primary' : ''}`}
+                                        >
                                             ArtStream
                                         </Link>
-                                        <Link href="/client/reservations" className={`text-sm font-medium hover:text-primary transition-colors ${isActive('/client/reservations') ? 'text-primary' : ''}`}>
-                                            Mes Réservations
+                                        <Link
+                                            href="/client/reservations"
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/client/reservations') ? 'text-primary' : ''}`}
+                                        >
+                                            {t('My Reservations')}
                                         </Link>
                                     </>
                                 )}
                             </>
                         ) : (
                             <>
-                                <Link href={artistsIndex.url()} className="text-sm font-medium hover:text-primary transition-colors">
-                                    Artistes
+                                <Link
+                                    href={artistsIndex.url()}
+                                    className="text-sm font-medium transition-colors hover:text-primary"
+                                >
+                                    {t('Artists')}
                                 </Link>
-                                <Link href="/artstream" className="text-sm font-medium hover:text-primary transition-colors">
+                                <Link
+                                    href="/artstream"
+                                    className="text-sm font-medium transition-colors hover:text-primary"
+                                >
                                     ArtStream
                                 </Link>
                             </>
@@ -218,26 +326,41 @@ export default function MainLayout({ children }: PropsWithChildren) {
 
                     {/* Right Actions: Search & Profile */}
                     <div className="flex items-center gap-2 md:gap-4">
-                        <form onSubmit={handleHeaderSearch} className="relative hidden sm:block">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <LanguageSwitcher className="hidden lg:flex" compact />
+
+                        <form
+                            onSubmit={handleHeaderSearch}
+                            className="relative hidden sm:block"
+                        >
+                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                                 type="search"
-                                placeholder="Rechercher un artiste..."
-                                className="w-[200px] lg:w-[300px] pl-9 bg-muted border-none focus-visible:ring-primary h-9"
+                                placeholder={t('Search for an artist...')}
+                                className="h-9 w-[200px] border-none bg-muted pl-9 focus-visible:ring-primary lg:w-[300px]"
                                 value={headerSearch}
-                                onChange={(e) => setHeaderSearch(e.target.value)}
+                                onChange={(e) =>
+                                    setHeaderSearch(e.target.value)
+                                }
                             />
                         </form>
 
-                        <Button variant="ghost" size="icon" className="sm:hidden text-foreground" onClick={() => router.get('/artists')}>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-foreground sm:hidden"
+                            onClick={() => router.get('/artists')}
+                        >
                             <Search className="h-5 w-5" />
                         </Button>
 
                         {user && (
-                            <Link href="/notifications" className="relative hidden sm:flex items-center justify-center w-9 h-9 rounded-full hover:bg-muted text-foreground transition-colors">
+                            <Link
+                                href="/notifications"
+                                className="relative hidden h-9 w-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted sm:flex"
+                            >
                                 <Bell className="h-5 w-5" />
                                 {unreadNotifications > 0 && (
-                                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-background"></span>
+                                    <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-background"></span>
                                 )}
                             </Link>
                         )}
@@ -245,17 +368,31 @@ export default function MainLayout({ children }: PropsWithChildren) {
                         {user ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                                    <Button
+                                        variant="ghost"
+                                        className="relative h-9 w-9 rounded-full"
+                                    >
                                         <Avatar className="h-9 w-9 border border-border">
-                                            <AvatarImage src={user.profile_photo_url} alt={user.name} />
-                                            <AvatarFallback>{user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                                            <AvatarImage
+                                                src={user.profile_photo_url}
+                                                alt={user.name}
+                                            />
+                                            <AvatarFallback>
+                                                {user?.name?.charAt(0) || 'U'}
+                                            </AvatarFallback>
                                         </Avatar>
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56" align="end" forceMount>
+                                <DropdownMenuContent
+                                    className="w-56"
+                                    align="end"
+                                    forceMount
+                                >
                                     <DropdownMenuLabel className="font-normal">
                                         <div className="flex flex-col space-y-1">
-                                            <p className="text-sm font-medium leading-none">{user.name}</p>
+                                            <p className="text-sm leading-none font-medium">
+                                                {user.name}
+                                            </p>
                                             <p className="text-xs leading-none text-muted-foreground">
                                                 {user.email}
                                             </p>
@@ -263,45 +400,83 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem asChild>
-                                        <Link href={user.role === 'artist' ? '/artist/profile' : '/client/profile'} className="cursor-pointer">
+                                        <Link
+                                            href={
+                                                user.role === 'artist'
+                                                    ? '/artist/profile'
+                                                    : '/client/profile'
+                                            }
+                                            className="cursor-pointer"
+                                        >
                                             <User className="mr-2 h-4 w-4" />
-                                            <span>Mon Profil</span>
+                                            <span>{t('My profile')}</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <Link href="/library" className="cursor-pointer">
+                                        <Link
+                                            href="/library"
+                                            className="cursor-pointer"
+                                        >
                                             <Music className="mr-2 h-4 w-4" />
-                                            <span>Ma Bibliothèque</span>
+                                            <span>{t('My library')}</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <Link href={user.role === 'artist' ? '/artist/orders' : '/client/reservations'} className="cursor-pointer">
+                                        <Link
+                                            href={
+                                                user.role === 'artist'
+                                                    ? '/artist/orders'
+                                                    : '/client/reservations'
+                                            }
+                                            className="cursor-pointer"
+                                        >
                                             <Calendar className="mr-2 h-4 w-4" />
-                                            <span>{user.role === 'artist' ? 'Mes Commandes' : 'Mes réservations'}</span>
+                                            <span>
+                                                {user.role === 'artist'
+                                                    ? t('My orders')
+                                                    : t('My reservations')}
+                                            </span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem asChild>
-                                        <Link href="/settings" className="cursor-pointer">
+                                        <Link
+                                            href="/settings"
+                                            className="cursor-pointer"
+                                        >
                                             <Settings className="mr-2 h-4 w-4" />
-                                            <span>Paramètres</span>
+                                            <span>{t('Settings')}</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem asChild>
-                                        <Link href={logout()} method="post" as="button" className="cursor-pointer w-full">
+                                        <Link
+                                            href={logout()}
+                                            method="post"
+                                            as="button"
+                                            className="w-full cursor-pointer"
+                                        >
                                             <LogOut className="mr-2 h-4 w-4" />
-                                            <span>Déconnexion</span>
+                                            <span>{t('Log out')}</span>
                                         </Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         ) : (
                             <div className="flex items-center gap-2">
-                                <Button variant="ghost" asChild className="hidden sm:inline-flex">
-                                    <Link href={login()}>Connexion</Link>
+                                <Button
+                                    variant="ghost"
+                                    asChild
+                                    className="hidden sm:inline-flex"
+                                >
+                                    <Link href={login()}>{t('Log in')}</Link>
                                 </Button>
-                                <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
-                                    <Link href="/register/selection">Inscription</Link>
+                                <Button
+                                    asChild
+                                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                                >
+                                    <Link href="/register/selection">
+                                        {t('Register')}
+                                    </Link>
                                 </Button>
                             </div>
                         )}
@@ -310,63 +485,82 @@ export default function MainLayout({ children }: PropsWithChildren) {
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 relative z-10">
-                {children}
-            </main>
+            <main className="relative z-10 flex-1">{children}</main>
 
             {/* Footer Placeholder */}
-            <footer className="py-6 md:px-8 md:py-0 border-t border-border/40 bg-muted/30 relative z-10">
+            <footer className="relative z-10 border-t border-border/40 bg-muted/30 py-6 md:px-8 md:py-0">
                 <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-                    <p className="text-balance text-center text-sm leading-loose text-muted-foreground md:text-left">
-                        Built by ARTEMO Team.
+                    <p className="text-center text-sm leading-loose text-balance text-muted-foreground md:text-left">
+                        {t('Built by ARTEMO Team.')}
                     </p>
                 </div>
             </footer>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur z-50 pb-safe">
-                <nav className="flex items-center justify-around h-16">
+            <div className="pb-safe fixed right-0 bottom-0 left-0 z-50 border-t border-border bg-background/95 backdrop-blur md:hidden">
+                <nav className="flex h-16 items-center justify-around">
                     <Link
                         href={home()}
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                            }`}
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                            isActive('/')
+                                ? 'text-primary'
+                                : 'text-muted-foreground hover:text-primary'
+                        }`}
                     >
                         <Home className="h-5 w-5" />
-                        <span>Accueil</span>
+                        <span>{t('Home')}</span>
                     </Link>
                     <Link
                         href="/artists"
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/artists') || isActive('/artist') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                            }`}
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                            isActive('/artists') || isActive('/artist')
+                                ? 'text-primary'
+                                : 'text-muted-foreground hover:text-primary'
+                        }`}
                     >
                         <Search className="h-5 w-5" />
-                        <span>Artistes</span>
+                        <span>{t('Artists')}</span>
                     </Link>
                     <Link
                         href="/artstream"
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/artstream') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                            }`}
+                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                            isActive('/artstream')
+                                ? 'text-primary'
+                                : 'text-muted-foreground hover:text-primary'
+                        }`}
                     >
                         <Music className="h-5 w-5" />
                         <span>ArtStream</span>
                     </Link>
                     {user ? (
                         <Link
-                            href={user.role === 'artist' ? '/artist/dashboard' : '/dashboard'}
-                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/dashboard') || isActive('/artist/dashboard') || isActive('/client') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                                }`}
+                            href={
+                                user.role === 'artist'
+                                    ? '/artist/dashboard'
+                                    : '/dashboard'
+                            }
+                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                                isActive('/dashboard') ||
+                                isActive('/artist/dashboard') ||
+                                isActive('/client')
+                                    ? 'text-primary'
+                                    : 'text-muted-foreground hover:text-primary'
+                            }`}
                         >
                             <Grid className="h-5 w-5" />
-                            <span>Dashboard</span>
+                            <span>{t('Dashboard')}</span>
                         </Link>
                     ) : (
                         <Link
                             href="/register/selection"
-                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${isActive('/register') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
-                                }`}
+                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
+                                isActive('/register')
+                                    ? 'text-primary'
+                                    : 'text-muted-foreground hover:text-primary'
+                            }`}
                         >
                             <Grid className="h-5 w-5" />
-                            <span>Inscription</span>
+                            <span>{t('Register')}</span>
                         </Link>
                     )}
                 </nav>

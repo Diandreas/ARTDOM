@@ -3,11 +3,10 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Toaster } from 'sonner';
-import MiniPlayer from '@/components/Player/MiniPlayer';
 import { AudioProvider } from '@/contexts/AudioContext';
 import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
-import "./i18n";
+import { syncLocale } from './i18n';
 import './echo';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -23,6 +22,8 @@ createInertiaApp({
         return importPage().then((m: any) => m.default || m);
     },
     setup({ el, App, props }) {
+        syncLocale(props.initialPage.props.locale as string | undefined);
+
         const root = createRoot(el);
 
         root.render(

@@ -1,21 +1,29 @@
 import { Link } from '@inertiajs/react';
+import LanguageSwitcher from '@/components/language-switcher';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
-export default function AuthSimpleLayout({ children, title, description }: AuthLayoutProps) {
-    return (
-        <div className="relative flex min-h-svh bg-background overflow-hidden">
+export default function AuthSimpleLayout({
+    children,
+    title,
+    description,
+}: AuthLayoutProps) {
+    const { t } = useAppLocale();
 
+    return (
+        <div className="relative flex min-h-svh overflow-hidden bg-background">
             {/* ── Decorative left panel (hidden on mobile) ── */}
             <div
                 aria-hidden="true"
-                className="hidden lg:flex lg:w-[45%] xl:w-[40%] flex-col relative overflow-hidden"
+                className="relative hidden flex-col overflow-hidden lg:flex lg:w-[45%] xl:w-[40%]"
             >
                 {/* Kente strip top */}
                 <div
-                    className="absolute top-0 left-0 right-0 h-1 z-10"
+                    className="absolute top-0 right-0 left-0 z-10 h-1"
                     style={{
-                        background: 'repeating-linear-gradient(90deg,var(--color-primary) 0,var(--color-primary) 12px,transparent 12px,transparent 16px,#c0392b 16px,#c0392b 28px,transparent 28px,transparent 32px,#27ae60 32px,#27ae60 44px,transparent 44px,transparent 48px)',
+                        background:
+                            'repeating-linear-gradient(90deg,var(--color-primary) 0,var(--color-primary) 12px,transparent 12px,transparent 16px,#c0392b 16px,#c0392b 28px,transparent 28px,transparent 32px,#27ae60 32px,#27ae60 44px,transparent 44px,transparent 48px)',
                     }}
                 />
 
@@ -35,39 +43,54 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
                 <div
                     className="absolute inset-0"
                     style={{
-                        background: 'radial-gradient(ellipse 70% 60% at 40% 50%, oklch(0.65 0.18 80 / 0.18) 0%, transparent 70%)',
+                        background:
+                            'radial-gradient(ellipse 70% 60% at 40% 50%, oklch(0.65 0.18 80 / 0.18) 0%, transparent 70%)',
                     }}
                 />
 
                 {/* Content */}
-                <div className="relative z-10 flex flex-col justify-between h-full p-10">
+                <div className="relative z-10 flex h-full flex-col justify-between p-10">
                     {/* Logo */}
                     <Link href={home()} className="flex items-center gap-3">
-                        <img src="/artemo-logo.png" alt="Artemo" className="h-12 w-12 object-contain" />
-                        <span className="text-2xl font-black tracking-tight text-primary">ARTEMO</span>
+                        <img
+                            src="/artemo-logo.png"
+                            alt="Artemo"
+                            className="h-12 w-12 object-contain"
+                        />
+                        <span className="text-2xl font-black tracking-tight text-primary">
+                            ARTEMO
+                        </span>
                     </Link>
 
                     {/* Main tagline */}
                     <div className="space-y-4">
-                        <p className="text-4xl font-black leading-tight text-background dark:text-foreground">
-                            La musique africaine,{' '}
-                            <span className="text-primary">partout avec toi.</span>
+                        <p className="text-4xl leading-tight font-black text-background dark:text-foreground">
+                            {t('African music,')}{' '}
+                            <span className="text-primary">
+                                {t('everywhere with you.')}
+                            </span>
                         </p>
-                        <p className="text-background/60 dark:text-muted-foreground text-base leading-relaxed max-w-sm">
-                            Streaming, réservation d'artistes, découverte de talents — tout sur une seule plateforme.
+                        <p className="max-w-sm text-base leading-relaxed text-background/60 dark:text-muted-foreground">
+                            {t(
+                                'Streaming, artist booking, and talent discovery on one platform.',
+                            )}
                         </p>
                     </div>
 
                     {/* Bottom stats */}
                     <div className="flex gap-8">
                         {[
-                            { value: '500+', label: 'Artistes' },
-                            { value: '10K+', label: 'Titres' },
-                            { value: '15+', label: 'Pays' },
+                            { value: '500+', label: t('Artists') },
+                            { value: '10K+', label: t('Tracks') },
+                            { value: '15+', label: t('Countries') },
                         ].map(({ value, label }) => (
                             <div key={label}>
-                                <p className="text-2xl font-black text-primary">{value}</p>
-                                <p className="text-xs text-background/50 dark:text-muted-foreground font-medium">{label}</p>
+                                <p className="text-2xl font-black text-primary">
+                                    {value}
+                                </p>
+                                <p className="text-xs font-medium text-background/50 dark:text-muted-foreground">
+                                    {label}
+                                </p>
                             </div>
                         ))}
                     </div>
@@ -75,12 +98,24 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
             </div>
 
             {/* ── Right form panel ── */}
-            <div className="flex flex-1 flex-col items-center justify-center p-6 md:p-10 relative">
+            <div className="relative flex flex-1 flex-col items-center justify-center p-6 md:p-10">
+                <div className="absolute top-4 right-4 z-10">
+                    <LanguageSwitcher compact />
+                </div>
 
                 {/* Mobile logo */}
-                <Link href={home()} className="flex items-center gap-2 mb-8 lg:hidden">
-                    <img src="/artemo-logo.png" alt="Artemo" className="h-10 w-10 object-contain" />
-                    <span className="text-xl font-black text-primary">ARTEMO</span>
+                <Link
+                    href={home()}
+                    className="mb-8 flex items-center gap-2 lg:hidden"
+                >
+                    <img
+                        src="/artemo-logo.png"
+                        alt="Artemo"
+                        className="h-10 w-10 object-contain"
+                    />
+                    <span className="text-xl font-black text-primary">
+                        ARTEMO
+                    </span>
                 </Link>
 
                 {/* Subtle background decoration */}
@@ -96,18 +131,20 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
                 {/* Card */}
                 <div className="relative w-full max-w-sm">
                     {/* Top gold accent line */}
-                    <div className="h-0.5 w-16 bg-primary rounded-full mb-8 mx-auto" />
+                    <div className="mx-auto mb-8 h-0.5 w-16 rounded-full bg-primary" />
 
                     {/* Title block */}
-                    <div className="text-center mb-8 space-y-1.5">
-                        <h1 className="text-2xl font-black text-foreground tracking-tight">{title}</h1>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+                    <div className="mb-8 space-y-1.5 text-center">
+                        <h1 className="text-2xl font-black tracking-tight text-foreground">
+                            {title}
+                        </h1>
+                        <p className="text-sm leading-relaxed text-muted-foreground">
+                            {description}
+                        </p>
                     </div>
 
                     {/* Form */}
-                    <div className="space-y-4">
-                        {children}
-                    </div>
+                    <div className="space-y-4">{children}</div>
                 </div>
             </div>
         </div>

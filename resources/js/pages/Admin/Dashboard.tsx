@@ -12,7 +12,14 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import AdminLayout from '@/layouts/admin-layout';
 
 type Kpis = {
@@ -130,130 +137,188 @@ const formatMoney = (value: number): string => {
     return `${Math.round(value).toLocaleString()} FCFA`;
 };
 
-export default function Dashboard({ kpis, charts, activityTimeline, criticalAlerts, quickActions }: Props) {
-    const maxRevenue = Math.max(...charts.revenue_curve.map((point) => point.total), 1);
-    const maxSignup = Math.max(...charts.signups_bar.map((point) => point.clients + point.artists), 1);
-    const totalCategoryCount = charts.category_donut.reduce((sum, item) => sum + item.count, 0);
+export default function Dashboard({
+    kpis,
+    charts,
+    activityTimeline,
+    criticalAlerts,
+    quickActions,
+}: Props) {
+    const { t } = useAppLocale();
+    const maxRevenue = Math.max(
+        ...charts.revenue_curve.map((point) => point.total),
+        1,
+    );
+    const maxSignup = Math.max(
+        ...charts.signups_bar.map((point) => point.clients + point.artists),
+        1,
+    );
+    const totalCategoryCount = charts.category_donut.reduce(
+        (sum, item) => sum + item.count,
+        0,
+    );
 
     return (
         <AdminLayout
-            title="Dashboard Principal"
-            subtitle="Pilotage global en temps reel de tous les modules."
+            title={t('Main dashboard')}
+            subtitle={t('Global real-time monitoring of all modules.')}
         >
-            <Head title="Admin Dashboard Principal" />
+            <Head title={t('Main admin dashboard')} />
 
             <div className="space-y-8">
                 <section className="space-y-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-semibold">1.1 KPIs Temps Reel</h2>
-                        <Badge variant="secondary">Mise a jour live</Badge>
+                        <h2 className="text-xl font-semibold">
+                            {t('1.1 Real-time KPIs')}
+                        </h2>
+                        <Badge variant="secondary">{t('Live update')}</Badge>
                     </div>
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardDescription>Utilisateurs totaux</CardDescription>
+                                <CardDescription>
+                                    {t('Total users')}
+                                </CardDescription>
                                 <CardTitle>{kpis.users.total}</CardTitle>
                             </CardHeader>
                             <CardContent className="text-xs text-muted-foreground">
-                                Clients: {kpis.users.clients} - Artistes: {kpis.users.artists}
+                                {t('Clients')}: {kpis.users.clients} -{' '}
+                                {t('Artists')}: {kpis.users.artists}
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardDescription>Nouveaux inscrits</CardDescription>
+                                <CardDescription>
+                                    {t('New signups')}
+                                </CardDescription>
                                 <CardTitle>
-                                    24h: {kpis.users.new.last_24h} - 7j: {kpis.users.new.last_7d}
+                                    24h: {kpis.users.new.last_24h} - 7j:{' '}
+                                    {kpis.users.new.last_7d}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="text-xs text-muted-foreground">
-                                30 jours: {kpis.users.new.last_30d}
+                                {t('30 days')}: {kpis.users.new.last_30d}
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardDescription>Artistes</CardDescription>
+                                <CardDescription>
+                                    {t('Artists')}
+                                </CardDescription>
                                 <CardTitle>{kpis.users.artists}</CardTitle>
                             </CardHeader>
                             <CardContent className="text-xs text-muted-foreground">
-                                Actifs: {kpis.artists.active} - En attente: {kpis.artists.pending} - Suspendus:{' '}
-                                {kpis.artists.suspended}
+                                {t('Active')}: {kpis.artists.active} -{' '}
+                                {t('Pending')}: {kpis.artists.pending} -{' '}
+                                {t('Suspended')}: {kpis.artists.suspended}
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardDescription>Revenus</CardDescription>
-                                <CardTitle>{formatMoney(kpis.revenue.month)}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="text-xs text-muted-foreground">
-                                Jour: {formatMoney(kpis.revenue.day)} - Semaine: {formatMoney(kpis.revenue.week)}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardDescription>Commissions plateforme</CardDescription>
-                                <CardTitle>{formatMoney(kpis.commissions.total)}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="text-xs text-muted-foreground">
-                                Mois: {formatMoney(kpis.commissions.month)}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardDescription>Reservations</CardDescription>
-                                <CardTitle>{kpis.reservations.confirmed}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="text-xs text-muted-foreground">
-                                En attente: {kpis.reservations.pending} - Terminees: {kpis.reservations.completed}
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="pb-2">
-                                <CardDescription>Contenus publies</CardDescription>
+                                <CardDescription>
+                                    {t('Revenue')}
+                                </CardDescription>
                                 <CardTitle>
-                                    {kpis.contents.albums + kpis.contents.videos + kpis.contents.courses}
+                                    {formatMoney(kpis.revenue.month)}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="text-xs text-muted-foreground">
-                                Albums: {kpis.contents.albums} - Videos: {kpis.contents.videos} - Cours:{' '}
-                                {kpis.contents.courses}
+                                {t('Day')}: {formatMoney(kpis.revenue.day)} -{' '}
+                                {t('Week')}: {formatMoney(kpis.revenue.week)}
                             </CardContent>
                         </Card>
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardDescription>Signalements / Tickets</CardDescription>
+                                <CardDescription>
+                                    {t('Platform commissions')}
+                                </CardDescription>
+                                <CardTitle>
+                                    {formatMoney(kpis.commissions.total)}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="text-xs text-muted-foreground">
+                                {t('Month')}:{' '}
+                                {formatMoney(kpis.commissions.month)}
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardDescription>
+                                    {t('Reservations')}
+                                </CardDescription>
+                                <CardTitle>
+                                    {kpis.reservations.confirmed}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="text-xs text-muted-foreground">
+                                {t('Pending')}: {kpis.reservations.pending} -{' '}
+                                {t('Completed')}: {kpis.reservations.completed}
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardDescription>
+                                    {t('Published content')}
+                                </CardDescription>
+                                <CardTitle>
+                                    {kpis.contents.albums +
+                                        kpis.contents.videos +
+                                        kpis.contents.courses}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="text-xs text-muted-foreground">
+                                {t('Albums')}: {kpis.contents.albums} -{' '}
+                                {t('Videos')}: {kpis.contents.videos} -{' '}
+                                {t('Courses')}: {kpis.contents.courses}
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardDescription>
+                                    {t('Reports / Tickets')}
+                                </CardDescription>
                                 <CardTitle>
                                     {kpis.reports_pending} / {kpis.tickets.open}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="text-xs text-muted-foreground">
-                                Tickets en cours: {kpis.tickets.in_progress}
+                                {t('Tickets in progress')}:{' '}
+                                {kpis.tickets.in_progress}
                             </CardContent>
                         </Card>
                     </div>
                 </section>
 
                 <section className="space-y-4">
-                    <h2 className="text-xl font-semibold">1.2 Graphiques</h2>
+                    <h2 className="text-xl font-semibold">{t('1.2 Charts')}</h2>
                     <div className="grid gap-4 xl:grid-cols-2">
                         <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <ChartLine className="h-4 w-4" />
-                                    Courbe revenus
+                                    {t('Revenue curve')}
                                 </CardTitle>
-                                <CardDescription>Reservations + Ventes + Abonnements (7j)</CardDescription>
+                                <CardDescription>
+                                    {t(
+                                        'Reservations + Sales + Subscriptions (7d)',
+                                    )}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 {charts.revenue_curve.map((point) => (
                                     <div key={point.day} className="space-y-1">
                                         <div className="flex items-center justify-between text-xs">
                                             <span>{point.day}</span>
-                                            <span>{formatMoney(point.total)}</span>
+                                            <span>
+                                                {formatMoney(point.total)}
+                                            </span>
                                         </div>
                                         <div className="h-2 rounded bg-muted">
                                             <div
                                                 className="h-2 rounded bg-primary"
-                                                style={{ width: `${(point.total / maxRevenue) * 100}%` }}
+                                                style={{
+                                                    width: `${(point.total / maxRevenue) * 100}%`,
+                                                }}
                                             />
                                         </div>
                                     </div>
@@ -265,32 +330,44 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <ChartBar className="h-4 w-4" />
-                                    Inscriptions clients vs artistes
+                                    {t('Client vs artist signups')}
                                 </CardTitle>
-                                <CardDescription>Par jour (7j)</CardDescription>
+                                <CardDescription>
+                                    {t('Per day (7d)')}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-3">
                                 {charts.signups_bar.map((point) => {
                                     const total = point.clients + point.artists;
 
                                     return (
-                                        <div key={point.day} className="space-y-1">
+                                        <div
+                                            key={point.day}
+                                            className="space-y-1"
+                                        >
                                             <div className="flex items-center justify-between text-xs">
                                                 <span>{point.day}</span>
                                                 <span>
-                                                    C: {point.clients} - A: {point.artists}
+                                                    C: {point.clients} - A:{' '}
+                                                    {point.artists}
                                                 </span>
                                             </div>
                                             <div className="flex h-2 overflow-hidden rounded bg-muted">
                                                 <div
                                                     className="bg-primary"
-                                                    style={{ width: `${(point.clients / maxSignup) * 100}%` }}
+                                                    style={{
+                                                        width: `${(point.clients / maxSignup) * 100}%`,
+                                                    }}
                                                 />
                                                 <div
                                                     className="bg-secondary"
-                                                    style={{ width: `${(point.artists / maxSignup) * 100}%` }}
+                                                    style={{
+                                                        width: `${(point.artists / maxSignup) * 100}%`,
+                                                    }}
                                                 />
-                                                {total === 0 ? <div className="w-full bg-muted" /> : null}
+                                                {total === 0 ? (
+                                                    <div className="w-full bg-muted" />
+                                                ) : null}
                                             </div>
                                         </div>
                                     );
@@ -301,13 +378,20 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
                         <Card>
                             <CardHeader>
                                 <CardTitle>Donut categories artistes</CardTitle>
-                                <CardDescription>Repartition des categories principales</CardDescription>
+                                <CardDescription>
+                                    {t('Breakdown of main categories')}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 {charts.category_donut.map((item) => (
-                                    <div key={item.category} className="space-y-1">
+                                    <div
+                                        key={item.category}
+                                        className="space-y-1"
+                                    >
                                         <div className="flex items-center justify-between text-xs">
-                                            <span className="capitalize">{item.category}</span>
+                                            <span className="capitalize">
+                                                {item.category}
+                                            </span>
                                             <span>{item.count}</span>
                                         </div>
                                         <div className="h-2 rounded bg-muted">
@@ -321,34 +405,52 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
                                     </div>
                                 ))}
                                 {charts.category_donut.length === 0 ? (
-                                    <p className="text-sm text-muted-foreground">Aucune categorie disponible.</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('No categories available.')}
+                                    </p>
                                 ) : null}
                             </CardContent>
                         </Card>
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>Taux conversion</CardTitle>
-                                <CardDescription>Visiteurs - Inscrits - Acheteurs</CardDescription>
+                                <CardTitle>{t('Conversion rate')}</CardTitle>
+                                <CardDescription>
+                                    {t('Visitors - Signups - Buyers')}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-3 text-sm">
                                 <div className="rounded border p-3">
-                                    <p className="text-muted-foreground">Visiteurs</p>
+                                    <p className="text-muted-foreground">
+                                        {t('Visitors')}
+                                    </p>
                                     <p className="text-lg font-semibold">
-                                        {charts.conversion_funnel.visitors ?? 'Tracking non configure'}
+                                        {charts.conversion_funnel.visitors ??
+                                            t('Tracking not configured')}
                                     </p>
                                 </div>
                                 <div className="rounded border p-3">
-                                    <p className="text-muted-foreground">Inscrits</p>
-                                    <p className="text-lg font-semibold">{charts.conversion_funnel.signups}</p>
+                                    <p className="text-muted-foreground">
+                                        {t('Signups')}
+                                    </p>
+                                    <p className="text-lg font-semibold">
+                                        {charts.conversion_funnel.signups}
+                                    </p>
                                 </div>
                                 <div className="rounded border p-3">
-                                    <p className="text-muted-foreground">Acheteurs</p>
-                                    <p className="text-lg font-semibold">{charts.conversion_funnel.buyers}</p>
+                                    <p className="text-muted-foreground">
+                                        {t('Buyers')}
+                                    </p>
+                                    <p className="text-lg font-semibold">
+                                        {charts.conversion_funnel.buyers}
+                                    </p>
                                 </div>
                                 <p className="text-xs text-muted-foreground">
-                                    Conversion inscrits vers acheteurs:{' '}
-                                    {charts.conversion_funnel.buyer_rate_from_signup.toFixed(2)}%
+                                    {t('Signup to buyer conversion')}:{' '}
+                                    {charts.conversion_funnel.buyer_rate_from_signup.toFixed(
+                                        2,
+                                    )}
+                                    %
                                 </p>
                             </CardContent>
                         </Card>
@@ -358,23 +460,36 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
                 <section className="grid gap-4 xl:grid-cols-2">
                     <Card>
                         <CardHeader>
-                            <CardTitle>1.3 Activite recente</CardTitle>
+                            <CardTitle>{t('1.3 Recent activity')}</CardTitle>
                             <CardDescription>
-                                Inscriptions, reservations, signalements, retraits, avis.
+                                {t(
+                                    'Signups, reservations, reports, withdrawals, reviews.',
+                                )}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {activityTimeline.map((item) => (
-                                <div key={`${item.type}-${item.occurred_at}-${item.description}`} className="rounded border p-3">
-                                    <p className="text-sm font-medium">{item.title}</p>
-                                    <p className="text-xs text-muted-foreground">{item.description}</p>
+                                <div
+                                    key={`${item.type}-${item.occurred_at}-${item.description}`}
+                                    className="rounded border p-3"
+                                >
+                                    <p className="text-sm font-medium">
+                                        {t(item.title)}
+                                    </p>
                                     <p className="text-xs text-muted-foreground">
-                                        {new Date(item.occurred_at).toLocaleString()}
+                                        {item.description}
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {new Date(
+                                            item.occurred_at,
+                                        ).toLocaleString()}
                                     </p>
                                 </div>
                             ))}
                             {activityTimeline.length === 0 ? (
-                                <p className="text-sm text-muted-foreground">Aucune activite recente.</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {t('No recent activity.')}
+                                </p>
                             ) : null}
                         </CardContent>
                     </Card>
@@ -383,38 +498,52 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <AlertTriangle className="h-4 w-4 text-destructive" />
-                                1.4 Alertes critiques
+                                {t('1.4 Critical alerts')}
                             </CardTitle>
-                            <CardDescription>Elements a traiter en priorite.</CardDescription>
+                            <CardDescription>
+                                {t('Items to process first.')}
+                            </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-3 text-sm">
                             <div className="flex items-center justify-between rounded border p-3">
                                 <span className="flex items-center gap-2">
                                     <UserCheck2 className="h-4 w-4" />
-                                    Artistes en attente validation
+                                    {t('Artists pending validation')}
                                 </span>
-                                <Badge>{criticalAlerts.artists_pending_validation}</Badge>
+                                <Badge>
+                                    {criticalAlerts.artists_pending_validation}
+                                </Badge>
                             </div>
                             <div className="flex items-center justify-between rounded border p-3">
                                 <span className="flex items-center gap-2">
                                     <ShieldAlert className="h-4 w-4" />
-                                    Signalements urgents
+                                    {t('Urgent reports')}
                                 </span>
-                                <Badge variant="destructive">{criticalAlerts.urgent_reports}</Badge>
+                                <Badge variant="destructive">
+                                    {criticalAlerts.urgent_reports}
+                                </Badge>
                             </div>
                             <div className="flex items-center justify-between rounded border p-3">
                                 <span className="flex items-center gap-2">
                                     <Bell className="h-4 w-4" />
-                                    Retraits en attente &gt; 48h
+                                    {t('Withdrawals pending > 48h')}
                                 </span>
-                                <Badge variant="outline">{criticalAlerts.withdrawals_pending_over_48h}</Badge>
+                                <Badge variant="outline">
+                                    {
+                                        criticalAlerts.withdrawals_pending_over_48h
+                                    }
+                                </Badge>
                             </div>
                             <div className="flex items-center justify-between rounded border p-3">
                                 <span className="flex items-center gap-2">
                                     <LifeBuoy className="h-4 w-4" />
-                                    Tickets sans reponse &gt; 24h
+                                    {t('Tickets without response > 24h')}
                                 </span>
-                                <Badge variant="outline">{criticalAlerts.tickets_without_response_over_24h}</Badge>
+                                <Badge variant="outline">
+                                    {
+                                        criticalAlerts.tickets_without_response_over_24h
+                                    }
+                                </Badge>
                             </div>
                         </CardContent>
                     </Card>
@@ -423,20 +552,29 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
                 <section>
                     <Card>
                         <CardHeader>
-                            <CardTitle>1.5 Raccourcis rapides</CardTitle>
-                            <CardDescription>Actions prioritaires sur les modules admin.</CardDescription>
+                            <CardTitle>{t('1.5 Quick shortcuts')}</CardTitle>
+                            <CardDescription>
+                                {t('Priority actions across admin modules.')}
+                            </CardDescription>
                         </CardHeader>
                         <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                             {quickActions.map((action) => (
-                                <Card key={action.label} className="border-primary/20">
+                                <Card
+                                    key={action.label}
+                                    className="border-primary/20"
+                                >
                                     <CardHeader>
-                                        <CardTitle className="text-base">{action.label}</CardTitle>
-                                        <CardDescription>{action.description}</CardDescription>
+                                        <CardTitle className="text-base">
+                                            {t(action.label)}
+                                        </CardTitle>
+                                        <CardDescription>
+                                            {t(action.description)}
+                                        </CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <Button asChild className="w-full">
                                             <Link href={action.href}>
-                                                Ouvrir
+                                                {t('Open')}
                                                 <ArrowRight className="ml-2 h-4 w-4" />
                                             </Link>
                                         </Button>
@@ -450,4 +588,3 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
         </AdminLayout>
     );
 }
-

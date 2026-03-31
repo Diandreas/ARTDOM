@@ -1,6 +1,20 @@
-
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ChevronDown, Play, Pause, SkipBack, SkipForward, Repeat, Repeat1, Shuffle, Heart, ListMusic, Share2, Volume2, VolumeX, MessageCircle } from 'lucide-react';
+import {
+    ChevronDown,
+    Play,
+    Pause,
+    SkipBack,
+    SkipForward,
+    Repeat,
+    Repeat1,
+    Shuffle,
+    Heart,
+    ListMusic,
+    Share2,
+    Volume2,
+    VolumeX,
+    MessageCircle,
+} from 'lucide-react';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
 import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
@@ -11,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import type { Track } from '@/contexts/AudioContext';
 import { useAudio } from '@/contexts/AudioContext';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import { cn } from '@/lib/utils';
 
 interface FullPlayerProps {
@@ -18,8 +33,15 @@ interface FullPlayerProps {
     albumTracks?: Track[];
 }
 
-export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProps) {
-    const { auth, toast: flashToast } = usePage().props as { auth?: { user?: any }; toast?: { type: string; message: string } };
+export default function FullPlayer({
+    initialTrack,
+    albumTracks,
+}: FullPlayerProps) {
+    const { auth, toast: flashToast } = usePage().props as {
+        auth?: { user?: any };
+        toast?: { type: string; message: string };
+    };
+    const { t } = useAppLocale();
     const [isFavorited, setIsFavorited] = useState(false);
     const [localProgress, setLocalProgress] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
@@ -58,7 +80,9 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
         if (sourceRef.current) return; // already connected
 
         try {
-            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const ctx = new (
+                window.AudioContext || (window as any).webkitAudioContext
+            )();
             const analyser = ctx.createAnalyser();
             analyser.fftSize = 64;
             const source = ctx.createMediaElementSource(audioRef.current);
@@ -85,17 +109,23 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
         const draw = () => {
             if (!analyserRef.current) {
                 // Fallback: random bars when analyser unavailable
-                setFreqBars(Array(28).fill(0).map(() => 15 + Math.random() * 85));
+                setFreqBars(
+                    Array(28)
+                        .fill(0)
+                        .map(() => 15 + Math.random() * 85),
+                );
                 animFrameRef.current = requestAnimationFrame(draw);
                 return;
             }
             const data = new Uint8Array(analyserRef.current.frequencyBinCount);
             analyserRef.current.getByteFrequencyData(data);
             // Map 32 frequency bins → 28 bars
-            const bars = Array(28).fill(0).map((_, i) => {
-                const binIndex = Math.floor(i * data.length / 28);
-                return Math.max(4, (data[binIndex] / 255) * 100);
-            });
+            const bars = Array(28)
+                .fill(0)
+                .map((_, i) => {
+                    const binIndex = Math.floor((i * data.length) / 28);
+                    return Math.max(4, (data[binIndex] / 255) * 100);
+                });
             setFreqBars(bars);
             animFrameRef.current = requestAnimationFrame(draw);
         };
@@ -128,7 +158,9 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
     useEffect(() => {
         if (initialTrack && !currentTrack && !hasLoadedInitialTrack.current) {
             if (albumTracks && albumTracks.length > 0) {
-                const trackIndex = albumTracks.findIndex(t => t.id === initialTrack.id);
+                const trackIndex = albumTracks.findIndex(
+                    (t) => t.id === initialTrack.id,
+                );
                 // Load queue without autoplay (false parameter)
                 setQueue(albumTracks, trackIndex, false);
                 hasLoadedInitialTrack.current = true;
@@ -166,14 +198,16 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                     // Revert on error
                     setIsFavorited(!newState);
                 },
-            }
+            },
         );
     };
 
     const handleShare = async () => {
         const track = currentTrack || initialTrack;
         const shareUrl = window.location.href;
-        const shareTitle = track ? `${track.title} — ${track.artist}` : 'ARTEMO';
+        const shareTitle = track
+            ? `${track.title} — ${track.artist}`
+            : 'ARTEMO';
 
         if (navigator.share) {
             try {
@@ -183,7 +217,7 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
             }
         } else {
             await navigator.clipboard.writeText(shareUrl);
-            toast.success('Lien copié dans le presse-papiers');
+            toast.success(t('Link copied to clipboard'));
         }
     };
 
@@ -213,12 +247,14 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
     // Show empty state only if there's no current track AND no initial track
     if (!currentTrack && !initialTrack) {
         return (
-            <div className="h-screen w-full bg-gradient-to-b from-primary/10 to-background flex flex-col items-center justify-center">
-                <Head title="Lecteur - ArtStream" />
+            <div className="flex h-screen w-full flex-col items-center justify-center bg-gradient-to-b from-primary/10 to-background">
+                <Head title={t('Player - ArtStream')} />
                 <div className="text-center">
-                    <p className="text-muted-foreground mb-4">Aucune musique en lecture</p>
+                    <p className="mb-4 text-muted-foreground">
+                        {t('No music playing')}
+                    </p>
                     <Link href="/artstream">
-                        <Button>Parcourir ArtStream</Button>
+                        <Button>{t('Browse ArtStream')}</Button>
                     </Link>
                 </div>
             </div>
@@ -229,32 +265,48 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
     const displayTrack = currentTrack || initialTrack;
 
     return (
-        <div className="h-screen w-full bg-gradient-to-b from-primary/10 to-background flex flex-col">
-            <Head title={`${displayTrack.title} - ${displayTrack.artist}`} />
+        <div className="flex h-screen w-full flex-col bg-gradient-to-b from-primary/10 to-background">
+            <Head
+                title={`${displayTrack?.title ?? 'ArtStream'} - ${displayTrack?.artist ?? 'ARTEMO'}`}
+            />
 
             {/* Header */}
-            <div className="p-4 flex justify-between items-center">
-                <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
-                    <ChevronDown className="w-6 h-6" />
+            <div className="flex items-center justify-between p-4">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => window.history.back()}
+                >
+                    <ChevronDown className="h-6 w-6" />
                 </Button>
                 <div className="text-center">
-                    <span className="text-xs font-bold tracking-widest uppercase text-muted-foreground">Lecture en cours</span>
-                    <p className="text-sm font-semibold">{displayTrack.album || 'Album'}</p>
+                    <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase">
+                        {t('Now playing')}
+                    </span>
+                    <p className="text-sm font-semibold">
+                        {displayTrack?.album || t('Album')}
+                    </p>
                 </div>
                 <div className="w-10" />
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col items-center justify-center p-8 max-w-md mx-auto w-full">
+            <div className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center p-8">
                 {/* Album Art */}
-                <div className="w-full aspect-square bg-muted rounded-2xl shadow-2xl mb-8 overflow-hidden relative group">
+                <div className="group relative mb-8 aspect-square w-full overflow-hidden rounded-2xl bg-muted shadow-2xl">
                     <img
-                        src={displayTrack.image || 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=800&auto=format&fit=crop'}
-                        alt={displayTrack.title}
-                        className={cn('w-full h-full object-cover transition-transform duration-700', isPlaying && 'scale-105')}
+                        src={
+                            displayTrack?.image ||
+                            'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=800&auto=format&fit=crop'
+                        }
+                        alt={displayTrack?.title || t('Album cover')}
+                        className={cn(
+                            'h-full w-full object-cover transition-transform duration-700',
+                            isPlaying && 'scale-105',
+                        )}
                     />
                     {/* Visualizer overlay — real frequency data */}
-                    <div className="absolute bottom-0 left-0 right-0 h-16 flex items-end justify-center gap-[3px] px-4 pb-3 z-10">
+                    <div className="absolute right-0 bottom-0 left-0 z-10 flex h-16 items-end justify-center gap-[3px] px-4 pb-3">
                         {freqBars.map((height, i) => (
                             <div
                                 key={i}
@@ -269,7 +321,7 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                         ))}
                     </div>
                     {/* Gradient overlay for visualizer readability */}
-                    <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent rounded-b-2xl" />
+                    <div className="absolute right-0 bottom-0 left-0 h-20 rounded-b-2xl bg-gradient-to-t from-black/60 to-transparent" />
                 </div>
 
                 {/* Comments Ticker */}
@@ -278,25 +330,36 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                 )}
 
                 {/* Track Info */}
-                <div className="w-full flex justify-between items-center mb-2">
+                <div className="mb-2 flex w-full items-center justify-between">
                     <div className="overflow-hidden">
-                        <h1 className="text-2xl font-bold font-heading truncate">{displayTrack.title}</h1>
-                        <p className="text-lg text-muted-foreground truncate">{displayTrack.artist}</p>
+                        <h1 className="font-heading truncate text-2xl font-bold">
+                            {displayTrack?.title}
+                        </h1>
+                        <p className="truncate text-lg text-muted-foreground">
+                            {displayTrack?.artist}
+                        </p>
                     </div>
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={handleToggleFavorite}
                         className={cn(
-                            isFavorited ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                            isFavorited
+                                ? 'text-primary'
+                                : 'text-muted-foreground hover:text-primary',
                         )}
                     >
-                        <Heart className={cn('w-6 h-6', isFavorited && 'fill-current')} />
+                        <Heart
+                            className={cn(
+                                'h-6 w-6',
+                                isFavorited && 'fill-current',
+                            )}
+                        />
                     </Button>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full space-y-2 mb-8">
+                <div className="mb-8 w-full space-y-2">
                     <Slider
                         value={[localProgress]}
                         max={duration || 100}
@@ -305,41 +368,51 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                         onValueCommit={handleProgressCommit}
                         className="w-full cursor-pointer"
                     />
-                    <div className="flex justify-between text-xs text-muted-foreground font-medium">
+                    <div className="flex justify-between text-xs font-medium text-muted-foreground">
                         <span>{formatTime(localProgress)}</span>
                         <span>{formatTime(duration)}</span>
                     </div>
                 </div>
 
                 {/* Controls */}
-                <div className="w-full flex justify-between items-center mb-8">
+                <div className="mb-8 flex w-full items-center justify-between">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={toggleShuffle}
                         className={cn(
                             'text-muted-foreground hover:text-primary',
-                            isShuffled && 'text-primary'
+                            isShuffled && 'text-primary',
                         )}
                     >
-                        <Shuffle className="w-5 h-5" />
+                        <Shuffle className="h-5 w-5" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-12 w-12" onClick={previous}>
-                        <SkipBack className="w-8 h-8 fill-current" />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-12 w-12"
+                        onClick={previous}
+                    >
+                        <SkipBack className="h-8 w-8 fill-current" />
                     </Button>
                     <Button
                         size="icon"
-                        className="h-16 w-16 rounded-full shadow-xl bg-primary text-primary-foreground hover:bg-primary/90"
+                        className="h-16 w-16 rounded-full bg-primary text-primary-foreground shadow-xl hover:bg-primary/90"
                         onClick={togglePlay}
                     >
                         {isPlaying ? (
-                            <Pause className="w-8 h-8 fill-current" />
+                            <Pause className="h-8 w-8 fill-current" />
                         ) : (
-                            <Play className="w-8 h-8 fill-current ml-1" />
+                            <Play className="ml-1 h-8 w-8 fill-current" />
                         )}
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-12 w-12" onClick={next}>
-                        <SkipForward className="w-8 h-8 fill-current" />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-12 w-12"
+                        onClick={next}
+                    >
+                        <SkipForward className="h-8 w-8 fill-current" />
                     </Button>
                     <Button
                         variant="ghost"
@@ -347,25 +420,30 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                         onClick={toggleRepeat}
                         className={cn(
                             'text-muted-foreground hover:text-primary',
-                            repeatMode !== 'off' && 'text-primary'
+                            repeatMode !== 'off' && 'text-primary',
                         )}
                     >
                         {repeatMode === 'one' ? (
-                            <Repeat1 className="w-5 h-5" />
+                            <Repeat1 className="h-5 w-5" />
                         ) : (
-                            <Repeat className="w-5 h-5" />
+                            <Repeat className="h-5 w-5" />
                         )}
                     </Button>
                 </div>
 
                 {/* Secondary Controls */}
-                <div className="w-full flex justify-between items-center px-4">
-                    <div className="flex items-center gap-2 flex-1">
-                        <Button variant="ghost" size="icon" onClick={toggleMute} className="text-muted-foreground">
+                <div className="flex w-full items-center justify-between px-4">
+                    <div className="flex flex-1 items-center gap-2">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={toggleMute}
+                            className="text-muted-foreground"
+                        >
                             {isMuted ? (
-                                <VolumeX className="w-5 h-5" />
+                                <VolumeX className="h-5 w-5" />
                             ) : (
-                                <Volume2 className="w-5 h-5" />
+                                <Volume2 className="h-5 w-5" />
                             )}
                         </Button>
                         <Slider
@@ -376,8 +454,13 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                             className="w-24 cursor-pointer"
                         />
                     </div>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={handleShare}>
-                        <Share2 className="w-5 h-5" />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-muted-foreground"
+                        onClick={handleShare}
+                    >
+                        <Share2 className="h-5 w-5" />
                     </Button>
                     {displayTrack && (
                         <CommentsSidebar
@@ -390,8 +473,12 @@ export default function FullPlayer({ initialTrack, albumTracks }: FullPlayerProp
                             trackId={displayTrack.id}
                             trackTitle={displayTrack.title}
                             trigger={
-                                <Button variant="ghost" size="icon" className="text-muted-foreground">
-                                    <ListMusic className="w-5 h-5" />
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-muted-foreground"
+                                >
+                                    <ListMusic className="h-5 w-5" />
                                 </Button>
                             }
                         />
@@ -426,15 +513,22 @@ function CommentsTicker({ comments }: { comments: any[] }) {
     return (
         <div
             ref={tickerRef}
-            className="w-full flex items-center gap-2 mb-3 px-2 py-2 rounded-xl bg-black/20 backdrop-blur-sm overflow-hidden"
+            className="mb-3 flex w-full items-center gap-2 overflow-hidden rounded-xl bg-black/20 px-2 py-2 backdrop-blur-sm"
         >
-            <MessageCircle className="w-3.5 h-3.5 text-primary shrink-0" />
+            <MessageCircle className="h-3.5 w-3.5 shrink-0 text-primary" />
             <div
                 className="flex-1 overflow-hidden transition-opacity duration-400"
-                style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.4s ease' }}
+                style={{
+                    opacity: visible ? 1 : 0,
+                    transition: 'opacity 0.4s ease',
+                }}
             >
-                <span className="text-xs font-semibold text-primary mr-1.5">{comment.user?.name}</span>
-                <span className="text-xs text-foreground/80 truncate">{comment.content}</span>
+                <span className="mr-1.5 text-xs font-semibold text-primary">
+                    {comment.user?.name}
+                </span>
+                <span className="truncate text-xs text-foreground/80">
+                    {comment.content}
+                </span>
             </div>
         </div>
     );
