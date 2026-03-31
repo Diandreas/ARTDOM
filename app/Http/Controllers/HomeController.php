@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\CarouselSlide;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -67,10 +68,15 @@ class HomeController extends Controller
             ['key' => 'photographer', 'label' => 'Photographes', 'icon' => 'camera'],
         ];
 
+        $carouselSlides = CarouselSlide::where('is_active', true)
+            ->orderBy('order')
+            ->get(['id', 'title', 'subtitle', 'image_url', 'link_url', 'link_label']);
+
         return Inertia::render('home', [
             'featuredArtists' => $featuredArtists,
             'recentAlbums' => $recentAlbums,
             'categories' => $categories,
+            'carouselSlides' => $carouselSlides,
         ]);
     }
 }
