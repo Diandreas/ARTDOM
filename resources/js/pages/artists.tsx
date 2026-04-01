@@ -1,5 +1,12 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Search, MapPin, Star, SlidersHorizontal, X, Loader2 } from 'lucide-react';
+import {
+    Search,
+    MapPin,
+    Star,
+    SlidersHorizontal,
+    X,
+    Loader2,
+} from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +14,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 import * as ArtistActions from '@/actions/App/Http/Controllers/ArtistController';
 
@@ -50,7 +64,13 @@ interface ArtistsProps {
     filters: Filters;
 }
 
-export default function Artists({ artists, cities, categories, filters }: ArtistsProps) {
+export default function Artists({
+    artists,
+    cities,
+    categories,
+    filters,
+}: ArtistsProps) {
+    const { t } = useAppLocale();
     const [showFilters, setShowFilters] = useState(false);
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [isSearching, setIsSearching] = useState(false);
@@ -62,14 +82,17 @@ export default function Artists({ artists, cities, categories, filters }: Artist
     const applyFilters = (newFilters: Partial<Filters>) => {
         const merged = { ...filters, ...newFilters };
         const cleaned = Object.fromEntries(
-            Object.entries(merged).filter(([, v]) => v !== undefined && v !== null && v !== false && v !== '')
+            Object.entries(merged).filter(
+                ([, v]) =>
+                    v !== undefined && v !== null && v !== false && v !== '',
+            ),
         );
-        
-        router.get(ArtistActions.index().url, cleaned, { 
-            preserveState: true, 
+
+        router.get(ArtistActions.index().url, cleaned, {
+            preserveState: true,
             preserveScroll: true,
             onBefore: () => setIsSearching(true),
-            onFinish: () => setIsSearching(false)
+            onFinish: () => setIsSearching(false),
         });
     };
 
@@ -105,19 +128,27 @@ export default function Artists({ artists, cities, categories, filters }: Artist
     };
 
     const hasActiveFilters =
-        filters.category || filters.city || filters.max_rate || filters.verified || filters.search;
+        filters.category ||
+        filters.city ||
+        filters.max_rate ||
+        filters.verified ||
+        filters.search;
 
     return (
         <MainLayout>
-            <Head title="Tous les Artistes" />
+            <Head title={t('All artists')} />
 
-            <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 md:pb-12">
+            <div className="container mx-auto max-w-7xl px-4 py-8 pb-24 md:px-6 md:pb-12">
                 {/* Search Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold font-heading mb-2 text-foreground">Découvrez nos Artistes</h1>
+                    <h1 className="font-heading mb-2 text-3xl font-bold text-foreground">
+                        {t('Discover our artists')}
+                    </h1>
                     <p className="text-muted-foreground">
-                        {artists.data.length} artiste{artists.data.length > 1 ? 's' : ''} disponible
-                        {artists.data.length > 1 ? 's' : ''}
+                        {artists.data.length}{' '}
+                        {artists.data.length > 1
+                            ? t('artists available')
+                            : t('artist available')}
                     </p>
                 </div>
 
@@ -126,51 +157,61 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                     {/* Search Bar */}
                     <form onSubmit={handleSearchSubmit} className="relative">
                         {isSearching ? (
-                            <Loader2 className="absolute left-3 top-3 h-5 w-5 text-primary animate-spin" />
+                            <Loader2 className="absolute top-3 left-3 h-5 w-5 animate-spin text-primary" />
                         ) : (
-                            <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                            <Search className="absolute top-3 left-3 h-5 w-5 text-muted-foreground" />
                         )}
                         <Input
                             type="search"
-                            placeholder="Rechercher un artiste par nom..."
-                            className="pl-10 h-12"
+                            placeholder={t('Search an artist by name...')}
+                            className="h-12 pl-10"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </form>
 
                     {/* Filter Toggle & Categories */}
-                    <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex flex-col gap-4 sm:flex-row">
                         <Button
                             variant="outline"
                             onClick={() => setShowFilters(!showFilters)}
                             className="gap-2"
                         >
-                            <SlidersHorizontal className="w-4 h-4" />
-                            Filtres
+                            <SlidersHorizontal className="h-4 w-4" />
+                            {t('Filters')}
                             {hasActiveFilters && (
-                                <Badge className="ml-1 h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                                <Badge className="ml-1 flex h-5 w-5 items-center justify-center rounded-full p-0">
                                     !
                                 </Badge>
                             )}
                         </Button>
 
                         {/* Categories Quick Filter */}
-                        <div className="flex gap-2 overflow-x-auto scrollbar-hide flex-1">
+                        <div className="scrollbar-hide flex flex-1 gap-2 overflow-x-auto">
                             <Button
-                                variant={!filters.category ? 'default' : 'outline'}
+                                variant={
+                                    !filters.category ? 'default' : 'outline'
+                                }
                                 size="sm"
-                                onClick={() => applyFilters({ category: undefined })}
+                                onClick={() =>
+                                    applyFilters({ category: undefined })
+                                }
                                 className="whitespace-nowrap"
                             >
-                                Tous
+                                {t('All')}
                             </Button>
                             {categories.map((cat) => (
                                 <Button
                                     key={cat.key}
-                                    variant={filters.category === cat.key ? 'default' : 'outline'}
+                                    variant={
+                                        filters.category === cat.key
+                                            ? 'default'
+                                            : 'outline'
+                                    }
                                     size="sm"
-                                    onClick={() => applyFilters({ category: cat.key })}
+                                    onClick={() =>
+                                        applyFilters({ category: cat.key })
+                                    }
                                     className="whitespace-nowrap capitalize"
                                 >
                                     {cat.label}
@@ -183,23 +224,37 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                     {showFilters && (
                         <Card>
                             <CardContent className="pt-6">
-                                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                                     {/* City Filter */}
                                     <div className="space-y-2">
-                                        <Label>Ville</Label>
+                                        <Label>{t('City')}</Label>
                                         <Select
                                             value={filters.city || 'all'}
                                             onValueChange={(value) =>
-                                                applyFilters({ city: value === 'all' ? undefined : value })
+                                                applyFilters({
+                                                    city:
+                                                        value === 'all'
+                                                            ? undefined
+                                                            : value,
+                                                })
                                             }
                                         >
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Toutes les villes" />
+                                                <SelectValue
+                                                    placeholder={t(
+                                                        'All cities',
+                                                    )}
+                                                />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="all">Toutes les villes</SelectItem>
+                                                <SelectItem value="all">
+                                                    {t('All cities')}
+                                                </SelectItem>
                                                 {cities.map((city) => (
-                                                    <SelectItem key={city} value={city}>
+                                                    <SelectItem
+                                                        key={city}
+                                                        value={city}
+                                                    >
                                                         {city}
                                                     </SelectItem>
                                                 ))}
@@ -209,54 +264,90 @@ export default function Artists({ artists, cities, categories, filters }: Artist
 
                                     {/* Max Rate Filter */}
                                     <div className="space-y-2">
-                                        <Label>Tarif maximum</Label>
+                                        <Label>{t('Maximum rate')}</Label>
                                         <Select
-                                            value={filters.max_rate?.toString() || 'all'}
+                                            value={
+                                                filters.max_rate?.toString() ||
+                                                'all'
+                                            }
                                             onValueChange={(value) =>
-                                                applyFilters({ max_rate: value === 'all' ? undefined : parseInt(value) })
+                                                applyFilters({
+                                                    max_rate:
+                                                        value === 'all'
+                                                            ? undefined
+                                                            : parseInt(value),
+                                                })
                                             }
                                         >
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Tous les tarifs" />
+                                                <SelectValue
+                                                    placeholder={t('All rates')}
+                                                />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="all">Tous les tarifs</SelectItem>
-                                                <SelectItem value="25000">Jusqu'à 25,000 FCFA</SelectItem>
-                                                <SelectItem value="50000">Jusqu'à 50,000 FCFA</SelectItem>
-                                                <SelectItem value="75000">Jusqu'à 75,000 FCFA</SelectItem>
-                                                <SelectItem value="100000">Jusqu'à 100,000 FCFA</SelectItem>
+                                                <SelectItem value="all">
+                                                    {t('All rates')}
+                                                </SelectItem>
+                                                <SelectItem value="25000">
+                                                    {t("Up to 25,000 FCFA")}
+                                                </SelectItem>
+                                                <SelectItem value="50000">
+                                                    {t("Up to 50,000 FCFA")}
+                                                </SelectItem>
+                                                <SelectItem value="75000">
+                                                    {t("Up to 75,000 FCFA")}
+                                                </SelectItem>
+                                                <SelectItem value="100000">
+                                                    {t("Up to 100,000 FCFA")}
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
 
                                     {/* Sort Filter */}
                                     <div className="space-y-2">
-                                        <Label>Trier par</Label>
+                                        <Label>{t('Sort by')}</Label>
                                         <Select
                                             value={filters.sort}
-                                            onValueChange={(value) => applyFilters({ sort: value })}
+                                            onValueChange={(value) =>
+                                                applyFilters({ sort: value })
+                                            }
                                         >
                                             <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="rating">Meilleures notes</SelectItem>
-                                                <SelectItem value="rate_asc">Prix croissant</SelectItem>
-                                                <SelectItem value="rate_desc">Prix décroissant</SelectItem>
+                                                <SelectItem value="rating">
+                                                    {t('Best rated')}
+                                                </SelectItem>
+                                                <SelectItem value="rate_asc">
+                                                    {t('Price ascending')}
+                                                </SelectItem>
+                                                <SelectItem value="rate_desc">
+                                                    {t('Price descending')}
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
 
                                     {/* Verified Filter */}
                                     <div className="space-y-2">
-                                        <Label>Vérification</Label>
+                                        <Label>{t('Verification')}</Label>
                                         <Button
-                                            variant={filters.verified ? 'default' : 'outline'}
+                                            variant={
+                                                filters.verified
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
                                             className="w-full justify-start"
-                                            onClick={() => applyFilters({ verified: !filters.verified })}
+                                            onClick={() =>
+                                                applyFilters({
+                                                    verified: !filters.verified,
+                                                })
+                                            }
                                         >
-                                            <Star className="w-4 h-4 mr-2" />
-                                            Vérifiés uniquement
+                                            <Star className="mr-2 h-4 w-4" />
+                                            {t('Verified only')}
                                         </Button>
                                     </div>
                                 </div>
@@ -268,8 +359,8 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                                         onClick={clearFilters}
                                         className="mt-4 gap-2"
                                     >
-                                        <X className="w-4 h-4" />
-                                        Réinitialiser les filtres
+                                        <X className="h-4 w-4" />
+                                        {t('Reset filters')}
                                     </Button>
                                 )}
                             </CardContent>
@@ -280,46 +371,61 @@ export default function Artists({ artists, cities, categories, filters }: Artist
                 {/* Artists Grid */}
                 {artists.data.length > 0 ? (
                     <>
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {artists.data.map((artist) => (
-                                <Link key={artist.id} href={ArtistActions.show(artist.id).url}>
-                                    <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
-                                        <div className="aspect-square relative overflow-hidden bg-muted">
+                                <Link
+                                    key={artist.id}
+                                    href={ArtistActions.show(artist.id).url}
+                                >
+                                    <Card className="h-full cursor-pointer overflow-hidden transition-shadow hover:shadow-lg">
+                                        <div className="relative aspect-square overflow-hidden bg-muted">
                                             <img
                                                 src={artist.profile_photo}
                                                 alt={artist.stage_name}
-                                                className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+                                                className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                                             />
                                             {artist.is_verified && (
                                                 <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
-                                                    <Star className="w-3 h-3 mr-1 fill-current" />
-                                                    Vérifié
+                                                    <Star className="mr-1 h-3 w-3 fill-current" />
+                                                    {t('Verified')}
                                                 </Badge>
                                             )}
                                             {artist.rating > 0 && (
-                                                <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur text-white px-2 py-1 rounded-full flex items-center gap-1 text-xs font-medium">
-                                                    <Star className="w-3 h-3 fill-current" />
+                                                <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 text-xs font-medium text-white backdrop-blur">
+                                                    <Star className="h-3 w-3 fill-current" />
                                                     {artist.rating.toFixed(1)}
                                                 </div>
                                             )}
                                         </div>
                                         <CardHeader className="pb-3">
-                                            <CardTitle className="text-lg truncate">{artist.stage_name}</CardTitle>
+                                            <CardTitle className="truncate text-lg">
+                                                {artist.stage_name}
+                                            </CardTitle>
                                             <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                                <MapPin className="w-3 h-3" />
+                                                <MapPin className="h-3 w-3" />
                                                 {artist.city}
                                             </div>
                                         </CardHeader>
                                         <CardContent>
-                                            <div className="flex flex-wrap gap-2 mb-3">
-                                                {artist.categories.slice(0, 2).map((category) => (
-                                                    <Badge key={category} variant="secondary" className="text-xs">
-                                                        {categoryLabel(category)}
-                                                    </Badge>
-                                                ))}
+                                            <div className="mb-3 flex flex-wrap gap-2">
+                                                {artist.categories
+                                                    .slice(0, 2)
+                                                    .map((category) => (
+                                                        <Badge
+                                                            key={category}
+                                                            variant="secondary"
+                                                            className="text-xs"
+                                                        >
+                                                            {categoryLabel(
+                                                                category,
+                                                            )}
+                                                        </Badge>
+                                                    ))}
                                             </div>
                                             <div className="text-sm font-medium text-primary">
-                                                À partir de {artist.base_rate.toLocaleString()} FCFA
+                                                {t('Starting from')}{' '}
+                                                {artist.base_rate.toLocaleString()}{' '}
+                                                FCFA
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -329,26 +435,39 @@ export default function Artists({ artists, cities, categories, filters }: Artist
 
                         {/* Pagination */}
                         {artists.last_page > 1 && (
-                            <div className="flex justify-center gap-2 mt-8">
-                                {artists.links.map((link: any, index: number) => (
-                                    <Button
-                                        key={index}
-                                        variant={link.active ? 'default' : 'outline'}
-                                        size="sm"
-                                        disabled={!link.url}
-                                        onClick={() => link.url && router.visit(link.url)}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                    />
-                                ))}
+                            <div className="mt-8 flex justify-center gap-2">
+                                {artists.links.map(
+                                    (link: any, index: number) => (
+                                        <Button
+                                            key={index}
+                                            variant={
+                                                link.active
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            size="sm"
+                                            disabled={!link.url}
+                                            onClick={() =>
+                                                link.url &&
+                                                router.visit(link.url)
+                                            }
+                                            dangerouslySetInnerHTML={{
+                                                __html: link.label,
+                                            }}
+                                        />
+                                    ),
+                                )}
                             </div>
                         )}
                     </>
                 ) : (
                     <Card>
                         <CardContent className="pt-12 pb-12 text-center">
-                            <p className="text-muted-foreground mb-4">Aucun artiste trouvé avec ces critères.</p>
+                            <p className="mb-4 text-muted-foreground">
+                                {t('No artists found with these filters.')}
+                            </p>
                             <Button onClick={clearFilters} variant="outline">
-                                Réinitialiser les filtres
+                                {t('Reset filters')}
                             </Button>
                         </CardContent>
                     </Card>

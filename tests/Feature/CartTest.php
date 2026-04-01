@@ -37,6 +37,19 @@ test('authenticated client can view cart', function () {
     );
 });
 
+test('cart page shares the active locale with inertia', function () {
+    $response = $this
+        ->actingAs($this->client)
+        ->withSession(['locale' => 'en'])
+        ->get(route('client.cart.index'));
+
+    $response
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Client/Cart/Index')
+            ->where('locale', 'en'));
+});
+
 test('cart page requires authentication', function () {
     $response = $this->get(route('client.cart.index'));
 

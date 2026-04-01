@@ -51,6 +51,21 @@ it('admin can export monthly report as csv', function () {
         ->toContain('admin-report-');
 });
 
+it('admin dashboard shares the active locale with inertia', function () {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this
+        ->actingAs($admin)
+        ->withSession(['locale' => 'en'])
+        ->get(route('admin.dashboard'));
+
+    $response
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('Admin/Dashboard')
+            ->where('locale', 'en'));
+});
+
 it('admin can send global notification to active clients', function () {
     $admin = User::factory()->admin()->create();
     User::factory()->create(['role' => 'client', 'is_active' => true]);

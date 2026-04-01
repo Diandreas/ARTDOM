@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\CarouselSlide;
 use App\Models\User;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -68,9 +70,7 @@ class HomeController extends Controller
             ['key' => 'photographer', 'label' => 'Photographes', 'icon' => 'camera'],
         ];
 
-        $carouselSlides = CarouselSlide::where('is_active', true)
-            ->orderBy('order')
-            ->get(['id', 'title', 'subtitle', 'image_url', 'link_url', 'link_label']);
+        $carouselSlides = $this->getCarouselSlides();
 
         return Inertia::render('home', [
             'featuredArtists' => $featuredArtists,
@@ -78,5 +78,17 @@ class HomeController extends Controller
             'categories' => $categories,
             'carouselSlides' => $carouselSlides,
         ]);
+    }
+
+    protected function getCarouselSlides(): Collection
+    {
+        if (! Schema::hasTable('carousel_slides')) {
+            return collect();
+        }
+
+        return CarouselSlide::query()
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->get(['id', 'title', 'subtitle', 'image_url', 'link_url', 'link_label']);
     }
 }

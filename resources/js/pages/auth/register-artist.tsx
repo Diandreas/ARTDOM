@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import AuthLayout from '@/layouts/auth-layout';
 import { login } from '@/routes';
 // Note: Using a placeholder route for now as register_artist might not exist in backend yet
@@ -12,12 +13,14 @@ import { login } from '@/routes';
 import { store } from '@/routes/register';
 
 export default function RegisterArtist() {
+    const { t } = useAppLocale();
+
     return (
         <AuthLayout
-            title="Inscription Artiste"
-            description="Rejoignez la communauté des créateurs d'émotions"
+            title={t('Artist registration')}
+            description={t('Join the community of emotion creators')}
         >
-            <Head title="Inscription Artiste" />
+            <Head title={t('Artist registration')} />
 
             <Form
                 {...store.form()} // Temporarily using standard register route, needs backend update
@@ -29,7 +32,9 @@ export default function RegisterArtist() {
                     <div className="grid gap-6">
                         {/* Personal Info */}
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Nom complet (État Civil)</Label>
+                            <Label htmlFor="name">
+                                {t('Full legal name')}
+                            </Label>
                             <Input
                                 id="name"
                                 name="name"
@@ -37,7 +42,7 @@ export default function RegisterArtist() {
                                 required
                                 autoFocus
                                 autoComplete="name"
-                                placeholder="Jean Dupont"
+                                placeholder="John Doe"
                             />
                             {/* @ts-ignore */}
                             {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
@@ -47,7 +52,9 @@ export default function RegisterArtist() {
 
                         {/* Artist Info */}
                         <div className="grid gap-2">
-                            <Label htmlFor="stage_name">Nom de scène</Label>
+                            <Label htmlFor="stage_name">
+                                {t('Stage name')}
+                            </Label>
                             <Input
                                 id="stage_name"
                                 name="stage_name"
@@ -57,49 +64,69 @@ export default function RegisterArtist() {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="category">Catégorie principale</Label>
+                            <Label htmlFor="category">
+                                {t('Main category')}
+                            </Label>
                             <Select name="category">
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Sélectionner une catégorie" />
+                                    <SelectValue
+                                        placeholder={t('Select a category')}
+                                    />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="singer">Chant</SelectItem>
-                                    <SelectItem value="dancer">Danse</SelectItem>
-                                    <SelectItem value="painter">Peinture</SelectItem>
-                                    <SelectItem value="musician">Musique instrumentale</SelectItem>
+                                    <SelectItem value="singer">
+                                        {t('Singing')}
+                                    </SelectItem>
+                                    <SelectItem value="dancer">
+                                        {t('Dance')}
+                                    </SelectItem>
+                                    <SelectItem value="painter">
+                                        {t('Painting')}
+                                    </SelectItem>
+                                    <SelectItem value="musician">
+                                        {t('Instrumental music')}
+                                    </SelectItem>
                                     <SelectItem value="dj">DJ</SelectItem>
-                                    <SelectItem value="animator">Animation</SelectItem>
+                                    <SelectItem value="animator">
+                                        {t('Hosting')}
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="bio">Bio courte (200 caractères max)</Label>
+                            <Label htmlFor="bio">
+                                {t('Short bio (200 characters max)')}
+                            </Label>
                             <Textarea
                                 id="bio"
                                 name="bio"
-                                placeholder="Décrivez votre art en quelques mots..."
+                                placeholder={t(
+                                    'Describe your art in a few words...',
+                                )}
                                 maxLength={200}
                             />
                         </div>
 
                         {/* Contact Info */}
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email professionnel</Label>
+                            <Label htmlFor="email">
+                                {t('Professional email')}
+                            </Label>
                             <Input
                                 id="email"
                                 name="email"
                                 type="email"
                                 required
                                 autoComplete="email"
-                                placeholder="contact@artiste.com"
+                                placeholder="contact@artist.com"
                             />
                             {/* @ts-ignore */}
                             {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="phone">Téléphone</Label>
+                            <Label htmlFor="phone">{t('Phone')}</Label>
                             <Input
                                 id="phone"
                                 name="phone"
@@ -112,7 +139,7 @@ export default function RegisterArtist() {
 
                         {/* Security */}
                         <div className="grid gap-2">
-                            <Label htmlFor="password">Mot de passe</Label>
+                            <Label htmlFor="password">{t('Password')}</Label>
                             <Input
                                 id="password"
                                 name="password"
@@ -125,7 +152,9 @@ export default function RegisterArtist() {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="password_confirmation">Confirmer le mot de passe</Label>
+                            <Label htmlFor="password_confirmation">
+                                {t('Confirm password')}
+                            </Label>
                             <Input
                                 id="password_confirmation"
                                 name="password_confirmation"
@@ -136,13 +165,15 @@ export default function RegisterArtist() {
                         </div>
 
                         <Button type="submit" className="w-full" disabled={processing}>
-                            {processing ? 'Chargement...' : "S'inscrire et créer mon profil"}
+                            {processing
+                                ? t('Loading...')
+                                : t('Sign up and create my profile')}
                         </Button>
 
                         <div className="text-center text-sm text-muted-foreground">
-                            Vous avez déjà un compte ?{' '}
+                            {t('Already have an account?')}{' '}
                             <Link href={login()} className="font-medium text-primary hover:underline">
-                                Se connecter
+                                {t('Log in')}
                             </Link>
                         </div>
                     </div>

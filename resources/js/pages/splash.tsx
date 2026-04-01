@@ -1,9 +1,12 @@
 
 import { Head, router } from '@inertiajs/react';
 import { useEffect } from 'react';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import { onboarding } from '@/routes/index';
 
 export default function Splash() {
+    const { t } = useAppLocale();
+
     useEffect(() => {
         const timer = setTimeout(() => {
             // Check if user is authenticated or has seen onboarding (mock logic)
@@ -16,7 +19,7 @@ export default function Splash() {
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground">
-            <Head title="Bienvenue" />
+            <Head title={t('Welcome')} />
 
             <div className="flex flex-col items-center animate-pulse">
                 {/* Logo Placeholder */}
@@ -29,7 +32,7 @@ export default function Splash() {
                 </h1>
 
                 <p className="text-lg text-muted-foreground font-medium italic">
-                    "Artistes d'émotions, messagers de cœurs"
+                    "{t('Artists of emotion, messengers of hearts')}"
                 </p>
             </div>
         </div>
