@@ -25,7 +25,6 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useAppLocale } from '@/hooks/use-app-locale';
-import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 interface WalletProps {
