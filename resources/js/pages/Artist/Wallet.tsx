@@ -1,6 +1,5 @@
-import { Head, useForm, router, usePage } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { Wallet as WalletIcon, ArrowUpRight, ArrowDownRight, Clock, Building, Download, CreditCard, Banknote } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
@@ -25,13 +24,34 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { useAppLocale } from '@/hooks/use-app-locale';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 interface WalletProps {
-    wallet: any;
+    wallet: {
+        balance: number;
+        pending_balance: number;
+        currency: string;
+        transactions?: Array<{
+            id: string;
+            type: string;
+            created_at: string;
+            reference_id?: string | null;
+            net_amount: number;
+        }>;
+        withdrawals?: Array<{
+            id: string;
+            method: 'mobile_money' | 'bank_transfer' | 'paypal';
+            amount: number;
+            net_amount: number;
+            status: 'pending' | 'completed' | 'rejected';
+            requested_at: string;
+        }>;
+    };
 }
-
 export default function Wallet({ wallet }: WalletProps) {
+    const { t, dateLocale, locale } = useAppLocale();
     const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
 
     const form = useForm({
@@ -44,7 +64,6 @@ export default function Wallet({ wallet }: WalletProps) {
         }
     });
 
-    const { url } = usePage();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -56,7 +75,7 @@ export default function Wallet({ wallet }: WalletProps) {
     if (isLoading) {
         return (
             <MainLayout>
-                <Head title="Mon Portefeuille" />
+                <Head title={t('My Wallet')} />
                 <WalletSkeleton />
             </MainLayout>
         );
@@ -67,12 +86,12 @@ export default function Wallet({ wallet }: WalletProps) {
 
         let isValid = true;
         if (parseFloat(form.data.amount) < 1000) {
-            form.setError('amount', 'Le montant minimum est de 1000 FCFA');
+            form.setError('amount', t('The minimum amount is 1000 FCFA'));
             isValid = false;
         }
 
         if (form.data.method === 'mobile_money' && !form.data.account_details.phone) {
-            form.setError('account_details.phone' as any, 'Numéro de téléphone requis');
+            form.setError('account_details.phone', t('Phone number is required'));
             isValid = false;
         }
 
@@ -82,85 +101,85 @@ export default function Wallet({ wallet }: WalletProps) {
             preserveScroll: true,
             onSuccess: () => {
                 setIsWithdrawOpen(false);
-                toast.success('Demande de retrait enregistrée avec succès');
+                toast.success(t('Withdrawal request submitted successfully'));
                 form.reset();
             },
             onError: () => {
-                toast.error('Erreur lors de la demande de retrait');
+                toast.error(t('An error occurred while submitting the withdrawal request'));
             }
         });
     };
 
     const formatMoney = (amount: number) => {
-        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: wallet.currency || 'XOF' }).format(amount || 0);
+        return new Intl.NumberFormat(locale === 'en' ? 'en-US' : 'fr-FR', { style: 'currency', currency: wallet.currency || 'XOF' }).format(amount || 0);
     };
 
     return (
         <MainLayout>
-            <Head title="Mon Portefeuille" />
+            <Head title={t('My Wallet')} />
 
             <div className="container mx-auto py-8 px-4 max-w-6xl space-y-8">
                 <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Mon Portefeuille</h1>
-                        <p className="text-muted-foreground">Gérez vos revenus et retraits de fonds.</p>
+                        <h1 className="text-3xl font-bold tracking-tight">{t('My Wallet')}</h1>
+                        <p className="text-muted-foreground">{t('Manage your earnings and withdrawals.')}</p>
                     </div>
 
                     <Dialog open={isWithdrawOpen} onOpenChange={setIsWithdrawOpen}>
                         <DialogTrigger asChild>
                             <Button size="lg" className="gap-2" disabled={wallet.balance < 1000}>
                                 <ArrowUpRight className="w-4 h-4" />
-                                Retirer des fonds
+                                {t('Withdraw funds')}
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
                             <form onSubmit={handleWithdraw}>
                                 <DialogHeader>
-                                    <DialogTitle>Demander un retrait</DialogTitle>
+                                    <DialogTitle>{t('Request a withdrawal')}</DialogTitle>
                                     <DialogDescription>
-                                        Transférez votre solde disponible vers votre compte bancaire ou mobile money.
+                                        {t('Transfer your available balance to your bank account or mobile money.')}
                                     </DialogDescription>
                                 </DialogHeader>
 
                                 <div className="space-y-4 py-4">
                                     <div className="p-4 bg-muted/50 rounded-lg flex justify-between items-center">
-                                        <span className="text-sm">Solde disponible</span>
+                                        <span className="text-sm">{t('Available balance')}</span>
                                         <span className="font-bold text-lg">{formatMoney(wallet.balance)}</span>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label>Montant à retirer</Label>
+                                        <Label>{t('Amount to withdraw')}</Label>
                                         <Input
                                             type="number"
                                             min="1000"
                                             max={wallet.balance}
                                             value={form.data.amount}
                                             onChange={e => form.setData('amount', e.target.value)}
-                                            placeholder="Ex: 15000"
+                                            placeholder={t('Example: 15000')}
                                         />
                                         {form.errors.amount && <p className="text-sm text-destructive">{form.errors.amount}</p>}
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label>Méthode de retrait</Label>
+                                        <Label>{t('Withdrawal method')}</Label>
                                         <Select
                                             value={form.data.method}
-                                            onValueChange={(val: any) => form.setData('method', val)}
+                                            onValueChange={(val: 'mobile_money' | 'bank_transfer' | 'paypal') => form.setData('method', val)}
                                         >
                                             <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="mobile_money">Mobile Money (-2% frais)</SelectItem>
-                                                <SelectItem value="bank_transfer">Virement Bancaire (-1% frais)</SelectItem>
-                                                <SelectItem value="paypal">PayPal (-3% frais)</SelectItem>
+                                                <SelectItem value="mobile_money">{t('Mobile Money (-2% fee)')}</SelectItem>
+                                                <SelectItem value="bank_transfer">{t('Bank transfer (-1% fee)')}</SelectItem>
+                                                <SelectItem value="paypal">{t('PayPal (-3% fee)')}</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
 
                                     {form.data.method === 'mobile_money' && (
                                         <div className="space-y-2">
-                                            <Label>Numéro Mobile Money</Label>
+                                            <Label>{t('Mobile Money number')}</Label>
                                             <Input
                                                 type="tel"
                                                 placeholder="+225 00 00 00 00 00"
@@ -182,7 +201,7 @@ export default function Wallet({ wallet }: WalletProps) {
 
                                     {form.data.method === 'paypal' && (
                                         <div className="space-y-2">
-                                            <Label>Email PayPal</Label>
+                                            <Label>{t('PayPal email')}</Label>
                                             <Input
                                                 type="email"
                                                 value={form.data.account_details.email}
@@ -192,8 +211,8 @@ export default function Wallet({ wallet }: WalletProps) {
                                     )}
                                 </div>
                                 <DialogFooter>
-                                    <Button variant="outline" type="button" onClick={() => setIsWithdrawOpen(false)}>Annuler</Button>
-                                    <Button type="submit" disabled={form.processing}>Confirmer le retrait</Button>
+                                    <Button variant="outline" type="button" onClick={() => setIsWithdrawOpen(false)}>{t('Cancel')}</Button>
+                                    <Button type="submit" disabled={form.processing}>{t('Confirm withdrawal')}</Button>
                                 </DialogFooter>
                             </form>
                         </DialogContent>
@@ -203,36 +222,36 @@ export default function Wallet({ wallet }: WalletProps) {
                 <div className="grid gap-6 md:grid-cols-3">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium">Solde Disponible</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t('Available Balance')}</CardTitle>
                             <WalletIcon className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-amber-600 dark:text-amber-500">{formatMoney(wallet.balance)}</div>
-                            <p className="text-xs text-muted-foreground mt-1">Prêt à être retiré</p>
+                            <p className="text-xs text-muted-foreground mt-1">{t('Ready to be withdrawn')}</p>
                         </CardContent>
                     </Card>
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium">En Attente</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t('Pending')}</CardTitle>
                             <Clock className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{formatMoney(wallet.pending_balance)}</div>
-                            <p className="text-xs text-muted-foreground mt-1">Sera libéré après prestations</p>
+                            <p className="text-xs text-muted-foreground mt-1">{t('Will be released after services are completed')}</p>
                         </CardContent>
                     </Card>
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium">Revenus Totaux</CardTitle>
+                            <CardTitle className="text-sm font-medium">{t('Total Earnings')}</CardTitle>
                             <Building className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">
                                 {formatMoney(Number(wallet.balance) + Number(wallet.pending_balance))}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1">Gains cumulés globaux</p>
+                            <p className="text-xs text-muted-foreground mt-1">{t('Overall cumulative earnings')}</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -242,17 +261,17 @@ export default function Wallet({ wallet }: WalletProps) {
                     <Card className="lg:col-span-2">
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle>Opérations Récentes</CardTitle>
-                                <CardDescription>Dernières transactions sur votre portefeuille</CardDescription>
+                                <CardTitle>{t('Recent Activity')}</CardTitle>
+                                <CardDescription>{t('Latest transactions on your wallet')}</CardDescription>
                             </div>
                             <Button variant="outline" size="sm" onClick={() => window.location.href = '/artist/wallet/export'}>
-                                <Download className="w-4 h-4 mr-2" /> Exporter
+                                <Download className="w-4 h-4 mr-2" /> {t('Export')}
                             </Button>
                         </CardHeader>
                         <CardContent>
                             {wallet.transactions?.length > 0 ? (
                                 <div className="space-y-4">
-                                    {wallet.transactions.map((tx: any) => (
+                                    {wallet.transactions.map((tx) => (
                                         <div key={tx.id} className="flex items-center justify-between p-3 border rounded-lg">
                                             <div className="flex items-center gap-3">
                                                 <div className={`p-2 rounded-full ${tx.type.includes('credit') ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-500' :
@@ -265,13 +284,13 @@ export default function Wallet({ wallet }: WalletProps) {
                                                 </div>
                                                 <div>
                                                     <p className="font-medium text-sm">
-                                                        {tx.type === 'credit_reservation' ? 'Paiement Prestation' :
-                                                            tx.type === 'pending_reservation' ? 'Paiement en attente' :
-                                                                tx.type === 'debit_withdrawal' ? 'Demande de Retrait' : tx.type}
+                                                        {tx.type === 'credit_reservation' ? t('Service payment') :
+                                                            tx.type === 'pending_reservation' ? t('Pending payment') :
+                                                                tx.type === 'debit_withdrawal' ? t('Withdrawal request') : tx.type}
                                                     </p>
                                                     <p className="text-xs text-muted-foreground">
-                                                        {format(new Date(tx.created_at), 'dd MMM yyyy HH:mm', { locale: fr })}
-                                                        {tx.reference_id && ` • Réf: ${tx.reference_id.substring(0, 8)}`}
+                                                        {format(new Date(tx.created_at), 'dd MMM yyyy HH:mm', { locale: dateLocale })}
+                                                        {tx.reference_id && ` • ${t('Ref')}: ${tx.reference_id.substring(0, 8)}`}
                                                     </p>
                                                 </div>
                                             </div>
@@ -288,7 +307,7 @@ export default function Wallet({ wallet }: WalletProps) {
                                 </div>
                             ) : (
                                 <div className="text-center py-8 text-muted-foreground">
-                                    Aucune transaction récente.
+                                    {t('No recent transactions.')}
                                 </div>
                             )}
                         </CardContent>
@@ -297,13 +316,13 @@ export default function Wallet({ wallet }: WalletProps) {
                     {/* Historique Retraits */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Retraits</CardTitle>
-                            <CardDescription>Vos demandes récentes</CardDescription>
+                            <CardTitle>{t('Withdrawals')}</CardTitle>
+                            <CardDescription>{t('Your recent requests')}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             {wallet.withdrawals?.length > 0 ? (
                                 <div className="space-y-4">
-                                    {wallet.withdrawals.map((w: any) => (
+                                    {wallet.withdrawals.map((w) => (
                                         <div key={w.id} className="border-b last:border-0 pb-3 last:pb-0">
                                             <div className="flex justify-between items-start mb-1">
                                                 <div className="flex items-center gap-2">
@@ -316,19 +335,19 @@ export default function Wallet({ wallet }: WalletProps) {
                                                     w.status === 'completed' ? 'bg-green-100 text-green-800' :
                                                         'bg-red-100 text-red-800'
                                                     }`}>
-                                                    {w.status === 'pending' ? 'En cours' :
-                                                        w.status === 'completed' ? 'Traité' : 'Refusé'}
+                                                    {w.status === 'pending' ? t('In progress') :
+                                                        w.status === 'completed' ? t('Processed') : t('Rejected')}
                                                 </span>
                                             </div>
                                             <p className="text-xs text-muted-foreground">
-                                                {format(new Date(w.requested_at), 'dd MMM yyyy', { locale: fr })} • Net: {formatMoney(w.net_amount)}
+                                                {format(new Date(w.requested_at), 'dd MMM yyyy', { locale: dateLocale })} • {t('Net')}: {formatMoney(w.net_amount)}
                                             </p>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
                                 <div className="text-center py-8 text-muted-foreground text-sm">
-                                    Aucun retrait.
+                                    {t('No withdrawals.')}
                                 </div>
                             )}
                         </CardContent>

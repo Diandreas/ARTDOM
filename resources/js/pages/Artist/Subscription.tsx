@@ -1,11 +1,17 @@
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Check, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 interface SubscriptionProps {
-    currentSubscription: any;
+    currentSubscription: {
+        active: boolean;
+        ends_at: string | null;
+        next_billing_date: string | null;
+        on_grace_period: boolean;
+    } | null;
     plans: Array<{
         id: string;
         name: string;
@@ -18,12 +24,14 @@ interface SubscriptionProps {
 }
 
 export default function Subscription({ currentSubscription, plans }: SubscriptionProps) {
+    const { t, locale } = useAppLocale();
+
     const handleSubscribe = (priceId: string) => {
         router.post('/artist/subscription/checkout', { price_id: priceId });
     };
 
     const handleCancel = () => {
-        if (confirm('Voulez-vous vraiment annuler votre abonnement Premium ? Vous perdrez l\'accès aux avantages à la fin de la période en cours.')) {
+        if (confirm(t('Do you really want to cancel your Premium subscription? You will lose access to the benefits at the end of the current period.'))) {
             router.post('/artist/subscription/cancel');
         }
     };
@@ -34,12 +42,12 @@ export default function Subscription({ currentSubscription, plans }: Subscriptio
 
     return (
         <MainLayout>
-            <Head title="Abonnement Premium" />
+            <Head title={t('Premium subscription')} />
 
             <div className="container mx-auto py-8 px-4 max-w-6xl space-y-8">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">ArtPass Premium</h1>
-                    <p className="text-muted-foreground">Boostez votre visibilité et débloquez des fonctionnalités avancées.</p>
+                    <p className="text-muted-foreground">{t('Boost your visibility and unlock advanced features.')}</p>
                 </div>
 
                 {currentSubscription && currentSubscription.active ? (
@@ -47,23 +55,23 @@ export default function Subscription({ currentSubscription, plans }: Subscriptio
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Star className="w-5 h-5 fill-primary text-primary" />
-                                Votre abonnement est actif
+                                {t('Your subscription is active')}
                             </CardTitle>
                             <CardDescription>
-                                Vous êtes actuellement sur le plan Premium.
+                                {t('You are currently on the Premium plan.')}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2 text-sm">
-                                <p><strong>Date de renouvellement :</strong> {new Date(currentSubscription.ends_at || currentSubscription.next_billing_date).toLocaleDateString()}</p>
-                                <p><strong>Statut :</strong> {currentSubscription.on_grace_period ? 'Annulé (actif jusqu\'à la fin de la période)' : 'Actif (renouvellement automatique)'}</p>
+                                <p><strong>{t('Renewal date')}:</strong> {new Date(currentSubscription.ends_at || currentSubscription.next_billing_date).toLocaleDateString(locale === 'en' ? 'en-US' : 'fr-FR')}</p>
+                                <p><strong>{t('Status')}:</strong> {currentSubscription.on_grace_period ? t('Cancelled (active until the end of the period)') : t('Active (automatic renewal)')}</p>
                             </div>
                         </CardContent>
                         <CardFooter>
                             {currentSubscription.on_grace_period ? (
-                                <Button onClick={handleResume}>Reprendre l'abonnement</Button>
+                                <Button onClick={handleResume}>{t('Resume subscription')}</Button>
                             ) : (
-                                <Button variant="destructive" onClick={handleCancel}>Annuler l'abonnement</Button>
+                                <Button variant="destructive" onClick={handleCancel}>{t('Cancel subscription')}</Button>
                             )}
                         </CardFooter>
                     </Card>
@@ -74,7 +82,7 @@ export default function Subscription({ currentSubscription, plans }: Subscriptio
                                 {plan.is_popular && (
                                     <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2">
                                         <span className="bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                                            Le plus choisi
+                                            {t('Most popular')}
                                         </span>
                                     </div>
                                 )}
@@ -83,7 +91,7 @@ export default function Subscription({ currentSubscription, plans }: Subscriptio
                                     <div className="mt-4 flex items-baseline justify-center gap-1">
                                         <span className="text-4xl font-bold">{plan.price}</span>
                                         <span className="text-xl font-semibold">{plan.currency}</span>
-                                        <span className="text-muted-foreground">/{plan.interval}</span>
+                                        <span className="text-muted-foreground">/{t(plan.interval)}</span>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="flex-1 mt-6">
@@ -103,7 +111,7 @@ export default function Subscription({ currentSubscription, plans }: Subscriptio
                                         variant={plan.is_popular ? 'default' : 'outline'}
                                         onClick={() => handleSubscribe(plan.id)}
                                     >
-                                        Mettre à niveau
+                                        {t('Upgrade')}
                                     </Button>
                                 </CardFooter>
                             </Card>

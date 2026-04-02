@@ -17,6 +17,7 @@ import {
     Check,
 } from 'lucide-react';
 import { useState } from 'react';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import {
     show as albumShow,
     togglePublication,
@@ -77,6 +78,7 @@ function formatDuration(seconds: number): string {
 }
 
 export default function AlbumDetail({ album, stats }: Props) {
+    const { t } = useAppLocale();
     const [showAddTrack, setShowAddTrack] = useState(false);
     const [editingAlbum, setEditingAlbum] = useState(false);
     const [coverPreview, setCoverPreview] = useState<string | null>(null);
@@ -130,7 +132,7 @@ export default function AlbumDetail({ album, stats }: Props) {
 
     return (
         <MainLayout>
-            <Head title={`Gérer — ${album.title}`} />
+            <Head title={`${t('Manage')} — ${album.title}`} />
 
             <div className="container px-4 md:px-6 py-8 pb-24">
                 {/* Back + Header */}
@@ -140,7 +142,7 @@ export default function AlbumDetail({ album, stats }: Props) {
                         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        Mes albums
+                        {t('My Albums')}
                     </Link>
 
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -153,7 +155,7 @@ export default function AlbumDetail({ album, stats }: Props) {
                             <div>
                                 <h1 className="text-2xl font-bold">{album.title}</h1>
                                 <p className="text-muted-foreground text-sm">
-                                    {album.year} · {album.genre}
+                                    {album.year} · {t(album.genre) || album.genre}
                                 </p>
                             </div>
                         </div>
@@ -165,7 +167,7 @@ export default function AlbumDetail({ album, stats }: Props) {
                                 onClick={() => setEditingAlbum(!editingAlbum)}
                             >
                                 {editingAlbum ? <X className="mr-1.5 h-4 w-4" /> : <Pencil className="mr-1.5 h-4 w-4" />}
-                                {editingAlbum ? 'Annuler' : 'Modifier'}
+                                {editingAlbum ? t('Cancel') : t('Edit')}
                             </Button>
                             <Button
                                 variant={album.published_at ? 'outline' : 'default'}
@@ -173,8 +175,8 @@ export default function AlbumDetail({ album, stats }: Props) {
                                 onClick={handleTogglePublication}
                             >
                                 {album.published_at
-                                    ? <><EyeOff className="mr-1.5 h-4 w-4" />Dépublier</>
-                                    : <><Eye className="mr-1.5 h-4 w-4" />Publier</>
+                                    ? <><EyeOff className="mr-1.5 h-4 w-4" />{t('Unpublish')}</>
+                                    : <><Eye className="mr-1.5 h-4 w-4" />{t('Publish')}</>
                                 }
                             </Button>
                         </div>
@@ -190,7 +192,7 @@ export default function AlbumDetail({ album, stats }: Props) {
                                     <PlayCircle className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-muted-foreground">Écoutes totales</p>
+                                    <p className="text-xs text-muted-foreground">{t('Total plays')}</p>
                                     <p className="text-xl font-bold">{stats.total_plays.toLocaleString()}</p>
                                 </div>
                             </div>
@@ -204,7 +206,7 @@ export default function AlbumDetail({ album, stats }: Props) {
                                     <ShoppingBag className="h-5 w-5 text-blue-500" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-muted-foreground">Achats</p>
+                                    <p className="text-xs text-muted-foreground">{t('Purchases')}</p>
                                     <p className="text-xl font-bold">{stats.purchases}</p>
                                 </div>
                             </div>
@@ -218,7 +220,7 @@ export default function AlbumDetail({ album, stats }: Props) {
                                     <Banknote className="h-5 w-5 text-green-500" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-muted-foreground">Revenus totaux</p>
+                                    <p className="text-xs text-muted-foreground">{t('Total revenue')}</p>
                                     <p className="text-xl font-bold">{stats.revenue_total.toLocaleString()} FCFA</p>
                                 </div>
                             </div>
@@ -232,7 +234,7 @@ export default function AlbumDetail({ album, stats }: Props) {
                                     <TrendingUp className="h-5 w-5 text-amber-500" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-muted-foreground">Ce mois-ci</p>
+                                    <p className="text-xs text-muted-foreground">{t('This month')}</p>
                                     <p className="text-xl font-bold">{stats.revenue_this_month.toLocaleString()} FCFA</p>
                                 </div>
                             </div>
@@ -244,13 +246,13 @@ export default function AlbumDetail({ album, stats }: Props) {
                 {editingAlbum && (
                     <Card className="mb-8">
                         <CardHeader>
-                            <CardTitle>Modifier l'album</CardTitle>
+                            <CardTitle>{t('Edit album')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleUpdateAlbum} className="space-y-4">
                                 <div className="grid md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <Label>Pochette</Label>
+                                        <div className="space-y-2">
+                                        <Label>{t('Cover')}</Label>
                                         <div className="flex items-center gap-4">
                                             <img
                                                 src={coverPreview ?? album.cover_url}
@@ -275,8 +277,8 @@ export default function AlbumDetail({ album, stats }: Props) {
                                     </div>
 
                                     <div className="space-y-3">
-                                        <div className="space-y-1.5">
-                                            <Label htmlFor="edit-title">Titre</Label>
+                                            <div className="space-y-1.5">
+                                            <Label htmlFor="edit-title">{t('Title')}</Label>
                                             <Input
                                                 id="edit-title"
                                                 value={albumForm.data.title}
@@ -291,7 +293,7 @@ export default function AlbumDetail({ album, stats }: Props) {
 
                                         <div className="grid grid-cols-2 gap-3">
                                             <div className="space-y-1.5">
-                                                <Label htmlFor="edit-year">Année</Label>
+                                                <Label htmlFor="edit-year">{t('Year')}</Label>
                                                 <Input
                                                     id="edit-year"
                                                     type="number"
@@ -302,22 +304,22 @@ export default function AlbumDetail({ album, stats }: Props) {
                                                 />
                                             </div>
                                             <div className="space-y-1.5">
-                                                <Label htmlFor="edit-genre">Genre</Label>
+                                                <Label htmlFor="edit-genre">{t('Genre')}</Label>
                                                 <select
                                                     id="edit-genre"
                                                     value={albumForm.data.genre}
                                                     onChange={(e) => albumForm.setData('genre', e.target.value)}
                                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                                                 >
-                                                    <option value="afrobeat">Afrobeat</option>
-                                                    <option value="highlife">Highlife</option>
-                                                    <option value="coupé-décalé">Coupé-Décalé</option>
-                                                    <option value="zouglou">Zouglou</option>
-                                                    <option value="gospel">Gospel</option>
-                                                    <option value="makossa">Makossa</option>
-                                                    <option value="rumba">Rumba</option>
-                                                    <option value="hip-hop">Hip-Hop</option>
-                                                    <option value="r&b">R&B</option>
+                                                    <option value="afrobeat">{t('Afrobeat')}</option>
+                                                    <option value="highlife">{t('Highlife')}</option>
+                                                    <option value="coupé-décalé">{t('Coupé-Décalé')}</option>
+                                                    <option value="zouglou">{t('Zouglou')}</option>
+                                                    <option value="gospel">{t('Gospel')}</option>
+                                                    <option value="makossa">{t('Makossa')}</option>
+                                                    <option value="rumba">{t('Rumba')}</option>
+                                                    <option value="hip-hop">{t('Hip-Hop')}</option>
+                                                    <option value="r&b">{t('R&B')}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -332,12 +334,12 @@ export default function AlbumDetail({ album, stats }: Props) {
                                         onChange={(e) => albumForm.setData('is_free', e.target.checked)}
                                         className="h-4 w-4"
                                     />
-                                    <Label htmlFor="edit-is-free" className="cursor-pointer">Album gratuit</Label>
+                                    <Label htmlFor="edit-is-free" className="cursor-pointer">{t('Free album')}</Label>
                                 </div>
 
                                 {!albumForm.data.is_free && (
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="edit-price">Prix (FCFA)</Label>
+                                        <Label htmlFor="edit-price">{t('Price (FCFA)')}</Label>
                                         <Input
                                             id="edit-price"
                                             type="number"
@@ -352,10 +354,10 @@ export default function AlbumDetail({ album, stats }: Props) {
                                 <div className="flex gap-2">
                                     <Button type="submit" disabled={albumForm.processing}>
                                         <Check className="mr-1.5 h-4 w-4" />
-                                        {albumForm.processing ? 'Enregistrement...' : 'Enregistrer'}
+                                        {albumForm.processing ? t('Saving...') : t('Save')}
                                     </Button>
                                     <Button type="button" variant="outline" onClick={() => setEditingAlbum(false)}>
-                                        Annuler
+                                        {t('Cancel')}
                                     </Button>
                                 </div>
                             </form>
@@ -368,15 +370,15 @@ export default function AlbumDetail({ album, stats }: Props) {
                     <div className="lg:col-span-2 space-y-3">
                         <div className="flex items-center justify-between mb-2">
                             <h2 className="text-lg font-semibold">
-                                Pistes
+                                {t('Tracks')}
                                 <span className="ml-2 text-sm font-normal text-muted-foreground">
                                     ({album.tracks.length})
                                 </span>
                             </h2>
                             <Button size="sm" onClick={() => setShowAddTrack(!showAddTrack)}>
                                 {showAddTrack
-                                    ? <><X className="mr-1.5 h-4 w-4" />Annuler</>
-                                    : <><Plus className="mr-1.5 h-4 w-4" />Ajouter une piste</>
+                                    ? <><X className="mr-1.5 h-4 w-4" />{t('Cancel')}</>
+                                    : <><Plus className="mr-1.5 h-4 w-4" />{t('Add track')}</>
                                 }
                             </Button>
                         </div>
@@ -387,12 +389,12 @@ export default function AlbumDetail({ album, stats }: Props) {
                                 <CardContent className="pt-5">
                                     <form onSubmit={handleAddTrack} className="space-y-3">
                                         <div className="space-y-1.5">
-                                            <Label htmlFor="track-title">Titre de la piste *</Label>
+                                            <Label htmlFor="track-title">{t('Track title *')}</Label>
                                             <Input
                                                 id="track-title"
                                                 value={trackForm.data.title}
                                                 onChange={(e) => trackForm.setData('title', e.target.value)}
-                                                placeholder="Nom de la chanson"
+                                                placeholder={t('Song name')}
                                             />
                                             {trackForm.errors.title && (
                                                 <p className="text-sm text-destructive flex items-center gap-1">
@@ -402,7 +404,7 @@ export default function AlbumDetail({ album, stats }: Props) {
                                         </div>
 
                                         <div className="space-y-1.5">
-                                            <Label htmlFor="track-file">Fichier audio (MP3/WAV, max 50MB) *</Label>
+                                            <Label htmlFor="track-file">{t('Audio file (MP3/WAV, max 50MB) *')}</Label>
                                             <Input
                                                 id="track-file"
                                                 type="file"

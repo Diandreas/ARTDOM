@@ -1,17 +1,18 @@
 import { Head, router, useForm } from '@inertiajs/react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit2, Trash2, GripVertical, Check, Ban, Link as LinkIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, GripVertical, Ban } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { store, update, destroy, toggle, reorder } from '@/actions/App/Http/Controllers/Artist/ServiceController';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 interface ServiceOption {
@@ -42,92 +43,105 @@ interface ServicesProps {
 }
 
 interface FormFieldsProps {
-    data: any;
-    setData: any;
+    data: ServiceFormData;
+    setData: <K extends keyof ServiceFormData>(key: K, value: ServiceFormData[K]) => void;
     addOptionRow: () => void;
-    updateOption: (index: number, key: string, value: any) => void;
+    updateOption: (index: number, key: keyof ServiceOption, value: string | number | boolean) => void;
     removeOption: (index: number) => void;
+    t: (key: string) => string;
 }
 
-function FormFields({ data, setData, addOptionRow, updateOption, removeOption }: FormFieldsProps) {
+interface ServiceFormData {
+    title: string;
+    description: string;
+    category: string;
+    price: string;
+    price_type: 'fixed' | 'from' | 'hourly';
+    duration_minutes: string;
+    notice_period_hours: string;
+    location_type: 'home' | 'online' | 'public' | 'any';
+    options: ServiceOption[];
+}
+
+function FormFields({ data, setData, addOptionRow, updateOption, removeOption, t }: FormFieldsProps) {
     return (
         <>
             <div className="space-y-2">
-                <Label htmlFor="title">Titre de la prestation</Label>
-                <Input id="title" value={data.title} onChange={e => setData('title', e.target.value)} required placeholder="Ex: Portrait au fusain" />
+                <Label htmlFor="title">{t('Service title')}</Label>
+                <Input id="title" value={data.title} onChange={e => setData('title', e.target.value)} required placeholder={t('Example: Charcoal portrait')} />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="description">Description (détails, ce qui est inclus)</Label>
+                <Label htmlFor="description">{t('Description (details, what is included)')}</Label>
                 <Textarea id="description" value={data.description} onChange={e => setData('description', e.target.value)} required rows={4} />
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label>Catégorie</Label>
+                    <Label>{t('Category')}</Label>
                     <Select value={data.category} onValueChange={v => setData('category', v)}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Sélectionnez..." />
+                            <SelectValue placeholder={t('Select...')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="peinture">Peinture</SelectItem>
-                            <SelectItem value="photographie">Photographie</SelectItem>
-                            <SelectItem value="musique">Prestation musicale</SelectItem>
-                            <SelectItem value="sculpture">Sculpture</SelectItem>
-                            <SelectItem value="autre">Autre</SelectItem>
+                            <SelectItem value="peinture">{t('Painting')}</SelectItem>
+                            <SelectItem value="photographie">{t('Photography')}</SelectItem>
+                            <SelectItem value="musique">{t('Music performance')}</SelectItem>
+                            <SelectItem value="sculpture">{t('Sculpture')}</SelectItem>
+                            <SelectItem value="autre">{t('Other')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
                 <div className="space-y-2">
-                    <Label>Lieu de la prestation</Label>
+                    <Label>{t('Service location')}</Label>
                     <Select value={data.location_type} onValueChange={v => setData('location_type', v)}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Sélectionnez..." />
+                            <SelectValue placeholder={t('Select...')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="home">Chez le client</SelectItem>
-                            <SelectItem value="public">Lieu public / Événement</SelectItem>
-                            <SelectItem value="online">En ligne (Zoom, etc.)</SelectItem>
-                            <SelectItem value="any">Flexible</SelectItem>
+                            <SelectItem value="home">{t('At the client location')}</SelectItem>
+                            <SelectItem value="public">{t('Public venue / Event')}</SelectItem>
+                            <SelectItem value="online">{t('Online (Zoom, etc.)')}</SelectItem>
+                            <SelectItem value="any">{t('Flexible')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label>Tarif (FCFA)</Label>
+                    <Label>{t('Rate (FCFA)')}</Label>
                     <Input type="number" value={data.price} onChange={e => setData('price', e.target.value)} required min="0" />
                 </div>
                 <div className="space-y-2">
-                    <Label>Type de facturation</Label>
+                    <Label>{t('Pricing type')}</Label>
                     <Select value={data.price_type} onValueChange={v => setData('price_type', v)}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Sélectionnez..." />
+                            <SelectValue placeholder={t('Select...')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="fixed">Prix fixe</SelectItem>
-                            <SelectItem value="from">À partir de</SelectItem>
-                            <SelectItem value="hourly">Taux horaire</SelectItem>
+                            <SelectItem value="fixed">{t('Fixed price')}</SelectItem>
+                            <SelectItem value="from">{t('Starting from')}</SelectItem>
+                            <SelectItem value="hourly">{t('Hourly rate')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                    <Label>Durée estimée (minutes)</Label>
+                    <Label>{t('Estimated duration (minutes)')}</Label>
                     <Input type="number" value={data.duration_minutes} onChange={e => setData('duration_minutes', e.target.value)} required min="15" step="15" />
                 </div>
                 <div className="space-y-2">
-                    <Label>Délai de prévenance (heures)</Label>
+                    <Label>{t('Notice period (hours)')}</Label>
                     <Input type="number" value={data.notice_period_hours} onChange={e => setData('notice_period_hours', e.target.value)} required min="0" />
-                    <p className="text-xs text-muted-foreground border-l-2 pl-2">Temps minimum requis avant le rdv</p>
+                    <p className="text-xs text-muted-foreground border-l-2 pl-2">{t('Minimum time required before the appointment')}</p>
                 </div>
             </div>
 
             <div className="space-y-4 pt-4 border-t">
                 <div className="flex items-center justify-between">
-                    <Label className="text-base font-semibold">Options Supplémentaires</Label>
+                    <Label className="text-base font-semibold">{t('Additional options')}</Label>
                     <Button type="button" variant="outline" size="sm" onClick={addOptionRow} className="gap-2">
                         <Plus className="w-3 h-3" />
-                        Ajouter option
+                        {t('Add option')}
                     </Button>
                 </div>
                 {data.options && data.options.length > 0 ? (
@@ -136,21 +150,21 @@ function FormFields({ data, setData, addOptionRow, updateOption, removeOption }:
                             <div key={idx} className="p-3 bg-muted/30 rounded-lg border space-y-3">
                                 <div className="flex items-center gap-3">
                                     <div className="flex-1 space-y-1">
-                                        <Input placeholder="Nom de l'option (ex: Format A3)" value={opt.name} onChange={e => updateOption(idx, 'name', e.target.value)} required />
+                                        <Input placeholder={t('Option name (example: A3 format)')} value={opt.name} onChange={e => updateOption(idx, 'name', e.target.value)} required />
                                     </div>
                                     <div className="w-32 space-y-1">
-                                        <Input type="number" placeholder="Tarif" value={opt.price} onChange={e => updateOption(idx, 'price', parseFloat(e.target.value))} required min="0" />
+                                        <Input type="number" placeholder={t('Rate')} value={opt.price} onChange={e => updateOption(idx, 'price', parseFloat(e.target.value))} required min="0" />
                                     </div>
                                     <Button type="button" variant="ghost" size="icon" onClick={() => removeOption(idx)} className="text-destructive">
                                         <Trash2 className="w-4 h-4" />
                                     </Button>
                                 </div>
-                                <Input placeholder="Brève description..." value={opt.description} onChange={e => updateOption(idx, 'description', e.target.value)} />
+                                <Input placeholder={t('Short description...')} value={opt.description} onChange={e => updateOption(idx, 'description', e.target.value)} />
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <p className="text-sm text-muted-foreground">Aucune option configurée pour ce service.</p>
+                    <p className="text-sm text-muted-foreground">{t('No option configured for this service.')}</p>
                 )}
             </div>
         </>
@@ -158,12 +172,13 @@ function FormFields({ data, setData, addOptionRow, updateOption, removeOption }:
 }
 
 export default function ArtistServices({ services: initialServices }: ServicesProps) {
+    const { t } = useAppLocale();
     const [services, setServices] = useState<Service[]>(initialServices);
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingService, setEditingService] = useState<Service | null>(null);
 
-    const { data: formData, setData: setFormData, post, put, reset, processing } = useForm({
+    const { data: formData, setData: setFormData, post, put, reset, processing } = useForm<ServiceFormData>({
         title: '',
         description: '',
         category: '',
@@ -179,7 +194,7 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
         setFormData('options', [...formData.options, { name: '', description: '', price: 0, is_active: true }]);
     };
 
-    const updateOption = (index: number, key: string, value: any) => {
+    const updateOption = (index: number, key: keyof ServiceOption, value: string | number | boolean) => {
         const newOptions = [...formData.options];
         newOptions[index] = { ...newOptions[index], [key]: value };
         setFormData('options', newOptions);
@@ -217,7 +232,7 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
         post(store().url, {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Service créé avec succès');
+                toast.success(t('Service created successfully'));
                 setIsAddOpen(false);
                 reset();
                 router.reload({ only: ['services'] });
@@ -231,7 +246,7 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
         put(update(editingService.id).url, {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Service mis à jour avec succès');
+                toast.success(t('Service updated successfully'));
                 setIsEditOpen(false);
                 setEditingService(null);
                 reset();
@@ -241,11 +256,11 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
     };
 
     const handleDelete = (id: string) => {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce service ? Cette action est irréversible.')) {
+        if (confirm(t('Are you sure you want to delete this service? This action cannot be undone.'))) {
             router.delete(destroy(id).url, {
                 preserveScroll: true,
                 onSuccess: () => {
-                    toast.success('Service supprimé avec succès');
+                    toast.success(t('Service deleted successfully'));
                     router.reload({ only: ['services'] });
                 },
                 onError: (errors) => {
@@ -259,7 +274,7 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
         router.patch(toggle(id).url, {}, {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success(currentStatus ? 'Service désactivé' : 'Service activé');
+                toast.success(currentStatus ? t('Service disabled') : t('Service enabled'));
                 router.reload({ only: ['services'] });
             }
         });
@@ -301,40 +316,40 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
         const updatedIds = services.map(s => s.id);
         router.post(reorder().url, { services: updatedIds }, {
             preserveScroll: true,
-            onSuccess: () => toast.success('Ordre mis à jour')
+            onSuccess: () => toast.success(t('Order updated'))
         });
     };
 
     const formatPriceType = (type: string) => {
         switch (type) {
-            case 'fixed': return 'Prix fixe';
-            case 'from': return 'À partir de';
-            case 'hourly': return 'Par heure';
+            case 'fixed': return t('Fixed price');
+            case 'from': return t('Starting from');
+            case 'hourly': return t('Per hour');
             default: return type;
         }
     };
 
     return (
         <MainLayout>
-            <Head title="Mes Services - Espace Artiste" />
+            <Head title={t('My Services - Artist Space')} />
 
             <div className="container max-w-5xl mx-auto px-4 md:px-6 py-8 pb-24 md:pb-12">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold font-heading mb-2 text-foreground">Mes Services</h1>
-                        <p className="text-muted-foreground">Gérez votre catalogue de prestations et les options proposées</p>
+                        <h1 className="text-3xl font-bold font-heading mb-2 text-foreground">{t('My Services')}</h1>
+                        <p className="text-muted-foreground">{t('Manage your service catalog and available options')}</p>
                     </div>
 
                     <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
                         <DialogTrigger asChild>
                             <Button onClick={openAdd} className="gap-2">
                                 <Plus className="w-4 h-4" />
-                                Nouveau Service
+                                {t('New Service')}
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
-                                <DialogTitle>Créer un nouveau service</DialogTitle>
+                                <DialogTitle>{t('Create a new service')}</DialogTitle>
                             </DialogHeader>
                             <form onSubmit={handleAdd} className="space-y-4 pt-4">
                                 <FormFields
@@ -343,10 +358,11 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                                     addOptionRow={addOptionRow}
                                     updateOption={updateOption}
                                     removeOption={removeOption}
+                                    t={t}
                                 />
                                 <div className="flex justify-end gap-2 pt-4 border-t">
-                                    <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)}>Annuler</Button>
-                                    <Button type="submit" disabled={processing}>Créer le service</Button>
+                                    <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)}>{t('Cancel')}</Button>
+                                    <Button type="submit" disabled={processing}>{t('Create service')}</Button>
                                 </div>
                             </form>
                         </DialogContent>
@@ -357,14 +373,14 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                     {services.length === 0 ? (
                         <Card>
                             <CardContent className="pt-12 pb-12 text-center text-muted-foreground">
-                                <p>Vous n'avez pas encore créé de services.</p>
-                                <Button variant="link" onClick={openAdd} className="mt-2 text-primary">Créer votre premier service</Button>
+                                <p>{t('You have not created any services yet.')}</p>
+                                <Button variant="link" onClick={openAdd} className="mt-2 text-primary">{t('Create your first service')}</Button>
                             </CardContent>
                         </Card>
                     ) : (
                         <div className="space-y-3">
                             <p className="text-sm text-muted-foreground mb-4">
-                                Vous pouvez glisser-déposer (drag & drop) les services pour modifier l'ordre d'affichage sur votre profil public.
+                                {t('You can drag and drop services to change their display order on your public profile.')}
                             </p>
                             {services.map((service, index) => (
                                 <Card
@@ -386,13 +402,13 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                                                 <Badge variant="outline">{service.category}</Badge>
                                                 {!service.is_active && (
                                                     <Badge variant="secondary" className="flex items-center gap-1">
-                                                        <Ban className="w-3 h-3" /> Masqué
+                                                        <Ban className="w-3 h-3" /> {t('Hidden')}
                                                     </Badge>
                                                 )}
                                             </div>
                                             <div className="text-sm text-muted-foreground flex items-center gap-4">
                                                 <span>{formatPriceType(service.price_type)} : <strong>{service.price} FCFA</strong></span>
-                                                <span>Durée : {service.duration_minutes} min</span>
+                                                <span>{t('Duration')}: {service.duration_minutes} min</span>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -402,7 +418,7 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                                                     onCheckedChange={() => handleToggle(service.id, service.is_active)}
                                                 />
                                                 <Label className="text-xs cursor-pointer" onClick={() => handleToggle(service.id, service.is_active)}>
-                                                    {service.is_active ? 'Actif' : 'Inactif'}
+                                                    {service.is_active ? t('Active') : t('Inactive')}
                                                 </Label>
                                             </div>
                                             <Button variant="outline" size="icon" onClick={() => openEdit(service)}>
@@ -423,7 +439,7 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                 <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                     <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>Modifier le service</DialogTitle>
+                            <DialogTitle>{t('Edit service')}</DialogTitle>
                         </DialogHeader>
                         <form onSubmit={handleEdit} className="space-y-4 pt-4">
                             <FormFields
@@ -432,10 +448,11 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                                 addOptionRow={addOptionRow}
                                 updateOption={updateOption}
                                 removeOption={removeOption}
+                                t={t}
                             />
                             <div className="flex justify-end gap-2 pt-4 border-t">
-                                <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>Annuler</Button>
-                                <Button type="submit" disabled={processing}>Mettre à jour</Button>
+                                <Button type="button" variant="outline" onClick={() => setIsEditOpen(false)}>{t('Cancel')}</Button>
+                                <Button type="submit" disabled={processing}>{t('Update')}</Button>
                             </div>
                         </form>
                     </DialogContent>

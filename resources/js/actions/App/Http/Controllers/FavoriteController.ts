@@ -4,7 +4,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 * @see app/Http/Controllers/FavoriteController.php:13
 * @route '/tracks/{track}/favorite'
 */
-export const toggle = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const toggle = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: toggle.url(args, options),
     method: 'post',
 })
@@ -19,7 +19,7 @@ toggle.definition = {
 * @see app/Http/Controllers/FavoriteController.php:13
 * @route '/tracks/{track}/favorite'
 */
-toggle.url = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+toggle.url = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { track: args }
     }
@@ -52,7 +52,7 @@ toggle.url = (args: { track: string | { id: string } } | [track: string | { id: 
 * @see app/Http/Controllers/FavoriteController.php:13
 * @route '/tracks/{track}/favorite'
 */
-toggle.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+toggle.post = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: toggle.url(args, options),
     method: 'post',
 })
@@ -62,7 +62,7 @@ toggle.post = (args: { track: string | { id: string } } | [track: string | { id:
 * @see app/Http/Controllers/FavoriteController.php:13
 * @route '/tracks/{track}/favorite'
 */
-const toggleForm = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const toggleForm = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: toggle.url(args, options),
     method: 'post',
 })
@@ -72,7 +72,7 @@ const toggleForm = (args: { track: string | { id: string } } | [track: string | 
 * @see app/Http/Controllers/FavoriteController.php:13
 * @route '/tracks/{track}/favorite'
 */
-toggleForm.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+toggleForm.post = (args: { track: string | number | { id: string | number } } | [track: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: toggle.url(args, options),
     method: 'post',
 })
@@ -84,7 +84,7 @@ toggle.form = toggleForm
 * @see app/Http/Controllers/FavoriteController.php:68
 * @route '/albums/{album}/favorite'
 */
-export const toggleAlbum = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const toggleAlbum = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: toggleAlbum.url(args, options),
     method: 'post',
 })
@@ -99,7 +99,7 @@ toggleAlbum.definition = {
 * @see app/Http/Controllers/FavoriteController.php:68
 * @route '/albums/{album}/favorite'
 */
-toggleAlbum.url = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+toggleAlbum.url = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { album: args }
     }
@@ -132,7 +132,7 @@ toggleAlbum.url = (args: { album: string | { id: string } } | [album: string | {
 * @see app/Http/Controllers/FavoriteController.php:68
 * @route '/albums/{album}/favorite'
 */
-toggleAlbum.post = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+toggleAlbum.post = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: toggleAlbum.url(args, options),
     method: 'post',
 })
@@ -142,7 +142,7 @@ toggleAlbum.post = (args: { album: string | { id: string } } | [album: string | 
 * @see app/Http/Controllers/FavoriteController.php:68
 * @route '/albums/{album}/favorite'
 */
-const toggleAlbumForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const toggleAlbumForm = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: toggleAlbum.url(args, options),
     method: 'post',
 })
@@ -152,7 +152,7 @@ const toggleAlbumForm = (args: { album: string | { id: string } } | [album: stri
 * @see app/Http/Controllers/FavoriteController.php:68
 * @route '/albums/{album}/favorite'
 */
-toggleAlbumForm.post = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+toggleAlbumForm.post = (args: { album: string | number | { id: string | number } } | [album: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: toggleAlbum.url(args, options),
     method: 'post',
 })

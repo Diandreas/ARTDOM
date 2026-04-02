@@ -197,7 +197,7 @@ block.form = blockForm
 * @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
-export const destroy = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const destroy = (args: { availability: string | number | { id: string | number } } | [availability: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -212,7 +212,7 @@ destroy.definition = {
 * @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
-destroy.url = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+destroy.url = (args: { availability: string | number | { id: string | number } } | [availability: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { availability: args }
     }
@@ -245,7 +245,7 @@ destroy.url = (args: { availability: string | { id: string } } | [availability: 
 * @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
-destroy.delete = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+destroy.delete = (args: { availability: string | number | { id: string | number } } | [availability: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
@@ -255,7 +255,7 @@ destroy.delete = (args: { availability: string | { id: string } } | [availabilit
 * @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
-const destroyForm = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const destroyForm = (args: { availability: string | number | { id: string | number } } | [availability: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -270,7 +270,7 @@ const destroyForm = (args: { availability: string | { id: string } } | [availabi
 * @see app/Http/Controllers/Artist/AvailabilityController.php:151
 * @route '/artist/availability/{availability}'
 */
-destroyForm.delete = (args: { availability: string | { id: string } } | [availability: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+destroyForm.delete = (args: { availability: string | number | { id: string | number } } | [availability: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: destroy.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

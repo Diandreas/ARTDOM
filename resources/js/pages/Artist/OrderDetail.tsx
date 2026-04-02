@@ -1,6 +1,5 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { format, parseISO, differenceInSeconds } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import {
     ChevronLeft,
     Calendar,
@@ -15,15 +14,15 @@ import {
     User,
     Timer,
 } from 'lucide-react';
-import { FormEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { index, accept, decline, checkIn, checkOut } from '@/actions/App/Http/Controllers/Artist/OrderController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 interface Client {
@@ -72,17 +71,18 @@ interface OrderDetailProps {
     reservation: Reservation;
 }
 
-const statusLabels: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-    pending: { label: 'Nouvelle demande', variant: 'secondary' },
-    confirmed: { label: 'Confirmée', variant: 'default' },
-    in_progress: { label: 'En cours', variant: 'default' },
-    completed: { label: 'Terminée', variant: 'outline' },
-    cancelled: { label: 'Annulée', variant: 'destructive' },
-};
-
 export default function OrderDetail({ reservation }: OrderDetailProps) {
+    const { t, dateLocale, locale } = useAppLocale();
     const [isDeclining, setIsDeclining] = useState(false);
     const [elapsedTime, setElapsedTime] = useState('00:00:00');
+
+    const statusLabels: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+        pending: { label: t('New request'), variant: 'secondary' },
+        confirmed: { label: t('Confirmed'), variant: 'default' },
+        in_progress: { label: t('In progress'), variant: 'default' },
+        completed: { label: t('Completed'), variant: 'outline' },
+        cancelled: { label: t('Cancelled'), variant: 'destructive' },
+    };
 
     // Live timer logic
     useEffect(() => {
@@ -108,7 +108,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
     const handleAccept = () => {
         router.post(accept.url(reservation.id), {}, {
             preserveScroll: true,
-            onSuccess: () => toast.success('Réservation acceptée'),
+            onSuccess: () => toast.success(t('Reservation accepted')),
         });
     };
 
@@ -117,7 +117,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
         postForm(decline.url(reservation.id), {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Réservation refusée');
+                toast.success(t('Reservation declined'));
                 setIsDeclining(false);
             },
         });
@@ -125,12 +125,12 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
 
     const handleCheckIn = () => {
         if (!navigator.geolocation) {
-            toast.error('La géolocalisation n\'est pas supportée par votre navigateur');
+            toast.error(t('Geolocation is not supported by your browser'));
             submitCheckIn(null, null);
             return;
         }
 
-        toast.info('Recherche de votre position...', { duration: 2000 });
+        toast.info(t('Searching for your location...'), { duration: 2000 });
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -138,7 +138,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
             },
             (error) => {
                 console.warn('Geolocation error:', error);
-                toast.warning('Check-in sans GPS enregistré');
+                toast.warning(t('Check-in saved without GPS'));
                 submitCheckIn(null, null);
             },
             { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
@@ -146,22 +146,22 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
     };
 
     const submitCheckIn = (lat: number | null, lng: number | null) => {
-        if (confirm('Êtes-vous sûr de vouloir démarrer cette prestation maintenant ?')) {
+        if (confirm(t('Are you sure you want to start this service now?'))) {
             router.post(checkIn.url(reservation.id), {
                 latitude: lat,
                 longitude: lng
             }, {
                 preserveScroll: true,
-                onSuccess: () => toast.success('Check-in effectué avec succès'),
+                onSuccess: () => toast.success(t('Check-in completed successfully')),
             });
         }
     };
 
     const handleCheckOut = () => {
-        if (confirm('Avez-vous terminé la prestation ?')) {
+        if (confirm(t('Have you completed the service?'))) {
             router.post(checkOut.url(reservation.id), {}, {
                 preserveScroll: true,
-                onSuccess: () => toast.success('Check-out effectué, prestation terminée'),
+                onSuccess: () => toast.success(t('Check-out completed, service finished')),
             });
         }
     };
@@ -170,7 +170,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
 
     return (
         <MainLayout>
-            <Head title={`Commande ${reservation.reservation_number}`} />
+            <Head title={`${t('Order')} ${reservation.reservation_number}`} />
 
             <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 md:pb-12">
                 <Link
@@ -178,7 +178,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                     className="flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
                 >
                     <ChevronLeft className="w-4 h-4 mr-1" />
-                    Retour aux commandes
+                    {t('Back to orders')}
                 </Link>
 
                 <div className="grid md:grid-cols-3 gap-8">
@@ -193,14 +193,14 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                                 {statusLabels[reservation.status]?.label || reservation.status}
                                             </Badge>
                                             <span className="text-sm text-muted-foreground">
-                                                N° {reservation.reservation_number}
+                                                {t('No.')} {reservation.reservation_number}
                                             </span>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-sm text-muted-foreground">Gains estimatifs</div>
+                                        <div className="text-sm text-muted-foreground">{t('Estimated earnings')}</div>
                                         <div className="text-2xl font-bold text-primary">
-                                            {reservation.artist_earnings.toLocaleString('fr-FR')} FCFA
+                                            {reservation.artist_earnings.toLocaleString(locale === 'en' ? 'en-US' : 'fr-FR')} FCFA
                                         </div>
                                     </div>
                                 </div>
@@ -218,13 +218,13 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                             {reservation.client.name}
                                         </div>
                                         <div className="text-sm text-muted-foreground">
-                                            Client enregistré
+                                            {t('Registered client')}
                                         </div>
                                     </div>
                                     <div className="ml-auto">
                                         <Button variant="outline" size="sm" className="gap-2">
                                             <MessageCircle className="w-4 h-4" />
-                                            Contacter
+                                            {t('Contact')}
                                         </Button>
                                     </div>
                                 </div>
@@ -233,14 +233,14 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>Détails de la prestation</CardTitle>
+                                <CardTitle>{t('Service details')}</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center gap-3">
                                     <Calendar className="w-5 h-5 text-muted-foreground" />
                                     <div>
                                         <div className="font-medium">
-                                            {format(scheduledDate, 'EEEE d MMMM yyyy', { locale: fr })}
+                                            {format(scheduledDate, 'EEEE d MMMM yyyy', { locale: dateLocale })}
                                         </div>
                                     </div>
                                 </div>
@@ -249,7 +249,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                     <Clock className="w-5 h-5 text-muted-foreground" />
                                     <div>
                                         <div className="font-medium">
-                                            {format(scheduledDate, 'HH:mm')} • {reservation.duration_minutes} minutes
+                                            {format(scheduledDate, 'HH:mm')} • {reservation.duration_minutes} {t('minutes')}
                                         </div>
                                     </div>
                                 </div>
@@ -266,7 +266,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
 
                                 {reservation.recipient_name && (
                                     <div className="pt-4 border-t">
-                                        <div className="text-sm font-medium text-muted-foreground mb-1">Dédié à</div>
+                                        <div className="text-sm font-medium text-muted-foreground mb-1">{t('Dedicated to')}</div>
                                         <div className="font-medium">{reservation.recipient_name}</div>
                                     </div>
                                 )}
@@ -274,7 +274,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                 {reservation.custom_message && (
                                     <div className="pt-4 border-t">
                                         <div className="text-sm font-medium text-muted-foreground mb-2">
-                                            Message / Instructions du client
+                                            {t('Client message / instructions')}
                                         </div>
                                         <div className="text-sm bg-muted/50 p-4 rounded-lg italic">
                                             "{reservation.custom_message}"
@@ -291,7 +291,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                 <>
                                     <Button className="w-full gap-2" size="lg" onClick={handleAccept}>
                                         <CheckCircle2 className="w-5 h-5" />
-                                        Accepter la demande
+                                        {t('Accept request')}
                                     </Button>
                                     <Button
                                         variant="outline"
@@ -299,7 +299,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                         onClick={() => setIsDeclining(true)}
                                     >
                                         <XCircle className="w-5 h-5" />
-                                        Refuser
+                                        {t('Decline')}
                                     </Button>
                                 </>
                             )}
@@ -307,7 +307,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                             {reservation.status === 'pending' && isDeclining && (
                                 <Card className="border-destructive/50">
                                     <CardHeader>
-                                        <CardTitle className="text-sm">Motif du refus</CardTitle>
+                                        <CardTitle className="text-sm">{t('Reason for decline')}</CardTitle>
                                     </CardHeader>
                                     <CardContent>
                                         <form onSubmit={handleDeclineSubmit} className="space-y-4">
@@ -315,17 +315,17 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                                 <Textarea
                                                     value={data.reason}
                                                     onChange={e => setData('reason', e.target.value)}
-                                                    placeholder="Expliquez brièvement pourquoi vous refusez cette demande..."
+                                                    placeholder={t('Briefly explain why you are declining this request...')}
                                                     className="text-sm"
                                                     required
                                                 />
                                             </div>
                                             <div className="flex gap-2">
                                                 <Button type="button" variant="ghost" className="flex-1" onClick={() => setIsDeclining(false)}>
-                                                    Annuler
+                                                    {t('Cancel')}
                                                 </Button>
                                                 <Button type="submit" variant="destructive" className="flex-1" disabled={processingDecline}>
-                                                    Confirmer le refus
+                                                    {t('Confirm decline')}
                                                 </Button>
                                             </div>
                                         </form>
@@ -337,11 +337,11 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                 <Card>
                                     <CardContent className="pt-6">
                                         <p className="text-sm text-muted-foreground mb-4 text-center">
-                                            Le jour J, une fois arrivé sur place, signalez votre présence pour démarrer la prestation.
+                                            {t('On the day of the event, once you arrive on site, check in to start the service.')}
                                         </p>
                                         <Button className="w-full gap-2" size="lg" onClick={handleCheckIn}>
                                             <PlayCircle className="w-5 h-5" />
-                                            Faire le Check-in
+                                            {t('Check in')}
                                         </Button>
                                     </CardContent>
                                 </Card>
@@ -356,7 +356,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                                                     <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
                                                 </span>
-                                                Prestation en cours
+                                                {t('Service in progress')}
                                             </div>
                                             <div className="flex items-center text-4xl font-mono font-bold text-primary tracking-wider">
                                                 <Timer className="w-8 h-8 mr-3 text-primary/70" />
@@ -365,7 +365,7 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                         </div>
                                         <Button className="w-full gap-2" variant="default" size="lg" onClick={handleCheckOut}>
                                             <StopCircle className="w-5 h-5" />
-                                            Terminer (Check-out)
+                                            {t('Finish (Check-out)')}
                                         </Button>
                                     </CardContent>
                                 </Card>
@@ -376,12 +376,12 @@ export default function OrderDetail({ reservation }: OrderDetailProps) {
                                     <CardHeader className="pb-3">
                                         <CardTitle className="text-sm flex items-center gap-2">
                                             <CreditCard className="w-4 h-4 text-muted-foreground" />
-                                            Paiement client
+                                            {t('Client payment')}
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
                                         <div className="flex justify-between items-center text-sm">
-                                            <span className="text-muted-foreground">Statut</span>
+                                            <span className="text-muted-foreground">{t('Status')}</span>
                                             <Badge variant={reservation.payment.status === 'completed' ? 'default' : 'secondary'}>
                                                 {reservation.payment.status}
                                             </Badge>

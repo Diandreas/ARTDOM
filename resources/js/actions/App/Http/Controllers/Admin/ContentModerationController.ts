@@ -85,7 +85,7 @@ index.form = indexForm
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-export const resolveReview = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const resolveReview = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resolveReview.url(args, options),
     method: 'post',
 })
@@ -100,7 +100,7 @@ resolveReview.definition = {
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-resolveReview.url = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+resolveReview.url = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { review: args }
     }
@@ -133,7 +133,7 @@ resolveReview.url = (args: { review: string | { id: string } } | [review: string
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-resolveReview.post = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+resolveReview.post = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resolveReview.url(args, options),
     method: 'post',
 })
@@ -143,7 +143,7 @@ resolveReview.post = (args: { review: string | { id: string } } | [review: strin
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-const resolveReviewForm = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const resolveReviewForm = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: resolveReview.url(args, options),
     method: 'post',
 })
@@ -153,7 +153,7 @@ const resolveReviewForm = (args: { review: string | { id: string } } | [review: 
 * @see app/Http/Controllers/Admin/ContentModerationController.php:48
 * @route '/admin/moderation/reviews/{review}/resolve'
 */
-resolveReviewForm.post = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+resolveReviewForm.post = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: resolveReview.url(args, options),
     method: 'post',
 })
@@ -165,7 +165,7 @@ resolveReview.form = resolveReviewForm
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-export const deleteReview = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const deleteReview = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: deleteReview.url(args, options),
     method: 'delete',
 })
@@ -180,7 +180,7 @@ deleteReview.definition = {
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-deleteReview.url = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+deleteReview.url = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { review: args }
     }
@@ -213,7 +213,7 @@ deleteReview.url = (args: { review: string | { id: string } } | [review: string 
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-deleteReview.delete = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+deleteReview.delete = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: deleteReview.url(args, options),
     method: 'delete',
 })
@@ -223,7 +223,7 @@ deleteReview.delete = (args: { review: string | { id: string } } | [review: stri
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-const deleteReviewForm = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const deleteReviewForm = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: deleteReview.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -238,7 +238,7 @@ const deleteReviewForm = (args: { review: string | { id: string } } | [review: s
 * @see app/Http/Controllers/Admin/ContentModerationController.php:58
 * @route '/admin/moderation/reviews/{review}'
 */
-deleteReviewForm.delete = (args: { review: string | { id: string } } | [review: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+deleteReviewForm.delete = (args: { review: string | number | { id: string | number } } | [review: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: deleteReview.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -255,7 +255,7 @@ deleteReview.form = deleteReviewForm
 * @see app/Http/Controllers/Admin/ContentModerationController.php:65
 * @route '/admin/moderation/comments/{comment}/resolve'
 */
-export const resolveComment = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const resolveComment = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resolveComment.url(args, options),
     method: 'post',
 })
@@ -270,7 +270,7 @@ resolveComment.definition = {
 * @see app/Http/Controllers/Admin/ContentModerationController.php:65
 * @route '/admin/moderation/comments/{comment}/resolve'
 */
-resolveComment.url = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+resolveComment.url = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { comment: args }
     }
@@ -303,7 +303,7 @@ resolveComment.url = (args: { comment: string | { id: string } } | [comment: str
 * @see app/Http/Controllers/Admin/ContentModerationController.php:65
 * @route '/admin/moderation/comments/{comment}/resolve'
 */
-resolveComment.post = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+resolveComment.post = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: resolveComment.url(args, options),
     method: 'post',
 })
@@ -313,7 +313,7 @@ resolveComment.post = (args: { comment: string | { id: string } } | [comment: st
 * @see app/Http/Controllers/Admin/ContentModerationController.php:65
 * @route '/admin/moderation/comments/{comment}/resolve'
 */
-const resolveCommentForm = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const resolveCommentForm = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: resolveComment.url(args, options),
     method: 'post',
 })
@@ -323,7 +323,7 @@ const resolveCommentForm = (args: { comment: string | { id: string } } | [commen
 * @see app/Http/Controllers/Admin/ContentModerationController.php:65
 * @route '/admin/moderation/comments/{comment}/resolve'
 */
-resolveCommentForm.post = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+resolveCommentForm.post = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: resolveComment.url(args, options),
     method: 'post',
 })
@@ -335,7 +335,7 @@ resolveComment.form = resolveCommentForm
 * @see app/Http/Controllers/Admin/ContentModerationController.php:74
 * @route '/admin/moderation/comments/{comment}'
 */
-export const deleteComment = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+export const deleteComment = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: deleteComment.url(args, options),
     method: 'delete',
 })
@@ -350,7 +350,7 @@ deleteComment.definition = {
 * @see app/Http/Controllers/Admin/ContentModerationController.php:74
 * @route '/admin/moderation/comments/{comment}'
 */
-deleteComment.url = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+deleteComment.url = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { comment: args }
     }
@@ -383,7 +383,7 @@ deleteComment.url = (args: { comment: string | { id: string } } | [comment: stri
 * @see app/Http/Controllers/Admin/ContentModerationController.php:74
 * @route '/admin/moderation/comments/{comment}'
 */
-deleteComment.delete = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+deleteComment.delete = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: deleteComment.url(args, options),
     method: 'delete',
 })
@@ -393,7 +393,7 @@ deleteComment.delete = (args: { comment: string | { id: string } } | [comment: s
 * @see app/Http/Controllers/Admin/ContentModerationController.php:74
 * @route '/admin/moderation/comments/{comment}'
 */
-const deleteCommentForm = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+const deleteCommentForm = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: deleteComment.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',
@@ -408,7 +408,7 @@ const deleteCommentForm = (args: { comment: string | { id: string } } | [comment
 * @see app/Http/Controllers/Admin/ContentModerationController.php:74
 * @route '/admin/moderation/comments/{comment}'
 */
-deleteCommentForm.delete = (args: { comment: string | { id: string } } | [comment: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+deleteCommentForm.delete = (args: { comment: string | number | { id: string | number } } | [comment: string | number | { id: string | number } ] | string | number | { id: string | number }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
     action: deleteComment.url(args, {
         [options?.mergeQuery ? 'mergeQuery' : 'query']: {
             _method: 'DELETE',

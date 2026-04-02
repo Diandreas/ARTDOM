@@ -1,11 +1,9 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import { format, parseISO, isSameDay } from 'date-fns';
-import { fr } from 'date-fns/locale';
 import { Clock, Plus, Trash2, CalendarCheck, Ban, CalendarDays } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { store, block, destroy } from '@/actions/App/Http/Controllers/Artist/AvailabilityController';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
 
 interface Availability {
@@ -31,7 +30,8 @@ interface AgendaProps {
     currentYear: number;
 }
 
-export default function ArtistAgenda({ availabilities, currentMonth, currentYear }: AgendaProps) {
+export default function ArtistAgenda({ availabilities }: AgendaProps) {
+    const { t, dateLocale } = useAppLocale();
     const [date, setDate] = useState<Date | undefined>(new Date());
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isBlockOpen, setIsBlockOpen] = useState(false);
@@ -66,7 +66,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
         postAdd(store.url(), {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Disponibilité ajoutée avec succès');
+                toast.success(t('Availability added successfully'));
                 setIsAddOpen(false);
                 resetAdd();
             },
@@ -78,7 +78,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
         postBlock(block.url(), {
             preserveScroll: true,
             onSuccess: () => {
-                toast.success('Créneau bloqué avec succès');
+                toast.success(t('Time slot blocked successfully'));
                 setIsBlockOpen(false);
                 resetBlock();
             },
@@ -87,14 +87,14 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
 
     const handleDelete = (id: string, isBooked: boolean) => {
         if (isBooked) {
-            toast.error('Impossible de supprimer un créneau déjà réservé.');
+            toast.error(t('Cannot delete a slot that is already booked.'));
             return;
         }
 
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?')) {
+        if (confirm(t('Are you sure you want to delete this slot?'))) {
             router.delete(destroy.url(id), {
                 preserveScroll: true,
-                onSuccess: () => toast.success('Créneau supprimé'),
+                onSuccess: () => toast.success(t('Time slot deleted')),
             });
         }
     };
@@ -106,13 +106,13 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
 
     return (
         <MainLayout>
-            <Head title="Agenda & Disponibilités" />
+            <Head title={t('Agenda & Availability')} />
 
             <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 md:pb-12">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold font-heading mb-2 text-foreground">Agenda</h1>
-                        <p className="text-muted-foreground">Gérez vos disponibilités et vos créneaux bloqués</p>
+                        <h1 className="text-3xl font-bold font-heading mb-2 text-foreground">{t('Agenda')}</h1>
+                        <p className="text-muted-foreground">{t('Manage your availability and blocked time slots')}</p>
                     </div>
 
                     <div className="flex gap-2 w-full md:w-auto">
@@ -120,17 +120,17 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                             <DialogTrigger asChild>
                                 <Button className="flex-1 md:flex-none gap-2">
                                     <Plus className="w-4 h-4" />
-                                    Ajouter
+                                    {t('Add')}
                                 </Button>
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Ajouter des disponibilités</DialogTitle>
+                                    <DialogTitle>{t('Add availability')}</DialogTitle>
                                 </DialogHeader>
                                 <form onSubmit={handleAddAvailability} className="space-y-4 pt-4">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label>Date</Label>
+                                            <Label>{t('Date')}</Label>
                                             <Input
                                                 type="date"
                                                 value={addData.date}
@@ -141,7 +141,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label>Heure de début</Label>
+                                            <Label>{t('Start time')}</Label>
                                             <Input
                                                 type="time"
                                                 value={addData.start_time}
@@ -150,7 +150,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label>Heure de fin</Label>
+                                            <Label>{t('End time')}</Label>
                                             <Input
                                                 type="time"
                                                 value={addData.end_time}
@@ -160,22 +160,22 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                         </div>
                                     </div>
                                     <div className="space-y-2 border-t pt-4 mt-2">
-                                        <Label>Répétition (Optionnel)</Label>
+                                        <Label>{t('Repeat (optional)')}</Label>
                                         <Select value={addData.repeat_rule} onValueChange={(v) => setAddData('repeat_rule', v === 'none' ? '' : v)}>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Pas de répétition" />
+                                                <SelectValue placeholder={t('No repeat')} />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="none">Pas de répétition</SelectItem>
-                                                <SelectItem value="daily">Tous les jours</SelectItem>
-                                                <SelectItem value="weekly">Toutes les semaines</SelectItem>
-                                                <SelectItem value="monthly">Tous les mois</SelectItem>
+                                                <SelectItem value="none">{t('No repeat')}</SelectItem>
+                                                <SelectItem value="daily">{t('Every day')}</SelectItem>
+                                                <SelectItem value="weekly">{t('Every week')}</SelectItem>
+                                                <SelectItem value="monthly">{t('Every month')}</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
                                     {addData.repeat_rule && (
                                         <div className="space-y-2">
-                                            <Label>Répéter jusqu'au</Label>
+                                            <Label>{t('Repeat until')}</Label>
                                             <Input
                                                 type="date"
                                                 value={addData.repeat_until}
@@ -185,8 +185,8 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                         </div>
                                     )}
                                     <div className="flex justify-end gap-2 pt-4">
-                                        <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)}>Annuler</Button>
-                                        <Button type="submit" disabled={adding}>Enregistrer</Button>
+                                        <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)}>{t('Cancel')}</Button>
+                                        <Button type="submit" disabled={adding}>{t('Save')}</Button>
                                     </div>
                                 </form>
                             </DialogContent>
@@ -196,17 +196,17 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                             <DialogTrigger asChild>
                                 <Button variant="outline" className="flex-1 md:flex-none gap-2 text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive">
                                     <Ban className="w-4 h-4" />
-                                    Bloquer
+                                    {t('Block')}
                                 </Button>
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Bloquer une période</DialogTitle>
+                                    <DialogTitle>{t('Block a time period')}</DialogTitle>
                                 </DialogHeader>
                                 <form onSubmit={handleBlockAvailability} className="space-y-4 pt-4">
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label>Date</Label>
+                                            <Label>{t('Date')}</Label>
                                             <Input
                                                 type="date"
                                                 value={blockData.date}
@@ -217,7 +217,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label>Heure de début</Label>
+                                            <Label>{t('Start time')}</Label>
                                             <Input
                                                 type="time"
                                                 value={blockData.start_time}
@@ -226,7 +226,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label>Heure de fin</Label>
+                                            <Label>{t('End time')}</Label>
                                             <Input
                                                 type="time"
                                                 value={blockData.end_time}
@@ -236,17 +236,17 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label>Motif (Optionnel)</Label>
+                                        <Label>{t('Reason (optional)')}</Label>
                                         <Input
                                             type="text"
                                             value={blockData.block_reason}
                                             onChange={e => setBlockData('block_reason', e.target.value)}
-                                            placeholder="Ex: Vacances, Maladie..."
+                                            placeholder={t('Example: Vacation, illness...')}
                                         />
                                     </div>
                                     <div className="flex justify-end gap-2 pt-4">
-                                        <Button type="button" variant="outline" onClick={() => setIsBlockOpen(false)}>Annuler</Button>
-                                        <Button type="submit" variant="destructive" disabled={blocking}>Bloquer le créneau</Button>
+                                        <Button type="button" variant="outline" onClick={() => setIsBlockOpen(false)}>{t('Cancel')}</Button>
+                                        <Button type="submit" variant="destructive" disabled={blocking}>{t('Block slot')}</Button>
                                     </div>
                                 </form>
                             </DialogContent>
@@ -261,7 +261,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                 mode="single"
                                 selected={date}
                                 onSelect={handleSelectDate}
-                                locale={fr}
+                                locale={dateLocale}
                                 className="p-4 w-full flex justify-center bg-card"
                                 modifiers={{
                                     hasSlot: (d: Date) => availabilities.some(a => isSameDay(parseISO(a.date), d)),
@@ -275,9 +275,9 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                 }}
                             />
                             <div className="bg-muted/50 p-4 border-t flex flex-wrap gap-4 text-xs">
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-primary/20"></div> Libre</div>
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-primary"></div> Réservé</div>
-                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-destructive"></div> Bloqué</div>
+                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-primary/20"></div> {t('Free')}</div>
+                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-primary"></div> {t('Booked')}</div>
+                                <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-destructive"></div> {t('Blocked')}</div>
                             </div>
                         </CardContent>
                     </Card>
@@ -287,7 +287,7 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                             <div className="flex items-center gap-3">
                                 <CalendarDays className="w-5 h-5 text-primary" />
                                 <CardTitle className="text-xl">
-                                    {date ? format(date, 'EEEE d MMMM yyyy', { locale: fr }) : 'Sélectionnez une date'}
+                                    {date ? format(date, 'EEEE d MMMM yyyy', { locale: dateLocale }) : t('Select a date')}
                                 </CardTitle>
                             </div>
                         </CardHeader>
@@ -295,9 +295,9 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                             {selectedDateAvailabilities.length === 0 ? (
                                 <div className="h-40 flex flex-col items-center justify-center text-muted-foreground text-center">
                                     <Clock className="w-12 h-12 mb-3 text-muted-foreground/30" />
-                                    <p>Aucun créneau programmé à cette date.</p>
+                                    <p>{t('No time slot scheduled on this date.')}</p>
                                     <Button variant="link" onClick={() => setIsAddOpen(true)} className="mt-2 text-primary">
-                                        Ajouter une disponibilité
+                                        {t('Add availability')}
                                     </Button>
                                 </div>
                             ) : (
@@ -328,11 +328,11 @@ export default function ArtistAgenda({ availabilities, currentMonth, currentYear
                                                     </div>
                                                     <div className="text-sm opacity-80 mt-1 font-medium">
                                                         {slot.is_blocked ? (
-                                                            <div className="flex items-center gap-1.5"><Ban className="w-3.5 h-3.5" /> Indisponible</div>
+                                                            <div className="flex items-center gap-1.5"><Ban className="w-3.5 h-3.5" /> {t('Unavailable')}</div>
                                                         ) : slot.is_booked ? (
-                                                            <div className="flex items-center gap-1.5"><CalendarCheck className="w-3.5 h-3.5 text-primary" /> Réservé</div>
+                                                            <div className="flex items-center gap-1.5"><CalendarCheck className="w-3.5 h-3.5 text-primary" /> {t('Booked')}</div>
                                                         ) : (
-                                                            <span className="text-muted-foreground">Libre</span>
+                                                            <span className="text-muted-foreground">{t('Free')}</span>
                                                         )}
                                                     </div>
                                                 </div>

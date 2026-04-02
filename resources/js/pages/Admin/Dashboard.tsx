@@ -192,12 +192,12 @@ export default function Dashboard({
                                     {t('New signups')}
                                 </CardDescription>
                                 <CardTitle>
-                                    24h: {kpis.users.new.last_24h} - 7j:{' '}
+                                    24h: {kpis.users.new.last_24h} - {t('7d')}:{' '}
                                     {kpis.users.new.last_7d}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="text-xs text-muted-foreground">
-                                {t('30 days')}: {kpis.users.new.last_30d}
+                                {t('30d')}: {kpis.users.new.last_30d}
                             </CardContent>
                         </Card>
                         <Card>
@@ -377,7 +377,7 @@ export default function Dashboard({
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>Donut categories artistes</CardTitle>
+                                <CardTitle>{t('Artist categories donut')}</CardTitle>
                                 <CardDescription>
                                     {t('Breakdown of main categories')}
                                 </CardDescription>

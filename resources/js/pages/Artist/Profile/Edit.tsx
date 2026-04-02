@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import { Checkbox } from '@/components/ui/checkbox';
 import MainLayout from '@/layouts/MainLayout';
 
@@ -45,6 +46,7 @@ interface EditProfileProps {
 }
 
 export default function EditProfile({ user, profile, availableCategories }: EditProfileProps) {
+    const { t } = useAppLocale();
     const [isUploadingMedia, setIsUploadingMedia] = useState(false);
 
     // States for Avatar cropper
@@ -157,7 +159,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
     };
 
     const handleDeleteMedia = (mediaUrl: string) => {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce média ?')) {
+        if (confirm(t('Are you sure you want to delete this media?'))) {
             // Extract the media identifier from URL
             const mediaId = encodeURIComponent(mediaUrl);
             fetch(deleteMedia.url({ media: mediaId }), {
@@ -175,13 +177,13 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
 
     return (
         <MainLayout>
-            <Head title="Modifier mon profil" />
+            <Head title={t('Edit my profile')} />
 
             <div className="container max-w-7xl mx-auto px-4 md:px-6 py-8 pb-24 md:pb-12">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold font-heading mb-2 text-foreground">Modifier mon profil</h1>
-                    <p className="text-muted-foreground">Gérez vos informations professionnelles</p>
+                    <h1 className="text-3xl font-bold font-heading mb-2 text-foreground">{t('Edit my profile')}</h1>
+                    <p className="text-muted-foreground">{t('Manage your personal information')}</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -223,7 +225,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                             {profile.is_verified && (
                                                 <Badge variant="default" className="text-xs">
                                                     <Star className="w-3 h-3 mr-1 fill-current" />
-                                                    Vérifié
+                                                    {t('Verified')}
                                                 </Badge>
                                             )}
                                         </div>
@@ -233,7 +235,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                                 <Star className="w-4 h-4 text-primary fill-primary" />
                                                 <span className="font-bold">{profile.rating.toFixed(1)}</span>
                                                 <span className="text-muted-foreground">
-                                                    ({profile.total_reviews} avis)
+                                                    ({profile.total_reviews} {t('reviews')})
                                                 </span>
                                             </div>
                                         )}
@@ -244,7 +246,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                             {/* Portfolio Gallery */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Portfolio</CardTitle>
+                                    <CardTitle>{t('Portfolio')}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div className="grid grid-cols-2 gap-2">
@@ -273,10 +275,10 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                             <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
                                                 <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
                                                 <p className="text-sm text-muted-foreground">
-                                                    {isUploadingMedia ? 'Upload en cours...' : 'Ajouter des photos/vidéos'}
+                                                    {isUploadingMedia ? t('Uploading...') : t('Add photos/videos')}
                                                 </p>
                                                 <p className="text-xs text-muted-foreground mt-1">
-                                                    Max 10MB - JPEG, PNG, MP4, MOV
+                                                    {t('Max 10MB - JPEG, PNG, MP4, MOV')}
                                                 </p>
                                             </div>
                                         </Label>
@@ -298,12 +300,12 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                             {/* Basic Info */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Informations de base</CardTitle>
+                                    <CardTitle>{t('Profile information')}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div className="grid md:grid-cols-2 gap-4">
                                         <div>
-                                            <Label htmlFor="name">Nom complet</Label>
+                                            <Label htmlFor="name">{t('Full name')}</Label>
                                             <Input
                                                 id="name"
                                                 value={form.data.name}
@@ -315,7 +317,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="stage_name">Nom de scène</Label>
+                                            <Label htmlFor="stage_name">{t('Stage name')}</Label>
                                             <Input
                                                 id="stage_name"
                                                 value={form.data.stage_name}
@@ -328,16 +330,16 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="email">Email</Label>
+                                        <Label htmlFor="email">{t('Email')}</Label>
                                         <Input id="email" type="email" value={user.email} disabled />
                                         <p className="text-xs text-muted-foreground mt-1">
-                                            L'email ne peut pas être modifié ici
+                                            {t("Email cannot be changed here")}
                                         </p>
                                     </div>
 
                                     <div className="grid md:grid-cols-2 gap-4">
                                         <div>
-                                            <Label htmlFor="phone">Téléphone</Label>
+                                            <Label htmlFor="phone">{t('Phone')}</Label>
                                             <Input
                                                 id="phone"
                                                 type="tel"
@@ -350,7 +352,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="city">Ville</Label>
+                                            <Label htmlFor="city">{t('City')}</Label>
                                             <Input
                                                 id="city"
                                                 value={form.data.city}
@@ -363,16 +365,16 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="bio">Biographie</Label>
+                                        <Label htmlFor="bio">{t('Biography')}</Label>
                                         <Textarea
                                             id="bio"
                                             value={form.data.bio}
                                             onChange={(e) => form.setData('bio', e.target.value)}
                                             rows={5}
-                                            placeholder="Parlez-nous de vous, votre parcours, vos spécialités..."
+                                            placeholder={t('Describe your art in a few words...')}
                                         />
                                         <p className="text-xs text-muted-foreground mt-1">
-                                            {form.data.bio.length}/1000 caractères
+                                            {form.data.bio.length}/1000 {t('characters')}
                                         </p>
                                         {form.errors.bio && (
                                             <p className="text-sm text-destructive mt-1">{form.errors.bio}</p>
@@ -380,7 +382,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="base_rate">Tarif de base (FCFA/prestation)</Label>
+                                        <Label htmlFor="base_rate">{t('Base rate (FCFA/service)')}</Label>
                                         <Input
                                             id="base_rate"
                                             type="number"
@@ -398,7 +400,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                             {/* Categories */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Catégories artistiques</CardTitle>
+                                    <CardTitle>{t('Categories')}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="grid md:grid-cols-2 gap-3">
@@ -427,7 +429,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                             {/* Social Links */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Réseaux sociaux</CardTitle>
+                                    <CardTitle>{t('Social links')}</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div>
@@ -509,7 +511,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                                     <div>
                                         <Label htmlFor="website" className="flex items-center gap-2">
                                             <Globe className="w-4 h-4" />
-                                            Site web
+                                            {t('Website')}
                                         </Label>
                                         <Input
                                             id="website"
@@ -530,7 +532,7 @@ export default function EditProfile({ user, profile, availableCategories }: Edit
                             {/* Submit Button */}
                             <div className="flex justify-end gap-4">
                                 <Button type="submit" disabled={form.processing} className="min-w-[200px]">
-                                    {form.processing ? 'Enregistrement...' : 'Enregistrer les modifications'}
+                                    {form.processing ? t('Saving...') : t('Save changes')}
                                 </Button>
                             </div>
                         </div>

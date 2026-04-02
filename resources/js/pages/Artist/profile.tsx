@@ -1,7 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { Star, MapPin, Music, Clock, Play, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
-import { report } from '@/manual-actions/ArtistReportController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,9 @@ import {
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import { useAppLocale } from '@/hooks/use-app-locale';
 import MainLayout from '@/layouts/MainLayout';
+import { report } from '@/manual-actions/ArtistReportController';
 
 interface Artist {
     id: string;
@@ -80,20 +81,21 @@ interface ProfileProps {
     can_report?: boolean;
 }
 
-const locationTypes: Record<string, string> = {
-    home: 'À domicile',
-    online: 'En ligne',
-    public: 'Lieu public',
-    any: 'Flexible',
-};
-
 export default function ArtistProfile({ auth, artist, services, albums, stats, can_report = false }: ProfileProps) {
+    const { t } = useAppLocale();
     const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
     const [reportReason, setReportReason] = useState('');
     const [isReporting, setIsReporting] = useState(false);
 
     // Final can_report check
     const showReportButton = can_report || (auth.user?.role === 'client');
+
+    const locationTypes: Record<string, string> = {
+        home: t('At home'),
+        online: t('Online'),
+        public: t('Public place'),
+        any: t('Flexible'),
+    };
 
     const formatNumber = (num: number) => {
         if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
@@ -120,7 +122,7 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
 
     return (
         <MainLayout>
-            <Head title={`${artist.stage_name} - Profil Artiste`} />
+            <Head title={`${artist.stage_name} - ${t('Artist Profile')}`} />
 
             {/* Cover Image Placeholder */}
             <div className="h-48 md:h-80 w-full relative overflow-hidden bg-gradient-sunset">
@@ -143,7 +145,7 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                             {artist.is_verified && (
                                 <Badge className="bg-primary text-primary-foreground">
                                     <Star className="w-3 h-3 mr-1 fill-current" />
-                                    Vérifié
+                                    {t('Verified')}
                                 </Badge>
                             )}
                         </div>
@@ -155,7 +157,7 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                             </div>
                             <div className="flex items-center gap-1">
                                 <Music className="w-4 h-4" />
-                                {stats.total_albums} album{stats.total_albums > 1 ? 's' : ''}
+                                {stats.total_albums} {stats.total_albums > 1 ? t('albums') : t('album')}
                             </div>
                         </div>
                         <div className="flex flex-wrap gap-2 mt-3">
@@ -170,7 +172,7 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                     <div className="flex gap-2 w-full md:w-auto">
                         <Button className="flex-1 md:flex-none bg-primary hover:bg-primary/90" asChild>
                             <Link href={services.length > 0 ? `/service/${services[0].id}` : '#'}>
-                                Réserver
+                                {t('Book')}
                             </Link>
                         </Button>
 
@@ -179,23 +181,23 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                                 <DialogTrigger asChild>
                                     <Button variant="destructive" className="gap-2">
                                         <AlertTriangle className="w-4 h-4" />
-                                        Signaler
+                                        {t('Report')}
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent>
                                     <DialogHeader>
-                                        <DialogTitle>Signaler {artist.stage_name}</DialogTitle>
+                                        <DialogTitle>{t('Report')} {artist.stage_name}</DialogTitle>
                                         <DialogDescription>
-                                            Veuillez expliquer la raison de votre signalement. Un administrateur examinera votre demande.
+                                            {t('Please explain the reason for your report. An administrator will review your request.')}
                                         </DialogDescription>
                                     </DialogHeader>
                                     <form onSubmit={handleReportSubmit}>
                                         <div className="space-y-4 py-4">
                                             <div className="space-y-2">
-                                                <Label htmlFor="reason">Motif du signalement</Label>
+                                                <Label htmlFor="reason">{t('Reason for report')}</Label>
                                                 <Textarea
                                                     id="reason"
-                                                    placeholder="Détaillez le problème rencontré avec cet artiste..."
+                                                    placeholder={t('Describe the issue you encountered with this artist...')}
                                                     value={reportReason}
                                                     onChange={(e) => setReportReason(e.target.value)}
                                                     required
@@ -205,10 +207,10 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                                         </div>
                                         <DialogFooter>
                                             <Button type="button" variant="ghost" onClick={() => setIsReportDialogOpen(false)}>
-                                                Annuler
+                                                {t('Cancel')}
                                             </Button>
                                             <Button type="submit" variant="destructive" disabled={isReporting || !reportReason.trim()}>
-                                                {isReporting ? 'Envoi en cours...' : 'Envoyer le signalement'}
+                                                {isReporting ? t('Sending...') : t('Send report')}
                                             </Button>
                                         </DialogFooter>
                                     </form>
@@ -223,19 +225,19 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                     <Card>
                         <CardContent className="pt-6">
                             <div className="text-2xl font-bold text-foreground">{stats.total_services}</div>
-                            <p className="text-xs text-muted-foreground">Services</p>
+                            <p className="text-xs text-muted-foreground">{t('Services')}</p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardContent className="pt-6">
                             <div className="text-2xl font-bold text-foreground">{stats.total_albums}</div>
-                            <p className="text-xs text-muted-foreground">Albums</p>
+                            <p className="text-xs text-muted-foreground">{t('Albums')}</p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardContent className="pt-6">
                             <div className="text-2xl font-bold text-primary">{formatNumber(stats.total_plays)}</div>
-                            <p className="text-xs text-muted-foreground">Écoutes</p>
+                            <p className="text-xs text-muted-foreground">{t('Plays')}</p>
                         </CardContent>
                     </Card>
                     <Card>
@@ -243,7 +245,7 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                             <div className="text-2xl font-bold text-foreground">
                                 {artist.base_rate.toLocaleString()}
                             </div>
-                            <p className="text-xs text-muted-foreground">FCFA/prestation</p>
+                            <p className="text-xs text-muted-foreground">FCFA/{t('service')}</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -251,11 +253,11 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                 {/* Content Tabs */}
                 <Tabs defaultValue="bio" className="w-full">
                     <TabsList className="w-full justify-start overflow-x-auto">
-                        <TabsTrigger value="bio">Biographie</TabsTrigger>
-                        <TabsTrigger value="services">Services ({services.length})</TabsTrigger>
-                        <TabsTrigger value="albums">Albums ({albums.length})</TabsTrigger>
+                        <TabsTrigger value="bio">{t('Biography')}</TabsTrigger>
+                        <TabsTrigger value="services">{t('Services')} ({services.length})</TabsTrigger>
+                        <TabsTrigger value="albums">{t('Albums')} ({albums.length})</TabsTrigger>
                         {artist.portfolio_urls.length > 0 && (
-                            <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+                            <TabsTrigger value="portfolio">{t('Portfolio')}</TabsTrigger>
                         )}
                     </TabsList>
 
@@ -263,11 +265,11 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                     <TabsContent value="bio" className="mt-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle>À propos</CardTitle>
+                                <CardTitle>{t('About')}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <p className="leading-relaxed text-muted-foreground whitespace-pre-line">
-                                    {artist.bio || "Cet artiste n'a pas encore ajouté de biographie."}
+                                    {artist.bio || t('This artist has not added a biography yet.')}
                                 </p>
                             </CardContent>
                         </Card>
@@ -304,7 +306,7 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                                             </div>
                                             <Link href={`/service/${service.id}`}>
                                                 <Button className="w-full" variant="outline">
-                                                    Voir détails
+                                                    {t('View details')}
                                                 </Button>
                                             </Link>
                                         </CardContent>
@@ -314,7 +316,7 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                         ) : (
                             <Card>
                                 <CardContent className="pt-6 text-center text-muted-foreground">
-                                    Aucun service disponible pour le moment.
+                                    {t('No service available at the moment.')}
                                 </CardContent>
                             </Card>
                         )}
@@ -339,14 +341,14 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                                                     </Button>
                                                 </div>
                                                 <Badge className="absolute top-2 right-2 bg-black/70 text-white border-none text-xs">
-                                                    {album.tracks_count} titres
+                                                    {album.tracks_count} {t('tracks')}
                                                 </Badge>
                                             </div>
                                             <h3 className="font-semibold text-sm truncate text-foreground">{album.title}</h3>
                                             <p className="text-xs text-muted-foreground">{album.year}</p>
                                             <div className="flex items-center gap-1 text-xs text-primary mt-1">
                                                 <TrendingUp className="w-3 h-3" />
-                                                {formatNumber(album.total_plays)} écoutes
+                                                {formatNumber(album.total_plays)} {t('plays')}
                                             </div>
                                         </div>
                                     </Link>
@@ -355,7 +357,7 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                         ) : (
                             <Card>
                                 <CardContent className="pt-6 text-center text-muted-foreground">
-                                    Aucun album disponible pour le moment.
+                                    {t('No album available at the moment.')}
                                 </CardContent>
                             </Card>
                         )}
