@@ -8,6 +8,7 @@ import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
 import { syncLocale } from './i18n';
 import './echo';
+import { requestPermissionAndGetToken, onMessageListener } from './firebase-messaging';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -42,3 +43,42 @@ createInertiaApp({
 
 // This will set light / dark mode on load...
 initializeTheme();
+
+// Register service worker and FCM token (attempt). This is safe to run on page load;
+// it will POST the token to /api/fcm-token using cookie-based auth (Sanctum).
+async function registerFCM() {
+    if (typeof window === 'undefined') return;
+
+    try {
+        // Ensure Sanctum CSRF cookie for cookie-based auth (no-op if using API tokens)
+        await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
+
+        // register the service worker for background notifications
+        if ('serviceWorker' in navigator) {
+            try {
+                await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            } catch (e) {
+                // ignore SW registration errors
+                console.warn('Service worker registration failed', e);
+            }
+        }
+
+        const token = await requestPermissionAndGetToken();
+        if (token) {
+            await fetch('/api/fcm-token', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token }),
+            });
+        }
+
+        onMessageListener((payload) => {
+            console.log('FCM foreground message:', payload);
+        });
+    } catch (e) {
+        console.warn('FCM registration error', e);
+    }
+}
+
+registerFCM();
