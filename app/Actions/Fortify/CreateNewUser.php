@@ -5,10 +5,12 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Enums\UserRole;
+use App\Mail\WelcomeMail;
 use App\Models\ArtistProfile;
 use App\Models\ClientProfile;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -36,7 +38,7 @@ class CreateNewUser implements CreatesNewUsers
             'bio' => ['nullable', 'string', 'max:1000'],
         ])->validate();
 
-        return DB::transaction(function () use ($input) {
+        $user = DB::transaction(function () use ($input) {
             $user = User::create([
                 'name' => $input['name'],
                 'email' => $input['email'],
@@ -45,6 +47,8 @@ class CreateNewUser implements CreatesNewUsers
                 'phone' => $input['phone'] ?? null,
                 'city' => $input['city'] ?? null,
                 'is_active' => true,
+            ]);
+
             if ($input['role'] === UserRole::Artist->value) {
                 ArtistProfile::create([
                     'user_id' => $user->id,
@@ -52,9 +56,6 @@ class CreateNewUser implements CreatesNewUsers
                     'bio' => $input['bio'] ?? null,
                     'categories' => [$input['category']],
                     'verification_status' => 'approved',
-                    'is_verified' => true,
-                ]);
-            } else {
                     'is_verified' => true,
                 ]);
             } else {
@@ -66,5 +67,10 @@ class CreateNewUser implements CreatesNewUsers
 
             return $user;
         });
+
+        // Send welcome email
+        Mail::to($user->email)->queue(new WelcomeMail($user));
+
+        return $user;
     }
 }

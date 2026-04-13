@@ -99,9 +99,6 @@ class RegisterController extends Controller
                 'verification_status' => 'approved',
                 'is_verified' => true,
             ]);
-            ]);
-            ]);
-            ]);
         }
 
         // Email de bienvenue
