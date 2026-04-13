@@ -13,6 +13,7 @@ import {
     Ticket,
     UserCheck,
     Users,
+    Bell,
 } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import MiniPlayer from '@/components/Player/MiniPlayer';
@@ -84,6 +85,11 @@ export default function AdminLayout({
             label: t('Hero Section'),
             href: '/admin/hero-settings',
             icon: Layout,
+        },
+        {
+            label: t('Push Campaigns'),
+            href: '/admin/broadcast',
+            icon: Bell,
         },
         ...(currentRole === 'super_admin'
             ? [

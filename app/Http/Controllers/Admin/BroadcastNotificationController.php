@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBroadcastNotificationRequest;
 use App\Models\User;
 use App\Notifications\AdminGlobalMessageNotification;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,7 +15,18 @@ class BroadcastNotificationController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Admin/BroadcastNotification');
+        $audienceStats = [
+            'all' => User::count(),
+            'client' => User::where('role', 'client')->count(),
+            'artist' => User::where('role', 'artist')->count(),
+            'admin' => User::where('role', 'admin')->count(),
+            'with_fcm' => User::whereNotNull('fcm_token')->count(),
+        ];
+
+        return Inertia::render('Admin/BroadcastNotification', [
+            'audienceStats' => $audienceStats,
+            'flash' => ['message' => session('message')],
+        ]);
     }
 
     public function store(StoreBroadcastNotificationRequest $request): RedirectResponse
@@ -40,8 +52,9 @@ class BroadcastNotificationController extends Controller
 
         $recipientsCount = 0;
 
-        $query->chunk(500, function ($users) use (&$recipientsCount, $notification): void {
+        $query->chunk(500, function (Collection $users) use (&$recipientsCount, $notification): void {
             foreach ($users as $user) {
+                /** @var User $user */
                 $user->notify($notification);
                 $recipientsCount++;
             }
