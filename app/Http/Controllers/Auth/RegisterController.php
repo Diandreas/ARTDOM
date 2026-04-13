@@ -96,7 +96,11 @@ class RegisterController extends Controller
                 'bio' => $artistData['bio'] ?? null,
                 'categories' => $artistData['categories'] ?? null,
                 'base_rate' => $artistData['base_rate'] ?? 0,
-                'verification_status' => 'pending', // En attente de validation admin
+                'verification_status' => 'approved',
+                'is_verified' => true,
+            ]);
+            ]);
+            ]);
             ]);
         }
 

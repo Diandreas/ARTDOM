@@ -264,7 +264,6 @@ class DashboardController extends Controller
             ->values()
             ->take(20);
 
-        $pendingValidationArtists = $artistsPending;
         $urgentReports = Review::where('is_reported', true)->count() + VideoComment::where('is_reported', true)->count();
         $pendingWithdrawals48h = Withdrawal::query()
             ->where('status', 'pending')
@@ -282,6 +281,28 @@ class DashboardController extends Controller
             ->where('created_at', '<=', $now->copy()->subHours(24))
             ->count();
 
+        $totalTrackLikes = \Illuminate\Support\Facades\DB::table('favorites')->count();
+        $totalVideoLikes = Video::sum('likes');
+
+        $topLikedTracks = Track::withCount('favoritedBy')
+            ->orderBy('favorited_by_count', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(fn (Track $track) => [
+                'id' => $track->id,
+                'title' => $track->title,
+                'likes' => $track->favorited_by_count,
+            ]);
+
+        $topLikedVideos = Video::orderBy('likes', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(fn (Video $video) => [
+                'id' => $video->id,
+                'title' => $video->title,
+                'likes' => $video->likes,
+            ]);
+
         return Inertia::render('Admin/Dashboard', [
             'kpis' => [
                 'users' => [
@@ -296,8 +317,12 @@ class DashboardController extends Controller
                 ],
                 'artists' => [
                     'active' => $artistsActive,
-                    'pending' => $artistsPending,
                     'suspended' => $artistsSuspended,
+                ],
+                'likes' => [
+                    'tracks' => $totalTrackLikes,
+                    'videos' => $totalVideoLikes,
+                    'total' => $totalTrackLikes + $totalVideoLikes,
                 ],
                 'revenue' => [
                     'day' => (float) $revenueDay,
@@ -338,7 +363,7 @@ class DashboardController extends Controller
             ],
             'activityTimeline' => $activityTimeline,
             'criticalAlerts' => [
-                'artists_pending_validation' => $pendingValidationArtists,
+                'artists_pending_validation' => $artistsPending,
                 'urgent_reports' => $urgentReports,
                 'withdrawals_pending_over_48h' => $pendingWithdrawals48h,
                 'tickets_without_response_over_24h' => $ticketsNoResponse24h,

@@ -72,6 +72,15 @@ class Track extends Model
     }
 
     /**
+     * Relation : Track peut être mis en favoris par PLUSIEURS Utilisateurs (clients)
+     */
+    public function favoritedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'favorites')
+            ->withTimestamps();
+    }
+
+    /**
      * Incrémente le nombre de lectures de la piste
      */
     public function incrementPlays(): void

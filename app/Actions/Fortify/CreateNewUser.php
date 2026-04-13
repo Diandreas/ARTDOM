@@ -45,15 +45,17 @@ class CreateNewUser implements CreatesNewUsers
                 'phone' => $input['phone'] ?? null,
                 'city' => $input['city'] ?? null,
                 'is_active' => true,
-            ]);
-
             if ($input['role'] === UserRole::Artist->value) {
                 ArtistProfile::create([
                     'user_id' => $user->id,
                     'stage_name' => $input['stage_name'],
                     'bio' => $input['bio'] ?? null,
-                    'categories' => json_encode([$input['category']]),
-                    'verification_status' => 'pending',
+                    'categories' => [$input['category']],
+                    'verification_status' => 'approved',
+                    'is_verified' => true,
+                ]);
+            } else {
+                    'is_verified' => true,
                 ]);
             } else {
                 ClientProfile::create([

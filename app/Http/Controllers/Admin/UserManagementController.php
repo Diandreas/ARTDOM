@@ -174,9 +174,9 @@ class UserManagementController extends Controller
                     'categories' => ! empty($validated['category']) ? [$validated['category']] : null,
                     'base_rate' => $validated['base_rate'] ?? 0,
                     'portfolio_urls' => $validated['portfolio_urls'] ?? null,
-                    'verification_status' => 'pending',
-                    'is_verified' => false,
-                ]
+                    'verification_status' => 'approved',
+                    'is_verified' => true,
+                    ]
             );
 
             Wallet::query()->firstOrCreate(

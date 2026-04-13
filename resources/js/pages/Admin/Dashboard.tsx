@@ -35,8 +35,11 @@ type Kpis = {
     };
     artists: {
         active: number;
-        pending: number;
         suspended: number;
+    };
+    likes: {
+        tracks: number;
+        videos: number;
     };
     revenue: {
         day: number;
@@ -507,21 +510,79 @@ export default function Dashboard({
                         <CardContent className="space-y-3 text-sm">
                             <div className="flex items-center justify-between rounded border p-3">
                                 <span className="flex items-center gap-2">
-                                    <UserCheck2 className="h-4 w-4" />
-                                    {t('Artists pending validation')}
-                                </span>
-                                <Badge>
-                                    {criticalAlerts.artists_pending_validation}
-                                </Badge>
-                            </div>
-                            <div className="flex items-center justify-between rounded border p-3">
-                                <span className="flex items-center gap-2">
                                     <ShieldAlert className="h-4 w-4" />
                                     {t('Urgent reports')}
                                 </span>
                                 <Badge variant="destructive">
                                     {criticalAlerts.urgent_reports}
                                 </Badge>
+                            </div>
+                            <div className="flex items-center justify-between rounded border p-3">
+                                <span className="flex items-center gap-2">
+                                    <Bell className="h-4 w-4" />
+                                    {t('Withdrawals pending > 48h')}
+                                </span>
+                                <Badge variant="outline">
+                                    {
+                                        criticalAlerts.withdrawals_pending_over_48h
+                                    }
+                                </Badge>
+                            </div>
+                            <div className="flex items-center justify-between rounded border p-3">
+                                <span className="flex items-center gap-2">
+                                    <LifeBuoy className="h-4 w-4" />
+                                    {t('Tickets without response > 24h')}
+                                </span>
+                                <Badge variant="outline">
+                                    {
+                                        criticalAlerts.tickets_without_response_over_24h
+                                    }
+                                </Badge>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </section>
+
+                <section>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>{t('1.5 Quick shortcuts')}</CardTitle>
+                            <CardDescription>
+                                {t('Priority actions across admin modules.')}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                            {quickActions.map((action) => (
+                                <Card
+                                    key={action.label}
+                                    className="border-primary/20"
+                                >
+                                    <CardHeader>
+                                        <CardTitle className="text-base">
+                                            {t(action.label)}
+                                        </CardTitle>
+                                        <CardDescription>
+                                            {t(action.description)}
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <Button asChild className="w-full">
+                                            <Link href={action.href}>
+                                                {t('Open')}
+                                                <ArrowRight className="ml-2 h-4 w-4" />
+                                            </Link>
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </section>
+            </div>
+        </AdminLayout>
+    );
+}
+                       </Badge>
                             </div>
                             <div className="flex items-center justify-between rounded border p-3">
                                 <span className="flex items-center gap-2">
