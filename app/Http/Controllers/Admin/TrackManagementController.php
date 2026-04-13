@@ -13,8 +13,7 @@ class TrackManagementController extends Controller
 {
     public function index(Request $request): Response
     {
-        $tracks = Track::withoutGlobalScopes()
-            ->with(['album.artist'])
+        $tracks = Track::with(['album.artist'])
             ->when($request->search, function ($query, $search) {
                 $query->where('title', 'like', "%{$search}%");
             })
@@ -28,9 +27,8 @@ class TrackManagementController extends Controller
         ]);
     }
 
-    public function ban(Request $request, string $track): RedirectResponse
+    public function ban(Request $request, Track $track): RedirectResponse
     {
-        $track = Track::withoutGlobalScopes()->findOrFail($track);
         $validated = $request->validate([
             'reason' => 'nullable|string|max:1000',
         ]);
@@ -46,9 +44,8 @@ class TrackManagementController extends Controller
         ]);
     }
 
-    public function unban(string $track): RedirectResponse
+    public function unban(Track $track): RedirectResponse
     {
-        $track = Track::withoutGlobalScopes()->findOrFail($track);
         $track->update([
             'is_banned' => false,
             'ban_reason' => null,

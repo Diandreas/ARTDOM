@@ -74,15 +74,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/tracks/{track}/unban', [\App\Http\Controllers\Admin\TrackManagementController::class, 'unban'])->name('tracks.unban');
 
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
-        Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
+        Route::post('/users/{user}/activate', [UserManagementController::class, 'activate'])->name('users.activate');
+        Route::post('/users/{user}/ban', [UserManagementController::class, 'ban'])->name('users.ban');
         Route::get('/users/{user}', [UserManagementController::class, 'show'])->name('users.show');
         Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
         Route::post('/users/{user}/suspend', [UserManagementController::class, 'suspend'])->name('users.suspend');
-        Route::post('/users/{user}/activate', [UserManagementController::class, 'activate'])->name('users.activate');
-        Route::post('/users/{user}/ban', [UserManagementController::class, 'ban'])->name('users.ban');
         Route::post('/users/{user}/impersonate', [UserManagementController::class, 'impersonate'])->name('users.impersonate');
         Route::post('/users/stop-impersonation', [UserManagementController::class, 'stopImpersonation'])->name('users.stop-impersonation');
         Route::post('/users/bulk', [UserManagementController::class, 'bulk'])->name('users.bulk');

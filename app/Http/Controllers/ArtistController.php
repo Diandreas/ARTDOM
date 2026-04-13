@@ -95,6 +95,7 @@ class ArtistController extends Controller
             ['key' => 'musician', 'label' => 'Musiciens'],
             ['key' => 'painter', 'label' => 'Peintres'],
             ['key' => 'photographer', 'label' => 'Photographes'],
+            ['key' => 'comedian', 'label' => 'Humouristes'],
         ];
 
         return Inertia::render('artists', [

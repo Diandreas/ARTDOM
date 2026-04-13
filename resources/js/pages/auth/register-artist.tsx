@@ -90,6 +90,9 @@ export default function RegisterArtist() {
                                     <SelectItem value="animator">
                                         {t('Hosting')}
                                     </SelectItem>
+                                    <SelectItem value="comedian">
+                                        {t('Humouriste')}
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

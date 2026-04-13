@@ -65,7 +65,7 @@ class FavoriteController extends Controller
         ]);
     }
 
-    public function toggleAlbum(Request $request, Album $album): JsonResponse
+    public function toggleAlbum(Request $request, Album $album): RedirectResponse
     {
         $user = $request->user();
 
@@ -73,12 +73,15 @@ class FavoriteController extends Controller
 
         if ($isFavorited) {
             $user->favoriteAlbums()->detach($album->id);
+            $message = 'Retiré de la bibliothèque';
         } else {
             $user->favoriteAlbums()->attach($album->id);
+            $message = 'Ajouté à la bibliothèque';
         }
 
-        return response()->json([
-            'is_favorited' => ! $isFavorited,
+        return back()->with('toast', [
+            'type' => 'success',
+            'message' => $message,
         ]);
     }
 }

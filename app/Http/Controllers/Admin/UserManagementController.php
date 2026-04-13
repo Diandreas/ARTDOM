@@ -365,9 +365,8 @@ class UserManagementController extends Controller
         return back()->with('message', 'Utilisateur suspendu.');
     }
 
-    public function activate(string $user): RedirectResponse
+    public function activate(User $user): RedirectResponse
     {
-        $user = User::withoutGlobalScopes()->findOrFail($user);
         $user->update([
             'is_active' => true,
             'banned_at' => null,
@@ -377,9 +376,8 @@ class UserManagementController extends Controller
         return back()->with('message', 'Utilisateur active.');
     }
 
-    public function ban(Request $request, string $user): RedirectResponse
+    public function ban(Request $request, User $user): RedirectResponse
     {
-        $user = User::withoutGlobalScopes()->findOrFail($user);
         $validated = $request->validate([
             'reason' => 'nullable|string|max:1000',
         ]);
@@ -656,6 +654,7 @@ class UserManagementController extends Controller
             ['value' => 'painter', 'label' => 'Peinture'],
             ['value' => 'actor', 'label' => 'Comedie'],
             ['value' => 'photographer', 'label' => 'Photographie'],
+            ['value' => 'comedian', 'label' => 'Humour'],
         ];
     }
 

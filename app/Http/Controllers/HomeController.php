@@ -75,6 +75,7 @@ class HomeController extends Controller
             ['key' => 'musician', 'label' => 'Musiciens', 'icon' => 'guitar'],
             ['key' => 'painter', 'label' => 'Peintres', 'icon' => 'palette'],
             ['key' => 'photographer', 'label' => 'Photographes', 'icon' => 'camera'],
+            ['key' => 'comedian', 'label' => 'Humouristes', 'icon' => 'laugh'],
         ];
 
         $carouselSlides = $this->getCarouselSlides('main');
@@ -106,7 +107,9 @@ class HomeController extends Controller
             return collect();
         }
 
-        return CarouselSlide::with(['artist.artistProfile'])
+        return CarouselSlide::with(['artist' => function($q) {
+                $q->active();
+            }, 'artist.artistProfile'])
             ->where('is_active', true)
             ->where('type', $type)
             ->orderBy('order')
