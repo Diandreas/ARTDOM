@@ -5,6 +5,9 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Kreait\Firebase\Contract\Messaging;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification as FcmNotification;
 
 class AdminGlobalMessageNotification extends Notification
 {
@@ -28,7 +31,33 @@ class AdminGlobalMessageNotification extends Notification
             $channels[] = 'mail';
         }
 
+        if (! empty($notifiable->fcm_token)) {
+            $channels[] = 'fcm';
+        }
+
         return $channels;
+    }
+
+    public function toFcm(object $notifiable): void
+    {
+        if (empty($notifiable->fcm_token)) {
+            return;
+        }
+
+        try {
+            $messaging = app(Messaging::class);
+
+            $message = CloudMessage::withTarget('token', $notifiable->fcm_token)
+                ->withNotification(FcmNotification::create($this->title, $this->message))
+                ->withData(array_filter([
+                    'type' => 'admin_global_message',
+                    'action_url' => $this->actionUrl ?? '',
+                ]));
+
+            $messaging->send($message);
+        } catch (\Throwable) {
+            // Silently fail for invalid/expired tokens
+        }
     }
 
     public function toMail(object $notifiable): MailMessage
