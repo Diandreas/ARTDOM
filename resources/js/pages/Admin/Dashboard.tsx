@@ -234,52 +234,52 @@ export default function Dashboard({
                 {/* Top Statistics Section */}
                 <section className="space-y-4">
                     <h2 className="text-xl font-semibold">Statistiques de Contenu</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <Card>
-                            <CardHeader>
+                            <CardHeader className="py-3">
                                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                                     <Music className="h-4 w-4" /> Musiques les plus aimées
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
+                            <CardContent className="space-y-2 py-3">
                                 {topStats.liked_tracks.length > 0 ? topStats.liked_tracks.map((track) => (
-                                    <div key={track.id} className="flex items-center justify-between">
-                                        <span className="text-sm font-medium truncate max-w-[150px]">{track.title}</span>
-                                        <Badge variant="secondary">{track.likes} j'aime</Badge>
+                                    <div key={track.id} className="flex items-center justify-between border-b border-muted pb-1 last:border-0">
+                                        <span className="text-[11px] font-medium truncate max-w-[140px]">{track.title}</span>
+                                        <Badge variant="secondary" className="text-[9px] h-5 px-1.5">{track.likes} j'aime</Badge>
                                     </div>
-                                )) : <p className="text-xs text-muted-foreground text-center py-4">Aucune donnée</p>}
+                                )) : <p className="text-[10px] text-muted-foreground text-center py-2">Aucune donnée</p>}
                             </CardContent>
                         </Card>
 
                         <Card>
-                            <CardHeader>
+                            <CardHeader className="py-3">
                                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                                     <PlayIcon className="h-4 w-4" /> Musiques les plus écoutées
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
+                            <CardContent className="space-y-2 py-3">
                                 {topStats.played_tracks.length > 0 ? topStats.played_tracks.map((track) => (
-                                    <div key={track.id} className="flex items-center justify-between">
-                                        <span className="text-sm font-medium truncate max-w-[150px]">{track.title}</span>
-                                        <Badge variant="outline">{track.plays} écoutes</Badge>
+                                    <div key={track.id} className="flex items-center justify-between border-b border-muted pb-1 last:border-0">
+                                        <span className="text-[11px] font-medium truncate max-w-[140px]">{track.title}</span>
+                                        <Badge variant="outline" className="text-[9px] h-5 px-1.5">{track.plays} écoutes</Badge>
                                     </div>
-                                )) : <p className="text-xs text-muted-foreground text-center py-4">Aucune donnée</p>}
+                                )) : <p className="text-[10px] text-muted-foreground text-center py-2">Aucune donnée</p>}
                             </CardContent>
                         </Card>
 
                         <Card>
-                            <CardHeader>
+                            <CardHeader className="py-3">
                                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                                     <PlayIcon className="h-4 w-4" /> Vidéos les plus aimées
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
+                            <CardContent className="space-y-2 py-3">
                                 {topStats.liked_videos.length > 0 ? topStats.liked_videos.map((video) => (
-                                    <div key={video.id} className="flex items-center justify-between">
-                                        <span className="text-sm font-medium truncate max-w-[150px]">{video.title}</span>
-                                        <Badge variant="secondary">{video.likes} j'aime</Badge>
+                                    <div key={video.id} className="flex items-center justify-between border-b border-muted pb-1 last:border-0">
+                                        <span className="text-[11px] font-medium truncate max-w-[140px]">{video.title}</span>
+                                        <Badge variant="secondary" className="text-[9px] h-5 px-1.5">{video.likes} j'aime</Badge>
                                     </div>
-                                )) : <p className="text-xs text-muted-foreground text-center py-4">Aucune donnée</p>}
+                                )) : <p className="text-[10px] text-muted-foreground text-center py-2">Aucune donnée</p>}
                             </CardContent>
                         </Card>
                     </div>

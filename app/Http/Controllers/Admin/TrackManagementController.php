@@ -28,8 +28,9 @@ class TrackManagementController extends Controller
         ]);
     }
 
-    public function ban(Request $request, Track $track): RedirectResponse
+    public function ban(Request $request, string $track): RedirectResponse
     {
+        $track = Track::withoutGlobalScopes()->findOrFail($track);
         $validated = $request->validate([
             'reason' => 'nullable|string|max:1000',
         ]);
@@ -45,8 +46,9 @@ class TrackManagementController extends Controller
         ]);
     }
 
-    public function unban(Track $track): RedirectResponse
+    public function unban(string $track): RedirectResponse
     {
+        $track = Track::withoutGlobalScopes()->findOrFail($track);
         $track->update([
             'is_banned' => false,
             'ban_reason' => null,

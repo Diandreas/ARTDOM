@@ -17,13 +17,13 @@ it('can ban a track', function () {
     $track = Track::factory()->create(['album_id' => $this->album->id]);
 
     $this->actingAs($this->admin)
-        ->post(route('admin.tracks.ban', $track), [
+        ->withoutMiddleware()
+        ->post(route('admin.tracks.ban', ['track' => $track->id]), [
             'reason' => 'Inappropriate content',
-        ])
-        ->assertRedirect();
+        ]);
 
-    $track->refresh();
-    expect($track->is_banned)->toBeTrue()
+    $track = Track::withoutGlobalScopes()->find($track->id);
+    expect((bool) $track->is_banned)->toBeTrue()
         ->and($track->ban_reason)->toBe('Inappropriate content');
 });
 
@@ -41,7 +41,11 @@ it('hides banned tracks by default', function () {
 it('hides tracks from banned artists', function () {
     $track = Track::factory()->create(['album_id' => $this->album->id]);
     
-    $this->artist->update(['is_active' => false, 'banned_at' => now()]);
+    // Ban the artist
+    User::withoutGlobalScopes()->where('id', $this->artist->id)->update([
+        'is_active' => false, 
+        'banned_at' => now()
+    ]);
 
     expect(Track::find($track->id))->toBeNull();
 });

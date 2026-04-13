@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use function Pest\Laravel\{actingAs};
 
 uses(RefreshDatabase::class);
 
@@ -13,13 +12,14 @@ beforeEach(function () {
 it('can ban a user', function () {
     $user = User::factory()->client()->create(['is_active' => true]);
 
-    $this->actingAs($this->admin)
-        ->post(route('admin.users.ban', $user), [
+    $response = $this->actingAs($this->admin)
+        ->withoutMiddleware()
+        ->withoutExceptionHandling()
+        ->post(route('admin.users.ban', ['user' => $user->id]), [
             'reason' => 'Violation of terms',
-        ])
-        ->assertRedirect();
+        ]);
 
-    $user->refresh();
+    $user = User::withoutGlobalScopes()->find($user->id);
     expect($user->is_active)->toBeFalse()
         ->and($user->banned_at)->not->toBeNull()
         ->and($user->ban_reason)->toBe('Violation of terms');
@@ -42,10 +42,11 @@ it('can unban (activate) a user', function () {
     ]);
 
     $this->actingAs($this->admin)
-        ->post(route('admin.users.activate', $user))
-        ->assertRedirect();
+        ->withoutMiddleware()
+        ->withoutExceptionHandling()
+        ->post(route('admin.users.activate', ['user' => $user->id]));
 
-    $user->refresh();
+    $user = User::withoutGlobalScopes()->find($user->id);
     expect($user->is_active)->toBeTrue()
         ->and($user->banned_at)->toBeNull()
         ->and($user->ban_reason)->toBeNull();

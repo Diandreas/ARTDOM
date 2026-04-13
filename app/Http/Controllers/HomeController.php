@@ -44,7 +44,10 @@ class HomeController extends Controller
             });
 
         // Fetch recent albums
-        $recentAlbums = Album::with(['artist.artistProfile'])
+        $recentAlbums = Album::whereHas('artist', function ($query) {
+                $query->where('is_active', true)->whereNull('banned_at');
+            })
+            ->with(['artist.artistProfile'])
             ->latest('published_at')
             ->limit(12)
             ->get()
