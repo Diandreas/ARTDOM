@@ -9,8 +9,11 @@ class HeroSetting extends Model
     protected $fillable = [
         'type',
         'title',
+        'title_en',
         'subtitle',
+        'subtitle_en',
         'image_url',
+        'image_url_en',
         'video_url',
         'link_url',
         'link_label',
