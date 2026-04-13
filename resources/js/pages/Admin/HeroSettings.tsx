@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
 import AdminLayout from '@/layouts/admin-layout';
+import { useAppLocale } from '@/hooks/use-app-locale';
 
 interface HeroSettings {
     id: number;
@@ -25,6 +26,7 @@ interface Props {
 }
 
 export default function HeroSettings({ settings }: Props) {
+    const { t } = useAppLocale();
     const form = useForm({
         type: settings.type,
         title: settings.title ?? '',
@@ -45,10 +47,10 @@ export default function HeroSettings({ settings }: Props) {
 
     return (
         <AdminLayout 
-            title="Section Héros (Rouge)" 
-            subtitle="Personnalisez la bannière principale de la page d'accueil"
+            title={t('Hero Section')} 
+            subtitle={t('Customize the main banner on the homepage')}
         >
-            <Head title="Admin — Réglages Héros" />
+            <Head title={`Admin — ${t('Hero settings')}`} />
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -56,31 +58,31 @@ export default function HeroSettings({ settings }: Props) {
                     <div className="md:col-span-2 space-y-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Contenu de la bannière</CardTitle>
-                                <CardDescription>Modifiez les textes et les liens affichés sur la bannière.</CardDescription>
+                                <CardTitle>{t('Banner content')}</CardTitle>
+                                <CardDescription>{t('Modify the texts and links displayed on the banner.')}</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <Label htmlFor="title">Titre principal</Label>
+                                    <Label htmlFor="title">{t('Main title')}</Label>
                                     <Input
                                         id="title"
                                         value={form.data.title}
                                         onChange={(e) => form.setData('title', e.target.value)}
-                                        placeholder="Découvrez les talents..."
+                                        placeholder={t('Discover talents...')}
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <Label htmlFor="subtitle">Sous-titre / Description</Label>
+                                    <Label htmlFor="subtitle">{t('Subtitle / Description')}</Label>
                                     <Input
                                         id="subtitle"
                                         value={form.data.subtitle}
                                         onChange={(e) => form.setData('subtitle', e.target.value)}
-                                        placeholder="Réservez vos artistes préférés..."
+                                        placeholder={t('Book your favorite artists...')}
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="link_url">URL du bouton</Label>
+                                        <Label htmlFor="link_url">{t('Button URL')}</Label>
                                         <Input
                                             id="link_url"
                                             value={form.data.link_url}
@@ -89,12 +91,12 @@ export default function HeroSettings({ settings }: Props) {
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="link_label">Texte du bouton</Label>
+                                        <Label htmlFor="link_label">{t('Button text')}</Label>
                                         <Input
                                             id="link_label"
                                             value={form.data.link_label}
                                             onChange={(e) => form.setData('link_label', e.target.value)}
-                                            placeholder="Explorer les artistes"
+                                            placeholder={t('Explore artists')}
                                         />
                                     </div>
                                 </div>
@@ -103,8 +105,8 @@ export default function HeroSettings({ settings }: Props) {
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>Type de média</CardTitle>
-                                <CardDescription>Choisissez ce qui s'affiche en arrière-plan.</CardDescription>
+                                <CardTitle>{t('Media type')}</CardTitle>
+                                <CardDescription>{t('Choose what is displayed in the background.')}</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 <RadioGroup
@@ -121,7 +123,7 @@ export default function HeroSettings({ settings }: Props) {
                                             }`}
                                         >
                                             <ImageIcon className="mb-3 h-6 w-6" />
-                                            <span>Image unique</span>
+                                            <span>{t('Single image')}</span>
                                         </Label>
                                     </div>
                                     <div>
@@ -133,7 +135,7 @@ export default function HeroSettings({ settings }: Props) {
                                             }`}
                                         >
                                             <Layout className="mb-3 h-6 w-6" />
-                                            <span>Carrousel</span>
+                                            <span>{t('Carousel')}</span>
                                         </Label>
                                     </div>
                                     <div>
@@ -145,14 +147,14 @@ export default function HeroSettings({ settings }: Props) {
                                             }`}
                                         >
                                             <Play className="mb-3 h-6 w-6" />
-                                            <span>Vidéo</span>
+                                            <span>{t('Video')}</span>
                                         </Label>
                                     </div>
                                 </RadioGroup>
 
                                 {form.data.type === 'image' && (
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="image_url">URL de l'image de fond</Label>
+                                        <Label htmlFor="image_url">{t('Background image URL')}</Label>
                                         <Input
                                             id="image_url"
                                             value={form.data.image_url}
@@ -169,23 +171,23 @@ export default function HeroSettings({ settings }: Props) {
 
                                 {form.data.type === 'video' && (
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="video_url">URL de la vidéo (MP4, Direct Link)</Label>
+                                        <Label htmlFor="video_url">{t('Video URL (MP4, Direct Link)')}</Label>
                                         <Input
                                             id="video_url"
                                             value={form.data.video_url}
                                             onChange={(e) => form.setData('video_url', e.target.value)}
                                             placeholder="https://example.com/hero.mp4"
                                         />
-                                        <p className="text-xs text-muted-foreground">La vidéo sera jouée en boucle et sans son.</p>
+                                        <p className="text-xs text-muted-foreground">{t('The video will play in a loop and without sound.')}</p>
                                     </div>
                                 )}
 
                                 {form.data.type === 'carousel' && (
                                     <div className="rounded-lg bg-muted p-4">
                                         <p className="text-sm text-muted-foreground">
-                                            Le mode carrousel utilisera les slides de type "Section Héros" configurées dans la section 
+                                            {t('The carousel mode will use slides of type "Hero Section" configured in the')}
                                             <a href="/admin/carousel?type=hero" className="text-primary hover:underline ml-1 font-semibold">
-                                                Gestion des Carrousels
+                                                {t('Carousel Management')}
                                             </a>.
                                         </p>
                                     </div>
@@ -198,11 +200,11 @@ export default function HeroSettings({ settings }: Props) {
                     <div className="space-y-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Statut</CardTitle>
+                                <CardTitle>{t('Status')}</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <Label htmlFor="is_active">Afficher la bannière</Label>
+                                    <Label htmlFor="is_active">{t('Show banner')}</Label>
                                     <Switch
                                         id="is_active"
                                         checked={form.data.is_active}
@@ -211,18 +213,18 @@ export default function HeroSettings({ settings }: Props) {
                                 </div>
                                 <Button type="submit" className="w-full gap-2" disabled={form.processing}>
                                     <Save className="h-4 w-4" />
-                                    {form.processing ? 'Enregistrement...' : 'Enregistrer les modifications'}
+                                    {form.processing ? t('Saving...') : t('Save changes')}
                                 </Button>
                             </CardContent>
                         </Card>
 
                         <Card className="bg-primary text-primary-foreground">
                             <CardHeader>
-                                <CardTitle className="text-lg">Aperçu visuel</CardTitle>
+                                <CardTitle className="text-lg">{t('Visual preview')}</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 <p className="text-sm opacity-90 italic">
-                                    "Cette section est le cœur visuel de votre application. Elle utilise le dégradé 'Sunset' pour garder l'identité ARTDOM."
+                                    "{t('This section is the visual heart of your application. It uses the Sunset gradient to keep the ARTDOM identity.')}"
                                 </p>
                             </CardContent>
                         </Card>

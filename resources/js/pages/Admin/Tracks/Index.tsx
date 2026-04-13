@@ -10,8 +10,8 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import AdminLayout from '@/layouts/admin-layout';
+import { useAppLocale } from '@/hooks/use-app-locale';
 
 interface Track {
     id: string;
@@ -41,6 +41,7 @@ interface Props {
 }
 
 export default function Index({ tracks, filters }: Props) {
+    const { t } = useAppLocale();
     const form = useForm({
         search: filters.search ?? '',
     });
@@ -51,26 +52,26 @@ export default function Index({ tracks, filters }: Props) {
     };
 
     const handleBan = (track: Track) => {
-        const reason = prompt('Raison du bannissement (optionnel) :');
+        const reason = prompt(t('Banning reason (optional):'));
         if (reason !== null) {
             router.post(`/admin/tracks/${track.id}/ban`, { reason }, { preserveScroll: true });
         }
     };
 
     const handleUnban = (track: Track) => {
-        if (confirm(`Lever le bannissement de "${track.title}" ?`)) {
+        if (confirm(`${t('Lift the ban on')} "${track.title}" ?`)) {
             router.post(`/admin/tracks/${track.id}/unban`, {}, { preserveScroll: true });
         }
     };
 
     return (
-        <AdminLayout title="Gestion des Musiques" subtitle="Modérez les pistes audio de la plateforme.">
-            <Head title="Admin - Musiques" />
+        <AdminLayout title={t('Music management')} subtitle={t('Moderate the audio tracks on the platform.')}>
+            <Head title={`Admin - ${t('Music')}`} />
 
             <div className="space-y-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Recherche</CardTitle>
+                        <CardTitle>{t('Search')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSearch} className="flex gap-4">
@@ -78,12 +79,12 @@ export default function Index({ tracks, filters }: Props) {
                                 <Input
                                     value={form.data.search}
                                     onChange={(e) => form.setData('search', e.target.value)}
-                                    placeholder="Rechercher par titre..."
+                                    placeholder={t('Search by title...')}
                                 />
                             </div>
-                            <Button type="submit">Rechercher</Button>
+                            <Button type="submit">{t('Search')}</Button>
                             <Button variant="outline" type="button" onClick={() => router.get('/admin/tracks')}>
-                                Réinitialiser
+                                {t('Reset')}
                             </Button>
                         </form>
                     </CardContent>
@@ -91,19 +92,19 @@ export default function Index({ tracks, filters }: Props) {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Liste des musiques</CardTitle>
-                        <CardDescription>Tous les morceaux importés par les artistes.</CardDescription>
+                        <CardTitle>{t('Music list')}</CardTitle>
+                        <CardDescription>{t('All tracks uploaded by artists.')}</CardDescription>
                     </CardHeader>
                     <CardContent className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b text-left">
-                                    <th className="py-2 pr-2">Titre</th>
-                                    <th className="py-2 pr-2">Artiste</th>
-                                    <th className="py-2 pr-2">Album</th>
-                                    <th className="py-2 pr-2 text-center">Écoutes</th>
-                                    <th className="py-2 pr-2">Statut</th>
-                                    <th className="py-2 pr-2 text-right">Actions</th>
+                                    <th className="py-2 pr-2">{t('Title')}</th>
+                                    <th className="py-2 pr-2">{t('Artist')}</th>
+                                    <th className="py-2 pr-2">{t('Album')}</th>
+                                    <th className="py-2 pr-2 text-center">{t('plays')}</th>
+                                    <th className="py-2 pr-2">{t('Status')}</th>
+                                    <th className="py-2 pr-2 text-right">{t('Actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -116,7 +117,7 @@ export default function Index({ tracks, filters }: Props) {
                                             </div>
                                         </td>
                                         <td className="py-3 pr-2 text-muted-foreground">
-                                            {track.album?.artist?.artist_profile?.stage_name || track.album?.artist?.name || 'Inconnu'}
+                                            {track.album?.artist?.artist_profile?.stage_name || track.album?.artist?.name || t('Unknown')}
                                         </td>
                                         <td className="py-3 pr-2 text-muted-foreground italic">
                                             {track.album?.title || '-'}
@@ -128,9 +129,9 @@ export default function Index({ tracks, filters }: Props) {
                                         </td>
                                         <td className="py-3 pr-2">
                                             {track.is_banned ? (
-                                                <Badge variant="destructive" title={track.ban_reason || ''}>Bannie</Badge>
+                                                <Badge variant="destructive" title={track.ban_reason || ''}>{t('Banned')}</Badge>
                                             ) : (
-                                                <Badge variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-100">Active</Badge>
+                                                <Badge variant="secondary" className="bg-green-100 text-green-800 hover:bg-green-100">{t('Active')}</Badge>
                                             )}
                                         </td>
                                         <td className="py-3 pr-2 text-right">
@@ -141,11 +142,11 @@ export default function Index({ tracks, filters }: Props) {
                                                 <DropdownMenuContent align="end">
                                                     {track.is_banned ? (
                                                         <DropdownMenuItem onClick={() => handleUnban(track)} className="text-green-600">
-                                                            <RotateCcw className="mr-2 h-4 w-4" /> Lever le bannissement
+                                                            <RotateCcw className="mr-2 h-4 w-4" /> {t('Lift the ban')}
                                                         </DropdownMenuItem>
                                                     ) : (
                                                         <DropdownMenuItem onClick={() => handleBan(track)} className="text-destructive">
-                                                            <Ban className="mr-2 h-4 w-4" /> Bannir la musique
+                                                            <Ban className="mr-2 h-4 w-4" /> {t('Ban track')}
                                                         </DropdownMenuItem>
                                                     )}
                                                 </DropdownMenuContent>
@@ -157,7 +158,7 @@ export default function Index({ tracks, filters }: Props) {
                         </table>
 
                         {tracks.data.length === 0 && (
-                            <div className="py-10 text-center text-muted-foreground">Aucune musique trouvée.</div>
+                            <div className="py-10 text-center text-muted-foreground">{t('No tracks found.')}</div>
                         )}
 
                         <div className="mt-6 flex flex-wrap gap-2">

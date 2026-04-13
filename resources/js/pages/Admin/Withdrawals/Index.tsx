@@ -4,10 +4,8 @@ import {
     Clock, 
     MoreHorizontal, 
     XCircle, 
-    ArrowRight, 
     Banknote, 
     Smartphone,
-    Search,
     AlertCircle
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -33,6 +31,7 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useAppLocale } from '@/hooks/use-app-locale';
 
 interface Withdrawal {
     id: string;
@@ -62,6 +61,7 @@ interface Props {
 }
 
 export default function Index({ withdrawals, currentStatus }: Props) {
+    const { t } = useAppLocale();
     const [selectedWithdrawal, setSelectedWithdrawal] = useState<Withdrawal | null>(null);
     const [isApproveOpen, setIsApproveOpen] = useState(false);
     const [isRejectOpen, setIsRejectOpen] = useState(false);
@@ -116,7 +116,7 @@ export default function Index({ withdrawals, currentStatus }: Props) {
         return (
             <div className="flex items-center gap-2">
                 <Banknote className="h-4 w-4 text-blue-500" />
-                <span>Virement Bancaire</span>
+                <span>{t('Bank transfer')}</span>
             </div>
         );
     };
@@ -124,48 +124,48 @@ export default function Index({ withdrawals, currentStatus }: Props) {
     const renderStatus = (status: string) => {
         switch (status) {
             case 'pending':
-                return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200 gap-1"><Clock className="h-3 w-3" /> En attente</Badge>;
+                return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200 gap-1"><Clock className="h-3 w-3" /> {t('Pending')}</Badge>;
             case 'completed':
-                return <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 gap-1"><CheckCircle2 className="h-3 w-3" /> Payé</Badge>;
+                return <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200 gap-1"><CheckCircle2 className="h-3 w-3" /> {t('Processed')}</Badge>;
             case 'rejected':
-                return <Badge variant="destructive" className="gap-1"><XCircle className="h-3 w-3" /> Rejeté</Badge>;
+                return <Badge variant="destructive" className="gap-1"><XCircle className="h-3 w-3" /> {t('Rejected')}</Badge>;
             default:
-                return <Badge>{status}</Badge>;
+                return <Badge>{t(status)}</Badge>;
         }
     };
 
     return (
-        <AdminLayout title="Gestion des Reversements" subtitle="Traitez les demandes de retrait des artistes.">
-            <Head title="Admin - Reversements" />
+        <AdminLayout title={t('Withdrawals management')} subtitle={t('Process artist withdrawal requests.')}>
+            <Head title={`Admin - ${t('Withdrawals')}`} />
 
             <div className="space-y-6">
                 <Tabs value={currentStatus} onValueChange={handleStatusChange} className="w-full">
                     <TabsList className="grid w-full max-w-md grid-cols-4">
-                        <TabsTrigger value="pending">En attente</TabsTrigger>
-                        <TabsTrigger value="completed">Payés</TabsTrigger>
-                        <TabsTrigger value="rejected">Rejetés</TabsTrigger>
-                        <TabsTrigger value="all">Tous</TabsTrigger>
+                        <TabsTrigger value="pending">{t('Pending')}</TabsTrigger>
+                        <TabsTrigger value="completed">{t('Processed')}</TabsTrigger>
+                        <TabsTrigger value="rejected">{t('Rejected')}</TabsTrigger>
+                        <TabsTrigger value="all">{t('All')}</TabsTrigger>
                     </TabsList>
                 </Tabs>
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Demandes de retrait</CardTitle>
+                        <CardTitle>{t('Withdrawal requests')}</CardTitle>
                         <CardDescription>
-                            Les virements bancaires (RIB) sont obligatoires pour les montants {'>'} 50 000 FCFA.
+                            {t('Bank transfers (RIB) are mandatory for amounts')} {'>'} 50 000 FCFA.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="border-b text-left">
-                                    <th className="py-3 px-2">Artiste</th>
-                                    <th className="py-3 px-2">Montant</th>
-                                    <th className="py-3 px-2">Méthode</th>
-                                    <th className="py-3 px-2">Détails de compte</th>
-                                    <th className="py-3 px-2">Date Demande</th>
-                                    <th className="py-3 px-2 text-center">Statut</th>
-                                    <th className="py-3 px-2 text-right">Actions</th>
+                                    <th className="py-3 px-2">{t('Artist')}</th>
+                                    <th className="py-3 px-2">{t('Amount')}</th>
+                                    <th className="py-3 px-2">{t('Method')}</th>
+                                    <th className="py-3 px-2">{t('Account details')}</th>
+                                    <th className="py-3 px-2">{t('Request Date')}</th>
+                                    <th className="py-3 px-2 text-center">{t('Status')}</th>
+                                    <th className="py-3 px-2 text-right">{t('Actions')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -173,7 +173,7 @@ export default function Index({ withdrawals, currentStatus }: Props) {
                                     <tr key={w.id} className="border-b align-middle hover:bg-muted/30">
                                         <td className="py-4 px-2">
                                             <div className="font-medium text-foreground">
-                                                {w.wallet?.artist?.artist_profile?.stage_name || w.wallet?.artist?.name || 'Inconnu'}
+                                                {w.wallet?.artist?.artist_profile?.stage_name || w.wallet?.artist?.name || t('Unknown')}
                                             </div>
                                             <div className="text-[10px] text-muted-foreground uppercase">{w.id.substring(0, 8)}</div>
                                         </td>
@@ -195,7 +195,7 @@ export default function Index({ withdrawals, currentStatus }: Props) {
                                             )}
                                         </td>
                                         <td className="py-4 px-2 text-muted-foreground">
-                                            {new Date(w.requested_at).toLocaleDateString('fr-FR')}
+                                            {new Date(w.requested_at).toLocaleDateString()}
                                         </td>
                                         <td className="py-4 px-2 text-center">
                                             {renderStatus(w.status)}
@@ -214,7 +214,7 @@ export default function Index({ withdrawals, currentStatus }: Props) {
                                                             }}
                                                             className="text-green-600"
                                                         >
-                                                            <CheckCircle2 className="mr-2 h-4 w-4" /> Marquer comme payé
+                                                            <CheckCircle2 className="mr-2 h-4 w-4" /> {t('Mark as paid')}
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem 
                                                             onClick={() => {
@@ -223,7 +223,7 @@ export default function Index({ withdrawals, currentStatus }: Props) {
                                                             }}
                                                             className="text-destructive"
                                                         >
-                                                            <XCircle className="mr-2 h-4 w-4" /> Rejeter la demande
+                                                            <XCircle className="mr-2 h-4 w-4" /> {t('Reject request')}
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
@@ -241,7 +241,7 @@ export default function Index({ withdrawals, currentStatus }: Props) {
                         {withdrawals.data.length === 0 && (
                             <div className="py-12 text-center">
                                 <AlertCircle className="h-12 w-12 text-muted-foreground/20 mx-auto mb-3" />
-                                <p className="text-muted-foreground">Aucune demande de retrait trouvée.</p>
+                                <p className="text-muted-foreground">{t('No withdrawal requests found.')}</p>
                             </div>
                         )}
 
@@ -265,14 +265,14 @@ export default function Index({ withdrawals, currentStatus }: Props) {
             <Dialog open={isApproveOpen} onOpenChange={setIsApproveOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Confirmer le paiement</DialogTitle>
+                        <DialogTitle>{t('Confirm payment')}</DialogTitle>
                         <DialogDescription>
-                            Saisissez la référence de la transaction (ID Orange Money ou référence virement).
+                            {t('Enter transaction reference (Orange Money ID or transfer reference).')}
                         </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleApprove} className="space-y-4 py-4">
                         <div className="space-y-2">
-                            <Label htmlFor="ref">Référence de transaction</Label>
+                            <Label htmlFor="ref">{t('Transaction reference')}</Label>
                             <Input 
                                 id="ref" 
                                 value={approveForm.data.provider_ref}
@@ -282,8 +282,8 @@ export default function Index({ withdrawals, currentStatus }: Props) {
                             />
                         </div>
                         <DialogFooter>
-                            <Button variant="outline" type="button" onClick={() => setIsApproveOpen(false)}>Annuler</Button>
-                            <Button type="submit" disabled={approveForm.processing}>Confirmer le paiement</Button>
+                            <Button variant="outline" type="button" onClick={() => setIsApproveOpen(false)}>{t('Cancel')}</Button>
+                            <Button type="submit" disabled={approveForm.processing}>{t('Confirm payment')}</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>
@@ -293,14 +293,14 @@ export default function Index({ withdrawals, currentStatus }: Props) {
             <Dialog open={isRejectOpen} onOpenChange={setIsRejectOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Rejeter la demande</DialogTitle>
+                        <DialogTitle>{t('Reject request')}</DialogTitle>
                         <DialogDescription>
-                            Expliquez pourquoi la demande est rejetée. L'artiste sera remboursé sur son solde Artemo.
+                            {t('Explain why the request is rejected. The artist will be refunded to their balance.')}
                         </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleReject} className="space-y-4 py-4">
                         <div className="space-y-2">
-                            <Label htmlFor="reason">Motif du rejet</Label>
+                            <Label htmlFor="reason">{t('Rejection reason')}</Label>
                             <Textarea 
                                 id="reason" 
                                 value={rejectForm.data.reason}
@@ -310,8 +310,8 @@ export default function Index({ withdrawals, currentStatus }: Props) {
                             />
                         </div>
                         <DialogFooter>
-                            <Button variant="outline" type="button" onClick={() => setIsRejectOpen(false)}>Annuler</Button>
-                            <Button variant="destructive" type="submit" disabled={rejectForm.processing}>Rejeter et rembourser</Button>
+                            <Button variant="outline" type="button" onClick={() => setIsRejectOpen(false)}>{t('Cancel')}</Button>
+                            <Button variant="destructive" type="submit" disabled={rejectForm.processing}>{t('Reject and refund')}</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

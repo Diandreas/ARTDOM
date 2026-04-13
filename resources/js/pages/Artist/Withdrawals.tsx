@@ -16,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import ArtistLayout from '@/layouts/artist-layout';
+import { useAppLocale } from '@/hooks/use-app-locale';
 
 interface Wallet {
     balance: number;
@@ -40,6 +41,7 @@ interface Props {
 }
 
 export default function Withdrawals({ wallet, withdrawals }: Props) {
+    const { t } = useAppLocale();
     const { data, setData, post, processing, errors, reset } = useForm({
         amount: '',
         method: 'orange_money',
@@ -59,44 +61,44 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
     const renderStatus = (status: string) => {
         switch (status) {
             case 'pending':
-                return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">En attente</Badge>;
+                return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">{t('Pending')}</Badge>;
             case 'completed':
-                return <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">Payé</Badge>;
+                return <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">{t('Processed')}</Badge>;
             case 'rejected':
-                return <Badge variant="destructive">Rejeté</Badge>;
+                return <Badge variant="destructive">{t('Rejected')}</Badge>;
             default:
-                return <Badge>{status}</Badge>;
+                return <Badge>{t(status)}</Badge>;
         }
     };
 
     return (
-        <ArtistLayout title="Mon Portefeuille" subtitle="Gérez vos revenus et demandez vos reversements.">
-            <Head title="Retraits - Artist" />
+        <ArtistLayout title={t('Wallet')} subtitle={t('Manage your earnings and request payouts.')}>
+            <Head title={`Artist - ${t('Withdrawals')}`} />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Solde Summary */}
                 <div className="lg:col-span-1 space-y-6">
                     <Card className="bg-primary text-primary-foreground">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium opacity-90">Solde disponible</CardTitle>
+                            <CardTitle className="text-sm font-medium opacity-90">{t('Available balance')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="text-3xl font-bold">{Number(wallet.balance).toLocaleString()} FCFA</div>
                             <p className="text-xs mt-2 opacity-80">
-                                + {Number(wallet.pending_balance).toLocaleString()} FCFA en attente
+                                + {Number(wallet.pending_balance).toLocaleString()} FCFA {t('Pending')}
                             </p>
                         </CardContent>
                     </Card>
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-lg">Demander un retrait</CardTitle>
-                            <CardDescription>Minimum : 5 000 FCFA</CardDescription>
+                            <CardTitle className="text-lg">{t('Request a withdrawal')}</CardTitle>
+                            <CardDescription>{t('Minimum : 5 000 FCFA')}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="amount">Montant à retirer</Label>
+                                    <Label htmlFor="amount">{t('Amount to withdraw')}</Label>
                                     <div className="relative">
                                         <Input 
                                             id="amount" 
@@ -112,7 +114,7 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <Label>Méthode de paiement</Label>
+                                    <Label>{t('Withdrawal method')}</Label>
                                     <RadioGroup value={data.method} onValueChange={val => setData('method', val)}>
                                         <div className="flex items-center space-x-2 border rounded-md p-3 cursor-pointer">
                                             <RadioGroupItem value="orange_money" id="om" />
@@ -123,21 +125,21 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
                                         <div className="flex items-center space-x-2 border rounded-md p-3 cursor-pointer">
                                             <RadioGroupItem value="bank_transfer" id="bank" />
                                             <Label htmlFor="bank" className="flex items-center gap-2 cursor-pointer flex-1">
-                                                <Banknote className="h-4 w-4 text-blue-500" /> Virement Bancaire (RIB)
+                                                <Banknote className="h-4 w-4 text-blue-500" /> {t('Bank transfer')}
                                             </Label>
                                         </div>
                                     </RadioGroup>
                                     {Number(data.amount) > 50000 && data.method === 'orange_money' && (
                                         <div className="flex gap-2 p-2 bg-yellow-50 rounded border border-yellow-100 text-[10px] text-yellow-800">
                                             <AlertCircle className="h-3 w-3 shrink-0" />
-                                            <span>Le virement bancaire est obligatoire pour les montants {'>'} 50 000 FCFA.</span>
+                                            <span>{t('Bank transfers (RIB) are mandatory for amounts')} {'>'} 50 000 FCFA.</span>
                                         </div>
                                     )}
                                 </div>
 
                                 {data.method === 'orange_money' ? (
                                     <div className="space-y-2">
-                                        <Label htmlFor="phone">Numéro Orange Money</Label>
+                                        <Label htmlFor="phone">{t('Mobile Money number')}</Label>
                                         <Input 
                                             id="phone" 
                                             value={data.phone_number}
@@ -149,7 +151,7 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
                                 ) : (
                                     <div className="space-y-3">
                                         <div className="space-y-1.5">
-                                            <Label htmlFor="bank_name">Nom de la banque</Label>
+                                            <Label htmlFor="bank_name">{t('Bank name')}</Label>
                                             <Input 
                                                 id="bank_name" 
                                                 value={data.bank_name}
@@ -159,7 +161,7 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <Label htmlFor="acc_num">Numéro de compte / RIB</Label>
+                                            <Label htmlFor="acc_num">{t('Account number / RIB')}</Label>
                                             <Input 
                                                 id="acc_num" 
                                                 value={data.account_number}
@@ -169,12 +171,12 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <Label htmlFor="acc_name">Nom sur le compte</Label>
+                                            <Label htmlFor="acc_name">{t('Account name')}</Label>
                                             <Input 
                                                 id="acc_name" 
                                                 value={data.account_name}
                                                 onChange={e => setData('account_name', e.target.value)}
-                                                placeholder="Nom complet"
+                                                placeholder={t('Full name')}
                                                 required
                                             />
                                         </div>
@@ -186,7 +188,7 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
                                     disabled={processing || wallet.balance < 5000 || (Number(data.amount) > 50000 && data.method === 'orange_money')}
                                 >
                                     <ArrowUpRight className="h-4 w-4" />
-                                    Demander le reversement
+                                    {t('Request a withdrawal')}
                                 </Button>
                             </form>
                         </CardContent>
@@ -199,7 +201,7 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <History className="h-5 w-5" />
-                                Historique des retraits
+                                {t('Withdrawal history')}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -213,7 +215,7 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
                                             <div>
                                                 <div className="font-bold">{Number(w.amount).toLocaleString()} FCFA</div>
                                                 <div className="text-xs text-muted-foreground">
-                                                    {new Date(w.requested_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                    {new Date(w.requested_at).toLocaleDateString()}
                                                 </div>
                                             </div>
                                         </div>
@@ -228,7 +230,7 @@ export default function Withdrawals({ wallet, withdrawals }: Props) {
 
                                 {withdrawals.data.length === 0 && (
                                     <div className="text-center py-12 text-muted-foreground">
-                                        <p>Vous n'avez pas encore effectué de demande de retrait.</p>
+                                        <p>{t('You have not made any withdrawal requests yet.')}</p>
                                     </div>
                                 )}
                             </div>

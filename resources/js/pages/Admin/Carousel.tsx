@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AdminLayout from '@/layouts/admin-layout';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAppLocale } from '@/hooks/use-app-locale';
 
 interface User {
     id: string;
@@ -47,6 +48,7 @@ function SlideForm({
     type: string;
     onClose: () => void;
 }) {
+    const { t } = useAppLocale();
     const form = useForm({
         artist_id: slide?.artist_id ?? '',
         type: slide?.type ?? type,
@@ -77,16 +79,16 @@ function SlideForm({
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5 col-span-2 md:col-span-1">
-                    <Label htmlFor="artist_id">Lier à un artiste (optionnel)</Label>
+                    <Label htmlFor="artist_id">{t('Link to an artist (optional)')}</Label>
                     <Select
                         value={form.data.artist_id || 'none'}
                         onValueChange={(value) => form.setData('artist_id', value === 'none' ? '' : value)}
                     >
                         <SelectTrigger id="artist_id">
-                            <SelectValue placeholder="Sélectionner un artiste" />
+                            <SelectValue placeholder={t('Select an artist')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="none">Aucun (Manuel)</SelectItem>
+                            <SelectItem value="none">{t('None (Manual)')}</SelectItem>
                             {artists.map((artist) => (
                                 <SelectItem key={artist.id} value={artist.id}>
                                     {artist.name}
@@ -94,16 +96,16 @@ function SlideForm({
                             ))}
                         </SelectContent>
                     </Select>
-                    <p className="text-xs text-muted-foreground">Si lié, les infos de l'artiste seront utilisées par défaut.</p>
+                    <p className="text-xs text-muted-foreground">{t("If linked, the artist's info will be used by default.")}</p>
                 </div>
                 
                 <div className="space-y-1.5 col-span-2 md:col-span-1">
-                    <Label htmlFor="title">Titre {form.data.artist_id ? '(Optionnel)' : '*'}</Label>
+                    <Label htmlFor="title">{t('Title')} {form.data.artist_id ? `(${t('Optional')})` : '*'}</Label>
                     <Input
                         id="title"
                         value={form.data.title}
                         onChange={(e) => form.setData('title', e.target.value)}
-                        placeholder="Découvrez nos artistes"
+                        placeholder={t('Discover our artists')}
                         required={!form.data.artist_id}
                     />
                     {form.errors.title && <p className="text-sm text-destructive">{form.errors.title}</p>}
@@ -112,16 +114,16 @@ function SlideForm({
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5 col-span-2 md:col-span-1">
-                    <Label htmlFor="subtitle">Sous-titre</Label>
+                    <Label htmlFor="subtitle">{t('Subtitle')}</Label>
                     <Input
                         id="subtitle"
                         value={form.data.subtitle}
                         onChange={(e) => form.setData('subtitle', e.target.value)}
-                        placeholder="La musique africaine en streaming"
+                        placeholder={t('African music everywhere')}
                     />
                 </div>
                 <div className="space-y-1.5 col-span-2 md:col-span-1">
-                    <Label htmlFor="image_url">URL de l'image {form.data.artist_id ? '(Optionnel)' : '*'}</Label>
+                    <Label htmlFor="image_url">{t('Image URL')} {form.data.artist_id ? `(${t('Optional')})` : '*'}</Label>
                     <Input
                         id="image_url"
                         value={form.data.image_url}
@@ -135,7 +137,7 @@ function SlideForm({
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                    <Label htmlFor="link_url">URL du lien</Label>
+                    <Label htmlFor="link_url">{t('Link URL')}</Label>
                     <Input
                         id="link_url"
                         value={form.data.link_url}
@@ -144,12 +146,12 @@ function SlideForm({
                     />
                 </div>
                 <div className="space-y-1.5">
-                    <Label htmlFor="link_label">Texte du bouton</Label>
+                    <Label htmlFor="link_label">{t('Button text')}</Label>
                     <Input
                         id="link_label"
                         value={form.data.link_label}
                         onChange={(e) => form.setData('link_label', e.target.value)}
-                        placeholder="Écouter maintenant"
+                        placeholder={t('Listen now')}
                     />
                 </div>
             </div>
@@ -161,14 +163,14 @@ function SlideForm({
                         checked={form.data.is_active}
                         onCheckedChange={(checked) => form.setData('is_active', checked)}
                     />
-                    <Label htmlFor="is_active">Slide active</Label>
+                    <Label htmlFor="is_active">{t('Active slide')}</Label>
                 </div>
                 <div className="flex gap-2">
                     <Button type="button" variant="outline" onClick={onClose} disabled={form.processing}>
-                        Annuler
+                        {t('Cancel')}
                     </Button>
                     <Button type="submit" disabled={form.processing}>
-                        {form.processing ? 'Enregistrement...' : slide ? 'Mettre à jour' : 'Ajouter'}
+                        {form.processing ? t('Saving...') : slide ? t('Update') : t('Add')}
                     </Button>
                 </div>
             </div>
@@ -177,11 +179,12 @@ function SlideForm({
 }
 
 export default function Carousel({ slides, artists, currentType }: Props) {
+    const { t } = useAppLocale();
     const [showForm, setShowForm] = useState(false);
     const [editingSlide, setEditingSlide] = useState<Slide | null>(null);
 
     const handleDelete = (slide: Slide) => {
-        if (confirm(`Supprimer la slide "${slide.title || slide.artist?.name}" ?`)) {
+        if (confirm(`${t('Delete the slide')} "${slide.title || slide.artist?.name}" ?`)) {
             router.delete(`/admin/carousel/${slide.id}`, { preserveScroll: true });
         }
     };
@@ -196,16 +199,16 @@ export default function Carousel({ slides, artists, currentType }: Props) {
 
     return (
         <AdminLayout 
-            title="Gestion des Carrousels" 
-            subtitle="Gérez les slides des carrousels (artistes vedettes ou section héros)"
+            title={t('Homepage carousel')} 
+            subtitle={t('Manage carousel slides (featured artists or hero section)')}
         >
-            <Head title="Admin — Carousel" />
+            <Head title={`Admin — ${t('Homepage carousel')}`} />
 
             <div className="space-y-6">
                 <Tabs value={currentType} onValueChange={handleTypeChange} className="w-full">
                     <TabsList className="grid w-full max-w-md grid-cols-2">
-                        <TabsTrigger value="main">Artistes Vedettes</TabsTrigger>
-                        <TabsTrigger value="hero">Section Héros</TabsTrigger>
+                        <TabsTrigger value="main">{t('Featured artists')}</TabsTrigger>
+                        <TabsTrigger value="hero">{t('Hero Section')}</TabsTrigger>
                     </TabsList>
                 </Tabs>
 
@@ -213,7 +216,7 @@ export default function Carousel({ slides, artists, currentType }: Props) {
                 {(showForm || editingSlide) && (
                     <Card>
                         <CardHeader>
-                            <CardTitle>{editingSlide ? 'Modifier la slide' : 'Nouvelle slide'}</CardTitle>
+                            <CardTitle>{editingSlide ? t('Edit slide') : t('New slide')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <SlideForm
@@ -233,17 +236,17 @@ export default function Carousel({ slides, artists, currentType }: Props) {
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle>Slides ({slides.length})</CardTitle>
+                                <CardTitle>{t('Slides')} ({slides.length})</CardTitle>
                                 <CardDescription>
                                     {currentType === 'main' 
-                                        ? 'Artistes mis en avant dans le carrousel principal.' 
-                                        : 'Contenus alternatifs pour le carrousel de la section héros.'}
+                                        ? t('Artists featured in the main carousel.') 
+                                        : t('Alternative content for the hero section carousel.')}
                                 </CardDescription>
                             </div>
                             {!showForm && !editingSlide && (
                                 <Button onClick={() => setShowForm(true)} className="gap-2">
                                     <Plus className="h-4 w-4" />
-                                    Ajouter une slide
+                                    {t('Add a slide')}
                                 </Button>
                             )}
                         </div>
@@ -254,7 +257,7 @@ export default function Carousel({ slides, artists, currentType }: Props) {
                                 <div className="mb-4 rounded-full bg-muted p-4">
                                     <Plus className="h-8 w-8 text-muted-foreground" />
                                 </div>
-                                <p className="text-muted-foreground">Aucune slide pour ce type. Ajoutez-en une pour commencer.</p>
+                                <p className="text-muted-foreground">{t('No slides for this type. Add one to start.')}</p>
                             </div>
                         ) : (
                             <div className="space-y-3">
@@ -283,18 +286,18 @@ export default function Carousel({ slides, artists, currentType }: Props) {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2">
                                                 <p className="font-semibold truncate">
-                                                    {slide.title || slide.artist?.name || 'Sans titre'}
+                                                    {slide.title || slide.artist?.name || t('Untitled')}
                                                 </p>
                                                 {slide.artist && (
-                                                    <Badge variant="outline" className="text-[10px]">Artiste lié</Badge>
+                                                    <Badge variant="outline" className="text-[10px]">{t('Linked artist')}</Badge>
                                                 )}
                                                 <Badge variant={slide.is_active ? 'default' : 'secondary'}>
-                                                    {slide.is_active ? 'Active' : 'Inactive'}
+                                                    {slide.is_active ? t('Active') : t('Inactive')}
                                                 </Badge>
                                             </div>
-                                            {(slide.subtitle || (slide.artist && 'Profil Artiste')) && (
+                                            {(slide.subtitle || (slide.artist && t('Artist Profile'))) && (
                                                 <p className="text-sm text-muted-foreground truncate">
-                                                    {slide.subtitle || 'Profil Artiste'}
+                                                    {slide.subtitle || t('Artist Profile')}
                                                 </p>
                                             )}
                                         </div>
@@ -304,7 +307,7 @@ export default function Carousel({ slides, artists, currentType }: Props) {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleToggle(slide)}
-                                                title={slide.is_active ? 'Désactiver' : 'Activer'}
+                                                title={slide.is_active ? t('Deactivate') : t('Activate')}
                                             >
                                                 {slide.is_active ? (
                                                     <Eye className="h-4 w-4 text-primary" />
@@ -316,7 +319,7 @@ export default function Carousel({ slides, artists, currentType }: Props) {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => setEditingSlide(slide)}
-                                                title="Modifier"
+                                                title={t('Update')}
                                             >
                                                 <Edit2 className="h-4 w-4" />
                                             </Button>
@@ -324,7 +327,7 @@ export default function Carousel({ slides, artists, currentType }: Props) {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => handleDelete(slide)}
-                                                title="Supprimer"
+                                                title={t('Delete')}
                                                 className="text-destructive hover:text-destructive"
                                             >
                                                 <Trash2 className="h-4 w-4" />
@@ -340,8 +343,7 @@ export default function Carousel({ slides, artists, currentType }: Props) {
                 <Card className="border-primary/20 bg-primary/5">
                     <CardContent className="pt-6">
                         <p className="text-sm text-muted-foreground">
-                            <strong className="text-foreground">Conseil :</strong> Liez une slide à un artiste pour promouvoir son profil directement. 
-                            Le carrousel d'artistes s'affiche en bas de la page d'accueil, tandis que le carrousel "Héros" s'affiche tout en haut si activé dans les réglages.
+                            <strong className="text-foreground">{t('Tip')}:</strong> {t('Link a slide to an artist to promote their profile directly. The artist carousel appears at the bottom of the homepage, while the "Hero" carousel appears at the very top if enabled in settings.')}
                         </p>
                     </CardContent>
                 </Card>

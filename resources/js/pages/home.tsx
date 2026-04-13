@@ -325,11 +325,11 @@ export default function Home({
                                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                                                         <div className="absolute right-3 bottom-3 left-3">
                                                             <h3 className="mb-1 text-lg font-bold text-white">
-                                                                {slide.title}
+                                                                {t(slide.title || '')}
                                                             </h3>
                                                             {slide.subtitle && (
                                                                 <p className="text-sm text-white/90">
-                                                                    {slide.subtitle}
+                                                                    {t(slide.subtitle)}
                                                                 </p>
                                                             )}
                                                         </div>
