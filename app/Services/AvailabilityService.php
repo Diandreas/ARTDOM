@@ -23,14 +23,39 @@ class AvailabilityService
             ->where('is_blocked', false)
             ->get();
 
-        if ($availabilities->isEmpty()) {
+        // 2. Si aucune disponibilité n'est définie, on propose des créneaux par défaut (9h-18h)
+        // SAUF si le jour est explicitement bloqué (is_blocked = true pour toute la journée)
+        $isDayBlocked = Availability::where('artist_id', $artist->id)
+            ->where('date', $date)
+            ->where('is_blocked', true)
+            ->whereNull('start_time') // Blocage toute la journée
+            ->exists();
+
+        if ($isDayBlocked) {
             return [];
         }
 
-        // 2. Récupérer les réservations existantes pour ce jour
+        if ($availabilities->isEmpty()) {
+            // Créer une disponibilité virtuelle par défaut : 09:00 à 18:00
+            $availabilities = collect([
+                (object) [
+                    'start_time' => '09:00',
+                    'end_time' => '18:00',
+                ],
+            ]);
+        }
+
+        // 3. Récupérer les réservations existantes pour ce jour
         $reservations = Reservation::where('artist_id', $artist->id)
             ->whereDate('scheduled_at', $date)
-            ->whereNotIn('status', ['cancelled'])
+            ->whereNotIn('status', ['cancelled', 'declined'])
+            ->get();
+
+        // 4. Récupérer les blocs spécifiques (ex: pause midi bloquée)
+        $blockedSlots = Availability::where('artist_id', $artist->id)
+            ->where('date', $date)
+            ->where('is_blocked', true)
+            ->whereNotNull('start_time')
             ->get();
 
         $allSlots = [];
@@ -39,18 +64,25 @@ class AvailabilityService
             $start = Carbon::parse("$date $availability->start_time");
             $end = Carbon::parse("$date $availability->end_time");
 
-            // On génère des créneaux par intervalle de 30 minutes ou par la durée du service ?
-            // On va utiliser un intervalle de 30 minutes pour donner plus de flexibilité,
-            // mais on vérifiera si le service entier tient.
+            // On génère des créneaux par intervalle de 30 minutes
             $interval = 30;
+            
+            // Ne pas proposer de créneaux dans le passé si c'est aujourd'hui
+            if ($start->isToday() && $start->lt(now())) {
+                $start = now()->addMinutes(30)->roundMinute(30);
+            }
+
+            if ($start->gt($end->copy()->subMinutes($serviceDurationMinutes))) {
+                continue;
+            }
 
             $period = CarbonPeriod::since($start)->minutes($interval)->until($end->copy()->subMinutes($serviceDurationMinutes));
 
             foreach ($period as $slotStart) {
                 $slotEnd = $slotStart->copy()->addMinutes($serviceDurationMinutes);
 
-                // Vérifier si le créneau est disponible
-                $isAvailable = $this->isSlotAvailable($slotStart, $slotEnd, $reservations);
+                // Vérifier si le créneau est disponible (pas de réservation, pas de blocage)
+                $isAvailable = $this->isSlotAvailable($slotStart, $slotEnd, $reservations, $blockedSlots);
 
                 $allSlots[] = [
                     'time' => $slotStart->format('H:i'),
@@ -62,7 +94,6 @@ class AvailabilityService
         // Trier par heure et supprimer les doublons éventuels
         usort($allSlots, fn ($a, $b) => strcmp($a['time'], $b['time']));
 
-        // Si plusieurs disponibilités se chevauchent, on pourrait avoir des doublons
         $uniqueSlots = [];
         $seenTimes = [];
         foreach ($allSlots as $slot) {
@@ -76,17 +107,26 @@ class AvailabilityService
     }
 
     /**
-     * Vérifie si un créneau spécifique (début -> fin) chevauche une réservation existante.
+     * Vérifie si un créneau spécifique (début -> fin) chevauche une réservation existante ou un blocage.
      */
-    private function isSlotAvailable(Carbon $slotStart, Carbon $slotEnd, $reservations): bool
+    private function isSlotAvailable(Carbon $slotStart, Carbon $slotEnd, $reservations, $blockedSlots = []): bool
     {
+        // Vérifier les réservations
         foreach ($reservations as $reservation) {
             $resStart = $reservation->scheduled_at;
             $resEnd = $resStart->copy()->addMinutes($reservation->duration_minutes);
 
-            // Un créneau chevauche s'il commence avant la fin de la réservation
-            // ET finit après le début de la réservation.
             if ($slotStart->lt($resEnd) && $slotEnd->gt($resStart)) {
+                return false;
+            }
+        }
+
+        // Vérifier les créneaux bloqués manuellement
+        foreach ($blockedSlots as $block) {
+            $blockStart = Carbon::parse($slotStart->format('Y-m-d')." $block->start_time");
+            $blockEnd = Carbon::parse($slotStart->format('Y-m-d')." $block->end_time");
+
+            if ($slotStart->lt($blockEnd) && $slotEnd->gt($blockStart)) {
                 return false;
             }
         }

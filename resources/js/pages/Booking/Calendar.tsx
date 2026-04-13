@@ -1,7 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { format } from 'date-fns';
+import { format, addDays, nextSaturday, nextSunday, isPast, startOfToday } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { ChevronLeft, Clock, MapPin, Calendar as CalendarIcon, Star, ChevronRight } from 'lucide-react';
+import { ChevronLeft, Clock, MapPin, Calendar as CalendarIcon, Star, ChevronRight, CalendarDays } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -47,7 +47,7 @@ const locationTypes: Record<string, string> = {
 };
 
 export default function BookingCalendar({ service, artist, availableSlots }: BookingCalendarProps) {
-    const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(startOfToday());
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const isFirstRender = useRef(true);
 
@@ -87,6 +87,9 @@ export default function BookingCalendar({ service, artist, availableSlots }: Boo
         if (hours > 0) return `${hours}h`;
         return `${mins} min`;
     };
+
+    const goToNextSaturday = () => setSelectedDate(nextSaturday(new Date()));
+    const goToNextSunday = () => setSelectedDate(nextSunday(new Date()));
 
     return (
         <MainLayout>
@@ -130,6 +133,25 @@ export default function BookingCalendar({ service, artist, availableSlots }: Boo
                 <div className="grid md:grid-cols-3 gap-8">
                     {/* Calendar Section */}
                     <div className="md:col-span-2 space-y-6">
+                        <div className="flex flex-wrap gap-3 mb-2">
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="rounded-full gap-2"
+                                onClick={goToNextSaturday}
+                            >
+                                <CalendarDays className="w-4 h-4" /> Samedi prochain
+                            </Button>
+                            <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="rounded-full gap-2" 
+                                onClick={goToNextSunday}
+                            >
+                                <CalendarDays className="w-4 h-4" /> Dimanche prochain
+                            </Button>
+                        </div>
+
                         <Card>
                             <CardHeader>
                                 <CardTitle>Sélectionnez une date</CardTitle>
@@ -140,7 +162,7 @@ export default function BookingCalendar({ service, artist, availableSlots }: Boo
                                     selected={selectedDate}
                                     onSelect={setSelectedDate}
                                     locale={fr}
-                                    disabled={(date) => date < new Date()}
+                                    disabled={(date) => isPast(date) && !format(date, 'yyyy-MM-dd').includes(format(new Date(), 'yyyy-MM-dd'))}
                                     className="rounded-md border w-full"
                                 />
                             </CardContent>
@@ -150,7 +172,7 @@ export default function BookingCalendar({ service, artist, availableSlots }: Boo
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Créneaux disponibles</CardTitle>
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-sm text-muted-foreground capitalize">
                                         {format(selectedDate, 'EEEE d MMMM yyyy', { locale: fr })}
                                     </p>
                                 </CardHeader>
@@ -169,9 +191,15 @@ export default function BookingCalendar({ service, artist, availableSlots }: Boo
                                         ))}
                                     </div>
                                     {availableSlots.filter((s) => s.available).length === 0 && (
-                                        <p className="text-center text-muted-foreground py-8">
-                                            Aucun créneau disponible pour cette date.
-                                        </p>
+                                        <div className="text-center py-8">
+                                            <CalendarIcon className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                                            <p className="text-muted-foreground">
+                                                Aucun créneau disponible pour cette date.
+                                            </p>
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                Essayez une autre date ou contactez l'artiste.
+                                            </p>
+                                        </div>
                                     )}
                                 </CardContent>
                             </Card>
