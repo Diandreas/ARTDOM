@@ -109,7 +109,7 @@ export default function Home({
 
         if (heroSettings.type === 'carousel' && heroSlides.length > 0) {
             return (
-                <section className="px-4 py-8">
+                <section className="px-4 py-4 md:py-8">
                     <div className="container mx-auto max-w-7xl">
                         <Carousel
                             opts={{ loop: true }}
@@ -118,27 +118,27 @@ export default function Home({
                             <CarouselContent>
                                 {heroSlides.map((slide) => (
                                     <CarouselItem key={slide.id}>
-                                        <div className="relative h-[400px] w-full md:h-[500px]">
+                                        <div className="relative h-[240px] w-full md:h-[460px]">
                                             <img
                                                 src={slide.image_url}
                                                 alt={slide.title || ''}
                                                 className="absolute inset-0 h-full w-full object-cover"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                                            <div className="relative z-10 flex h-full flex-col justify-end p-8 text-white md:p-12">
-                                                <h2 className="font-heading mb-4 text-3xl font-bold md:text-5xl">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                                            <div className="relative z-10 flex h-full flex-col justify-end p-4 text-white md:p-12">
+                                                <h2 className="font-heading mb-2 text-xl font-bold leading-tight md:mb-4 md:text-5xl">
                                                     {slide.title}
                                                 </h2>
                                                 {slide.subtitle && (
-                                                    <p className="mb-6 max-w-2xl text-lg text-white/90">
+                                                    <p className="mb-3 hidden max-w-2xl text-sm text-white/90 md:mb-6 md:block md:text-lg">
                                                         {slide.subtitle}
                                                     </p>
                                                 )}
                                                 {slide.link_url && (
                                                     <div className="flex gap-4">
                                                         <Button
-                                                            size="lg"
-                                                            className="bg-primary text-primary-foreground hover:bg-primary/90"
+                                                            size="sm"
+                                                            className="h-8 bg-primary px-4 text-xs text-primary-foreground hover:bg-primary/90 md:h-11 md:px-6 md:text-base"
                                                             asChild
                                                         >
                                                             <Link href={slide.link_url}>
@@ -161,9 +161,9 @@ export default function Home({
         }
 
         return (
-            <section className="px-4 py-8">
+            <section className="px-4 py-4 md:py-8">
                 <div className="container mx-auto max-w-7xl">
-                    <div className="bg-gradient-sunset relative overflow-hidden rounded-2xl p-8 text-white md:p-12 min-h-[300px] flex items-center">
+                    <div className="bg-gradient-sunset relative overflow-hidden rounded-2xl p-5 text-white md:p-12 min-h-[180px] md:min-h-[300px] flex items-center">
                         {heroSettings.type === 'image' && heroSettings.image_url && (
                             <img
                                 src={heroSettings.image_url}
@@ -184,11 +184,11 @@ export default function Home({
                         )}
 
                         <div className="relative z-10 max-w-2xl">
-                            <h2 className="font-heading mb-4 text-3xl font-bold md:text-5xl">
-                                {app()->getLocale() === 'en' && heroSettings.title_en ? heroSettings.title_en : (heroSettings.title || t("Discover talents from Cote d'Ivoire"))}
+                            <h2 className="font-heading mb-2 text-2xl font-bold leading-tight md:mb-4 md:text-5xl">
+                                {heroSettings.title || t("Discover talents from Cote d'Ivoire")}
                             </h2>
-                            <p className="mb-6 text-lg text-white/90">
-                                {app()->getLocale() === 'en' && heroSettings.subtitle_en ? heroSettings.subtitle_en : (heroSettings.subtitle || t('Book your favorite artists for your events.'))}
+                            <p className="mb-4 text-sm text-white/90 md:mb-6 md:text-lg">
+                                {heroSettings.subtitle || t('Book your favorite artists for your events.')}
                             </p>
                             {heroSettings.link_url && (
                                 <Button

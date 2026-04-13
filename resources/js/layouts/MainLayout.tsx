@@ -11,6 +11,7 @@ import {
     Bell,
     Calendar,
 } from 'lucide-react';
+import React from 'react';
 import type { PropsWithChildren, FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -504,70 +505,56 @@ export default function MainLayout({ children }: PropsWithChildren) {
 
             {/* Mobile Bottom Navigation */}
             <div className="pb-safe fixed right-0 bottom-0 left-0 z-50 border-t border-border bg-background/95 backdrop-blur md:hidden">
-                <nav className="flex h-16 items-center justify-around">
-                    <Link
+                <nav className="flex h-16 items-center justify-around px-2">
+                    <BottomNavItem
                         href={home()}
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                            isActive('/')
-                                ? 'text-primary'
-                                : 'text-muted-foreground hover:text-primary'
-                        }`}
-                    >
-                        <Home className="h-5 w-5" />
-                        <span>{t('Home')}</span>
-                    </Link>
-                    <Link
+                        active={isActive('/')}
+                        icon={<Home className="h-5 w-5" />}
+                        label={t('Home')}
+                    />
+                    <BottomNavItem
                         href="/artists"
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                            isActive('/artists') || isActive('/artist')
-                                ? 'text-primary'
-                                : 'text-muted-foreground hover:text-primary'
-                        }`}
-                    >
-                        <Search className="h-5 w-5" />
-                        <span>{t('Artists')}</span>
-                    </Link>
-                    <Link
+                        active={isActive('/artists') || isActive('/artist')}
+                        icon={<Search className="h-5 w-5" />}
+                        label={t('Artists')}
+                    />
+                    <BottomNavItem
                         href="/artstream"
-                        className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                            isActive('/artstream')
-                                ? 'text-primary'
-                                : 'text-muted-foreground hover:text-primary'
-                        }`}
-                    >
-                        <Music className="h-5 w-5" />
-                        <span>ArtStream</span>
-                    </Link>
+                        active={isActive('/artstream')}
+                        icon={<Music className="h-5 w-5" />}
+                        label="ArtStream"
+                    />
                     {user ? (
-                        <Link
-                            href={
-                                user.role === 'artist'
-                                    ? '/artist/dashboard'
-                                    : '/dashboard'
+                        <BottomNavItem
+                            href="/notifications"
+                            active={isActive('/notifications')}
+                            icon={
+                                <div className="relative">
+                                    <Bell className="h-5 w-5" />
+                                    {unreadNotifications > 0 && (
+                                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground ring-2 ring-background">
+                                            {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                                        </span>
+                                    )}
+                                </div>
                             }
-                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                                isActive('/dashboard') ||
-                                isActive('/artist/dashboard') ||
-                                isActive('/client')
-                                    ? 'text-primary'
-                                    : 'text-muted-foreground hover:text-primary'
-                            }`}
-                        >
-                            <Grid className="h-5 w-5" />
-                            <span>{t('Dashboard')}</span>
-                        </Link>
+                            label={t('Alerts')}
+                        />
+                    ) : null}
+                    {user ? (
+                        <BottomNavItem
+                            href={user.role === 'artist' ? '/artist/dashboard' : '/dashboard'}
+                            active={isActive('/dashboard') || isActive('/artist/dashboard') || isActive('/client')}
+                            icon={<Grid className="h-5 w-5" />}
+                            label={t('Dashboard')}
+                        />
                     ) : (
-                        <Link
+                        <BottomNavItem
                             href="/register/selection"
-                            className={`flex flex-col items-center gap-1 text-xs font-medium transition-colors ${
-                                isActive('/register')
-                                    ? 'text-primary'
-                                    : 'text-muted-foreground hover:text-primary'
-                            }`}
-                        >
-                            <Grid className="h-5 w-5" />
-                            <span>{t('Register')}</span>
-                        </Link>
+                            active={isActive('/register')}
+                            icon={<Grid className="h-5 w-5" />}
+                            label={t('Register')}
+                        />
                     )}
                 </nav>
             </div>
@@ -575,12 +562,30 @@ export default function MainLayout({ children }: PropsWithChildren) {
         </div>
     );
 }
-  );
-}
-            </div>
-            <MiniPlayer />
-        </div>
+
+function BottomNavItem({
+    href,
+    active,
+    icon,
+    label,
+}: {
+    href: string;
+    active: boolean;
+    icon: React.ReactNode;
+    label: string;
+}) {
+    return (
+        <Link
+            href={href}
+            className={`relative flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium transition-colors ${
+                active ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+            }`}
+        >
+            {active && (
+                <span className="absolute -top-px left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-primary" />
+            )}
+            {icon}
+            <span>{label}</span>
+        </Link>
     );
-}
-  );
 }

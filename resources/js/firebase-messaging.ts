@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app';
+import { getAnalytics } from 'firebase/analytics';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const firebaseConfig = {
@@ -12,6 +13,12 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
+// Analytics — only in browser (not SSR)
+if (typeof window !== 'undefined') {
+  getAnalytics(app);
+}
+
 const messaging = getMessaging(app);
 
 export async function requestPermissionAndGetToken(): Promise<string | null> {

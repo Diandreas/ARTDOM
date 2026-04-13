@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::index
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:23
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:20
  * @route '/admin/artists/pending'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::index
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:23
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:20
  * @route '/admin/artists/pending'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::index
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:23
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:20
  * @route '/admin/artists/pending'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::index
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:23
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:20
  * @route '/admin/artists/pending'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::index
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:23
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:20
  * @route '/admin/artists/pending'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::index
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:23
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:20
  * @route '/admin/artists/pending'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::index
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:23
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:20
  * @route '/admin/artists/pending'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,10 +79,10 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::approve
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:79
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:68
  * @route '/admin/artists/{artist}/approve'
  */
-export const approve = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const approve = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: approve.url(args, options),
     method: 'post',
 })
@@ -94,17 +94,14 @@ approve.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::approve
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:79
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:68
  * @route '/admin/artists/{artist}/approve'
  */
-approve.url = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+approve.url = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { artist: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { artist: args.id }
-        }
     
     if (Array.isArray(args)) {
         args = {
@@ -115,9 +112,7 @@ approve.url = (args: { artist: string | { id: string } } | [artist: string | { i
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        artist: typeof args.artist === 'object'
-                ? args.artist.id
-                : args.artist,
+                        artist: args.artist,
                 }
 
     return approve.definition.url
@@ -127,30 +122,30 @@ approve.url = (args: { artist: string | { id: string } } | [artist: string | { i
 
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::approve
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:79
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:68
  * @route '/admin/artists/{artist}/approve'
  */
-approve.post = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+approve.post = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: approve.url(args, options),
     method: 'post',
 })
 
     /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::approve
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:79
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:68
  * @route '/admin/artists/{artist}/approve'
  */
-    const approveForm = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const approveForm = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: approve.url(args, options),
         method: 'post',
     })
 
             /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::approve
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:79
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:68
  * @route '/admin/artists/{artist}/approve'
  */
-        approveForm.post = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        approveForm.post = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: approve.url(args, options),
             method: 'post',
         })
@@ -158,10 +153,10 @@ approve.post = (args: { artist: string | { id: string } } | [artist: string | { 
     approve.form = approveForm
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::reject
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:108
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:90
  * @route '/admin/artists/{artist}/reject'
  */
-export const reject = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+export const reject = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reject.url(args, options),
     method: 'post',
 })
@@ -173,17 +168,14 @@ reject.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::reject
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:108
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:90
  * @route '/admin/artists/{artist}/reject'
  */
-reject.url = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
+reject.url = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { artist: args }
     }
 
-            if (typeof args === 'object' && !Array.isArray(args) && 'id' in args) {
-            args = { artist: args.id }
-        }
     
     if (Array.isArray(args)) {
         args = {
@@ -194,9 +186,7 @@ reject.url = (args: { artist: string | { id: string } } | [artist: string | { id
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-                        artist: typeof args.artist === 'object'
-                ? args.artist.id
-                : args.artist,
+                        artist: args.artist,
                 }
 
     return reject.definition.url
@@ -206,30 +196,30 @@ reject.url = (args: { artist: string | { id: string } } | [artist: string | { id
 
 /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::reject
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:108
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:90
  * @route '/admin/artists/{artist}/reject'
  */
-reject.post = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+reject.post = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: reject.url(args, options),
     method: 'post',
 })
 
     /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::reject
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:108
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:90
  * @route '/admin/artists/{artist}/reject'
  */
-    const rejectForm = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    const rejectForm = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
         action: reject.url(args, options),
         method: 'post',
     })
 
             /**
 * @see \App\Http\Controllers\Admin\ArtistValidationController::reject
- * @see app/Http/Controllers/Admin/ArtistValidationController.php:108
+ * @see app/Http/Controllers/Admin/ArtistValidationController.php:90
  * @route '/admin/artists/{artist}/reject'
  */
-        rejectForm.post = (args: { artist: string | { id: string } } | [artist: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        rejectForm.post = (args: { artist: string | number } | [artist: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
             action: reject.url(args, options),
             method: 'post',
         })

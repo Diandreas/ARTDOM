@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
-import ArtistLayout from '@/layouts/artist-layout';
+import ArtistLayout from '@/layouts/MainLayout';
 import { useAppLocale } from '@/hooks/use-app-locale';
 
 interface Wallet {

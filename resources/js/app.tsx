@@ -2,7 +2,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Toaster } from 'sonner';
+import { toast, Toaster } from 'sonner';
 import { AudioProvider } from '@/contexts/AudioContext';
 import '../css/app.css';
 import { initializeTheme } from './hooks/use-appearance';
@@ -50,9 +50,6 @@ async function registerFCM() {
     if (typeof window === 'undefined') return;
 
     try {
-        // Ensure Sanctum CSRF cookie for cookie-based auth (no-op if using API tokens)
-        await fetch('/sanctum/csrf-cookie', { credentials: 'include' });
-
         // register the service worker for background notifications
         if ('serviceWorker' in navigator) {
             try {
@@ -65,16 +62,34 @@ async function registerFCM() {
 
         const token = await requestPermissionAndGetToken();
         if (token) {
+            const xsrf = document.cookie
+                .split('; ')
+                .find((c) => c.startsWith('XSRF-TOKEN='))
+                ?.split('=')[1];
+
             await fetch('/api/fcm-token', {
                 method: 'POST',
                 credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(xsrf ? { 'X-XSRF-TOKEN': decodeURIComponent(xsrf) } : {}),
+                },
                 body: JSON.stringify({ token }),
             });
         }
 
         onMessageListener((payload) => {
-            console.log('FCM foreground message:', payload);
+            const title = payload?.notification?.title ?? payload?.data?.title ?? 'Notification';
+            const body = payload?.notification?.body ?? payload?.data?.body ?? '';
+            const actionUrl = payload?.data?.action_url ?? '/notifications';
+
+            toast.info(title, {
+                description: body,
+                action: {
+                    label: 'Voir',
+                    onClick: () => { window.location.href = actionUrl; },
+                },
+            });
         });
     } catch (e) {
         console.warn('FCM registration error', e);

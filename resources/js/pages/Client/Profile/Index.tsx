@@ -48,149 +48,91 @@ export default function ClientProfile({ user, stats }: ClientProfileProps) {
         <MainLayout>
             <Head title={t('My profile')} />
 
-            <div className="container mx-auto max-w-7xl px-4 py-8 pb-24 md:px-6 md:pb-12">
-                {/* Header */}
-                <div className="mb-8">
-                    <h1 className="font-heading mb-2 text-3xl font-bold text-foreground">
-                        {t('My profile')}
-                    </h1>
-                    <p className="text-muted-foreground">
-                        {t('Manage your personal information')}
-                    </p>
+            <div className="container mx-auto max-w-7xl px-4 pt-4 pb-24 md:px-6 md:pt-8 md:pb-12">
+                {/* Mobile-first compact profile header */}
+                <div className="mb-4 flex items-center gap-4 md:mb-8">
+                    <div className="relative shrink-0">
+                        <Avatar className="h-16 w-16 md:h-24 md:w-24">
+                            <AvatarImage src={user.profile_photo || undefined} />
+                            <AvatarFallback className="text-xl md:text-3xl">
+                                {user.name.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <Button
+                            size="icon"
+                            variant="secondary"
+                            className="absolute right-0 bottom-0 h-6 w-6 rounded-full md:h-8 md:w-8"
+                        >
+                            <Camera className="h-3 w-3 md:h-4 md:w-4" />
+                        </Button>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                            <h1 className="font-heading truncate text-xl font-bold text-foreground md:text-3xl">
+                                {user.name}
+                            </h1>
+                            <Badge variant="secondary" className="shrink-0 text-xs">
+                                {t('Client')}
+                            </Badge>
+                        </div>
+                        <p className="truncate text-xs text-muted-foreground md:text-sm">
+                            {user.email}
+                        </p>
+                        {user.city && (
+                            <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                                <MapPin className="h-3 w-3" />
+                                <span>{user.city}</span>
+                            </div>
+                        )}
+                        <Link href="/settings/profile" className="mt-2 inline-block">
+                            <Button size="sm" className="h-7 gap-1.5 px-3 text-xs">
+                                <Edit2 className="h-3 w-3" />
+                                {t('Edit my profile')}
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
-                <div className="grid gap-8 lg:grid-cols-3">
-                    {/* Profile Card */}
-                    <div className="lg:col-span-1">
-                        <Card>
-                            <CardContent className="pt-6">
-                                <div className="flex flex-col items-center text-center">
-                                    <div className="relative mb-4">
-                                        <Avatar className="h-32 w-32">
-                                            <AvatarImage
-                                                src={
-                                                    user.profile_photo ||
-                                                    undefined
-                                                }
-                                            />
-                                            <AvatarFallback className="text-3xl">
-                                                {user.name
-                                                    .charAt(0)
-                                                    .toUpperCase()}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <Button
-                                            size="icon"
-                                            variant="secondary"
-                                            className="absolute right-0 bottom-0 rounded-full"
-                                        >
-                                            <Camera className="h-4 w-4" />
-                                        </Button>
-                                    </div>
+                {/* Stats — horizontal scroll on mobile */}
+                <div className="mb-4 grid grid-cols-3 gap-2 md:gap-4">
+                    <Card>
+                        <CardContent className="flex flex-col items-center justify-center p-3 text-center md:p-6">
+                            <div className="text-2xl font-bold text-primary md:text-3xl">
+                                {stats.total_reservations}
+                            </div>
+                            <p className="mt-0.5 text-[10px] text-muted-foreground md:text-sm">
+                                {t('Total reservations')}
+                            </p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="flex flex-col items-center justify-center p-3 text-center md:p-6">
+                            <div className="text-2xl font-bold text-primary md:text-3xl">
+                                {stats.upcoming_reservations}
+                            </div>
+                            <p className="mt-0.5 text-[10px] text-muted-foreground md:text-sm">
+                                {t('Upcoming')}
+                            </p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="flex flex-col items-center justify-center p-3 text-center md:p-6">
+                            <div className="text-2xl font-bold text-primary md:text-3xl">
+                                {stats.favorite_artists}
+                            </div>
+                            <p className="mt-0.5 text-[10px] text-muted-foreground md:text-sm">
+                                {t('Favorite artists')}
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
 
-                                    <h2 className="mb-1 text-2xl font-bold">
-                                        {user.name}
-                                    </h2>
-                                    <Badge variant="secondary" className="mb-4">
-                                        {t('Client')}
-                                    </Badge>
+                <div className="grid gap-4 md:gap-6 lg:grid-cols-3">
+                    {/* Empty placeholder to keep grid alignment on desktop */}
+                    <div className="hidden lg:col-span-1 lg:block" />
 
-                                    <div className="mt-6 w-full space-y-3 text-left">
-                                        <div className="flex items-center gap-3 text-sm">
-                                            <Mail className="h-4 w-4 text-muted-foreground" />
-                                            <span className="break-all text-muted-foreground">
-                                                {user.email}
-                                            </span>
-                                        </div>
-
-                                        {user.phone && (
-                                            <div className="flex items-center gap-3 text-sm">
-                                                <Phone className="h-4 w-4 text-muted-foreground" />
-                                                <span className="text-muted-foreground">
-                                                    {user.phone}
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        {user.city && (
-                                            <div className="flex items-center gap-3 text-sm">
-                                                <MapPin className="h-4 w-4 text-muted-foreground" />
-                                                <span className="text-muted-foreground">
-                                                    {user.city}
-                                                </span>
-                                            </div>
-                                        )}
-
-                                        <div className="flex items-center gap-3 text-sm">
-                                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-muted-foreground">
-                                                {t('Member since')}{' '}
-                                                {format(
-                                                    new Date(user.created_at),
-                                                    'MMMM yyyy',
-                                                    { locale: dateLocale },
-                                                )}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <Link
-                                        href="/settings/profile"
-                                        className="mt-6 w-full"
-                                    >
-                                        <Button className="w-full gap-2">
-                                            <Edit2 className="h-4 w-4" />
-                                            {t('Edit my profile')}
-                                        </Button>
-                                    </Link>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Stats & Info */}
-                    <div className="space-y-6 lg:col-span-2">
-                        {/* Stats Cards */}
-                        <div className="grid gap-4 sm:grid-cols-3">
-                            <Card>
-                                <CardHeader className="pb-3">
-                                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                                        {t('Total reservations')}
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-3xl font-bold text-primary">
-                                        {stats.total_reservations}
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader className="pb-3">
-                                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                                        {t('Upcoming')}
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-3xl font-bold text-primary">
-                                        {stats.upcoming_reservations}
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader className="pb-3">
-                                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                                        {t('Favorite artists')}
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-3xl font-bold text-primary">
-                                        {stats.favorite_artists}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
+                    {/* Info & Actions */}
+                    <div className="space-y-4 md:space-y-6 lg:col-span-2">
 
                         {/* Account Info */}
                         <Card>

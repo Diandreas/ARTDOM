@@ -1,25 +1,47 @@
-importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
-// Initialize the Firebase app in the service worker by passing in the config
 firebase.initializeApp({
-  apiKey: self.FIREBASE_CONFIG?.apiKey || '{{VITE_FIREBASE_API_KEY}}',
-  authDomain: self.FIREBASE_CONFIG?.authDomain || '{{VITE_FIREBASE_AUTH_DOMAIN}}',
-  projectId: self.FIREBASE_CONFIG?.projectId || '{{VITE_FIREBASE_PROJECT_ID}}',
-  storageBucket: self.FIREBASE_CONFIG?.storageBucket || '{{VITE_FIREBASE_STORAGE_BUCKET}}',
-  messagingSenderId: self.FIREBASE_CONFIG?.messagingSenderId || '{{VITE_FIREBASE_MESSAGING_SENDER_ID}}',
-  appId: self.FIREBASE_CONFIG?.appId || '{{VITE_FIREBASE_APP_ID}}',
-  measurementId: self.FIREBASE_CONFIG?.measurementId || '{{VITE_FIREBASE_MEASUREMENT_ID}}',
+  apiKey: 'AIzaSyC6kC5bmGWXABBingqsoEf_D6ArMvED3JA',
+  authDomain: 'artemo-1487c.firebaseapp.com',
+  projectId: 'artemo-1487c',
+  storageBucket: 'artemo-1487c.firebasestorage.app',
+  messagingSenderId: '286318600863',
+  appId: '1:286318600863:web:f033f29f43cac221a9b8aa',
+  measurementId: 'G-WMQFD91JQ6',
 });
 
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(function(payload) {
-  const notificationTitle = payload.notification?.title || 'Notification';
+messaging.onBackgroundMessage(function (payload) {
+  const notificationTitle = payload.notification?.title || 'Artemo';
   const notificationOptions = {
     body: payload.notification?.body || '',
+    icon: '/artemo-logo.png',
+    badge: '/artemo-logo.png',
     data: payload.data || {},
+    actions: payload.data?.action_url
+      ? [{ action: 'open', title: 'Voir' }]
+      : [],
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Handle notification click — open the app at the action_url
+self.addEventListener('notificationclick', function (event) {
+  event.notification.close();
+  const url = event.notification.data?.action_url || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url === url && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(url);
+      }
+    }),
+  );
 });
