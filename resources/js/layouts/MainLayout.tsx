@@ -179,6 +179,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                                 >
                                                     {t('Wallet')}
                                                 </Link>
+                                                <Link
+                                                    href="/artist/withdrawals"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('Withdrawals')}
+                                                </Link>
                                             </>
                                         ) : (
                                             <>
@@ -568,4 +574,6 @@ export default function MainLayout({ children }: PropsWithChildren) {
             <MiniPlayer />
         </div>
     );
+}
+  );
 }

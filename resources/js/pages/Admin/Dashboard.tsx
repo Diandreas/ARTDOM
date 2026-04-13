@@ -231,6 +231,42 @@ export default function Dashboard({
                     </div>
                 </section>
 
+                {/* Financial Summary Section */}
+                <section className="space-y-4">
+                    <h2 className="text-xl font-semibold">Récapitulatif Financier Global</h2>
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <Card className="border-green-200 bg-green-50/30">
+                            <CardHeader className="pb-2">
+                                <CardDescription className="text-green-700">Total Reversements Payés</CardDescription>
+                                <CardTitle className="text-green-800">{formatMoney(financialStats.payouts_paid)}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="text-[10px] text-green-600 italic">
+                                Montant total versé aux artistes
+                            </CardContent>
+                        </Card>
+                        <Card className="border-amber-200 bg-amber-50/30">
+                            <CardHeader className="pb-2">
+                                <CardDescription className="text-amber-700">Reversements en Attente</CardDescription>
+                                <CardTitle className="text-amber-800">
+                                    {financialStats.pending_payouts} demandes
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="text-[10px] text-amber-600 flex items-center gap-1">
+                                <AlertCircle className="h-3 w-3" /> À traiter dans la section Reversements
+                            </CardContent>
+                        </Card>
+                        <Card className="border-primary/20 bg-primary/5">
+                            <CardHeader className="pb-2">
+                                <CardDescription className="text-primary">Commissions Plateforme</CardDescription>
+                                <CardTitle>{formatMoney(financialStats.total_commissions)}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="text-[10px] text-muted-foreground italic">
+                                Revenus nets générés par les frais ARTDOM
+                            </CardContent>
+                        </Card>
+                    </div>
+                </section>
+
                 {/* Top Statistics Section */}
                 <section className="space-y-4">
                     <h2 className="text-xl font-semibold">Statistiques de Contenu</h2>

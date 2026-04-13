@@ -13,7 +13,7 @@ uses(Tests\TestCase::class, RefreshDatabase::class);
 test('getAvailableSlots returns slots within availability and marks busy ones', function () {
     // 1. Setup
     $artist = User::factory()->create(['role' => 'artist']);
-    $date = '2026-03-25';
+    $date = Carbon::now()->addDay()->format('Y-m-d');
 
     // Available from 09:00 to 12:00
     Availability::create([
@@ -67,7 +67,7 @@ test('getAvailableSlots returns slots within availability and marks busy ones', 
 
 test('getAvailableSlots handles multiple availability blocks', function () {
     $artist = User::factory()->create(['role' => 'artist']);
-    $date = '2026-03-25';
+    $date = Carbon::now()->addDay()->format('Y-m-d');
 
     Availability::create([
         'artist_id' => $artist->id,

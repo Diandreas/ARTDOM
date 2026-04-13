@@ -313,11 +313,21 @@ class DashboardController extends Controller
                 'plays' => $track->plays,
             ]);
 
+        // Financial statistics
+        $totalWithdrawalsPaid = Withdrawal::where('status', 'completed')->sum('amount');
+        $pendingWithdrawalsCount = Withdrawal::where('status', 'pending')->count();
+        $totalPlatformCommissions = Payment::where('status', 'completed')->sum('platform_fee');
+
         return Inertia::render('Admin/Dashboard', [
             'topStats' => [
                 'liked_tracks' => $topLikedTracks,
                 'played_tracks' => $topPlayedTracks,
                 'liked_videos' => $topLikedVideos,
+            ],
+            'financialStats' => [
+                'payouts_paid' => $totalWithdrawalsPaid,
+                'pending_payouts' => $pendingWithdrawalsCount,
+                'total_commissions' => $totalPlatformCommissions,
             ],
             'kpis' => [
                 'users' => [

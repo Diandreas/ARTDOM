@@ -30,7 +30,7 @@ it('admin can consult client activity module', function () {
         'total_amount' => 0,
     ]);
 
-    Subscription::query()->create([
+    \App\Models\ClientSubscription::query()->create([
         'client_id' => $client->id,
         'plan' => 'monthly',
         'price' => 2000,

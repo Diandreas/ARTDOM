@@ -8,6 +8,7 @@ import {
     LogOut,
     Music,
     ShieldCheck,
+    Wallet,
     ShoppingCart,
     Ticket,
     UserCheck,
@@ -45,6 +46,16 @@ export default function AdminLayout({
             icon: UserCheck,
         },
         {
+            label: t('Withdrawals'),
+            href: '/admin/withdrawals',
+            icon: Wallet,
+        },
+        {
+            label: t('Music management'),
+            href: '/admin/tracks',
+            icon: Music,
+        },
+        {
             label: t('Support tickets'),
             href: '/admin/tickets',
             icon: Ticket,
@@ -68,6 +79,11 @@ export default function AdminLayout({
             label: t('Homepage carousel'),
             href: '/admin/carousel',
             icon: Images,
+        },
+        {
+            label: t('Hero Section'),
+            href: '/admin/hero-settings',
+            icon: Layout,
         },
         ...(currentRole === 'super_admin'
             ? [
@@ -106,7 +122,7 @@ export default function AdminLayout({
                         </div>
                     </div>
 
-                    <nav className="space-y-2">
+                    <nav className="space-y-2 text-wrap">
                         {navItems.map((item) => {
                             const Icon = item.icon;
                             const active = isActive(item.href);
@@ -172,15 +188,6 @@ export default function AdminLayout({
                                 {t('Admin Panel')}
                             </Badge>
                         </div>
-                    </header>
-                    <section className="p-4 md:p-8">{children}</section>
-                </main>
-            </div>
-            <MiniPlayer />
-        </div>
-    );
-}
-                      </div>
                     </header>
                     <section className="p-4 md:p-8">{children}</section>
                 </main>

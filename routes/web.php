@@ -81,10 +81,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
         Route::post('/users/{user}/suspend', [UserManagementController::class, 'suspend'])->name('users.suspend');
-        Route::post('/users/{user}/impersonate', [UserManagementController::class, 'impersonate'])->name('users.impersonate');
+        Route::get('/users/{user}/impersonate', [UserManagementController::class, 'impersonate'])->name('users.impersonate');
         Route::post('/users/stop-impersonation', [UserManagementController::class, 'stopImpersonation'])->name('users.stop-impersonation');
         Route::post('/users/bulk', [UserManagementController::class, 'bulk'])->name('users.bulk');
-    });
+
+        // Admin Withdrawals
+        Route::get('/withdrawals', [\App\Http\Controllers\Admin\WithdrawalManagementController::class, 'index'])->name('withdrawals.index');
+        Route::post('/withdrawals/{withdrawal}/approve', [\App\Http\Controllers\Admin\WithdrawalManagementController::class, 'approve'])->name('withdrawals.approve');
+        Route::post('/withdrawals/{withdrawal}/reject', [\App\Http\Controllers\Admin\WithdrawalManagementController::class, 'reject'])->name('withdrawals.reject');
+        });
 
     Route::middleware(['auth', 'role.super_admin'])->group(function () {
         Route::get('/super-crud', [SuperAdminCrudController::class, 'index'])->name('super-crud.index');

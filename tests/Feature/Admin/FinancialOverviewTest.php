@@ -41,7 +41,7 @@ it('admin can consult global financial overview page', function () {
         'paid_at' => now(),
     ]);
 
-    Subscription::query()->create([
+    \App\Models\ClientSubscription::query()->create([
         'client_id' => $client->id,
         'plan' => 'monthly',
         'price' => 5000,
