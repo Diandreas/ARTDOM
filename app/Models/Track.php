@@ -26,7 +26,25 @@ class Track extends Model
         'lyrics',
         'plays',
         'track_number',
+        'is_banned',
+        'ban_reason',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope('not_banned', function ($query) {
+            $query->where('is_banned', false);
+        });
+
+        static::addGlobalScope('active_artist', function ($query) {
+            $query->whereHas('album.artist', function ($q) {
+                $q->where('is_active', true)->whereNull('banned_at');
+            });
+        });
+    }
 
     /**
      * Get the attributes that should be cast.

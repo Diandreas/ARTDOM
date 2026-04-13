@@ -1,5 +1,5 @@
 import { Head, router, useForm } from '@inertiajs/react';
-import { Edit2, Eye, EyeOff, GripVertical, Plus, Trash2 } from 'lucide-react';
+import { Edit2, Eye, EyeOff, GripVertical, Plus, Trash2, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,31 +7,49 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AdminLayout from '@/layouts/admin-layout';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+interface User {
+    id: string;
+    name: string;
+}
 
 interface Slide {
     id: number;
-    title: string;
+    artist_id: string | null;
+    type: string;
+    title: string | null;
     subtitle: string | null;
     image_url: string;
     link_url: string | null;
     link_label: string | null;
     is_active: boolean;
     order: number;
+    artist?: User | null;
 }
 
 interface Props {
     slides: Slide[];
+    artists: User[];
+    currentType: string;
 }
 
 function SlideForm({
     slide,
+    artists,
+    type,
     onClose,
 }: {
     slide?: Slide;
+    artists: User[];
+    type: string;
     onClose: () => void;
 }) {
     const form = useForm({
+        artist_id: slide?.artist_id ?? '',
+        type: slide?.type ?? type,
         title: slide?.title ?? '',
         subtitle: slide?.subtitle ?? '',
         image_url: slide?.image_url ?? '',
@@ -58,18 +76,42 @@ function SlideForm({
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                    <Label htmlFor="title">Titre *</Label>
+                <div className="space-y-1.5 col-span-2 md:col-span-1">
+                    <Label htmlFor="artist_id">Lier à un artiste (optionnel)</Label>
+                    <Select
+                        value={form.data.artist_id || 'none'}
+                        onValueChange={(value) => form.setData('artist_id', value === 'none' ? '' : value)}
+                    >
+                        <SelectTrigger id="artist_id">
+                            <SelectValue placeholder="Sélectionner un artiste" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="none">Aucun (Manuel)</SelectItem>
+                            {artists.map((artist) => (
+                                <SelectItem key={artist.id} value={artist.id}>
+                                    {artist.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">Si lié, les infos de l'artiste seront utilisées par défaut.</p>
+                </div>
+                
+                <div className="space-y-1.5 col-span-2 md:col-span-1">
+                    <Label htmlFor="title">Titre {form.data.artist_id ? '(Optionnel)' : '*'}</Label>
                     <Input
                         id="title"
                         value={form.data.title}
                         onChange={(e) => form.setData('title', e.target.value)}
                         placeholder="Découvrez nos artistes"
-                        required
+                        required={!form.data.artist_id}
                     />
                     {form.errors.title && <p className="text-sm text-destructive">{form.errors.title}</p>}
                 </div>
-                <div className="space-y-1.5">
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5 col-span-2 md:col-span-1">
                     <Label htmlFor="subtitle">Sous-titre</Label>
                     <Input
                         id="subtitle"
@@ -78,26 +120,17 @@ function SlideForm({
                         placeholder="La musique africaine en streaming"
                     />
                 </div>
-            </div>
-
-            <div className="space-y-1.5">
-                <Label htmlFor="image_url">URL de l'image *</Label>
-                <Input
-                    id="image_url"
-                    value={form.data.image_url}
-                    onChange={(e) => form.setData('image_url', e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                    required
-                />
-                {form.errors.image_url && <p className="text-sm text-destructive">{form.errors.image_url}</p>}
-                {form.data.image_url && (
-                    <img
-                        src={form.data.image_url}
-                        alt="Preview"
-                        className="mt-2 h-24 w-full rounded-lg object-cover"
-                        onError={(e) => ((e.target as HTMLImageElement).style.display = 'none')}
+                <div className="space-y-1.5 col-span-2 md:col-span-1">
+                    <Label htmlFor="image_url">URL de l'image {form.data.artist_id ? '(Optionnel)' : '*'}</Label>
+                    <Input
+                        id="image_url"
+                        value={form.data.image_url}
+                        onChange={(e) => form.setData('image_url', e.target.value)}
+                        placeholder="https://example.com/image.jpg"
+                        required={!form.data.artist_id}
                     />
-                )}
+                    {form.errors.image_url && <p className="text-sm text-destructive">{form.errors.image_url}</p>}
+                </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -143,12 +176,12 @@ function SlideForm({
     );
 }
 
-export default function Carousel({ slides }: Props) {
+export default function Carousel({ slides, artists, currentType }: Props) {
     const [showForm, setShowForm] = useState(false);
     const [editingSlide, setEditingSlide] = useState<Slide | null>(null);
 
     const handleDelete = (slide: Slide) => {
-        if (confirm(`Supprimer la slide "${slide.title}" ?`)) {
+        if (confirm(`Supprimer la slide "${slide.title || slide.artist?.name}" ?`)) {
             router.delete(`/admin/carousel/${slide.id}`, { preserveScroll: true });
         }
     };
@@ -157,11 +190,25 @@ export default function Carousel({ slides }: Props) {
         router.patch(`/admin/carousel/${slide.id}/toggle`, {}, { preserveScroll: true });
     };
 
+    const handleTypeChange = (type: string) => {
+        router.get('/admin/carousel', { type }, { preserveState: true });
+    };
+
     return (
-        <AdminLayout title="Carousel accueil" subtitle="Gérez les slides du carousel sur la page d'accueil">
+        <AdminLayout 
+            title="Gestion des Carrousels" 
+            subtitle="Gérez les slides des carrousels (artistes vedettes ou section héros)"
+        >
             <Head title="Admin — Carousel" />
 
             <div className="space-y-6">
+                <Tabs value={currentType} onValueChange={handleTypeChange} className="w-full">
+                    <TabsList className="grid w-full max-w-md grid-cols-2">
+                        <TabsTrigger value="main">Artistes Vedettes</TabsTrigger>
+                        <TabsTrigger value="hero">Section Héros</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+
                 {/* Add slide form */}
                 {(showForm || editingSlide) && (
                     <Card>
@@ -171,6 +218,8 @@ export default function Carousel({ slides }: Props) {
                         <CardContent>
                             <SlideForm
                                 slide={editingSlide ?? undefined}
+                                artists={artists}
+                                type={currentType}
                                 onClose={() => {
                                     setShowForm(false);
                                     setEditingSlide(null);
@@ -185,7 +234,11 @@ export default function Carousel({ slides }: Props) {
                         <div className="flex items-center justify-between">
                             <div>
                                 <CardTitle>Slides ({slides.length})</CardTitle>
-                                <CardDescription>Les slides sont affichées dans l'ordre ci-dessous sur la page d'accueil</CardDescription>
+                                <CardDescription>
+                                    {currentType === 'main' 
+                                        ? 'Artistes mis en avant dans le carrousel principal.' 
+                                        : 'Contenus alternatifs pour le carrousel de la section héros.'}
+                                </CardDescription>
                             </div>
                             {!showForm && !editingSlide && (
                                 <Button onClick={() => setShowForm(true)} className="gap-2">
@@ -201,7 +254,7 @@ export default function Carousel({ slides }: Props) {
                                 <div className="mb-4 rounded-full bg-muted p-4">
                                     <Plus className="h-8 w-8 text-muted-foreground" />
                                 </div>
-                                <p className="text-muted-foreground">Aucune slide. Ajoutez-en une pour commencer.</p>
+                                <p className="text-muted-foreground">Aucune slide pour ce type. Ajoutez-en une pour commencer.</p>
                             </div>
                         ) : (
                             <div className="space-y-3">
@@ -212,27 +265,37 @@ export default function Carousel({ slides }: Props) {
                                     >
                                         <GripVertical className="h-5 w-5 shrink-0 text-muted-foreground" />
 
-                                        <img
-                                            src={slide.image_url}
-                                            alt={slide.title}
-                                            className="h-14 w-24 shrink-0 rounded object-cover"
-                                            onError={(e) => {
-                                                (e.target as HTMLImageElement).src = '/artemo-logo.png';
-                                            }}
-                                        />
+                                        {slide.image_url ? (
+                                            <img
+                                                src={slide.image_url}
+                                                alt={slide.title || 'Slide'}
+                                                className="h-14 w-24 shrink-0 rounded object-cover"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = '/artemo-logo.png';
+                                                }}
+                                            />
+                                        ) : (
+                                            <div className="h-14 w-24 shrink-0 rounded bg-muted flex items-center justify-center">
+                                                <UserIcon className="h-6 w-6 text-muted-foreground" />
+                                            </div>
+                                        )}
 
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2">
-                                                <p className="font-semibold truncate">{slide.title}</p>
+                                                <p className="font-semibold truncate">
+                                                    {slide.title || slide.artist?.name || 'Sans titre'}
+                                                </p>
+                                                {slide.artist && (
+                                                    <Badge variant="outline" className="text-[10px]">Artiste lié</Badge>
+                                                )}
                                                 <Badge variant={slide.is_active ? 'default' : 'secondary'}>
                                                     {slide.is_active ? 'Active' : 'Inactive'}
                                                 </Badge>
                                             </div>
-                                            {slide.subtitle && (
-                                                <p className="text-sm text-muted-foreground truncate">{slide.subtitle}</p>
-                                            )}
-                                            {slide.link_url && (
-                                                <p className="text-xs text-primary truncate">{slide.link_url}</p>
+                                            {(slide.subtitle || (slide.artist && 'Profil Artiste')) && (
+                                                <p className="text-sm text-muted-foreground truncate">
+                                                    {slide.subtitle || 'Profil Artiste'}
+                                                </p>
                                             )}
                                         </div>
 
@@ -274,12 +337,11 @@ export default function Carousel({ slides }: Props) {
                     </CardContent>
                 </Card>
 
-                {/* Preview note */}
                 <Card className="border-primary/20 bg-primary/5">
                     <CardContent className="pt-6">
                         <p className="text-sm text-muted-foreground">
-                            <strong className="text-foreground">Note :</strong> Les slides actives s'affichent sur la page d'accueil dans la section héros.
-                            Assurez-vous d'utiliser des images de haute qualité (1920×600px recommandé).
+                            <strong className="text-foreground">Conseil :</strong> Liez une slide à un artiste pour promouvoir son profil directement. 
+                            Le carrousel d'artistes s'affiche en bas de la page d'accueil, tandis que le carrousel "Héros" s'affiche tout en haut si activé dans les réglages.
                         </p>
                     </CardContent>
                 </Card>

@@ -56,10 +56,33 @@ interface Category {
     icon: string;
 }
 
+interface Slide {
+    id: number;
+    title: string | null;
+    subtitle: string | null;
+    image_url: string;
+    link_url: string | null;
+    link_label: string | null;
+}
+
+interface HeroSettings {
+    type: 'image' | 'carousel' | 'video';
+    title: string | null;
+    subtitle: string | null;
+    image_url: string | null;
+    video_url: string | null;
+    link_url: string | null;
+    link_label: string | null;
+    is_active: boolean;
+}
+
 interface HomeProps {
     featuredArtists: Artist[];
     recentAlbums: Album[];
     categories: Category[];
+    carouselSlides: Slide[];
+    heroSlides: Slide[];
+    heroSettings: HeroSettings;
 }
 
 const categoryIcons: Record<string, any> = {
@@ -75,8 +98,122 @@ export default function Home({
     featuredArtists,
     recentAlbums,
     categories,
+    carouselSlides,
+    heroSlides,
+    heroSettings,
 }: HomeProps) {
     const { t } = useAppLocale();
+
+    const renderHero = () => {
+        if (!heroSettings.is_active) return null;
+
+        if (heroSettings.type === 'carousel' && heroSlides.length > 0) {
+            return (
+                <section className="px-4 py-8">
+                    <div className="container mx-auto max-w-7xl">
+                        <Carousel
+                            opts={{ loop: true }}
+                            className="w-full overflow-hidden rounded-2xl"
+                        >
+                            <CarouselContent>
+                                {heroSlides.map((slide) => (
+                                    <CarouselItem key={slide.id}>
+                                        <div className="relative h-[400px] w-full md:h-[500px]">
+                                            <img
+                                                src={slide.image_url}
+                                                alt={slide.title || ''}
+                                                className="absolute inset-0 h-full w-full object-cover"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                                            <div className="relative z-10 flex h-full flex-col justify-end p-8 text-white md:p-12">
+                                                <h2 className="font-heading mb-4 text-3xl font-bold md:text-5xl">
+                                                    {slide.title}
+                                                </h2>
+                                                {slide.subtitle && (
+                                                    <p className="mb-6 max-w-2xl text-lg text-white/90">
+                                                        {slide.subtitle}
+                                                    </p>
+                                                )}
+                                                {slide.link_url && (
+                                                    <div className="flex gap-4">
+                                                        <Button
+                                                            size="lg"
+                                                            className="bg-primary text-primary-foreground hover:bg-primary/90"
+                                                            asChild
+                                                        >
+                                                            <Link href={slide.link_url}>
+                                                                {slide.link_label || t('Discover')}
+                                                            </Link>
+                                                        </Button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                            <CarouselPrevious className="left-4 bg-black/20 text-white border-none hover:bg-black/40" />
+                            <CarouselNext className="right-4 bg-black/20 text-white border-none hover:bg-black/40" />
+                        </Carousel>
+                    </div>
+                </section>
+            );
+        }
+
+        return (
+            <section className="px-4 py-8">
+                <div className="container mx-auto max-w-7xl">
+                    <div className="bg-gradient-sunset relative overflow-hidden rounded-2xl p-8 text-white md:p-12 min-h-[300px] flex items-center">
+                        {heroSettings.type === 'image' && heroSettings.image_url && (
+                            <img
+                                src={heroSettings.image_url}
+                                alt="Hero"
+                                className="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-overlay"
+                            />
+                        )}
+                        
+                        {heroSettings.type === 'video' && heroSettings.video_url && (
+                            <video
+                                src={heroSettings.video_url}
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-overlay"
+                            />
+                        )}
+
+                        <div className="relative z-10 max-w-2xl">
+                            <h2 className="font-heading mb-4 text-3xl font-bold md:text-5xl">
+                                {heroSettings.title || t("Discover talents from Cote d'Ivoire")}
+                            </h2>
+                            <p className="mb-6 text-lg text-white/90">
+                                {heroSettings.subtitle || t('Book your favorite artists for your events.')}
+                            </p>
+                            {heroSettings.link_url && (
+                                <Button
+                                    size="lg"
+                                    variant="secondary"
+                                    className="bg-background text-foreground hover:bg-background/90"
+                                    asChild
+                                >
+                                    <Link href={heroSettings.link_url}>
+                                        {heroSettings.link_label || t('Explore artists')}
+                                    </Link>
+                                </Button>
+                            )}
+                        </div>
+                        
+                        {heroSettings.type === 'image' && !heroSettings.image_url && (
+                            <div className="absolute -right-12 -bottom-12 opacity-20">
+                                <Mic className="h-64 w-64" />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </section>
+        );
+    };
 
     return (
         <MainLayout>
@@ -116,36 +253,8 @@ export default function Home({
                     </div>
                 </section>
 
-                {/* Promotional Banner */}
-                <section className="px-4 py-8">
-                    <div className="container mx-auto max-w-7xl">
-                        <div className="bg-gradient-sunset relative overflow-hidden rounded-2xl p-8 text-white md:p-12">
-                            <div className="relative z-10 max-w-2xl">
-                                <h2 className="font-heading mb-4 text-3xl font-bold md:text-4xl">
-                                    {t("Discover talents from Cote d'Ivoire")}
-                                </h2>
-                                <p className="mb-6 text-lg text-white/90">
-                                    {t(
-                                        'Book your favorite artists for your events. Music, dance, art and more.',
-                                    )}
-                                </p>
-                                <Button
-                                    size="lg"
-                                    variant="secondary"
-                                    className="bg-background text-foreground hover:bg-background/90"
-                                    asChild
-                                >
-                                    <Link href="/artists">
-                                        {t('Explore artists')}
-                                    </Link>
-                                </Button>
-                            </div>
-                            <div className="absolute -right-12 -bottom-12 opacity-20">
-                                <Mic className="h-64 w-64" />
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                {/* Hero / Promotional Section */}
+                {renderHero()}
 
                 {/* Categories Grid */}
                 <section className="px-4 py-8">
@@ -182,8 +291,63 @@ export default function Home({
                     </div>
                 </section>
 
-                {/* Featured Artists Carousel */}
-                <section className="bg-muted/30 px-4 py-8">
+                {/* Main Carousel (Featured/Custom) */}
+                {carouselSlides.length > 0 && (
+                    <section className="bg-muted/30 px-4 py-8">
+                        <div className="container mx-auto max-w-7xl">
+                            <div className="mb-6 flex items-center justify-between">
+                                <h2 className="font-heading text-2xl font-bold text-foreground">
+                                    {t('Recommended for you')}
+                                </h2>
+                            </div>
+
+                            <Carousel
+                                opts={{
+                                    align: 'start',
+                                    loop: true,
+                                }}
+                                className="w-full"
+                            >
+                                <CarouselContent>
+                                    {carouselSlides.map((slide) => (
+                                        <CarouselItem
+                                            key={slide.id}
+                                            className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                                        >
+                                            <Link href={slide.link_url || '#'}>
+                                                <Card className="group cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-xl">
+                                                    <div className="relative aspect-video overflow-hidden bg-muted">
+                                                        <img
+                                                            src={slide.image_url}
+                                                            alt={slide.title || ''}
+                                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                        />
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                                                        <div className="absolute right-3 bottom-3 left-3">
+                                                            <h3 className="mb-1 text-lg font-bold text-white">
+                                                                {slide.title}
+                                                            </h3>
+                                                            {slide.subtitle && (
+                                                                <p className="text-sm text-white/90">
+                                                                    {slide.subtitle}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </Card>
+                                            </Link>
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselPrevious className="-left-4 hidden border-border bg-background hover:bg-muted md:flex" />
+                                <CarouselNext className="-right-4 hidden border-border bg-background hover:bg-muted md:flex" />
+                            </Carousel>
+                        </div>
+                    </section>
+                )}
+
+                {/* Featured Artists Grid (Original) */}
+                <section className="px-4 py-8">
                     <div className="container mx-auto max-w-7xl">
                         <div className="mb-6 flex items-center justify-between">
                             <h2 className="font-heading text-2xl font-bold text-foreground">
@@ -197,97 +361,37 @@ export default function Home({
                             </Link>
                         </div>
 
-                        <Carousel
-                            opts={{
-                                align: 'start',
-                                loop: true,
-                            }}
-                            className="w-full"
-                        >
-                            <CarouselContent>
-                                {featuredArtists.map((artist) => (
-                                    <CarouselItem
-                                        key={artist.id}
-                                        className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-                                    >
-                                        <Link href={`/artist/${artist.id}`}>
-                                            <Card className="group cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-xl">
-                                                <div className="relative aspect-square overflow-hidden bg-muted">
-                                                    <img
-                                                        src={
-                                                            artist.profile_photo
-                                                        }
-                                                        alt={artist.stage_name}
-                                                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                    />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                                                    {artist.is_verified && (
-                                                        <Badge className="absolute top-3 right-3 border-none bg-primary text-primary-foreground">
-                                                            <Star className="mr-1 h-3 w-3 fill-current" />
-                                                            {t('Verified')}
-                                                        </Badge>
-                                                    )}
-                                                    <div className="absolute right-3 bottom-3 left-3">
-                                                        <h3 className="mb-1 text-lg font-bold text-white">
-                                                            {artist.stage_name}
-                                                        </h3>
-                                                        <div className="flex items-center gap-2 text-sm text-white/90">
-                                                            <MapPin className="h-3 w-3" />
-                                                            <span>
-                                                                {artist.city}
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {featuredArtists.slice(0, 4).map((artist) => (
+                                <Link key={artist.id} href={`/artist/${artist.id}`}>
+                                    <Card className="group cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-xl">
+                                        <div className="relative aspect-square overflow-hidden bg-muted">
+                                            <img
+                                                src={artist.profile_photo}
+                                                alt={artist.stage_name}
+                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                                            {artist.is_verified && (
+                                                <Badge className="absolute top-3 right-3 border-none bg-primary text-primary-foreground">
+                                                    <Star className="mr-1 h-3 w-3 fill-current" />
+                                                    {t('Verified')}
+                                                </Badge>
+                                            )}
+                                            <div className="absolute right-3 bottom-3 left-3">
+                                                <h3 className="mb-1 text-lg font-bold text-white">
+                                                    {artist.stage_name}
+                                                </h3>
+                                                <div className="flex items-center gap-2 text-sm text-white/90">
+                                                    <MapPin className="h-3 w-3" />
+                                                    <span>{artist.city}</span>
                                                 </div>
-                                                <CardContent className="p-4">
-                                                    <div className="mb-3 flex flex-wrap gap-2">
-                                                        {artist.categories
-                                                            .slice(0, 2)
-                                                            .map((cat) => (
-                                                                <Badge
-                                                                    key={cat}
-                                                                    variant="secondary"
-                                                                    className="text-xs"
-                                                                >
-                                                                    {cat}
-                                                                </Badge>
-                                                            ))}
-                                                    </div>
-                                                    <div className="flex items-center justify-between text-sm">
-                                                        <div className="flex items-center gap-1 text-primary">
-                                                            <Star className="h-4 w-4 fill-current" />
-                                                            <span className="font-medium">
-                                                                {artist.rating.toFixed(
-                                                                    1,
-                                                                )}
-                                                            </span>
-                                                            <span className="text-muted-foreground">
-                                                                (
-                                                                {
-                                                                    artist.total_reviews
-                                                                }
-                                                                )
-                                                            </span>
-                                                        </div>
-                                                        <span className="text-muted-foreground">
-                                                            {
-                                                                artist.services_count
-                                                            }{' '}
-                                                            {artist.services_count >
-                                                            1
-                                                                ? t('services')
-                                                                : t('service')}
-                                                        </span>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        </Link>
-                                    </CarouselItem>
-                                ))}
-                            </CarouselContent>
-                            <CarouselPrevious className="-left-4 hidden border-border bg-background hover:bg-muted md:flex" />
-                            <CarouselNext className="-right-4 hidden border-border bg-background hover:bg-muted md:flex" />
-                        </Carousel>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </section>
 

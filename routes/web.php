@@ -66,6 +66,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/carousel/reorder', [\App\Http\Controllers\Admin\CarouselController::class, 'reorder'])->name('carousel.reorder');
         Route::patch('/carousel/{slide}/toggle', [\App\Http\Controllers\Admin\CarouselController::class, 'toggle'])->name('carousel.toggle');
 
+        Route::get('/hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'index'])->name('hero-settings.index');
+        Route::put('/hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'update'])->name('hero-settings.update');
+
+        Route::get('/tracks', [\App\Http\Controllers\Admin\TrackManagementController::class, 'index'])->name('tracks.index');
+        Route::post('/tracks/{track}/ban', [\App\Http\Controllers\Admin\TrackManagementController::class, 'ban'])->name('tracks.ban');
+        Route::post('/tracks/{track}/unban', [\App\Http\Controllers\Admin\TrackManagementController::class, 'unban'])->name('tracks.unban');
+
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
         Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');

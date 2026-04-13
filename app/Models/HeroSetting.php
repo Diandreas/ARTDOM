@@ -3,35 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CarouselSlide extends Model
+class HeroSetting extends Model
 {
     protected $fillable = [
-        'artist_id',
         'type',
         'title',
         'subtitle',
         'image_url',
+        'video_url',
         'link_url',
         'link_label',
         'is_active',
-        'order',
     ];
 
     protected function casts(): array
     {
         return [
             'is_active' => 'boolean',
-            'order' => 'integer',
         ];
-    }
-
-    /**
-     * Relation : Une slide peut être liée à un artiste
-     */
-    public function artist(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'artist_id');
     }
 }

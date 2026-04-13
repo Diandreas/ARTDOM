@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CarouselSlide;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,18 +12,29 @@ use Inertia\Response;
 
 class CarouselController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $slides = CarouselSlide::orderBy('order')->get();
+        $type = $request->get('type', 'main');
+
+        $slides = CarouselSlide::with('artist')
+            ->where('type', $type)
+            ->orderBy('order')
+            ->get();
+
+        $artists = User::where('role', 'artist')->get(['id', 'name']);
 
         return Inertia::render('Admin/Carousel', [
             'slides' => $slides,
+            'artists' => $artists,
+            'currentType' => $type,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'artist_id' => 'nullable|string|exists:users,id',
+            'type' => 'required|string|in:main,hero',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'image_url' => 'required|string|max:500',
@@ -31,7 +43,7 @@ class CarouselController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $maxOrder = CarouselSlide::max('order') ?? 0;
+        $maxOrder = CarouselSlide::where('type', $validated['type'])->max('order') ?? 0;
 
         CarouselSlide::create([
             ...$validated,
@@ -47,6 +59,8 @@ class CarouselController extends Controller
     public function update(Request $request, CarouselSlide $slide): RedirectResponse
     {
         $validated = $request->validate([
+            'artist_id' => 'nullable|string|exists:users,id',
+            'type' => 'required|string|in:main,hero',
             'title' => 'required|string|max:255',
             'subtitle' => 'nullable|string|max:255',
             'image_url' => 'required|string|max:500',

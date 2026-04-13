@@ -176,7 +176,7 @@ class UserManagementController extends Controller
                     'portfolio_urls' => $validated['portfolio_urls'] ?? null,
                     'verification_status' => 'approved',
                     'is_verified' => true,
-                    ]
+                ]
             );
 
             Wallet::query()->firstOrCreate(
@@ -367,14 +367,26 @@ class UserManagementController extends Controller
 
     public function activate(User $user): RedirectResponse
     {
-        $user->update(['is_active' => true]);
+        $user->update([
+            'is_active' => true,
+            'banned_at' => null,
+            'ban_reason' => null,
+        ]);
 
         return back()->with('message', 'Utilisateur active.');
     }
 
-    public function ban(User $user): RedirectResponse
+    public function ban(Request $request, User $user): RedirectResponse
     {
-        $user->update(['is_active' => false]);
+        $validated = $request->validate([
+            'reason' => 'nullable|string|max:1000',
+        ]);
+
+        $user->update([
+            'is_active' => false,
+            'banned_at' => now(),
+            'ban_reason' => $validated['reason'],
+        ]);
 
         if ($this->roleValue($user) === 'artist') {
             ArtistProfile::query()->where('user_id', $user->id)->update([

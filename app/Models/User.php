@@ -29,7 +29,19 @@ class User extends Authenticatable
         'city',
         'role',
         'is_active',
+        'banned_at',
+        'ban_reason',
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope('active', function ($query) {
+            $query->where('is_active', true)->whereNull('banned_at');
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.

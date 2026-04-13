@@ -23,7 +23,7 @@ class TrackFactory extends Factory
             'title' => fake()->randomElement($trackNames),
             'duration_seconds' => fake()->numberBetween(120, 360), // 2-6 minutes
             'track_number' => 1, // Will be overridden in seeder
-            'file_url' => null, // Will be set in seeder
+            'file_url' => 'https://example.com/track.mp3',
             'plays' => fake()->numberBetween(0, 50000),
         ];
     }

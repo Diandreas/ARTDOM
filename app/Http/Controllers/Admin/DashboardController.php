@@ -303,7 +303,21 @@ class DashboardController extends Controller
                 'likes' => $video->likes,
             ]);
 
+        $topPlayedTracks = Track::orderBy('plays', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(fn (Track $track) => [
+                'id' => $track->id,
+                'title' => $track->title,
+                'plays' => $track->plays,
+            ]);
+
         return Inertia::render('Admin/Dashboard', [
+            'topStats' => [
+                'liked_tracks' => $topLikedTracks,
+                'played_tracks' => $topPlayedTracks,
+                'liked_videos' => $topLikedVideos,
+            ],
             'kpis' => [
                 'users' => [
                     'total' => $totalUsers,

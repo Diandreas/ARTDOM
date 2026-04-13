@@ -25,13 +25,17 @@ class HomeController extends Controller
             ->limit(10)
             ->get()
             ->map(function ($user) {
+                $categories = is_array($user->artistProfile->categories)
+                    ? $user->artistProfile->categories
+                    : json_decode($user->artistProfile->categories ?? '[]');
+
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'stage_name' => $user->artistProfile->stage_name,
                     'city' => $user->city,
                     'profile_photo' => $user->profile_photo,
-                    'categories' => json_decode($user->artistProfile->categories),
+                    'categories' => $categories,
                     'rating' => $user->artistProfile->rating,
                     'total_reviews' => $user->artistProfile->total_reviews,
                     'services_count' => $user->services_count,
@@ -70,25 +74,61 @@ class HomeController extends Controller
             ['key' => 'photographer', 'label' => 'Photographes', 'icon' => 'camera'],
         ];
 
-        $carouselSlides = $this->getCarouselSlides();
+        $carouselSlides = $this->getCarouselSlides('main');
+        $heroSlides = $this->getCarouselSlides('hero');
+
+        $heroSettings = \App\Models\HeroSetting::first() ?? \App\Models\HeroSetting::create([
+            'type' => 'image',
+            'title' => 'Découvrez les talents de Côte d\'Ivoire',
+            'subtitle' => 'Réservez vos artistes préférés pour vos événements.',
+            'image_url' => 'https://images.unsplash.com/photo-1514525253440-b393452eeb25?q=80&w=1600&auto=format&fit=crop',
+            'link_url' => '/artists',
+            'link_label' => 'Explorer les artistes',
+            'is_active' => true,
+        ]);
 
         return Inertia::render('home', [
             'featuredArtists' => $featuredArtists,
             'recentAlbums' => $recentAlbums,
             'categories' => $categories,
             'carouselSlides' => $carouselSlides,
+            'heroSlides' => $heroSlides,
+            'heroSettings' => $heroSettings,
         ]);
     }
 
-    protected function getCarouselSlides(): Collection
+    protected function getCarouselSlides(string $type = 'main'): Collection
     {
         if (! Schema::hasTable('carousel_slides')) {
             return collect();
         }
 
-        return CarouselSlide::query()
+        return CarouselSlide::with(['artist.artistProfile'])
             ->where('is_active', true)
+            ->where('type', $type)
             ->orderBy('order')
-            ->get(['id', 'title', 'subtitle', 'image_url', 'link_url', 'link_label']);
+            ->get()
+            ->map(function ($slide) {
+                if ($slide->artist_id && $slide->artist) {
+                    return [
+                        'id' => $slide->id,
+                        'title' => $slide->title ?: $slide->artist->artistProfile->stage_name,
+                        'subtitle' => $slide->subtitle ?: $slide->artist->city,
+                        'image_url' => $slide->image_url ?: $slide->artist->profile_photo,
+                        'link_url' => $slide->link_url ?: route('artist.show', $slide->artist_id),
+                        'link_label' => $slide->link_label ?: 'Voir le profil',
+                        'artist' => $slide->artist,
+                    ];
+                }
+
+                return [
+                    'id' => $slide->id,
+                    'title' => $slide->title,
+                    'subtitle' => $slide->subtitle,
+                    'image_url' => $slide->image_url,
+                    'link_url' => $slide->link_url,
+                    'link_label' => $slide->link_label,
+                ];
+            });
     }
 }
