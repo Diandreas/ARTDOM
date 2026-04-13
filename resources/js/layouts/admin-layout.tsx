@@ -4,7 +4,9 @@ import {
     BarChart3,
     Database,
     Images,
+    Layout,
     LogOut,
+    Music,
     ShieldCheck,
     ShoppingCart,
     Ticket,
@@ -170,6 +172,15 @@ export default function AdminLayout({
                                 {t('Admin Panel')}
                             </Badge>
                         </div>
+                    </header>
+                    <section className="p-4 md:p-8">{children}</section>
+                </main>
+            </div>
+            <MiniPlayer />
+        </div>
+    );
+}
+                      </div>
                     </header>
                     <section className="p-4 md:p-8">{children}</section>
                 </main>
