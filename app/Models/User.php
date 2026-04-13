@@ -34,13 +34,11 @@ class User extends Authenticatable
     ];
 
     /**
-     * The "booted" method of the model.
+     * Scope local pour les utilisateurs actifs (non bannis)
      */
-    protected static function booted(): void
+    public function scopeActive($query)
     {
-        static::addGlobalScope('active', function ($query) {
-            $query->where('is_active', true)->whereNull('banned_at');
-        });
+        return $query->where('is_active', true)->whereNull('banned_at');
     }
 
     /**

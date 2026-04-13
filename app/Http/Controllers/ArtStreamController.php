@@ -45,7 +45,9 @@ class ArtStreamController extends Controller
             : [];
 
         // Fetch featured/trending albums
-        $featuredAlbums = Album::with(['artist.artistProfile', 'tracks'])
+        $featuredAlbums = Album::available()
+            ->whereHas('artist', fn($q) => $q->active())
+            ->with(['artist.artistProfile', 'tracks'])
             ->where('is_streamable', true)
             ->withCount('tracks')
             ->orderByDesc('total_plays')
@@ -71,7 +73,9 @@ class ArtStreamController extends Controller
             });
 
         // Fetch recent albums
-        $recentAlbums = Album::with(['artist.artistProfile'])
+        $recentAlbums = Album::available()
+            ->whereHas('artist', fn($q) => $q->active())
+            ->with(['artist.artistProfile'])
             ->where('is_streamable', true)
             ->latest('published_at')
             ->limit(12)
@@ -91,7 +95,8 @@ class ArtStreamController extends Controller
             });
 
         // Fetch top tracks (most played)
-        $topTracks = Track::with(['album.artist.artistProfile', 'comments.user', 'comments.replies.user'])
+        $topTracks = Track::available()
+            ->with(['album.artist.artistProfile', 'comments.user', 'comments.replies.user'])
             ->orderByDesc('plays')
             ->limit(20)
             ->get()
@@ -199,7 +204,7 @@ class ArtStreamController extends Controller
             : [];
 
         if ($trackId) {
-            $track = Track::with(['album.artist.artistProfile', 'comments.user', 'comments.replies.user'])->find($trackId);
+            $track = Track::available()->with(['album.artist.artistProfile', 'comments.user', 'comments.replies.user'])->find($trackId);
 
             if ($track) {
                 $initialTrack = [
@@ -216,6 +221,7 @@ class ArtStreamController extends Controller
 
                 // Load all tracks from the album for queue
                 $albumTracks = $track->album->tracks()
+                    ->available()
                     ->with(['comments.user', 'comments.replies.user'])
                     ->orderBy('track_number')
                     ->get()
@@ -234,7 +240,7 @@ class ArtStreamController extends Controller
                     });
             }
         } elseif ($albumId) {
-            $album = Album::with(['artist.artistProfile', 'tracks'])->find($albumId);
+            $album = Album::available()->with(['artist.artistProfile', 'tracks' => fn($q) => $q->available()])->find($albumId);
 
             if ($album && $album->tracks->isNotEmpty()) {
                 $firstTrack = $album->tracks->first();
@@ -294,16 +300,18 @@ class ArtStreamController extends Controller
 
         // Search Tracks
         if (in_array($type, ['all', 'tracks'])) {
-            $results['tracks'] = Track::with(['album.artist.artistProfile'])
-                ->where('title', 'like', "%{$query}%")
-                ->orWhereHas('album', function ($q) use ($query) {
-                    $q->where('title', 'like', "%{$query}%");
-                })
-                ->orWhereHas('album.artist', function ($q) use ($query) {
-                    $q->where('name', 'like', "%{$query}%");
-                })
-                ->orWhereHas('album.artist.artistProfile', function ($q) use ($query) {
-                    $q->where('stage_name', 'like', "%{$query}%");
+            $results['tracks'] = Track::available()->with(['album.artist.artistProfile'])
+                ->where(function($q) use ($query) {
+                    $q->where('title', 'like', "%{$query}%")
+                        ->orWhereHas('album', function ($q) use ($query) {
+                            $q->where('title', 'like', "%{$query}%");
+                        })
+                        ->orWhereHas('album.artist', function ($q) use ($query) {
+                            $q->where('name', 'like', "%{$query}%");
+                        })
+                        ->orWhereHas('album.artist.artistProfile', function ($q) use ($query) {
+                            $q->where('stage_name', 'like', "%{$query}%");
+                        });
                 })
                 ->limit(20)
                 ->get()
@@ -330,17 +338,11 @@ class ArtStreamController extends Controller
 
         // Search Albums
         if (in_array($type, ['all', 'albums'])) {
-            $results['albums'] = Album::with(['artist.artistProfile'])
+            $results['albums'] = Album::available()->with(['artist.artistProfile'])
                 ->where('is_streamable', true)
                 ->where(function ($q) use ($query) {
                     $q->where('title', 'like', "%{$query}%")
-                        ->orWhere('genre', 'like', "%{$query}%")
-                        ->orWhereHas('artist', function ($artistQ) use ($query) {
-                            $artistQ->where('name', 'like', "%{$query}%");
-                        })
-                        ->orWhereHas('artist.artistProfile', function ($artistQ) use ($query) {
-                            $artistQ->where('stage_name', 'like', "%{$query}%");
-                        });
+                        ->orWhere('genre', 'like', "%{$query}%");
                 })
                 ->withCount('tracks')
                 ->limit(12)
@@ -364,7 +366,7 @@ class ArtStreamController extends Controller
 
         // Search Artists
         if (in_array($type, ['all', 'artists'])) {
-            $results['artists'] = \App\Models\User::where('role', 'artist')
+            $results['artists'] = \App\Models\User::active()->where('role', 'artist')
                 ->with(['artistProfile'])
                 ->where(function ($q) use ($query) {
                     $q->where('name', 'like', "%{$query}%")

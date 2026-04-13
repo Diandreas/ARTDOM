@@ -31,19 +31,14 @@ class Track extends Model
     ];
 
     /**
-     * The "booted" method of the model.
+     * Scope local pour les musiques disponibles (non bannies et artiste actif)
      */
-    protected static function booted(): void
+    public function scopeAvailable($query)
     {
-        static::addGlobalScope('not_banned', function ($query) {
-            $query->where('is_banned', false);
-        });
-
-        static::addGlobalScope('active_artist', function ($query) {
-            $query->whereHas('album.artist', function ($q) {
+        return $query->where('is_banned', false)
+            ->whereHas('album.artist', function ($q) {
                 $q->where('is_active', true)->whereNull('banned_at');
             });
-        });
     }
 
     /**

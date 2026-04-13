@@ -31,6 +31,16 @@ class Album extends Model
     ];
 
     /**
+     * Scope local pour les albums disponibles (artiste actif)
+     */
+    public function scopeAvailable($query)
+    {
+        return $query->whereHas('artist', function ($q) {
+            $q->where('is_active', true)->whereNull('banned_at');
+        });
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
