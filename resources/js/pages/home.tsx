@@ -185,10 +185,10 @@ export default function Home({
 
                         <div className="relative z-10 max-w-2xl">
                             <h2 className="font-heading mb-4 text-3xl font-bold md:text-5xl">
-                                {heroSettings.title || t("Discover talents from Cote d'Ivoire")}
+                                {app()->getLocale() === 'en' && heroSettings.title_en ? heroSettings.title_en : (heroSettings.title || t("Discover talents from Cote d'Ivoire"))}
                             </h2>
                             <p className="mb-6 text-lg text-white/90">
-                                {heroSettings.subtitle || t('Book your favorite artists for your events.')}
+                                {app()->getLocale() === 'en' && heroSettings.subtitle_en ? heroSettings.subtitle_en : (heroSettings.subtitle || t('Book your favorite artists for your events.'))}
                             </p>
                             {heroSettings.link_url && (
                                 <Button
