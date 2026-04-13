@@ -47,11 +47,9 @@ class ArtistValidationController extends Controller
                     'registered_at' => $artist->created_at?->toIso8601String(),
                     'base_rate' => (float) ($artist->artistProfile?->base_rate ?? 0),
                     'bio' => $artist->artistProfile?->bio,
-                    'portfolio_urls' => $portfolioUrls,
-                    'id_document_front' => $artist->artistProfile?->id_document_front,
-                    'id_document_back' => $artist->artistProfile?->id_document_back,
-                ];
-            });
+                    'portfolio_urls' => $artist->artistProfile?->portfolio_urls ?? [],
+                    ];
+                    }),
 
         return Inertia::render('Admin/ArtistValidation', [
             'artists' => $pendingArtists,

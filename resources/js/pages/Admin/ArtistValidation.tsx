@@ -32,8 +32,6 @@ type Artist = {
     base_rate: number;
     bio?: string | null;
     portfolio_urls: string[];
-    id_document_front?: string | null;
-    id_document_back?: string | null;
 };
 
 type PaginatedArtists = {
@@ -278,39 +276,10 @@ export default function ArtistValidation({ artists, rejectionReasons }: Props) {
                                         )}
                                     </div>
 
-                                    <div className="space-y-2">
-                                        <h4 className="font-medium">Documents d'identite</h4>
-                                        <div className="grid gap-2 sm:grid-cols-2">
-                                            {[{ label: 'Recto', url: artist.id_document_front }, { label: 'Verso', url: artist.id_document_back }].map((doc) => (
-                                                <button
-                                                    key={`${artist.id}-${doc.label}`}
-                                                    type="button"
-                                                    className="overflow-hidden rounded border p-2 text-left"
-                                                    onClick={() => {
-                                                        if (!doc.url) {
-                                                            return;
-                                                        }
-                                                        setActiveLightboxMedia(doc.url);
-                                                        setActiveLightboxLabel(`Document ${doc.label}`);
-                                                    }}
-                                                >
-                                                    <p className="mb-2 text-sm font-medium">{doc.label}</p>
-                                                    {doc.url ? (
-                                                        <img src={doc.url} alt={doc.label} className="h-40 w-full rounded object-cover" />
-                                                    ) : (
-                                                        <div className="flex h-40 items-center justify-center rounded bg-muted text-sm text-muted-foreground">
-                                                            Non fourni
-                                                        </div>
-                                                    )}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
-
+                                    </CardContent>
+                                    </Card>
+                                    );
+                                    })}
                     {artists.data.length === 0 ? (
                         <Card>
                             <CardContent className="py-10 text-center text-sm text-muted-foreground">
