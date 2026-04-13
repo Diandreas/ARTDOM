@@ -341,7 +341,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                             <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                                 type="search"
-                                placeholder={t('Search for an artist...')}
+                                placeholder={t('Search for music, artists...')}
                                 className="h-9 w-[200px] border-none bg-muted pl-9 focus-visible:ring-primary lg:w-[300px]"
                                 value={headerSearch}
                                 onChange={(e) =>
@@ -570,6 +570,13 @@ export default function MainLayout({ children }: PropsWithChildren) {
                         </Link>
                     )}
                 </nav>
+            </div>
+            <MiniPlayer />
+        </div>
+    );
+}
+  );
+}
             </div>
             <MiniPlayer />
         </div>
