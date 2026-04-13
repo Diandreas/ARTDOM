@@ -50,6 +50,7 @@ export default function ArtistValidation({ artists, rejectionReasons }: Props) {
     const [activeLightboxLabel, setActiveLightboxLabel] = useState('');
 
     const filteredArtists = useMemo(() => {
+        if (!artists) return [];
         return artists.filter(
             (artist) =>
                 artist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\ApproveArtistValidationRequest;
-use App\Http\Requests\Admin\RejectArtistValidationRequest;
+use App\Models\ArtistProfile;
 use App\Models\User;
-use App\Notifications\ArtistValidationApprovedNotification;
-use App\Notifications\ArtistValidationRejectedNotification;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,7 +16,6 @@ class ArtistValidationController extends Controller
      * Affiche la liste des artistes en attente de validation
      *
      * Route: GET /admin/artists/pending
-     * Middleware: auth, role:admin
      */
     public function index(): Response
     {
@@ -26,17 +23,18 @@ class ArtistValidationController extends Controller
             ->whereHas('artistProfile', function ($query) {
                 $query->where('verification_status', 'pending');
             })
-            ->with(['artistProfile', 'clientProfile'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(20)
-            ->through(function (User $artist): array {
-                $fullName = trim((string) (($artist->clientProfile?->first_name ?? '').' '.($artist->clientProfile?->last_name ?? '')));
-                $categories = is_array($artist->artistProfile?->categories) ? $artist->artistProfile?->categories : [];
-                $portfolioUrls = is_array($artist->artistProfile?->portfolio_urls) ? $artist->artistProfile?->portfolio_urls : [];
+            ->with(['artistProfile'])
+            ->latest()
+            ->get()
+            ->map(function ($artist) {
+                $fullName = trim(($artist->clientProfile->first_name ?? '').' '.($artist->clientProfile->last_name ?? ''));
+                $categories = is_array($artist->artistProfile?->categories) 
+                    ? $artist->artistProfile->categories 
+                    : json_decode($artist->artistProfile?->categories ?? '[]');
 
                 return [
                     'id' => $artist->id,
-                    'avatar' => $artist->profile_photo,
+                    'name' => $artist->name,
                     'stage_name' => $artist->artistProfile?->stage_name,
                     'category' => $categories[0] ?? 'Non renseignee',
                     'city' => $artist->city,
@@ -48,8 +46,8 @@ class ArtistValidationController extends Controller
                     'base_rate' => (float) ($artist->artistProfile?->base_rate ?? 0),
                     'bio' => $artist->artistProfile?->bio,
                     'portfolio_urls' => $artist->artistProfile?->portfolio_urls ?? [],
-                    ];
-                    }),
+                ];
+            });
 
         return Inertia::render('Admin/ArtistValidation', [
             'artists' => $pendingArtists,
@@ -58,7 +56,6 @@ class ArtistValidationController extends Controller
                 ['value' => 'portfolio_quality', 'label' => 'Qualite portfolio insuffisante'],
                 ['value' => 'non_compliant_documents', 'label' => 'Documents non conformes'],
                 ['value' => 'duplicate_account', 'label' => 'Compte en doublon'],
-                ['value' => 'other', 'label' => 'Autre'],
             ],
         ]);
     }
@@ -66,72 +63,51 @@ class ArtistValidationController extends Controller
     /**
      * Approuve un artiste
      *
-     * Route: POST /admin/artists/{artist}/approve
-     * Middleware: auth, role:admin
-     *
-     * Logique:
-     * 1. Met à jour le statut de vérification
-     * 2. Active le compte artiste
-     * 3. Notifie l'artiste
+     * Route: POST /admin/artists/{id}/approve
      */
-    public function approve(ApproveArtistValidationRequest $request, User $artist): RedirectResponse
+    public function approve(string $id): RedirectResponse
     {
-        if (! $artist->isArtist() || ! $artist->artistProfile) {
-            abort(404);
+        $artist = User::findOrFail($id);
+
+        if ($artist->artistProfile) {
+            $artist->artistProfile->update([
+                'verification_status' => 'approved',
+                'is_verified' => true,
+            ]);
         }
 
-        $artist->artistProfile->update([
-            'verification_status' => 'approved',
-            'is_verified' => true,
+        return redirect()->back()->with('toast', [
+            'type' => 'success',
+            'message' => 'L\'artiste '.$artist->name.' a ete approuve avec succes.',
         ]);
-
-        $artist->update(['is_active' => true]);
-
-        $artist->notify(new ArtistValidationApprovedNotification);
-
-        return back()->with('message', 'Artiste approuvé avec succès.');
     }
 
     /**
-     * Rejette un artiste
+     * Rejette la demande d'un artiste
      *
-     * Route: POST /admin/artists/{artist}/reject
-     * Middleware: auth, role:admin
-     *
-     * Logique:
-     * 1. Met à jour le statut de vérification
-     * 2. Désactive le compte artiste
-     * 3. Notifie l'artiste avec la raison
+     * Route: POST /admin/artists/{id}/reject
      */
-    public function reject(RejectArtistValidationRequest $request, User $artist): RedirectResponse
+    public function reject(Request $request, string $id): RedirectResponse
     {
-        if (! $artist->isArtist() || ! $artist->artistProfile) {
-            abort(404);
-        }
-
-        $validated = $request->validated();
-        $reasons = [
-            'incomplete_information' => 'Informations incompletes',
-            'portfolio_quality' => 'Qualite portfolio insuffisante',
-            'non_compliant_documents' => 'Documents non conformes',
-            'duplicate_account' => 'Compte en doublon',
-            'other' => 'Autre',
-        ];
-        $reasonLabel = $reasons[$validated['reason']] ?? 'Autre';
-
-        $artist->artistProfile->update([
-            'verification_status' => 'rejected',
-            'is_verified' => false,
+        $request->validate([
+            'reason' => 'required|string',
+            'custom_reason' => 'required_if:reason,other|nullable|string|max:500',
         ]);
 
-        $artist->update(['is_active' => false]);
+        $artist = User::findOrFail($id);
+        $reason = $request->reason === 'other' ? $request->custom_reason : $request->reason;
 
-        $artist->notify(new ArtistValidationRejectedNotification(
-            reasonLabel: $reasonLabel,
-            customMessage: $validated['custom_message'] ?? null,
-            allowResubmission: (bool) ($validated['allow_resubmission'] ?? false),
-        ));
+        if ($artist->artistProfile) {
+            $artist->artistProfile->update([
+                'verification_status' => 'rejected',
+                'is_verified' => false,
+                // On pourrait stocker la raison du rejet quelque part si besoin
+            ]);
+        }
 
-        return back()->with('message', 'Artiste rejeté. Une notification a été envoyée.');
+        return redirect()->back()->with('toast', [
+            'type' => 'info',
+            'message' => 'La demande de '.$artist->name.' a ete rejetee.',
+        ]);
     }
 }

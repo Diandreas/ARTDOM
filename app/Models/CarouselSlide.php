@@ -15,6 +15,7 @@ class CarouselSlide extends Model
         'subtitle',
         'subtitle_en',
         'image_url',
+        'image_url_en',
         'link_url',
         'link_label',
         'is_active',
