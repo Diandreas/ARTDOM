@@ -100,7 +100,7 @@ function SlideForm({
                 </div>
                 
                 <div className="space-y-1.5 col-span-2 md:col-span-1">
-                    <Label htmlFor="title">{t('Title')} {form.data.artist_id ? `(${t('Optional')})` : '*'}</Label>
+                    <Label htmlFor="title">{t('Title')} (FR) {form.data.artist_id ? `(${t('Optional')})` : '*'}</Label>
                     <Input
                         id="title"
                         value={form.data.title}
@@ -110,16 +110,34 @@ function SlideForm({
                     />
                     {form.errors.title && <p className="text-sm text-destructive">{form.errors.title}</p>}
                 </div>
+                <div className="space-y-1.5 col-span-2 md:col-span-1">
+                    <Label htmlFor="title_en">{t('Title')} (EN) {t('Optional')}</Label>
+                    <Input
+                        id="title_en"
+                        value={form.data.title_en}
+                        onChange={(e) => form.setData('title_en', e.target.value)}
+                        placeholder="Discover our artists"
+                    />
+                </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5 col-span-2 md:col-span-1">
-                    <Label htmlFor="subtitle">{t('Subtitle')}</Label>
+                    <Label htmlFor="subtitle">{t('Subtitle')} (FR)</Label>
                     <Input
                         id="subtitle"
                         value={form.data.subtitle}
                         onChange={(e) => form.setData('subtitle', e.target.value)}
                         placeholder={t('African music everywhere')}
+                    />
+                </div>
+                <div className="space-y-1.5 col-span-2 md:col-span-1">
+                    <Label htmlFor="subtitle_en">{t('Subtitle')} (EN)</Label>
+                    <Input
+                        id="subtitle_en"
+                        value={form.data.subtitle_en}
+                        onChange={(e) => form.setData('subtitle_en', e.target.value)}
+                        placeholder="African music everywhere"
                     />
                 </div>
                 <div className="space-y-1.5 col-span-2 md:col-span-1">

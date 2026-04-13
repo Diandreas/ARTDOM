@@ -115,11 +115,15 @@ class HomeController extends Controller
             ->orderBy('order')
             ->get()
             ->map(function ($slide) {
+                $isEn = app()->getLocale() === 'en';
+                $title = ($isEn && $slide->title_en) ? $slide->title_en : $slide->title;
+                $subtitle = ($isEn && $slide->subtitle_en) ? $slide->subtitle_en : $slide->subtitle;
+
                 if ($slide->artist_id && $slide->artist) {
                     return [
                         'id' => $slide->id,
-                        'title' => $slide->title ?: $slide->artist->artistProfile->stage_name,
-                        'subtitle' => $slide->subtitle ?: $slide->artist->city,
+                        'title' => $title ?: $slide->artist->artistProfile->stage_name,
+                        'subtitle' => $subtitle ?: $slide->artist->city,
                         'image_url' => $slide->image_url ?: $slide->artist->profile_photo,
                         'link_url' => $slide->link_url ?: route('artist.show', $slide->artist_id),
                         'link_label' => $slide->link_label ?: 'Voir le profil',
@@ -129,12 +133,11 @@ class HomeController extends Controller
 
                 return [
                     'id' => $slide->id,
-                    'title' => $slide->title,
-                    'subtitle' => $slide->subtitle,
+                    'title' => $title,
+                    'subtitle' => $subtitle,
                     'image_url' => $slide->image_url,
                     'link_url' => $slide->link_url,
                     'link_label' => $slide->link_label,
                 ];
-            });
-    }
+            });    }
 }
