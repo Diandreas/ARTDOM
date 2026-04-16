@@ -33,6 +33,7 @@ import { useInitials } from '@/hooks/use-initials';
 import { cn, toUrl } from '@/lib/utils';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem, NavItem, SharedData } from '@/types';
+import LanguageSwitcher from './language-switcher';
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
@@ -130,6 +131,9 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="p-4 border-t border-sidebar-border/50">
+                                    <LanguageSwitcher className="w-full justify-between bg-background/50" />
+                                </div>
                             </SheetContent>
                         </Sheet>
                     </div>
@@ -177,6 +181,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
                     </div>
 
                     <div className="ml-auto flex items-center space-x-2">
+                        <LanguageSwitcher compact />
                         <div className="relative flex items-center space-x-1">
                             <Button
                                 variant="ghost"

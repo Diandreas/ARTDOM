@@ -157,8 +157,7 @@ class ArtistProfile extends Model
      */
     public function scopeVerified($query)
     {
-        return $query->where('is_verified', true)
-            ->where('verification_status', 'approved');
+        return $query->where('is_verified', true);
     }
 
     public function scopeByCategory($query, string $category)

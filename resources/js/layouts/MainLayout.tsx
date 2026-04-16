@@ -144,9 +144,19 @@ export default function MainLayout({ children }: PropsWithChildren) {
                             </SheetTrigger>
                             <SheetContent
                                 side="left"
-                                className="w-[300px] border-r border-border bg-card sm:w-[400px]"
+                                className="flex flex-col w-[300px] border-r border-border bg-card sm:w-[400px]"
                             >
-                                <nav className="mt-8 flex flex-col gap-4">
+                                <div className="mt-8 flex items-center gap-2 px-2">
+                                    <img
+                                        src="/artemo-logo.png"
+                                        alt="Artemo"
+                                        className="h-8 w-8 object-contain"
+                                    />
+                                    <span className="font-heading text-lg font-bold tracking-tight text-primary">
+                                        ARTEMO
+                                    </span>
+                                </div>
+                                <nav className="mt-8 flex flex-col gap-4 overflow-y-auto px-2">
                                     <Link
                                         href={home()}
                                         className="text-lg font-semibold transition-colors hover:text-primary"
@@ -232,6 +242,13 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                         </>
                                     )}
                                 </nav>
+
+                                <div className="mt-auto border-t border-border/40 pt-6 pb-10 px-2">
+                                    <p className="mb-4 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                                        {t('Language')}
+                                    </p>
+                                    <LanguageSwitcher className="w-full justify-between bg-muted/50" />
+                                </div>
                             </SheetContent>
                         </Sheet>
 
@@ -332,8 +349,8 @@ export default function MainLayout({ children }: PropsWithChildren) {
                     </nav>
 
                     {/* Right Actions: Search & Profile */}
-                    <div className="flex items-center gap-2 md:gap-4">
-                        <LanguageSwitcher className="hidden lg:flex" compact />
+                    <div className="flex items-center gap-1.5 md:gap-4">
+                        <LanguageSwitcher compact className="scale-90 sm:scale-100" />
 
                         <form
                             onSubmit={handleHeaderSearch}

@@ -76,8 +76,7 @@ class SearchController extends Controller
         // Construire la requête pour les artistes
         $query = User::where('role', 'artist')
             ->whereHas('artistProfile', function ($q) use ($validated) {
-                $q->where('verification_status', 'approved')
-                    ->where('is_verified', true);
+                $q->where('is_verified', true);
 
                 // Filtre par note minimale
                 if (isset($validated['rating_min'])) {

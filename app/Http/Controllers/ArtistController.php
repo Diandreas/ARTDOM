@@ -19,7 +19,6 @@ class ArtistController extends Controller
         $query = User::where('users.is_active', true)
             ->join('artist_profiles', 'users.id', '=', 'artist_profiles.user_id')
             ->where('artist_profiles.is_verified', true)
-            ->where('artist_profiles.verification_status', 'approved')
             ->with(['artistProfile']);
 
         // Filtre par catégorie
@@ -119,8 +118,7 @@ class ArtistController extends Controller
             ->findOrFail($id);
 
         $isPubliclyVisible = $artist->is_active
-            && $artist->artistProfile?->is_verified
-            && $artist->artistProfile?->verification_status === 'approved';
+            && $artist->artistProfile?->is_verified;
         $isAdmin = Auth::user()?->isAdmin() ?? false;
 
         if (! $isPubliclyVisible && ! $isAdmin) {

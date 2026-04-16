@@ -40,8 +40,7 @@ class HomeController extends Controller
         // Artistes tendances (par note moyenne et nombre d'avis)
         $trendingArtists = User::where('role', 'artist')
             ->whereHas('artistProfile', function ($query) {
-                $query->where('verification_status', 'approved')
-                    ->where('is_verified', true);
+                $query->where('is_verified', true);
             })
             ->with(['artistProfile' => function ($query) {
                 $query->orderBy('rating', 'desc')

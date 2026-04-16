@@ -56,16 +56,9 @@ class DashboardController extends Controller
 
         $artistsActive = User::where('role', 'artist')
             ->where('is_active', true)
-            ->whereHas('artistProfile', fn ($query) => $query->where('verification_status', 'approved'))
-            ->count();
-        $artistsPending = User::where('role', 'artist')
-            ->whereHas('artistProfile', fn ($query) => $query->where('verification_status', 'pending'))
             ->count();
         $artistsSuspended = User::where('role', 'artist')
-            ->where(function ($query) {
-                $query->where('is_active', false)
-                    ->orWhereHas('artistProfile', fn ($subQuery) => $subQuery->where('verification_status', 'rejected'));
-            })
+            ->where('is_active', false)
             ->count();
 
         $revenueDay = Payment::where('status', 'completed')->where('created_at', '>=', $start24h)->sum('amount');
@@ -316,7 +309,7 @@ class DashboardController extends Controller
         // Financial statistics
         $totalWithdrawalsPaid = Withdrawal::where('status', 'completed')->sum('amount');
         $pendingWithdrawalsCount = Withdrawal::where('status', 'pending')->count();
-        $totalPlatformCommissions = Payment::where('status', 'completed')->sum('platform_fee');
+        $totalPlatformCommissions = (float) $commissionTotal;
 
         return Inertia::render('Admin/Dashboard', [
             'topStats' => [
@@ -388,17 +381,11 @@ class DashboardController extends Controller
             ],
             'activityTimeline' => $activityTimeline,
             'criticalAlerts' => [
-                'artists_pending_validation' => $artistsPending,
                 'urgent_reports' => $urgentReports,
                 'withdrawals_pending_over_48h' => $pendingWithdrawals48h,
                 'tickets_without_response_over_24h' => $ticketsNoResponse24h,
             ],
             'quickActions' => [
-                [
-                    'label' => 'Valider artiste',
-                    'description' => 'Examiner les dossiers artistes en attente.',
-                    'href' => route('admin.artists.pending'),
-                ],
                 [
                     'label' => 'Moderer contenus',
                     'description' => 'Traiter les signalements de contenus.',

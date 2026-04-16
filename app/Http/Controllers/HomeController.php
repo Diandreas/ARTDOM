@@ -17,8 +17,7 @@ class HomeController extends Controller
         // Fetch featured/trending artists (verified with profiles)
         $featuredArtists = User::where('is_active', true)
             ->whereHas('artistProfile', function ($query) {
-                $query->where('is_verified', true)
-                    ->where('verification_status', 'approved');
+                $query->where('is_verified', true);
             })
             ->with(['artistProfile'])
             ->withCount('services')
@@ -45,8 +44,8 @@ class HomeController extends Controller
 
         // Fetch recent albums
         $recentAlbums = Album::whereHas('artist', function ($query) {
-                $query->where('is_active', true)->whereNull('banned_at');
-            })
+            $query->where('is_active', true)->whereNull('banned_at');
+        })
             ->with(['artist.artistProfile'])
             ->latest('published_at')
             ->limit(12)
@@ -107,9 +106,9 @@ class HomeController extends Controller
             return collect();
         }
 
-        return CarouselSlide::with(['artist' => function($q) {
-                $q->active();
-            }, 'artist.artistProfile'])
+        return CarouselSlide::with(['artist' => function ($q) {
+            $q->active();
+        }, 'artist.artistProfile'])
             ->where('is_active', true)
             ->where('type', $type)
             ->orderBy('order')
@@ -139,5 +138,6 @@ class HomeController extends Controller
                     'link_url' => $slide->link_url,
                     'link_label' => $slide->link_label,
                 ];
-            });    }
+            });
+    }
 }

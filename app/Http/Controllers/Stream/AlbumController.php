@@ -45,7 +45,7 @@ class AlbumController extends Controller
         // Top artistes (par nombre d'écoutes)
         $topArtists = User::where('role', 'artist')
             ->whereHas('artistProfile', function ($query) {
-                $query->where('verification_status', 'approved');
+                $query->where('is_verified', true);
             })
             ->with(['artistProfile', 'albums' => function ($query) {
                 $query->whereNotNull('published_at')

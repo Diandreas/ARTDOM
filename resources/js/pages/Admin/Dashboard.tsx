@@ -50,7 +50,7 @@ type CategoryPoint = { category: string; count: number };
 type ConversionFunnel = { visitors: number | null; signups: number; buyers: number; signup_rate: number | null; buyer_rate_from_signup: number; tracking_enabled: boolean };
 type Charts = { revenue_curve: RevenueCurvePoint[]; signups_bar: SignupBarPoint[]; category_donut: CategoryPoint[]; conversion_funnel: ConversionFunnel; days: string[] };
 type TimelineEvent = { type: string; title: string; description: string; occurred_at: string };
-type Alerts = { artists_pending_validation: number; urgent_reports: number; withdrawals_pending_over_48h: number; tickets_without_response_over_24h: number };
+type Alerts = { urgent_reports: number; withdrawals_pending_over_48h: number; tickets_without_response_over_24h: number };
 type QuickAction = { label: string; description: string; href: string };
 type TopStat = { id: string; title: string; likes?: number; plays?: number };
 
@@ -114,7 +114,7 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
     const maxSignup = Math.max(...charts.signups_bar.map((p) => p.clients + p.artists), 1);
 
     const totalAlerts = criticalAlerts.urgent_reports + criticalAlerts.withdrawals_pending_over_48h +
-        criticalAlerts.artists_pending_validation + criticalAlerts.tickets_without_response_over_24h;
+        criticalAlerts.tickets_without_response_over_24h;
 
     return (
         <AdminLayout title={t('Dashboard')} subtitle={t('Global real-time monitoring of all modules.')}>
@@ -132,9 +132,6 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
                         <div className="ml-auto flex flex-wrap gap-2">
                             {criticalAlerts.urgent_reports > 0 && (
                                 <Badge variant="destructive" className="text-xs">{criticalAlerts.urgent_reports} {t('reports')}</Badge>
-                            )}
-                            {criticalAlerts.artists_pending_validation > 0 && (
-                                <Badge variant="outline" className="border-amber-400 text-amber-700 text-xs">{criticalAlerts.artists_pending_validation} {t('pending artists')}</Badge>
                             )}
                             {criticalAlerts.withdrawals_pending_over_48h > 0 && (
                                 <Badge variant="outline" className="text-xs">{criticalAlerts.withdrawals_pending_over_48h} {t('withdrawals +48h')}</Badge>
@@ -320,7 +317,6 @@ export default function Dashboard({ kpis, charts, activityTimeline, criticalAler
                             {[
                                 { label: t('Urgent reports'), value: criticalAlerts.urgent_reports, icon: ShieldAlert, href: '/admin/reports', danger: true },
                                 { label: t('Withdrawals pending > 48h'), value: criticalAlerts.withdrawals_pending_over_48h, icon: Bell, href: '/admin/withdrawals', danger: false },
-                                { label: t('Artists pending validation'), value: criticalAlerts.artists_pending_validation, icon: Users, href: '/admin/artists/pending', danger: false },
                                 { label: t('Tickets without response > 24h'), value: criticalAlerts.tickets_without_response_over_24h, icon: Clock, href: '/admin/tickets', danger: false },
                             ].map((alert) => {
                                 const Icon = alert.icon;

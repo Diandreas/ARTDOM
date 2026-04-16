@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\ArtistValidationController as AdminArtistValidationController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\BroadcastNotificationController;
 use App\Http\Controllers\Admin\ClientActivityController;
@@ -34,10 +33,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminLoginController::class, 'destroy'])->name('logout');
         Route::redirect('/', '/admin/dashboard');
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
-        Route::get('/artists/pending', [AdminArtistValidationController::class, 'index'])->name('artists.pending');
-        Route::post('/artists/{artist}/approve', [AdminArtistValidationController::class, 'approve'])->name('artists.approve');
-        Route::post('/artists/{artist}/reject', [AdminArtistValidationController::class, 'reject'])->name('artists.reject');
 
         Route::get('/tickets', [AdminTicketController::class, 'index'])->name('tickets.index');
         Route::get('/tickets/{ticket}', [AdminTicketController::class, 'show'])->name('tickets.show');
@@ -89,7 +84,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/withdrawals', [\App\Http\Controllers\Admin\WithdrawalManagementController::class, 'index'])->name('withdrawals.index');
         Route::post('/withdrawals/{withdrawal}/approve', [\App\Http\Controllers\Admin\WithdrawalManagementController::class, 'approve'])->name('withdrawals.approve');
         Route::post('/withdrawals/{withdrawal}/reject', [\App\Http\Controllers\Admin\WithdrawalManagementController::class, 'reject'])->name('withdrawals.reject');
-        });
+    });
 
     Route::middleware(['auth', 'role.super_admin'])->group(function () {
         Route::get('/super-crud', [SuperAdminCrudController::class, 'index'])->name('super-crud.index');

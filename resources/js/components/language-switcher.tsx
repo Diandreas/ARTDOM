@@ -33,12 +33,15 @@ export default function LanguageSwitcher({
     return (
         <div
             className={cn(
-                'flex items-center gap-1 rounded-full border border-border/70 bg-background/80 p-1',
+                'flex items-center gap-0.5 rounded-full border border-border/50 bg-background/50 p-0.5 shadow-sm',
                 className,
             )}
         >
-            <span className="flex items-center gap-1 px-2 text-xs text-muted-foreground">
-                <Languages className="h-3.5 w-3.5" />
+            <span className={cn(
+                "items-center gap-1 px-1.5 text-xs text-muted-foreground",
+                compact ? "hidden sm:flex" : "flex"
+            )}>
+                <Languages className="h-3 w-3" />
                 {!compact && t('Language')}
             </span>
 
@@ -48,7 +51,10 @@ export default function LanguageSwitcher({
                     type="button"
                     variant={locale === value ? 'default' : 'ghost'}
                     size="sm"
-                    className="rounded-full px-3 text-xs uppercase"
+                    className={cn(
+                        "h-7 rounded-full px-2 text-[10px] font-bold uppercase transition-all",
+                        locale === value ? "shadow-inner" : "hover:bg-muted"
+                    )}
                     onClick={() => updateLocale(value)}
                 >
                     {value}

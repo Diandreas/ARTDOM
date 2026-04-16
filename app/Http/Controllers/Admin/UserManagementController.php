@@ -388,13 +388,6 @@ class UserManagementController extends Controller
             'ban_reason' => $validated['reason'],
         ]);
 
-        if ($this->roleValue($user) === 'artist') {
-            ArtistProfile::query()->where('user_id', $user->id)->update([
-                'verification_status' => 'rejected',
-                'is_verified' => false,
-            ]);
-        }
-
         return back()->with('message', 'Utilisateur banni.');
     }
 
@@ -424,10 +417,9 @@ class UserManagementController extends Controller
         }
 
         if ($validated['action'] === 'ban') {
-            User::query()->whereIn('id', $validated['ids'])->update(['is_active' => false]);
-            ArtistProfile::query()->whereIn('user_id', $validated['ids'])->update([
-                'verification_status' => 'rejected',
-                'is_verified' => false,
+            User::query()->whereIn('id', $validated['ids'])->update([
+                'is_active' => false,
+                'banned_at' => now(),
             ]);
 
             return back()->with('message', 'Bannissement en masse effectue.');
@@ -509,40 +501,28 @@ class UserManagementController extends Controller
 
         if ($status === 'active') {
             $query->where('is_active', true)
-                ->where(function ($subQuery) {
-                    $subQuery
-                        ->whereDoesntHave('artistProfile', fn ($profileQuery) => $profileQuery->where('verification_status', 'pending'))
-                        ->whereNotNull('email_verified_at');
-                });
+                ->whereNotNull('email_verified_at');
 
             return;
         }
 
         if ($status === 'pending') {
             $query->where('is_active', true)
-                ->where(function ($subQuery) {
-                    $subQuery
-                        ->whereNull('email_verified_at')
-                        ->orWhereHas('artistProfile', fn ($profileQuery) => $profileQuery->where('verification_status', 'pending'));
-                });
+                ->whereNull('email_verified_at');
 
             return;
         }
 
         if ($status === 'suspended') {
             $query->where('is_active', false)
-                ->where(function ($subQuery) {
-                    $subQuery
-                        ->whereDoesntHave('artistProfile', fn ($profileQuery) => $profileQuery->where('verification_status', 'rejected'))
-                        ->orWhereHas('artistProfile', fn ($profileQuery) => $profileQuery->whereNot('verification_status', 'rejected'));
-                });
+                ->whereNull('banned_at');
 
             return;
         }
 
         if ($status === 'banned') {
             $query->where('is_active', false)
-                ->whereHas('artistProfile', fn ($profileQuery) => $profileQuery->where('verification_status', 'rejected'));
+                ->whereNotNull('banned_at');
         }
     }
 
@@ -551,70 +531,48 @@ class UserManagementController extends Controller
         $user->loadMissing('artistProfile');
 
         if ($status === 'active') {
-            $user->update(['is_active' => true]);
-
-            if ($this->roleValue($user) === 'artist' && $user->artistProfile) {
-                $user->artistProfile->update([
-                    'verification_status' => 'approved',
-                    'is_verified' => true,
-                ]);
-            }
+            $user->update([
+                'is_active' => true,
+                'banned_at' => null,
+            ]);
 
             return;
         }
 
         if ($status === 'pending') {
-            $user->update(['is_active' => true]);
-
-            if ($this->roleValue($user) === 'artist' && $user->artistProfile) {
-                $user->artistProfile->update([
-                    'verification_status' => 'pending',
-                    'is_verified' => false,
-                ]);
-            }
+            $user->update([
+                'is_active' => true,
+                'email_verified_at' => null,
+            ]);
 
             return;
         }
 
         if ($status === 'suspended') {
-            $user->update(['is_active' => false]);
-
-            if ($this->roleValue($user) === 'artist' && $user->artistProfile && $user->artistProfile->verification_status === 'rejected') {
-                $user->artistProfile->update([
-                    'verification_status' => 'approved',
-                    'is_verified' => true,
-                ]);
-            }
+            $user->update([
+                'is_active' => false,
+                'banned_at' => null,
+            ]);
 
             return;
         }
 
         if ($status === 'banned') {
-            $user->update(['is_active' => false]);
-
-            if ($this->roleValue($user) === 'artist' && $user->artistProfile) {
-                $user->artistProfile->update([
-                    'verification_status' => 'rejected',
-                    'is_verified' => false,
-                ]);
-            }
+            $user->update([
+                'is_active' => false,
+                'banned_at' => now(),
+            ]);
         }
     }
 
     protected function resolveStatus(User $user): string
     {
-        $role = $this->roleValue($user);
-
         if (! $user->is_active) {
-            if ($role === 'artist' && $user->artistProfile?->verification_status === 'rejected') {
+            if ($user->banned_at !== null) {
                 return 'banned';
             }
 
             return 'suspended';
-        }
-
-        if ($role === 'artist' && $user->artistProfile?->verification_status === 'pending') {
-            return 'pending';
         }
 
         if ($user->email_verified_at === null) {

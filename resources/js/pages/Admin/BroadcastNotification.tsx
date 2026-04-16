@@ -34,15 +34,16 @@ type Props = {
     flash?: { message?: string };
 };
 
-const ROLE_LABELS: Record<string, string> = {
-    all: 'Tous les utilisateurs',
-    client: 'Clients uniquement',
-    artist: 'Artistes uniquement',
-    admin: 'Admins uniquement',
-};
-
 export default function BroadcastNotification({ audienceStats, flash }: Props) {
     const { t } = useAppLocale();
+
+    const ROLE_LABELS: Record<string, string> = {
+        all: t('All users'),
+        client: t('Clients only'),
+        artist: t('Artists only'),
+        admin: t('Admins only'),
+    };
+
     const page = usePage<any>();
     const flashMessage = flash?.message ?? page.props?.flash?.message;
 
@@ -121,9 +122,9 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                     {audienceCount !== null && (
                                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                             <Users className="h-3 w-3" />
-                                            <span><strong className="text-foreground">{audienceCount}</strong> utilisateur(s) ciblé(s)</span>
+                                            <span><strong className="text-foreground">{audienceCount}</strong> {t('targeted user(s)')}</span>
                                             {audienceStats && (
-                                                <span className="text-primary">· {audienceStats.with_fcm} avec push FCM</span>
+                                                <span className="text-primary">· {audienceStats.with_fcm} {t('with FCM push')}</span>
                                             )}
                                         </div>
                                     )}
@@ -134,7 +135,7 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                     <Label htmlFor="title" className="text-sm font-medium">{t('Notification title')} *</Label>
                                     <Input
                                         id="title"
-                                        placeholder="Ex: Nouveau service disponible !"
+                                        placeholder={t('Ex: New service available!')}
                                         value={form.data.title}
                                         onChange={(e) => form.setData('title', e.target.value)}
                                         className="h-10"
@@ -151,7 +152,7 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                     <Label htmlFor="message" className="text-sm font-medium">{t('Message body')} *</Label>
                                     <Textarea
                                         id="message"
-                                        placeholder="Votre message apparaîtra dans la notification push et dans le centre de notifications."
+                                        placeholder={t('Your message will appear in the push notification and in the notification center.')}
                                         rows={4}
                                         value={form.data.message}
                                         onChange={(e) => form.setData('message', e.target.value)}
@@ -166,7 +167,7 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                 {/* Action URL */}
                                 <div className="space-y-2">
                                     <Label htmlFor="action_url" className="text-sm font-medium">
-                                        {t('Action URL')} <span className="text-muted-foreground font-normal">(optionnel)</span>
+                                        {t('Action URL')} <span className="text-muted-foreground font-normal">({t('optional')})</span>
                                     </Label>
                                     <Input
                                         id="action_url"
@@ -175,7 +176,7 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                         onChange={(e) => form.setData('action_url', e.target.value)}
                                         className="h-10"
                                     />
-                                    <p className="text-[10px] text-muted-foreground">Lien ouvert au clic sur la notification</p>
+                                    <p className="text-[10px] text-muted-foreground">{t('Link opened when clicking the notification')}</p>
                                 </div>
 
                                 {/* Options */}
@@ -224,7 +225,7 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                             {t('Send campaign')}
                                             {audienceCount !== null && (
                                                 <Badge variant="secondary" className="ml-1 text-xs">
-                                                    {audienceCount} destinataires
+                                                    {audienceCount} {t('recipients')}
                                                 </Badge>
                                             )}
                                         </>
@@ -249,13 +250,13 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                         <Bell className="h-3 w-3 text-primary-foreground" />
                                     </div>
                                     <span className="text-xs font-semibold text-foreground">Artemo</span>
-                                    <span className="text-[10px] text-muted-foreground ml-auto">maintenant</span>
+                                    <span className="text-[10px] text-muted-foreground ml-auto">{t('now')}</span>
                                 </div>
                                 <p className="text-sm font-semibold leading-tight">
-                                    {form.data.title || <span className="text-muted-foreground italic">Titre de la notification</span>}
+                                    {form.data.title || <span className="text-muted-foreground italic">{t('Notification title')}</span>}
                                 </p>
                                 <p className="text-xs text-muted-foreground leading-relaxed">
-                                    {form.data.message || <span className="italic">Votre message apparaîtra ici...</span>}
+                                    {form.data.message || <span className="italic">{t('Your message will appear here...')}</span>}
                                 </p>
                                 {form.data.action_url && (
                                     <p className="text-[10px] text-primary">{form.data.action_url}</p>
@@ -275,7 +276,7 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                         <CardContent className="space-y-3">
                             <div className="flex items-center justify-between text-sm">
                                 <span className="text-muted-foreground">{t('In-app notifications')}</span>
-                                <Badge variant="default" className="text-xs bg-green-600">✓ Actif</Badge>
+                                <Badge variant="default" className="text-xs bg-green-600">✓ {t('Active')}</Badge>
                             </div>
                             <div className="flex items-center justify-between text-sm">
                                 <span className="text-muted-foreground">{t('Firebase push (FCM)')}</span>
@@ -287,11 +288,10 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                 <div className="flex gap-2">
                                     <AlertCircle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
                                     <div>
-                                        <p className="text-xs font-medium text-amber-800">Service Account requis</p>
+                                        <p className="text-xs font-medium text-amber-800">{t('Service Account required')}</p>
                                         <p className="text-[10px] text-amber-700 mt-0.5">
-                                            Pour activer les push FCM, téléchargez le Service Account JSON depuis
-                                            Firebase Console → Project Settings → Service Accounts, et configurez{' '}
-                                            <code className="bg-amber-100 px-1 rounded">FIREBASE_CREDENTIALS</code> dans .env
+                                            {t('To enable FCM push, download the Service Account JSON from Firebase Console → Project Settings → Service Accounts, and configure')} {' '}
+                                            <code className="bg-amber-100 px-1 rounded">FIREBASE_CREDENTIALS</code> {t('in .env')}
                                         </p>
                                     </div>
                                 </div>
@@ -299,10 +299,10 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                             {audienceStats && (
                                 <div className="pt-2 border-t space-y-1.5 text-xs text-muted-foreground">
                                     <p className="font-medium text-foreground">{t('Audience breakdown')}</p>
-                                    <div className="flex justify-between"><span>Total users</span><strong>{audienceStats.all}</strong></div>
-                                    <div className="flex justify-between"><span>Clients</span><strong>{audienceStats.client}</strong></div>
-                                    <div className="flex justify-between"><span>Artistes</span><strong>{audienceStats.artist}</strong></div>
-                                    <div className="flex justify-between"><span>Avec token FCM</span><strong className="text-primary">{audienceStats.with_fcm}</strong></div>
+                                    <div className="flex justify-between"><span>{t('Total users')}</span><strong>{audienceStats.all}</strong></div>
+                                    <div className="flex justify-between"><span>{t('Clients')}</span><strong>{audienceStats.client}</strong></div>
+                                    <div className="flex justify-between"><span>{t('Artists')}</span><strong>{audienceStats.artist}</strong></div>
+                                    <div className="flex justify-between"><span>{t('With FCM token')}</span><strong className="text-primary">{audienceStats.with_fcm}</strong></div>
                                 </div>
                             )}
                         </CardContent>

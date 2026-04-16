@@ -11,11 +11,11 @@ import {
     Wallet,
     ShoppingCart,
     Ticket,
-    UserCheck,
     Users,
     Bell,
 } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
+import LanguageSwitcher from '@/components/language-switcher';
 import MiniPlayer from '@/components/Player/MiniPlayer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -40,11 +40,6 @@ export default function AdminLayout({
             label: t('Dashboard'),
             href: '/admin/dashboard',
             icon: BarChart3,
-        },
-        {
-            label: t('Artist validation'),
-            href: '/admin/artists/pending',
-            icon: UserCheck,
         },
         {
             label: t('Withdrawals'),
@@ -187,12 +182,15 @@ export default function AdminLayout({
                                     </p>
                                 ) : null}
                             </div>
-                            <Badge
-                                variant="secondary"
-                                className="hidden md:inline-flex"
-                            >
-                                {t('Admin Panel')}
-                            </Badge>
+                            <div className="flex items-center gap-4">
+                                <LanguageSwitcher compact />
+                                <Badge
+                                    variant="secondary"
+                                    className="hidden md:inline-flex"
+                                >
+                                    {t('Admin Panel')}
+                                </Badge>
+                            </div>
                         </div>
                     </header>
                     <section className="p-4 md:p-8">{children}</section>
