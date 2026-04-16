@@ -53,8 +53,8 @@ export default function MainLayout({ children }: PropsWithChildren) {
         e.preventDefault();
         if (headerSearch.trim()) {
             router.get(
-                artistsIndex.url(),
-                { search: headerSearch.trim() },
+                '/artstream/search',
+                { q: headerSearch.trim() },
                 { preserveState: false },
             );
         }
@@ -372,7 +372,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                             variant="ghost"
                             size="icon"
                             className="text-foreground sm:hidden"
-                            onClick={() => router.get('/artists')}
+                            onClick={() => router.get('/artstream/search')}
                         >
                             <Search className="h-5 w-5" />
                         </Button>

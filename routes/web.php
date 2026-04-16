@@ -47,8 +47,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
-
+        // Broadcast management
         Route::get('/broadcast', [BroadcastNotificationController::class, 'create'])->name('broadcast.create');
+        Route::get('/broadcast/search', [BroadcastNotificationController::class, 'search'])->name('broadcast.search');
         Route::post('/broadcast', [BroadcastNotificationController::class, 'store'])->name('broadcast.store');
 
         Route::get('/client-activity', [ClientActivityController::class, 'index'])->name('client-activity.index');

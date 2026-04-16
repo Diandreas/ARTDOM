@@ -1,4 +1,4 @@
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage, router } from '@inertiajs/react';
 import {
     Bell,
     CheckCircle2,
@@ -8,8 +8,10 @@ import {
     Mail,
     Clock,
     AlertCircle,
+    Search as SearchIcon,
 } from 'lucide-react';
 import type { FormEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,6 +29,14 @@ type AudienceStats = {
     artist: number;
     admin: number;
     with_fcm: number;
+};
+
+type SearchResult = {
+    type: 'artist' | 'track' | 'album';
+    id: number;
+    title: string;
+    subtitle?: string;
+    url: string;
 };
 
 type Props = {
@@ -47,6 +57,10 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
     const page = usePage<any>();
     const flashMessage = flash?.message ?? page.props?.flash?.message;
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+
     const form = useForm({
         title: '',
         message: '',
@@ -55,6 +69,28 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
         only_active: false,
         send_email: false,
     });
+
+    useEffect(() => {
+        if (searchQuery.length < 2) {
+            setSearchResults([]);
+            return;
+        }
+
+        const timer = setTimeout(async () => {
+            setIsSearching(true);
+            try {
+                const response = await fetch(`/admin/broadcast/search?q=${encodeURIComponent(searchQuery)}`);
+                const data = await response.json();
+                setSearchResults(data);
+            } catch (error) {
+                console.error('Search failed', error);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     const submit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -169,13 +205,57 @@ export default function BroadcastNotification({ audienceStats, flash }: Props) {
                                     <Label htmlFor="action_url" className="text-sm font-medium">
                                         {t('Action URL')} <span className="text-muted-foreground font-normal">({t('optional')})</span>
                                     </Label>
-                                    <Input
-                                        id="action_url"
-                                        placeholder="/artstream"
-                                        value={form.data.action_url}
-                                        onChange={(e) => form.setData('action_url', e.target.value)}
-                                        className="h-10"
-                                    />
+                                    <div className="flex gap-2">
+                                        <div className="relative flex-1">
+                                            <Input
+                                                id="action_url"
+                                                placeholder="/artstream"
+                                                value={form.data.action_url}
+                                                onChange={(e) => form.setData('action_url', e.target.value)}
+                                                className="h-10 pr-9"
+                                            />
+                                            {form.data.action_url && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => form.setData('action_url', '')}
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                                >
+                                                    <AlertCircle className="h-4 w-4 rotate-45" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="relative">
+                                        <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                                        <Input
+                                            type="search"
+                                            placeholder={t('Search an artist, track or album to find its URL...')}
+                                            className="h-9 pl-9 text-xs"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                        />
+                                        {isSearching && <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-3 w-3 animate-spin text-muted-foreground" />}
+                                    </div>
+
+                                    {searchResults.length > 0 && (
+                                        <div className="max-h-48 overflow-y-auto rounded-lg border bg-popover text-popover-foreground shadow-sm">
+                                            {searchResults.map((result) => (
+                                                <button
+                                                    key={`${result.type}-${result.id}`}
+                                                    type="button"
+                                                    className="flex w-full flex-col px-3 py-2 text-left text-sm hover:bg-muted"
+                                                    onClick={() => {
+                                                        form.setData('action_url', result.url);
+                                                        setSearchQuery('');
+                                                        setSearchResults([]);
+                                                    }}
+                                                >
+                                                    <span className="font-medium">{result.title}</span>
+                                                    {result.subtitle && <span className="text-[10px] text-muted-foreground">{result.subtitle}</span>}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
                                     <p className="text-[10px] text-muted-foreground">{t('Link opened when clicking the notification')}</p>
                                 </div>
 

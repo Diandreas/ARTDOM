@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBroadcastNotificationRequest;
+use App\Models\Album;
+use App\Models\Track;
 use App\Models\User;
 use App\Notifications\AdminGlobalMessageNotification;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -27,6 +31,58 @@ class BroadcastNotificationController extends Controller
             'audienceStats' => $audienceStats,
             'flash' => ['message' => session('message')],
         ]);
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $query = $request->input('q', '');
+
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $artists = User::where('role', 'artist')
+            ->where(function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                    ->orWhereHas('artistProfile', function ($profileQ) use ($query) {
+                        $profileQ->where('stage_name', 'like', "%{$query}%");
+                    });
+            })
+            ->with('artistProfile')
+            ->limit(5)
+            ->get()
+            ->map(fn ($user) => [
+                'type' => 'artist',
+                'id' => $user->id,
+                'title' => $user->artistProfile->stage_name ?? $user->name,
+                'url' => "/artists/{$user->id}",
+            ]);
+
+        $tracks = Track::where('title', 'like', "%{$query}%")
+            ->with('album.artist.artistProfile')
+            ->limit(5)
+            ->get()
+            ->map(fn ($track) => [
+                'type' => 'track',
+                'id' => $track->id,
+                'title' => "Track: {$track->title}",
+                'subtitle' => $track->album->artist->artistProfile->stage_name ?? '?',
+                'url' => "/artstream/player?track={$track->id}",
+            ]);
+
+        $albums = Album::where('title', 'like', "%{$query}%")
+            ->with('artist.artistProfile')
+            ->limit(5)
+            ->get()
+            ->map(fn ($album) => [
+                'type' => 'album',
+                'id' => $album->id,
+                'title' => "Album: {$album->title}",
+                'subtitle' => $album->artist->artistProfile->stage_name ?? '?',
+                'url' => "/artstream/album/{$album->id}",
+            ]);
+
+        return response()->json($artists->concat($tracks)->concat($albums));
     }
 
     public function store(StoreBroadcastNotificationRequest $request): RedirectResponse
