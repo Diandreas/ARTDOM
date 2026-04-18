@@ -20,9 +20,11 @@ export default function SupportIndex({ auth, tickets }: { auth: any; tickets: Su
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'open':
-                return <Badge className="bg-emerald-500 hover:bg-emerald-600">Ouvert</Badge>;
-            case 'pending':
-                return <Badge variant="outline" className="text-amber-500 border-amber-500">En attente</Badge>;
+                return <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white">Ouvert</Badge>;
+            case 'in_progress':
+                return <Badge variant="outline" className="text-amber-500 border-amber-500 bg-amber-500/5">En cours</Badge>;
+            case 'resolved':
+                return <Badge className="bg-blue-500 hover:bg-blue-600 text-white">Résolu</Badge>;
             case 'closed':
                 return <Badge variant="secondary">Fermé</Badge>;
             default:

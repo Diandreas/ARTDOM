@@ -150,6 +150,15 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    /**
+     * Relation : Un User peut avoir PLUSIEURS Tickets de support
+     * Relation 1-N (hasMany) : Un utilisateur peut créer plusieurs tickets
+     */
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'user_id');
+    }
+
     public function followers()
     {
         return $this->belongsToMany(User::class, 'artist_followers', 'artist_id', 'client_id')

@@ -10,6 +10,7 @@ import {
     Grid,
     Bell,
     Calendar,
+    Ticket,
 } from 'lucide-react';
 import React from 'react';
 import type { PropsWithChildren, FormEvent } from 'react';
@@ -80,6 +81,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                     artist_validation_rejected: t('Validation rejected'),
                     admin_global_message:
                         notification.title ?? t('Artemo message'),
+                    ticket_response: notification.title ?? t('Support response'),
                 };
 
                 const actionUrl =
@@ -196,6 +198,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                                 >
                                                     {t('Withdrawals')}
                                                 </Link>
+                                                <Link
+                                                    href="/support"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('Support & Help')}
+                                                </Link>
                                             </>
                                         ) : (
                                             <>
@@ -222,6 +230,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                                     className="text-lg font-semibold transition-colors hover:text-primary"
                                                 >
                                                     {t('My Reservations')}
+                                                </Link>
+                                                <Link
+                                                    href="/support"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    {t('Support & Help')}
                                                 </Link>
                                             </>
                                         )
@@ -469,6 +483,15 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                         >
                                             <Settings className="mr-2 h-4 w-4" />
                                             <span>{t('Settings')}</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link
+                                            href="/support"
+                                            className="cursor-pointer"
+                                        >
+                                            <Ticket className="mr-2 h-4 w-4" />
+                                            <span>{t('Support & Help')}</span>
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />

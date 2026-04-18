@@ -81,9 +81,9 @@ class TicketController extends Controller
             'status' => $ticket->status === 'open' ? 'in_progress' : $ticket->status,
         ]);
 
-        // TODO: Envoyer une notification à l'utilisateur
+        $ticket->user->notify(new \App\Notifications\TicketResponseNotification($ticket));
 
-        return back()->with('message', 'Réponse envoyée à l\'utilisateur.');
+        return back()->with('success', 'Réponse envoyée à l\'utilisateur.');
     }
 
     /**
@@ -99,8 +99,8 @@ class TicketController extends Controller
             'closed_at' => now(),
         ]);
 
-        // TODO: Envoyer une notification à l'utilisateur
+        $ticket->user->notify(new \App\Notifications\TicketResponseNotification($ticket));
 
-        return back()->with('message', 'Ticket fermé.');
+        return back()->with('success', 'Ticket fermé.');
     }
 }

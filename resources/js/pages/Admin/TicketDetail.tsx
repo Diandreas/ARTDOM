@@ -1,10 +1,12 @@
-import { Form, Head, Link } from '@inertiajs/react';
+import { useForm, Head, Link, usePage } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AdminLayout from '@/layouts/admin-layout';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 type Ticket = {
     id: string;
@@ -25,6 +27,43 @@ type Props = {
 };
 
 export default function TicketDetail({ ticket }: Props) {
+    const { flash } = usePage<any>().props;
+
+    useEffect(() => {
+        if (flash.success) {
+            toast.success(flash.success);
+        }
+        if (flash.message) {
+            toast.info(flash.message);
+        }
+        if (flash.error) {
+            toast.error(flash.error);
+        }
+    }, [flash]);
+
+    const respondForm = useForm({
+        admin_response: ticket.admin_response ?? '',
+    });
+
+    const closeForm = useForm({});
+
+    const handleRespond = (e: React.FormEvent) => {
+        e.preventDefault();
+        respondForm.post(`/admin/tickets/${ticket.id}/respond`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                // Success message is handled by useEffect
+            },
+        });
+    };
+
+    const handleClose = (e: React.FormEvent) => {
+        e.preventDefault();
+        closeForm.patch(`/admin/tickets/${ticket.id}/close`, {
+            preserveScroll: true,
+        });
+    };
+
     return (
         <AdminLayout
             title="Detail du ticket"
@@ -72,44 +111,43 @@ export default function TicketDetail({ ticket }: Props) {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Actions CRUD sur le ticket</CardTitle>
+                        <CardTitle>Actions sur le ticket</CardTitle>
                     </CardHeader>
                     <CardContent className="grid gap-4 lg:grid-cols-2">
-                        <Form action={`/admin/tickets/${ticket.id}/respond`} method="post">
-                            {({ processing, errors }) => (
-                                <div className="space-y-3">
-                                    <Label htmlFor="admin_response">Repondre au client</Label>
-                                    <Textarea
-                                        id="admin_response"
-                                        name="admin_response"
-                                        rows={5}
-                                        placeholder="Saisissez votre reponse..."
-                                        required
-                                        defaultValue={ticket.admin_response ?? ''}
-                                    />
-                                    {errors.admin_response ? (
-                                        <p className="text-xs text-destructive">
-                                            {errors.admin_response}
-                                        </p>
-                                    ) : null}
-                                    <Button type="submit" disabled={processing}>
-                                        Enregistrer la reponse
-                                    </Button>
-                                </div>
-                            )}
-                        </Form>
+                        <form onSubmit={handleRespond} className="space-y-3">
+                            <Label htmlFor="admin_response">Repondre au client</Label>
+                            <Textarea
+                                id="admin_response"
+                                name="admin_response"
+                                rows={5}
+                                placeholder="Saisissez votre reponse..."
+                                required
+                                value={respondForm.data.admin_response}
+                                onChange={(e) => respondForm.setData('admin_response', e.target.value)}
+                            />
+                            {respondForm.errors.admin_response ? (
+                                <p className="text-xs text-destructive">
+                                    {respondForm.errors.admin_response}
+                                </p>
+                            ) : null}
+                            <Button type="submit" disabled={respondForm.processing}>
+                                {respondForm.processing ? 'Enregistrement...' : 'Enregistrer la reponse'}
+                            </Button>
+                        </form>
 
                         <div className="space-y-3">
                             <p className="text-sm text-muted-foreground">
                                 Cloturez le ticket lorsqu'il est resolu.
                             </p>
-                            <Form action={`/admin/tickets/${ticket.id}/close`} method="patch">
-                                {({ processing }) => (
-                                    <Button type="submit" variant="outline" disabled={processing}>
-                                        Fermer ce ticket
-                                    </Button>
-                                )}
-                            </Form>
+                            <form onSubmit={handleClose}>
+                                <Button 
+                                    type="submit" 
+                                    variant="outline" 
+                                    disabled={closeForm.processing || ticket.status === 'closed'}
+                                >
+                                    {ticket.status === 'closed' ? 'Ticket deja ferme' : 'Fermer ce ticket'}
+                                </Button>
+                            </form>
                             <Button variant="ghost" asChild>
                                 <Link href="/admin/tickets">Retour a la liste</Link>
                             </Button>
@@ -120,4 +158,3 @@ export default function TicketDetail({ ticket }: Props) {
         </AdminLayout>
     );
 }
-

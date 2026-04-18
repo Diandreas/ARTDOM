@@ -50,6 +50,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->get('error'),
                 'playlist' => $request->session()->get('playlist'),
                 'toast' => $request->session()->get('toast'),
+                'message' => $request->session()->get('message'),
             ],
         ];
     }

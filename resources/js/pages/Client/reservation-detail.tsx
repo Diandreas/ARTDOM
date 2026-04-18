@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { format, parseISO, differenceInSeconds } from 'date-fns';
 import {
     ChevronLeft,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { report } from '@/manual-actions/ArtistReportController';
 import { cancel } from '@/actions/App/Http/Controllers/Client/ReservationController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -91,11 +92,33 @@ export default function ReservationDetail({
     auth,
     reservation,
 }: ReservationDetailProps) {
+    const { flash } = (usePage() as any).props;
     const { t, dateLocale } = useAppLocale();
     const [timeLeft, setTimeLeft] = useState('');
     const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
+    const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
     const [reportReason, setReportReason] = useState('');
     const [isReporting, setIsReporting] = useState(false);
+    const [isCancelling, setIsCancelling] = useState(false);
+
+    useEffect(() => {
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+        if (flash?.message) {
+            toast.info(flash.message);
+        }
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+        if (flash?.toast) {
+            const { type, message } = flash.toast;
+            if (type === 'success') toast.success(message);
+            else if (type === 'error') toast.error(message);
+            else toast.info(message);
+        }
+    }, [flash]);
+
     const statusLabels: Record<
         string,
         {
@@ -158,15 +181,22 @@ export default function ReservationDetail({
     }, [reservation.scheduled_at, reservation.status, t]);
 
     const handleCancel = () => {
-        if (
-            confirm(
-                t(
-                    'Are you sure you want to cancel this reservation? You will be refunded within 3-5 business days.',
-                ),
-            )
-        ) {
-            router.post(cancel({ id: reservation.id }));
-        }
+        setIsCancelling(true);
+        // Using hardcoded URL or correct action if preferred. 
+        // According to routes, it's /client/reservations/{reservation}/cancel
+        router.post(`/client/reservations/${reservation.id}/cancel`, {}, {
+            onSuccess: () => {
+                setIsCancelDialogOpen(false);
+                setIsCancelling(false);
+            },
+            onError: (errors) => {
+                setIsCancelling(false);
+                // Display validation errors if any (e.g. 48h limit)
+                Object.values(errors).forEach(error => {
+                    toast.error(error as string);
+                });
+            }
+        });
     };
 
     const handleReportSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -647,14 +677,52 @@ export default function ReservationDetail({
                             )}
 
                             {canCancel && (
-                                <Button
-                                    variant="outline"
-                                    className="w-full gap-2 text-destructive hover:text-destructive"
-                                    onClick={handleCancel}
+                                <Dialog
+                                    open={isCancelDialogOpen}
+                                    onOpenChange={setIsCancelDialogOpen}
                                 >
-                                    <XCircle className="h-4 w-4" />
-                                    {t('Cancel reservation')}
-                                </Button>
+                                    <DialogTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full gap-2 text-destructive hover:text-destructive"
+                                        >
+                                            <XCircle className="h-4 w-4" />
+                                            {t('Cancel reservation')}
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>
+                                                {t('Cancel reservation')}
+                                            </DialogTitle>
+                                            <DialogDescription>
+                                                {t(
+                                                    'Are you sure you want to cancel this reservation? You will be refunded within 3-5 business days.',
+                                                )}
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <DialogFooter>
+                                            <Button
+                                                variant="ghost"
+                                                onClick={() =>
+                                                    setIsCancelDialogOpen(false)
+                                                }
+                                                disabled={isCancelling}
+                                            >
+                                                {t('Back to reservations')}
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                onClick={handleCancel}
+                                                disabled={isCancelling}
+                                            >
+                                                {isCancelling
+                                                    ? t('Sending...')
+                                                    : t('Confirm')}
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                             )}
                         </div>
                     </div>

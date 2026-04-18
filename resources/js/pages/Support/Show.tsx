@@ -24,9 +24,11 @@ export default function SupportShow({ auth, ticket }: { auth: any; ticket: Suppo
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'open':
-                return <Badge className="bg-emerald-500">Ouvert</Badge>;
-            case 'pending':
-                return <Badge variant="outline" className="text-amber-500 border-amber-500">En cours de traitement</Badge>;
+                return <Badge className="bg-emerald-500 text-white">Ouvert</Badge>;
+            case 'in_progress':
+                return <Badge variant="outline" className="text-amber-500 border-amber-500 bg-amber-500/5">En cours de traitement</Badge>;
+            case 'resolved':
+                return <Badge className="bg-blue-500 text-white">Résolu</Badge>;
             case 'closed':
                 return <Badge variant="secondary">Clôturé</Badge>;
             default:

@@ -161,20 +161,21 @@ class ReservationController extends Controller
 
         $reservation = Reservation::where('client_id', $client->id)->findOrFail($id);
 
-        // Check if cancellation is allowed (e.g., > 48h before event)
-        if ($reservation->scheduled_at->diffInHours(now()) < 48) {
+        // Check if cancellation is allowed (e.g., must be > 48h before event)
+        // If 'now + 48 hours' is AFTER 'scheduled_at', then it's too late to cancel.
+        if (now()->addHours(48)->isAfter($reservation->scheduled_at)) {
             return back()->withErrors([
                 'cancellation' => 'Les réservations ne peuvent être annulées moins de 48h avant la prestation.',
             ]);
         }
 
-        if (in_array($reservation->status, ['cancelled', 'completed'])) {
+        if (in_array($reservation->status->value, ['cancelled', 'completed'])) {
             return back()->withErrors([
                 'cancellation' => 'Cette réservation ne peut pas être annulée.',
             ]);
         }
 
-        $reservation->update(['status' => 'cancelled']);
+        $reservation->update(['status' => \App\Enums\ReservationStatus::Cancelled]);
 
         // Refund payment if applicable
         if ($reservation->payment && $reservation->payment->status === 'completed') {
