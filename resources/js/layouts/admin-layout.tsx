@@ -77,6 +77,11 @@ export default function AdminLayout({
             icon: Images,
         },
         {
+            label: t('Featured artists'),
+            href: '/admin/featured-artists',
+            icon: Users,
+        },
+        {
             label: t('Hero Section'),
             href: '/admin/hero-settings',
             icon: Layout,

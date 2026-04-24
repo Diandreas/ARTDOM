@@ -387,6 +387,11 @@ class DashboardController extends Controller
             ],
             'quickActions' => [
                 [
+                    'label' => 'Gerer les artistes en vedette',
+                    'description' => 'Selectionner les artistes a afficher sur la page d\'accueil.',
+                    'href' => route('admin.featured-artists.index'),
+                ],
+                [
                     'label' => 'Moderer contenus',
                     'description' => 'Traiter les signalements de contenus.',
                     'href' => route('admin.moderation.index'),

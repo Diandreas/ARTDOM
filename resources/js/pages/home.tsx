@@ -362,7 +362,7 @@ export default function Home({
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {featuredArtists.slice(0, 4).map((artist) => (
+                            {featuredArtists.slice(0, 8).map((artist) => (
                                 <Link key={artist.id} href={`/artist/${artist.id}`}>
                                     <Card className="group cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-xl">
                                         <div className="relative aspect-square overflow-hidden bg-muted">

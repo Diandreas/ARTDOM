@@ -62,6 +62,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/carousel/reorder', [\App\Http\Controllers\Admin\CarouselController::class, 'reorder'])->name('carousel.reorder');
         Route::patch('/carousel/{slide}/toggle', [\App\Http\Controllers\Admin\CarouselController::class, 'toggle'])->name('carousel.toggle');
 
+        Route::get('/featured-artists', [\App\Http\Controllers\Admin\FeaturedArtistController::class, 'index'])->name('featured-artists.index');
+        Route::get('/featured-artists/search', [\App\Http\Controllers\Admin\FeaturedArtistController::class, 'search'])->name('featured-artists.search');
+        Route::post('/featured-artists', [\App\Http\Controllers\Admin\FeaturedArtistController::class, 'store'])->name('featured-artists.store');
+        Route::post('/featured-artists/reorder', [\App\Http\Controllers\Admin\FeaturedArtistController::class, 'updateOrder'])->name('featured-artists.reorder');
+        Route::delete('/featured-artists/{user}', [\App\Http\Controllers\Admin\FeaturedArtistController::class, 'destroy'])->name('featured-artists.destroy');
+
         Route::get('/hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'index'])->name('hero-settings.index');
         Route::put('/hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'update'])->name('hero-settings.update');
 

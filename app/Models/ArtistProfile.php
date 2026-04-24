@@ -33,6 +33,8 @@ class ArtistProfile extends Model
         'categories',
         'base_rate',
         'is_verified',
+        'is_featured',
+        'featured_order',
         'verification_status',
         'id_document_front',
         'id_document_back',
@@ -55,6 +57,8 @@ class ArtistProfile extends Model
             'social_links' => 'array',
             'portfolio_urls' => 'array',
             'is_verified' => 'boolean',
+            'is_featured' => 'boolean',
+            'featured_order' => 'integer',
             'rating' => 'float',
             'base_rate' => 'decimal:2',
         ];

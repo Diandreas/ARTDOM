@@ -14,33 +14,48 @@ class HomeController extends Controller
 {
     public function index(): Response
     {
-        // Fetch featured/trending artists (verified with profiles)
+        // Fetch featured artists manually selected by admin
         $featuredArtists = User::where('is_active', true)
             ->whereHas('artistProfile', function ($query) {
-                $query->where('is_verified', true);
+                $query->where('is_featured', true);
             })
             ->with(['artistProfile'])
             ->withCount('services')
-            ->limit(10)
-            ->get()
-            ->map(function ($user) {
-                $categories = is_array($user->artistProfile->categories)
-                    ? $user->artistProfile->categories
-                    : json_decode($user->artistProfile->categories ?? '[]');
+            ->join('artist_profiles', 'users.id', '=', 'artist_profiles.user_id')
+            ->orderBy('artist_profiles.featured_order', 'asc')
+            ->select('users.*')
+            ->get();
 
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'stage_name' => $user->artistProfile->stage_name,
-                    'city' => $user->city,
-                    'profile_photo' => $user->profile_photo,
-                    'categories' => $categories,
-                    'rating' => $user->artistProfile->rating,
-                    'total_reviews' => $user->artistProfile->total_reviews,
-                    'services_count' => $user->services_count,
-                    'is_verified' => $user->artistProfile->is_verified,
-                ];
-            });
+        // If no featured artists, fall back to verified artists (legacy behavior)
+        if ($featuredArtists->isEmpty()) {
+            $featuredArtists = User::where('is_active', true)
+                ->whereHas('artistProfile', function ($query) {
+                    $query->where('is_verified', true);
+                })
+                ->with(['artistProfile'])
+                ->withCount('services')
+                ->limit(10)
+                ->get();
+        }
+
+        $featuredArtists = $featuredArtists->map(function ($user) {
+            $categories = is_array($user->artistProfile->categories)
+                ? $user->artistProfile->categories
+                : json_decode($user->artistProfile->categories ?? '[]');
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'stage_name' => $user->artistProfile->stage_name,
+                'city' => $user->city,
+                'profile_photo' => $user->profile_photo,
+                'categories' => $categories,
+                'rating' => $user->artistProfile->rating,
+                'total_reviews' => $user->artistProfile->total_reviews,
+                'services_count' => $user->services_count,
+                'is_verified' => $user->artistProfile->is_verified,
+            ];
+        });
 
         // Fetch recent albums
         $recentAlbums = Album::whereHas('artist', function ($query) {

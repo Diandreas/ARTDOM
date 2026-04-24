@@ -806,5 +806,14 @@
     "Service Account required": "Compte de service requis",
     "To enable FCM push, download the Service Account JSON from Firebase Console → Project Settings → Service Accounts, and configure": "Pour activer les push FCM, téléchargez le Service Account JSON depuis Firebase Console → Project Settings → Service Accounts, et configurez",
     "in .env": "dans .env",
-    "With FCM token": "Avec token FCM"
+    "With FCM token": "Avec token FCM",
+    "Manage artists displayed on the homepage": "Gérez les artistes affichés sur la page d'accueil",
+    "Add an artist": "Ajouter un artiste",
+    "No artist found": "Aucun artiste trouvé",
+    "Type at least 2 characters to search": "Tapez au moins 2 caractères pour rechercher",
+    "No featured artist yet.": "Aucun artiste en vedette pour le moment.",
+    "Search and add artists from the left panel.": "Recherchez et ajoutez des artistes depuis le panneau de gauche.",
+    "Remove this artist from featured?": "Retirer cet artiste des vedettes ?",
+    "Note": "Note",
+    "These artists will be displayed in the \"Featured artists\" section of the homepage in the specified order.": "Ces artistes seront affichés dans la section \"Artistes en vedette\" de la page d'accueil dans l'ordre spécifié."
 }
