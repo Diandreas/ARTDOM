@@ -16,12 +16,12 @@ class CarouselController extends Controller
     public function index(Request $request): Response
     {
         $type = $request->get('type', 'main');
-        
+
         $slides = CarouselSlide::with('artist')
             ->where('type', $type)
             ->orderBy('order')
             ->get();
-            
+
         $artists = User::where('role', 'artist')->active()->get(['id', 'name']);
 
         return Inertia::render('Admin/Carousel', [

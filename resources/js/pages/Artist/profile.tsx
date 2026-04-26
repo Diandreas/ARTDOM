@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Star, MapPin, Music, Clock, Play, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Star, MapPin, Music, Clock, Play, TrendingUp, AlertTriangle, Zap, Trophy } from 'lucide-react';
 import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -32,6 +32,7 @@ interface Artist {
     categories: string[];
     base_rate: number;
     is_verified: boolean;
+    level: string;
     rating: number;
     total_reviews: number;
     portfolio_urls: string[];
@@ -142,6 +143,23 @@ export default function ArtistProfile({ auth, artist, services, albums, stats, c
                             <h1 className="text-3xl md:text-4xl font-bold font-heading text-foreground">
                                 {artist.stage_name}
                             </h1>
+                            {artist.level === 'emerging_star' && (
+                                <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-none">
+                                    <Trophy className="mr-1 h-3 w-3" />
+                                    {t('Star en émergence')}
+                                </Badge>
+                            )}
+                            {artist.level === 'rising_star' && (
+                                <Badge variant="secondary">
+                                    <Zap className="mr-1 h-3 w-3 fill-current" />
+                                    {t('Artiste perçant')}
+                                </Badge>
+                            )}
+                            {artist.level === 'talent' && (
+                                <Badge variant="outline" className="bg-muted/50">
+                                    {t('Talent')}
+                                </Badge>
+                            )}
                             {artist.is_verified && (
                                 <Badge className="bg-primary text-primary-foreground">
                                     <Star className="w-3 h-3 mr-1 fill-current" />

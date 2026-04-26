@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Track;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

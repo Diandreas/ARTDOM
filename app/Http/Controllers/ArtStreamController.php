@@ -45,10 +45,12 @@ class ArtStreamController extends Controller
             : [];
 
         // Fetch featured/trending albums
-        $featuredAlbums = Album::available()
-            ->whereHas('artist', fn($q) => $q->active())
+        $featuredAlbums = Album::whereHas('artist', function ($q) {
+            $q->where('is_active', true)->whereNull('banned_at');
+        })
             ->with(['artist.artistProfile', 'tracks'])
             ->where('is_streamable', true)
+            ->whereNotNull('published_at')
             ->withCount('tracks')
             ->orderByDesc('total_plays')
             ->limit(12)
@@ -68,15 +70,18 @@ class ArtStreamController extends Controller
                         'name' => $album->artist->name,
                         'stage_name' => $album->artist->artistProfile->stage_name ?? $album->artist->name,
                         'profile_photo' => $album->artist->profile_photo,
+                        'level' => $album->artist->artistProfile->level?->value ?? 'Talent',
                     ],
                 ];
             });
 
         // Fetch recent albums
-        $recentAlbums = Album::available()
-            ->whereHas('artist', fn($q) => $q->active())
+        $recentAlbums = Album::whereHas('artist', function ($q) {
+            $q->where('is_active', true)->whereNull('banned_at');
+        })
             ->with(['artist.artistProfile'])
             ->where('is_streamable', true)
+            ->whereNotNull('published_at')
             ->latest('published_at')
             ->limit(12)
             ->get()
@@ -89,13 +94,19 @@ class ArtStreamController extends Controller
                     'year' => $album->year,
                     'artist' => [
                         'id' => $album->artist->id,
+                        'name' => $album->artist->name,
                         'stage_name' => $album->artist->artistProfile->stage_name ?? $album->artist->name,
+                        'profile_photo' => $album->artist->profile_photo,
+                        'level' => $album->artist->artistProfile->level?->value ?? 'Talent',
                     ],
                 ];
             });
 
         // Fetch top tracks (most played)
-        $topTracks = Track::available()
+        $topTracks = Track::where('is_banned', false)
+            ->whereHas('album.artist', function ($q) {
+                $q->where('is_active', true)->whereNull('banned_at');
+            })
             ->with(['album.artist.artistProfile', 'comments.user', 'comments.replies.user'])
             ->orderByDesc('plays')
             ->limit(20)
@@ -115,12 +126,14 @@ class ArtStreamController extends Controller
                         'cover_url' => $track->album->cover_url,
                         'artist' => [
                             'id' => $track->album->artist->id,
+                            'name' => $track->album->artist->name,
                             'stage_name' => $track->album->artist->artistProfile->stage_name ?? $track->album->artist->name,
+                            'profile_photo' => $track->album->artist->profile_photo,
+                            'level' => $track->album->artist->artistProfile->level?->value ?? 'Talent',
                         ],
                     ],
                 ];
             });
-
         // Genres available
         $genres = [
             'afrobeat',
@@ -171,6 +184,7 @@ class ArtStreamController extends Controller
                     'name' => $album->artist->name,
                     'stage_name' => $album->artist->artistProfile->stage_name ?? $album->artist->name,
                     'profile_photo' => $album->artist->profile_photo,
+                    'level' => $album->artist->artistProfile->level?->value ?? 'Talent',
                 ],
             ],
             'tracks' => $album->tracks->map(function ($track) use ($favoritedTrackIds) {
@@ -187,6 +201,17 @@ class ArtStreamController extends Controller
             }),
             'isPurchased' => $isPurchased,
             'isInLibrary' => $isInLibrary,
+        ]);
+    }
+
+    public function playTrack(Track $track): \Illuminate\Http\JsonResponse
+    {
+        $track->incrementPlays();
+
+        return response()->json([
+            'success' => true,
+            'plays' => $track->plays,
+            'total_album_plays' => $track->album->total_plays,
         ]);
     }
 
@@ -240,7 +265,7 @@ class ArtStreamController extends Controller
                     });
             }
         } elseif ($albumId) {
-            $album = Album::available()->with(['artist.artistProfile', 'tracks' => fn($q) => $q->available()])->find($albumId);
+            $album = Album::available()->with(['artist.artistProfile', 'tracks' => fn ($q) => $q->available()])->find($albumId);
 
             if ($album && $album->tracks->isNotEmpty()) {
                 $firstTrack = $album->tracks->first();
@@ -301,7 +326,7 @@ class ArtStreamController extends Controller
         // Search Tracks
         if (in_array($type, ['all', 'tracks'])) {
             $results['tracks'] = Track::available()->with(['album.artist.artistProfile'])
-                ->where(function($q) use ($query) {
+                ->where(function ($q) use ($query) {
                     $q->where('title', 'like', "%{$query}%")
                         ->orWhereHas('album', function ($q) use ($query) {
                             $q->where('title', 'like', "%{$query}%");

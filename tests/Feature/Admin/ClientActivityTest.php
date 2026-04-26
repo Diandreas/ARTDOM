@@ -2,7 +2,6 @@
 
 use App\Models\Cart;
 use App\Models\Reservation;
-use App\Models\Subscription;
 use App\Models\User;
 
 it('admin can consult client activity module', function () {

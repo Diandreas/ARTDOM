@@ -2,6 +2,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminLayout from '@/layouts/admin-layout';
 
@@ -19,6 +20,8 @@ type UserPayload = {
     type: string;
     status: string;
     stage_name?: string | null;
+    level?: string | null;
+    is_level_manual: boolean;
     email_verified: boolean;
     created_at?: string | null;
     last_connection_at?: string | null;
@@ -167,7 +170,19 @@ const statusMap: Record<string, string> = {
     banned: 'Banni',
 };
 
+const levelMap: Record<string, string> = {
+    talent: 'Talent',
+    rising_star: 'Artiste perçant',
+    emerging_star: 'Star en émergence',
+};
+
 export default function Show({ user, artistStats, activity, transactions, clientFinancialDetails, artistEarningsReport, contents, reviews, security }: Props) {
+    const handleLevelChange = (newLevel: string) => {
+        router.patch(`/admin/users/${user.id}/level`, { level: newLevel }, {
+            preserveScroll: true,
+        });
+    };
+
     return (
         <AdminLayout title={`Utilisateur - ${user.full_name}`} subtitle="Details complets du compte utilisateur.">
             <Head title={`Admin - Utilisateur ${user.full_name}`} />
@@ -214,6 +229,26 @@ export default function Show({ user, artistStats, activity, transactions, client
                                 <p><span className="font-medium">Genre:</span> {user.gender ?? '-'}</p>
                                 <p><span className="font-medium">Type:</span> {user.type}</p>
                                 <p><span className="font-medium">Statut:</span> <Badge>{statusMap[user.status] ?? user.status}</Badge></p>
+                                {user.type === 'artist' && (
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-medium">Niveau Artiste:</span>
+                                        <div className="flex flex-col gap-1">
+                                            <Select value={user.level || 'talent'} onValueChange={handleLevelChange}>
+                                                <SelectTrigger className="w-[180px] h-8">
+                                                    <SelectValue placeholder="Choisir un niveau" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.entries(levelMap).map(([value, label]) => (
+                                                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            {user.is_level_manual && (
+                                                <span className="text-[10px] text-amber-600 font-medium uppercase">Gestion manuelle activee</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                                 <p><span className="font-medium">Inscription:</span> {user.created_at ? new Date(user.created_at).toLocaleString() : '-'}</p>
                                 <p><span className="font-medium">Derniere connexion:</span> {user.last_connection_at ? new Date(user.last_connection_at).toLocaleString() : '-'}</p>
                             </CardContent>

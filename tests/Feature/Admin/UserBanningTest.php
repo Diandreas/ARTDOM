@@ -27,7 +27,7 @@ it('can ban a user', function () {
 
 it('hides banned users by default', function () {
     $user = User::factory()->client()->create(['is_active' => false, 'banned_at' => now()]);
-    
+
     // Default query should not find it
     expect(User::find($user->id))->toBeNull()
         // Using withoutGlobalScopes to verify it exists
@@ -38,7 +38,7 @@ it('can unban (activate) a user', function () {
     $user = User::factory()->client()->create([
         'is_active' => false,
         'banned_at' => now(),
-        'ban_reason' => 'Old reason'
+        'ban_reason' => 'Old reason',
     ]);
 
     $this->actingAs($this->admin)

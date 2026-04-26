@@ -25,7 +25,7 @@ class UpdateUserRequest extends FormRequest
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'phone' => ['required', 'string', 'max:30', Rule::unique('users', 'phone')->ignore($user->id)],
+            'phone' => ['nullable', 'string', 'max:30', Rule::unique('users', 'phone')->ignore($user->id)],
             'city' => ['nullable', 'string', 'max:100'],
             'date_of_birth' => ['nullable', 'date'],
             'gender' => ['nullable', 'string', 'max:30'],
@@ -34,6 +34,7 @@ class UpdateUserRequest extends FormRequest
             'status' => ['required', Rule::in(['active', 'pending', 'suspended', 'banned'])],
 
             'stage_name' => ['nullable', 'string', 'max:120', 'required_if:role,artist'],
+            'level' => ['nullable', 'string', Rule::enum(\App\Enums\ArtistLevel::class)],
             'category' => ['nullable', 'string', 'max:120'],
             'bio' => ['nullable', 'string', 'max:1000'],
             'base_rate' => ['nullable', 'numeric', 'min:0'],

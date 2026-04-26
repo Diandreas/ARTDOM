@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
+import { router } from '@inertiajs/react';
 
 export type Track = {
     id: string;
@@ -57,6 +58,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const [isMuted, setIsMuted] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const lastLoadedUrlRef = useRef<string | null>(null);
+    const lastIncrementedTrackId = useRef<string | null>(null);
 
     // Initialize audio element
     useEffect(() => {
@@ -92,6 +94,36 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
             audio.pause();
         };
     }, []);
+
+    // Increment play count when track starts playing
+    useEffect(() => {
+        if (currentTrack && isPlaying && lastIncrementedTrackId.current !== currentTrack.id) {
+            const xsrf = document.cookie
+                .split('; ')
+                .find((c) => c.startsWith('XSRF-TOKEN='))
+                ?.split('=')[1];
+
+            fetch(`/artstream/track/${currentTrack.id}/play`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    ...(xsrf ? { 'X-XSRF-TOKEN': decodeURIComponent(xsrf) } : {}),
+                },
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    lastIncrementedTrackId.current = currentTrack.id;
+                    // Dynamically reload Inertia props to update play counts everywhere without hard reloading the page
+                    router.reload({ preserveScroll: true, preserveState: true });
+                }
+            })
+            .catch(err => {
+                console.error('Failed to increment play count', err);
+            });
+        }
+    }, [currentTrack, isPlaying]);
 
     // Handle repeat mode changes for auto-play
     useEffect(() => {

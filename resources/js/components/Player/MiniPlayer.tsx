@@ -1,6 +1,6 @@
 
 import { Link, router, usePage } from '@inertiajs/react';
-import { Play, Pause, SkipBack, SkipForward, Heart, Maximize2, ListMusic, Loader2 } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Heart, Maximize2, ListMusic, Loader2, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toggle as toggleFavorite } from '@/actions/App/Http/Controllers/FavoriteController';
 import QueueSidebar from '@/components/Player/QueueSidebar';
@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 
 export default function MiniPlayer() {
     const { auth } = usePage().props as { auth?: { user?: any } };
-    const { currentTrack, isPlaying, togglePlay, progress, duration, seek, updateTrackFavorite } = useAudio();
+    const { currentTrack, isPlaying, togglePlay, progress, duration, seek, updateTrackFavorite, clearQueue } = useAudio();
     const [localProgress, setLocalProgress] = useState(progress);
     const [isDragging, setIsDragging] = useState(false);
     const [isFavoriting, setIsFavoriting] = useState(false);
@@ -156,6 +156,9 @@ export default function MiniPlayer() {
                         <Link href="/artstream/player">
                             <Maximize2 className="h-5 w-5" />
                         </Link>
+                    </Button>
+                    <Button size="icon" variant="ghost" className="h-9 w-9 text-muted-foreground hover:text-destructive transition-colors" onClick={clearQueue}>
+                        <X className="h-5 w-5" />
                     </Button>
                 </div>
             </div>

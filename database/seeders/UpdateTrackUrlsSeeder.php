@@ -41,6 +41,7 @@ class UpdateTrackUrlsSeeder extends Seeder
 
         if ($tracks->isEmpty()) {
             $this->command->warn('Aucune piste trouvée.');
+
             return;
         }
 

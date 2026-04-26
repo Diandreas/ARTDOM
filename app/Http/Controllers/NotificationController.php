@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
+use App\Services\FirebaseNotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Services\FirebaseNotificationService;
 
 class NotificationController extends Controller
 {
@@ -79,6 +79,7 @@ class NotificationController extends Controller
             $firebase->sendToUser($user->fcm_token, 'Test notification', 'This is a test push notification from the server', ['route' => '/']);
         } catch (\Throwable $e) {
             report($e);
+
             return response()->json(['message' => 'Failed to send notification', 'error' => $e->getMessage()], 500);
         }
 

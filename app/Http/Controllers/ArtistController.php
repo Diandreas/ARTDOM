@@ -64,15 +64,21 @@ class ArtistController extends Controller
             ->paginate(12)
             ->withQueryString()
             ->through(function ($user) {
+                $categories = $user->artistProfile->categories;
+                if (is_string($categories)) {
+                    $categories = json_decode($categories, true) ?? [];
+                }
+
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'city' => $user->city,
                     'profile_photo' => $user->profile_photo,
                     'stage_name' => $user->artistProfile->stage_name ?? $user->name,
-                    'categories' => json_decode($user->artistProfile->categories ?? '[]'),
+                    'categories' => is_array($categories) ? $categories : [],
                     'base_rate' => $user->artistProfile->base_rate ?? 0,
                     'is_verified' => $user->artistProfile->is_verified ?? false,
+                    'level' => $user->artistProfile->level?->value ?? 'talent',
                     'rating' => $user->artistProfile->rating ?? 0,
                     'total_reviews' => $user->artistProfile->total_reviews ?? 0,
                 ];
@@ -169,6 +175,11 @@ class ArtistController extends Controller
             'total_plays' => Album::where('artist_id', $artist->id)->sum('total_plays'),
         ];
 
+        $categories = $artist->artistProfile->categories;
+        if (is_string($categories)) {
+            $categories = json_decode($categories, true) ?? [];
+        }
+
         return Inertia::render('Artist/profile', [
             'artist' => [
                 'id' => $artist->id,
@@ -178,13 +189,14 @@ class ArtistController extends Controller
                 'profile_photo' => $artist->profile_photo,
                 'stage_name' => $artist->artistProfile->stage_name ?? $artist->name,
                 'bio' => $artist->artistProfile->bio ?? '',
-                'categories' => json_decode($artist->artistProfile->categories ?? '[]'),
+                'categories' => is_array($categories) ? $categories : [],
                 'base_rate' => $artist->artistProfile->base_rate ?? 0,
                 'is_verified' => $artist->artistProfile->is_verified ?? false,
+                'level' => $artist->artistProfile->level?->value ?? 'talent',
                 'rating' => $artist->artistProfile->rating ?? 0,
                 'total_reviews' => $artist->artistProfile->total_reviews ?? 0,
-                'portfolio_urls' => json_decode($artist->artistProfile->portfolio_urls ?? '[]'),
-                'social_links' => json_decode($artist->artistProfile->social_links ?? '{}'),
+                'portfolio_urls' => $artist->artistProfile->portfolio_urls ?? [],
+                'social_links' => $artist->artistProfile->social_links ?? [],
             ],
             'services' => $services,
             'albums' => $albums,

@@ -30,7 +30,7 @@ it('can ban a track', function () {
 it('hides banned tracks by default', function () {
     $track = Track::factory()->create([
         'album_id' => $this->album->id,
-        'is_banned' => true
+        'is_banned' => true,
     ]);
 
     // Default query should not find it
@@ -40,11 +40,11 @@ it('hides banned tracks by default', function () {
 
 it('hides tracks from banned artists', function () {
     $track = Track::factory()->create(['album_id' => $this->album->id]);
-    
+
     // Ban the artist
     User::withoutGlobalScopes()->where('id', $this->artist->id)->update([
-        'is_active' => false, 
-        'banned_at' => now()
+        'is_active' => false,
+        'banned_at' => now(),
     ]);
 
     expect(Track::find($track->id))->toBeNull();

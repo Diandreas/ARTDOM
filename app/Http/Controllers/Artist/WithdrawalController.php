@@ -18,13 +18,13 @@ class WithdrawalController extends Controller
     {
         $artist = Auth::user();
         $wallet = Wallet::where('artist_id', $artist->id)->first();
-        
-        if (!$wallet) {
+
+        if (! $wallet) {
             $wallet = Wallet::create([
                 'artist_id' => $artist->id,
                 'balance' => 0,
                 'pending_balance' => 0,
-                'currency' => 'XOF'
+                'currency' => 'XOF',
             ]);
         }
 
@@ -46,7 +46,7 @@ class WithdrawalController extends Controller
         $validated = $request->validate([
             'amount' => ['required', 'numeric', 'min:5000', 'max:'.$wallet->balance],
             'method' => ['required', 'string', 'in:orange_money,bank_transfer'],
-            // If amount > 50000, bank_transfer is mandatory? 
+            // If amount > 50000, bank_transfer is mandatory?
             // Or just check if details are provided for the chosen method
             'phone_number' => ['required_if:method,orange_money', 'nullable', 'string'],
             'bank_name' => ['required_if:method,bank_transfer', 'nullable', 'string'],
@@ -59,12 +59,12 @@ class WithdrawalController extends Controller
             return back()->withErrors(['method' => 'Pour les montants supérieurs à 50 000 FCFA, le virement bancaire est obligatoire.']);
         }
 
-        $accountDetails = $validated['method'] === 'orange_money' 
+        $accountDetails = $validated['method'] === 'orange_money'
             ? ['phone' => $validated['phone_number']]
             : [
                 'bank' => $validated['bank_name'],
                 'account' => $validated['account_number'],
-                'name' => $validated['account_name']
+                'name' => $validated['account_name'],
             ];
 
         DB::transaction(function () use ($wallet, $validated, $accountDetails) {
@@ -97,7 +97,7 @@ class WithdrawalController extends Controller
 
         return redirect()->route('artist.withdrawals.index')->with('toast', [
             'type' => 'success',
-            'message' => 'Votre demande de retrait a été enregistrée.'
+            'message' => 'Votre demande de retrait a été enregistrée.',
         ]);
     }
 }

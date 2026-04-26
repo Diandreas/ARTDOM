@@ -8,5 +8,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel('conversation.{id}', function ($user, $id) {
     $conversation = \App\Models\Conversation::find($id);
+
     return $conversation && $conversation->participants->contains($user->id);
 });

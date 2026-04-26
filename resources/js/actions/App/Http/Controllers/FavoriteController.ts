@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\FavoriteController::toggle
-* @see app/Http/Controllers/FavoriteController.php:13
+* @see app/Http/Controllers/FavoriteController.php:12
 * @route '/tracks/{track}/favorite'
 */
 export const toggle = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -16,7 +16,7 @@ toggle.definition = {
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggle
-* @see app/Http/Controllers/FavoriteController.php:13
+* @see app/Http/Controllers/FavoriteController.php:12
 * @route '/tracks/{track}/favorite'
 */
 toggle.url = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -49,7 +49,7 @@ toggle.url = (args: { track: string | { id: string } } | [track: string | { id: 
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggle
-* @see app/Http/Controllers/FavoriteController.php:13
+* @see app/Http/Controllers/FavoriteController.php:12
 * @route '/tracks/{track}/favorite'
 */
 toggle.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -59,7 +59,7 @@ toggle.post = (args: { track: string | { id: string } } | [track: string | { id:
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggle
-* @see app/Http/Controllers/FavoriteController.php:13
+* @see app/Http/Controllers/FavoriteController.php:12
 * @route '/tracks/{track}/favorite'
 */
 const toggleForm = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -69,7 +69,7 @@ const toggleForm = (args: { track: string | { id: string } } | [track: string | 
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggle
-* @see app/Http/Controllers/FavoriteController.php:13
+* @see app/Http/Controllers/FavoriteController.php:12
 * @route '/tracks/{track}/favorite'
 */
 toggleForm.post = (args: { track: string | { id: string } } | [track: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -81,7 +81,7 @@ toggle.form = toggleForm
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggleAlbum
-* @see app/Http/Controllers/FavoriteController.php:68
+* @see app/Http/Controllers/FavoriteController.php:67
 * @route '/albums/{album}/favorite'
 */
 export const toggleAlbum = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -96,7 +96,7 @@ toggleAlbum.definition = {
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggleAlbum
-* @see app/Http/Controllers/FavoriteController.php:68
+* @see app/Http/Controllers/FavoriteController.php:67
 * @route '/albums/{album}/favorite'
 */
 toggleAlbum.url = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -129,7 +129,7 @@ toggleAlbum.url = (args: { album: string | { id: string } } | [album: string | {
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggleAlbum
-* @see app/Http/Controllers/FavoriteController.php:68
+* @see app/Http/Controllers/FavoriteController.php:67
 * @route '/albums/{album}/favorite'
 */
 toggleAlbum.post = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -139,7 +139,7 @@ toggleAlbum.post = (args: { album: string | { id: string } } | [album: string | 
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggleAlbum
-* @see app/Http/Controllers/FavoriteController.php:68
+* @see app/Http/Controllers/FavoriteController.php:67
 * @route '/albums/{album}/favorite'
 */
 const toggleAlbumForm = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -149,7 +149,7 @@ const toggleAlbumForm = (args: { album: string | { id: string } } | [album: stri
 
 /**
 * @see \App\Http\Controllers\FavoriteController::toggleAlbum
-* @see app/Http/Controllers/FavoriteController.php:68
+* @see app/Http/Controllers/FavoriteController.php:67
 * @route '/albums/{album}/favorite'
 */
 toggleAlbumForm.post = (args: { album: string | { id: string } } | [album: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -161,7 +161,7 @@ toggleAlbum.form = toggleAlbumForm
 
 /**
 * @see \App\Http\Controllers\FavoriteController::index
-* @see app/Http/Controllers/FavoriteController.php:36
+* @see app/Http/Controllers/FavoriteController.php:35
 * @route '/favorites'
 */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -176,7 +176,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\FavoriteController::index
-* @see app/Http/Controllers/FavoriteController.php:36
+* @see app/Http/Controllers/FavoriteController.php:35
 * @route '/favorites'
 */
 index.url = (options?: RouteQueryOptions) => {
@@ -185,7 +185,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\FavoriteController::index
-* @see app/Http/Controllers/FavoriteController.php:36
+* @see app/Http/Controllers/FavoriteController.php:35
 * @route '/favorites'
 */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -195,7 +195,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\FavoriteController::index
-* @see app/Http/Controllers/FavoriteController.php:36
+* @see app/Http/Controllers/FavoriteController.php:35
 * @route '/favorites'
 */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -205,7 +205,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\FavoriteController::index
-* @see app/Http/Controllers/FavoriteController.php:36
+* @see app/Http/Controllers/FavoriteController.php:35
 * @route '/favorites'
 */
 const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -215,7 +215,7 @@ const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 /**
 * @see \App\Http\Controllers\FavoriteController::index
-* @see app/Http/Controllers/FavoriteController.php:36
+* @see app/Http/Controllers/FavoriteController.php:35
 * @route '/favorites'
 */
 indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -225,7 +225,7 @@ indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\FavoriteController::index
-* @see app/Http/Controllers/FavoriteController.php:36
+* @see app/Http/Controllers/FavoriteController.php:35
 * @route '/favorites'
 */
 indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

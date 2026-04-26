@@ -60,6 +60,7 @@ class TracksSeeder extends Seeder
 
         if ($albums->isEmpty()) {
             $this->command->warn('Aucun album trouvé. Veuillez d\'abord exécuter les seeders d\'albums.');
+
             return;
         }
 

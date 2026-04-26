@@ -17,7 +17,7 @@ class WithdrawalManagementController extends Controller
         $status = $request->get('status', 'pending');
 
         $withdrawals = Withdrawal::with('wallet.artist')
-            ->when($status !== 'all', fn($q) => $q->where('status', $status))
+            ->when($status !== 'all', fn ($q) => $q->where('status', $status))
             ->orderBy('created_at', 'desc')
             ->paginate(15)
             ->withQueryString();
@@ -46,7 +46,7 @@ class WithdrawalManagementController extends Controller
 
         return back()->with('toast', [
             'type' => 'success',
-            'message' => 'Le retrait a été marqué comme complété.'
+            'message' => 'Le retrait a été marqué comme complété.',
         ]);
     }
 
@@ -64,7 +64,7 @@ class WithdrawalManagementController extends Controller
             $withdrawal->update([
                 'status' => 'rejected',
                 'processed_at' => now(),
-                'provider_ref' => 'Rejet : ' . $request->reason,
+                'provider_ref' => 'Rejet : '.$request->reason,
             ]);
 
             // Refund the wallet
@@ -79,13 +79,13 @@ class WithdrawalManagementController extends Controller
                 'net_amount' => $withdrawal->amount,
                 'source' => 'withdrawal_rejection',
                 'balance_after' => $wallet->balance,
-                'note' => 'Remboursement suite au rejet du retrait : ' . $request->reason,
+                'note' => 'Remboursement suite au rejet du retrait : '.$request->reason,
             ]);
         });
 
         return back()->with('toast', [
             'type' => 'info',
-            'message' => 'Le retrait a été rejeté et l\'artiste a été remboursé.'
+            'message' => 'Le retrait a été rejeté et l\'artiste a été remboursé.',
         ]);
     }
 }

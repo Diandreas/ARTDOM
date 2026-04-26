@@ -39,21 +39,18 @@ class HomeController extends Controller
         }
 
         $featuredArtists = $featuredArtists->map(function ($user) {
-            $categories = is_array($user->artistProfile->categories)
-                ? $user->artistProfile->categories
-                : json_decode($user->artistProfile->categories ?? '[]');
-
             return [
                 'id' => $user->id,
                 'name' => $user->name,
                 'stage_name' => $user->artistProfile->stage_name,
                 'city' => $user->city,
                 'profile_photo' => $user->profile_photo,
-                'categories' => $categories,
+                'categories' => $user->artistProfile->categories ?? [],
                 'rating' => $user->artistProfile->rating,
                 'total_reviews' => $user->artistProfile->total_reviews,
                 'services_count' => $user->services_count,
                 'is_verified' => $user->artistProfile->is_verified,
+                'level' => $user->artistProfile->level?->value ?? 'talent',
             ];
         });
 
@@ -81,17 +78,6 @@ class HomeController extends Controller
                 ];
             });
 
-        // Categories for quick navigation
-        $categories = [
-            ['key' => 'singer', 'label' => 'Chanteurs', 'icon' => 'mic'],
-            ['key' => 'dj', 'label' => 'DJs', 'icon' => 'disc'],
-            ['key' => 'dancer', 'label' => 'Danseurs', 'icon' => 'dance'],
-            ['key' => 'musician', 'label' => 'Musiciens', 'icon' => 'guitar'],
-            ['key' => 'painter', 'label' => 'Peintres', 'icon' => 'palette'],
-            ['key' => 'photographer', 'label' => 'Photographes', 'icon' => 'camera'],
-            ['key' => 'comedian', 'label' => 'Humouristes', 'icon' => 'laugh'],
-        ];
-
         $carouselSlides = $this->getCarouselSlides('main');
         $heroSlides = $this->getCarouselSlides('hero');
 
@@ -108,7 +94,6 @@ class HomeController extends Controller
         return Inertia::render('home', [
             'featuredArtists' => $featuredArtists,
             'recentAlbums' => $recentAlbums,
-            'categories' => $categories,
             'carouselSlides' => $carouselSlides,
             'heroSlides' => $heroSlides,
             'heroSettings' => $heroSettings,

@@ -15,7 +15,7 @@ class HeroSettingController extends Controller
     public function index(): Response
     {
         $settings = HeroSetting::first();
-        
+
         if (! $settings) {
             $settings = HeroSetting::create([
                 'type' => 'image',
@@ -38,7 +38,7 @@ class HeroSettingController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $settings = HeroSetting::firstOrFail();
-        
+
         $validated = $request->validate([
             'type' => 'required|string|in:image,carousel,video',
             'title' => 'nullable|string|max:255',

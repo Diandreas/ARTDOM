@@ -83,6 +83,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
         Route::post('/users/{user}/suspend', [UserManagementController::class, 'suspend'])->name('users.suspend');
+        Route::patch('/users/{user}/level', [UserManagementController::class, 'updateLevel'])->name('users.update-level');
         Route::get('/users/{user}/impersonate', [UserManagementController::class, 'impersonate'])->name('users.impersonate');
         Route::post('/users/stop-impersonation', [UserManagementController::class, 'stopImpersonation'])->name('users.stop-impersonation');
         Route::post('/users/bulk', [UserManagementController::class, 'bulk'])->name('users.bulk');
@@ -216,6 +217,8 @@ Route::get('/service/{id}', [ServiceController::class, 'show'])->name('service.s
 Route::get('/artstream', [ArtStreamController::class, 'index'])->name('artstream.index');
 
 Route::get('/artstream/album/{album}', [ArtStreamController::class, 'album'])->name('artstream.album');
+
+Route::post('/artstream/track/{track}/play', [ArtStreamController::class, 'playTrack'])->name('artstream.track.play');
 
 Route::get('/artstream/player', [ArtStreamController::class, 'player'])->name('artstream.player');
 

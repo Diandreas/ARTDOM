@@ -66,7 +66,7 @@ class AvailabilityService
 
             // On génère des créneaux par intervalle de 30 minutes
             $interval = 30;
-            
+
             // Ne pas proposer de créneaux dans le passé si c'est aujourd'hui
             if ($start->isToday() && $start->lt(now())) {
                 $start = now()->addMinutes(30)->roundMinute(30);

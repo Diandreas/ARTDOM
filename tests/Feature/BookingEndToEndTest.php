@@ -1,9 +1,9 @@
 <?php
 
 use App\Enums\ReservationStatus;
+use App\Models\Reservation;
 use App\Models\Service;
 use App\Models\User;
-use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -15,7 +15,7 @@ test('end to end booking flow', function () {
     // Disable CSRF but keep Auth and Sessions
     $this->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
     $this->withoutVite();
-    
+
     // Fake mail and notifications
     Mail::fake();
     Notification::fake();
@@ -25,7 +25,7 @@ test('end to end booking flow', function () {
     $service = Service::factory()->create([
         'artist_id' => $artist->id,
         'duration_minutes' => 60,
-        'price' => 10000
+        'price' => 10000,
     ]);
 
     // Clients
@@ -62,21 +62,21 @@ test('end to end booking flow', function () {
     // 4. Client 1 checks status
     $response = $this->actingAs($client1)
         ->get(route('client.reservations.show', ['reservation' => $reservation->id]));
-    
+
     $response->assertOk();
 
     // 5. Client 2 tries to book the SAME slot
     $response = $this->actingAs($client2)
         ->get(route('booking.calendar', [
             'service' => $service->id,
-            'date' => $bookingDate
+            'date' => $bookingDate,
         ]));
-    
+
     $response->assertOk();
     $availableSlots = $response->viewData('page')['props']['availableSlots'];
-    
+
     $targetSlot = collect($availableSlots)->firstWhere('time', $bookingTime);
-    
+
     // The slot should exist but be marked as available = false
     expect($targetSlot)->not->toBeNull();
     expect($targetSlot['available'])->toBeFalse();

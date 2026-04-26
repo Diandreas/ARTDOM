@@ -106,6 +106,8 @@ class UserManagementController extends Controller
                 'registered_at' => $user->created_at?->toIso8601String(),
                 'email_verified' => $user->email_verified_at !== null,
                 'city' => $user->city,
+                'level' => $user->artistProfile?->level,
+                'is_level_manual' => $user->artistProfile?->is_level_manual ?? false,
             ];
         });
 
@@ -144,7 +146,10 @@ class UserManagementController extends Controller
     {
         $validated = $request->validated();
 
+        $name = $validated['role'] === 'artist' ? $validated['stage_name'] : trim($validated['first_name'].' '.$validated['last_name']);
+
         $user = User::query()->create([
+            'name' => $name,
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'password' => Hash::make($validated['password']),
@@ -170,6 +175,8 @@ class UserManagementController extends Controller
                 ['user_id' => $user->id],
                 [
                     'stage_name' => $validated['stage_name'],
+                    'level' => $validated['level'] ?? null,
+                    'is_level_manual' => ! empty($validated['level']),
                     'bio' => $validated['bio'] ?? null,
                     'categories' => ! empty($validated['category']) ? [$validated['category']] : null,
                     'base_rate' => $validated['base_rate'] ?? 0,
@@ -251,6 +258,8 @@ class UserManagementController extends Controller
                 'type' => $this->roleValue($user),
                 'status' => $this->resolveStatus($user),
                 'stage_name' => $user->artistProfile?->stage_name,
+                'level' => $user->artistProfile?->level,
+                'is_level_manual' => $user->artistProfile?->is_level_manual ?? false,
                 'email_verified' => $user->email_verified_at !== null,
                 'created_at' => $user->created_at?->toIso8601String(),
                 'last_connection_at' => $securitySessions->first()['last_activity_at'] ?? null,
@@ -291,6 +300,7 @@ class UserManagementController extends Controller
                 'role' => $this->roleValue($user),
                 'status' => $this->resolveStatus($user),
                 'stage_name' => $user->artistProfile?->stage_name,
+                'level' => $user->artistProfile?->level,
                 'category' => is_array($user->artistProfile?->categories) ? ($user->artistProfile?->categories[0] ?? '') : '',
                 'bio' => $user->artistProfile?->bio,
                 'base_rate' => $user->artistProfile?->base_rate,
@@ -304,7 +314,10 @@ class UserManagementController extends Controller
     {
         $validated = $request->validated();
 
+        $name = $validated['role'] === 'artist' ? $validated['stage_name'] : trim($validated['first_name'].' '.$validated['last_name']);
+
         $user->update([
+            'name' => $name,
             'email' => $validated['email'],
             'phone' => $validated['phone'],
             'city' => $validated['city'] ?? null,
@@ -329,6 +342,8 @@ class UserManagementController extends Controller
                 ['user_id' => $user->id],
                 [
                     'stage_name' => $validated['stage_name'],
+                    'level' => $validated['level'] ?? $user->artistProfile?->level,
+                    'is_level_manual' => ! empty($validated['level']),
                     'bio' => $validated['bio'] ?? null,
                     'categories' => ! empty($validated['category']) ? [$validated['category']] : null,
                     'base_rate' => $validated['base_rate'] ?? 0,
@@ -389,6 +404,22 @@ class UserManagementController extends Controller
         ]);
 
         return back()->with('message', 'Utilisateur banni.');
+    }
+
+    public function updateLevel(Request $request, User $user): RedirectResponse
+    {
+        $validated = $request->validate([
+            'level' => ['required', 'string', \Illuminate\Validation\Rule::enum(\App\Enums\ArtistLevel::class)],
+        ]);
+
+        if ($user->artistProfile) {
+            $user->artistProfile->update([
+                'level' => $validated['level'],
+                'is_level_manual' => true,
+            ]);
+        }
+
+        return back()->with('message', 'Niveau de l\'artiste mis à jour.');
     }
 
     public function destroy(User $user): RedirectResponse

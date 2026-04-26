@@ -39,6 +39,8 @@ class ArtistProfileFactory extends Factory
             'categories' => json_encode([$categoryKey]), // JSON array of categories
             'base_rate' => fake()->randomElement([15000, 20000, 25000, 30000, 35000, 40000, 50000, 75000, 100000]),
             'is_verified' => fake()->boolean(80), // 80% verified
+            'level' => \App\Enums\ArtistLevel::Talent,
+            'is_level_manual' => false,
         ];
     }
 
@@ -59,6 +61,17 @@ class ArtistProfileFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_verified' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the artist level is manually managed.
+     */
+    public function manualLevel(\App\Enums\ArtistLevel $level = \App\Enums\ArtistLevel::Talent): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'level' => $level,
+            'is_level_manual' => true,
         ]);
     }
 }

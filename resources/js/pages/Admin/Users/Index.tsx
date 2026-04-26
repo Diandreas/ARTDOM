@@ -27,6 +27,8 @@ type UserRow = {
     registered_at: string | null;
     email_verified: boolean;
     city?: string | null;
+    level?: string | null;
+    is_level_manual: boolean;
 };
 
 type Pagination<T> = {
@@ -57,6 +59,12 @@ const statusLabel: Record<string, string> = {
     suspended: 'Suspendu',
     pending: 'En attente',
     banned: 'Banni',
+};
+
+const levelLabel: Record<string, string> = {
+    talent: 'Talent',
+    rising_star: 'Artiste perçant',
+    emerging_star: 'Star en émergence',
 };
 
 export default function Index({ users, filters, cities }: Props) {
@@ -318,6 +326,7 @@ export default function Index({ users, filters, cities }: Props) {
                                     </th>
                                     <th className="py-2 pr-2">Telephone</th>
                                     <th className="py-2 pr-2">Type</th>
+                                    <th className="py-2 pr-2">Niveau</th>
                                     <th className="py-2 pr-2">Statut</th>
                                     <th className="py-2 pr-2">
                                         <button type="button" className="font-medium" onClick={() => sortBy('created_at')}>Inscription ↕</button>
@@ -358,6 +367,16 @@ export default function Index({ users, filters, cities }: Props) {
                                             </div>
                                         </td>
                                         <td className="py-3 pr-2"><Badge variant="outline">{user.type}</Badge></td>
+                                        <td className="py-3 pr-2">
+                                            {user.type === 'artist' && user.level && (
+                                                <div className="flex flex-col gap-1">
+                                                    <Badge variant="secondary">{levelLabel[user.level] ?? user.level}</Badge>
+                                                    {user.is_level_manual && (
+                                                        <span className="text-[10px] text-amber-600 font-medium uppercase">Manuel</span>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </td>
                                         <td className="py-3 pr-2"><Badge>{statusLabel[user.status] ?? user.status}</Badge></td>
                                         <td className="py-3 pr-2">{user.registered_at ? new Date(user.registered_at).toLocaleDateString() : '-'}</td>
                                         <td className="py-3 pr-2">

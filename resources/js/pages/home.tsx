@@ -2,13 +2,10 @@ import { Link } from '@inertiajs/react';
 import {
     Star,
     MapPin,
-    Mic,
-    Disc,
-    Music,
-    Palette,
-    Camera,
     Users,
     Play,
+    Zap,
+    Trophy,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,6 +31,7 @@ interface Artist {
     total_reviews: number;
     services_count: number;
     is_verified: boolean;
+    level: string;
 }
 
 interface Album {
@@ -79,25 +77,14 @@ interface HeroSettings {
 interface HomeProps {
     featuredArtists: Artist[];
     recentAlbums: Album[];
-    categories: Category[];
     carouselSlides: Slide[];
     heroSlides: Slide[];
     heroSettings: HeroSettings;
 }
 
-const categoryIcons: Record<string, any> = {
-    mic: Mic,
-    disc: Disc,
-    dance: Users,
-    guitar: Music,
-    palette: Palette,
-    camera: Camera,
-};
-
 export default function Home({
     featuredArtists,
     recentAlbums,
-    categories,
     carouselSlides,
     heroSlides,
     heroSettings,
@@ -256,41 +243,6 @@ export default function Home({
                 {/* Hero / Promotional Section */}
                 {renderHero()}
 
-                {/* Categories Grid */}
-                <section className="px-4 py-8">
-                    <div className="container mx-auto max-w-7xl">
-                        <h2 className="font-heading mb-6 text-2xl font-bold text-foreground">
-                            {t('Categories')}
-                        </h2>
-                        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-                            {categories.map((category) => {
-                                const IconComponent =
-                                    categoryIcons[category.icon];
-                                return (
-                                    <Link
-                                        key={category.key}
-                                        href={`/artists?category=${category.key}`}
-                                        className="group"
-                                    >
-                                        <Card className="h-full cursor-pointer transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/20">
-                                            <CardContent className="flex flex-col items-center justify-center gap-3 p-6">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20">
-                                                    {IconComponent && (
-                                                        <IconComponent className="h-6 w-6 text-primary" />
-                                                    )}
-                                                </div>
-                                                <span className="text-center text-sm font-medium text-foreground">
-                                                    {t(category.label)}
-                                                </span>
-                                            </CardContent>
-                                        </Card>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </section>
-
                 {/* Main Carousel (Featured/Custom) */}
                 {carouselSlides.length > 0 && (
                     <section className="bg-muted/30 px-4 py-8">
@@ -372,6 +324,25 @@ export default function Home({
                                                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                                            <div className="absolute top-3 left-3 flex flex-col gap-2">
+                                                {artist.level === 'emerging_star' && (
+                                                    <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-none text-[10px]">
+                                                        <Trophy className="mr-1 h-3 w-3" />
+                                                        {t('Star en émergence')}
+                                                    </Badge>
+                                                )}
+                                                {artist.level === 'rising_star' && (
+                                                    <Badge variant="secondary" className="text-[10px]">
+                                                        <Zap className="mr-1 h-3 w-3 fill-current" />
+                                                        {t('Artiste perçant')}
+                                                    </Badge>
+                                                )}
+                                                {artist.level === 'talent' && (
+                                                    <Badge variant="outline" className="bg-black/50 text-white border-white/20 text-[10px]">
+                                                        {t('Talent')}
+                                                    </Badge>
+                                                )}
+                                            </div>
                                             {artist.is_verified && (
                                                 <Badge className="absolute top-3 right-3 border-none bg-primary text-primary-foreground">
                                                     <Star className="mr-1 h-3 w-3 fill-current" />

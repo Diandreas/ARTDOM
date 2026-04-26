@@ -35,6 +35,8 @@ class ArtistProfile extends Model
         'is_verified',
         'is_featured',
         'featured_order',
+        'level',
+        'is_level_manual',
         'verification_status',
         'id_document_front',
         'id_document_back',
@@ -58,7 +60,9 @@ class ArtistProfile extends Model
             'portfolio_urls' => 'array',
             'is_verified' => 'boolean',
             'is_featured' => 'boolean',
+            'is_level_manual' => 'boolean',
             'featured_order' => 'integer',
+            'level' => \App\Enums\ArtistLevel::class,
             'rating' => 'float',
             'base_rate' => 'decimal:2',
         ];

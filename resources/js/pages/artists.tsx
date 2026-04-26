@@ -6,6 +6,9 @@ import {
     SlidersHorizontal,
     X,
     Loader2,
+    Zap,
+    Trophy,
+    Users,
 } from 'lucide-react';
 import type { FormEvent } from 'react';
 import { useState, useEffect, useRef } from 'react';
@@ -34,6 +37,7 @@ interface Artist {
     categories: string[];
     base_rate: number;
     is_verified: boolean;
+    level: string;
     rating: number;
     total_reviews: number;
 }
@@ -384,6 +388,25 @@ export default function Artists({
                                                 alt={artist.stage_name}
                                                 className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                                             />
+                                            <div className="absolute top-2 left-2 flex flex-col gap-2">
+                                                {artist.level === 'emerging_star' && (
+                                                    <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-none text-[10px]">
+                                                        <Trophy className="mr-1 h-3 w-3" />
+                                                        {t('Star en émergence')}
+                                                    </Badge>
+                                                )}
+                                                {artist.level === 'rising_star' && (
+                                                    <Badge variant="secondary" className="text-[10px]">
+                                                        <Zap className="mr-1 h-3 w-3 fill-current" />
+                                                        {t('Artiste perçant')}
+                                                    </Badge>
+                                                )}
+                                                {artist.level === 'talent' && (
+                                                    <Badge variant="outline" className="bg-black/50 text-white border-white/20 text-[10px]">
+                                                        {t('Talent')}
+                                                    </Badge>
+                                                )}
+                                            </div>
                                             {artist.is_verified && (
                                                 <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
                                                     <Star className="mr-1 h-3 w-3 fill-current" />
