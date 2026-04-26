@@ -1,10 +1,18 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Plus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,6 +23,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AdminLayout from '@/layouts/admin-layout';
+import UserForm from './UserForm';
+
+type CategoryOption = {
+    value: string;
+    label: string;
+};
 
 type UserRow = {
     id: string;
@@ -52,6 +66,7 @@ type Props = {
     users: Pagination<UserRow>;
     filters: Filters;
     cities: string[];
+    categories: CategoryOption[];
 };
 
 const statusLabel: Record<string, string> = {
@@ -67,8 +82,9 @@ const levelLabel: Record<string, string> = {
     emerging_star: 'Star en émergence',
 };
 
-export default function Index({ users, filters, cities }: Props) {
+export default function Index({ users, filters, cities, categories }: Props) {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [bulkEmailSubject, setBulkEmailSubject] = useState('');
     const [bulkEmailBody, setBulkEmailBody] = useState('');
 
@@ -305,9 +321,28 @@ export default function Index({ users, filters, cities }: Props) {
                             <CardTitle>Liste utilisateurs</CardTitle>
                             <CardDescription>CRUD complet des comptes plateforme.</CardDescription>
                         </div>
-                        <Button asChild>
-                            <Link href="/admin/users/create">Creer utilisateur</Link>
-                        </Button>
+                        <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="gap-2">
+                                    <Plus className="h-4 w-4" />
+                                    Creer utilisateur
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                    <DialogTitle>Nouveau utilisateur</DialogTitle>
+                                    <DialogDescription>
+                                        Remplissez les informations pour creer un nouveau compte.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <UserForm
+                                    mode="create"
+                                    endpoint="/admin/users"
+                                    categories={categories}
+                                    onSuccess={() => setIsCreateModalOpen(false)}
+                                />
+                            </DialogContent>
+                        </Dialog>
                     </CardHeader>
                     <CardContent className="overflow-x-auto">
                         <table className="w-full min-w-[1050px] text-sm">

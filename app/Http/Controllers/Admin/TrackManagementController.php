@@ -35,7 +35,7 @@ class TrackManagementController extends Controller
 
         $track->update([
             'is_banned' => true,
-            'ban_reason' => $validated['reason'],
+            'ban_reason' => $validated['reason'] ?? null,
         ]);
 
         return redirect()->back()->with('toast', [

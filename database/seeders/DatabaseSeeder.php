@@ -83,11 +83,11 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $user->id,
                 'stage_name' => $data['name'],
                 'bio' => "Artiste passionné(e) avec plus de 5 ans d'expérience dans le ".$data['category'].'. Je crée des moments inoubliables pour vos événements.',
-                'categories' => json_encode([$data['category']]),
+                'categories' => [$data['category']],
                 'base_rate' => $data['rate'],
                 'is_verified' => true,
                 'verification_status' => 'approved',
-                'portfolio_urls' => json_encode(["https://picsum.photos/seed/artist{$index}/1200/400"]),
+                'portfolio_urls' => ["https://picsum.photos/seed/artist{$index}/1200/400"],
             ]);
 
             return ['user' => $user, 'category' => $data['category']];

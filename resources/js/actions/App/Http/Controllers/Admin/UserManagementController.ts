@@ -81,8 +81,145 @@ indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 index.form = indexForm
 
 /**
+* @see \App\Http\Controllers\Admin\UserManagementController::create
+* @see app/Http/Controllers/Admin/UserManagementController.php:139
+* @route '/admin/users/create'
+*/
+export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: create.url(options),
+    method: 'get',
+})
+
+create.definition = {
+    methods: ["get","head"],
+    url: '/admin/users/create',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::create
+* @see app/Http/Controllers/Admin/UserManagementController.php:139
+* @route '/admin/users/create'
+*/
+create.url = (options?: RouteQueryOptions) => {
+    return create.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::create
+* @see app/Http/Controllers/Admin/UserManagementController.php:139
+* @route '/admin/users/create'
+*/
+create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: create.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::create
+* @see app/Http/Controllers/Admin/UserManagementController.php:139
+* @route '/admin/users/create'
+*/
+create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: create.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::create
+* @see app/Http/Controllers/Admin/UserManagementController.php:139
+* @route '/admin/users/create'
+*/
+const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::create
+* @see app/Http/Controllers/Admin/UserManagementController.php:139
+* @route '/admin/users/create'
+*/
+createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::create
+* @see app/Http/Controllers/Admin/UserManagementController.php:139
+* @route '/admin/users/create'
+*/
+createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: create.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+create.form = createForm
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::store
+* @see app/Http/Controllers/Admin/UserManagementController.php:146
+* @route '/admin/users'
+*/
+export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: store.url(options),
+    method: 'post',
+})
+
+store.definition = {
+    methods: ["post"],
+    url: '/admin/users',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::store
+* @see app/Http/Controllers/Admin/UserManagementController.php:146
+* @route '/admin/users'
+*/
+store.url = (options?: RouteQueryOptions) => {
+    return store.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::store
+* @see app/Http/Controllers/Admin/UserManagementController.php:146
+* @route '/admin/users'
+*/
+store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::store
+* @see app/Http/Controllers/Admin/UserManagementController.php:146
+* @route '/admin/users'
+*/
+const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\UserManagementController::store
+* @see app/Http/Controllers/Admin/UserManagementController.php:146
+* @route '/admin/users'
+*/
+storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: store.url(options),
+    method: 'post',
+})
+
+store.form = storeForm
+
+/**
 * @see \App\Http\Controllers\Admin\UserManagementController::activate
-* @see app/Http/Controllers/Admin/UserManagementController.php:383
+* @see app/Http/Controllers/Admin/UserManagementController.php:384
 * @route '/admin/users/{user}/activate'
 */
 export const activate = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -97,7 +234,7 @@ activate.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::activate
-* @see app/Http/Controllers/Admin/UserManagementController.php:383
+* @see app/Http/Controllers/Admin/UserManagementController.php:384
 * @route '/admin/users/{user}/activate'
 */
 activate.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -130,7 +267,7 @@ activate.url = (args: { user: string | { id: string } } | [user: string | { id: 
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::activate
-* @see app/Http/Controllers/Admin/UserManagementController.php:383
+* @see app/Http/Controllers/Admin/UserManagementController.php:384
 * @route '/admin/users/{user}/activate'
 */
 activate.post = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -140,7 +277,7 @@ activate.post = (args: { user: string | { id: string } } | [user: string | { id:
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::activate
-* @see app/Http/Controllers/Admin/UserManagementController.php:383
+* @see app/Http/Controllers/Admin/UserManagementController.php:384
 * @route '/admin/users/{user}/activate'
 */
 const activateForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -150,7 +287,7 @@ const activateForm = (args: { user: string | { id: string } } | [user: string | 
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::activate
-* @see app/Http/Controllers/Admin/UserManagementController.php:383
+* @see app/Http/Controllers/Admin/UserManagementController.php:384
 * @route '/admin/users/{user}/activate'
 */
 activateForm.post = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -162,7 +299,7 @@ activate.form = activateForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::ban
-* @see app/Http/Controllers/Admin/UserManagementController.php:394
+* @see app/Http/Controllers/Admin/UserManagementController.php:395
 * @route '/admin/users/{user}/ban'
 */
 export const ban = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -177,7 +314,7 @@ ban.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::ban
-* @see app/Http/Controllers/Admin/UserManagementController.php:394
+* @see app/Http/Controllers/Admin/UserManagementController.php:395
 * @route '/admin/users/{user}/ban'
 */
 ban.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -210,7 +347,7 @@ ban.url = (args: { user: string | { id: string } } | [user: string | { id: strin
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::ban
-* @see app/Http/Controllers/Admin/UserManagementController.php:394
+* @see app/Http/Controllers/Admin/UserManagementController.php:395
 * @route '/admin/users/{user}/ban'
 */
 ban.post = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -220,7 +357,7 @@ ban.post = (args: { user: string | { id: string } } | [user: string | { id: stri
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::ban
-* @see app/Http/Controllers/Admin/UserManagementController.php:394
+* @see app/Http/Controllers/Admin/UserManagementController.php:395
 * @route '/admin/users/{user}/ban'
 */
 const banForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -230,7 +367,7 @@ const banForm = (args: { user: string | { id: string } } | [user: string | { id:
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::ban
-* @see app/Http/Controllers/Admin/UserManagementController.php:394
+* @see app/Http/Controllers/Admin/UserManagementController.php:395
 * @route '/admin/users/{user}/ban'
 */
 banForm.post = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -242,7 +379,7 @@ ban.form = banForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::show
-* @see app/Http/Controllers/Admin/UserManagementController.php:212
+* @see app/Http/Controllers/Admin/UserManagementController.php:213
 * @route '/admin/users/{user}'
 */
 export const show = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -257,7 +394,7 @@ show.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::show
-* @see app/Http/Controllers/Admin/UserManagementController.php:212
+* @see app/Http/Controllers/Admin/UserManagementController.php:213
 * @route '/admin/users/{user}'
 */
 show.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -290,7 +427,7 @@ show.url = (args: { user: string | { id: string } } | [user: string | { id: stri
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::show
-* @see app/Http/Controllers/Admin/UserManagementController.php:212
+* @see app/Http/Controllers/Admin/UserManagementController.php:213
 * @route '/admin/users/{user}'
 */
 show.get = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -300,7 +437,7 @@ show.get = (args: { user: string | { id: string } } | [user: string | { id: stri
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::show
-* @see app/Http/Controllers/Admin/UserManagementController.php:212
+* @see app/Http/Controllers/Admin/UserManagementController.php:213
 * @route '/admin/users/{user}'
 */
 show.head = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -310,7 +447,7 @@ show.head = (args: { user: string | { id: string } } | [user: string | { id: str
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::show
-* @see app/Http/Controllers/Admin/UserManagementController.php:212
+* @see app/Http/Controllers/Admin/UserManagementController.php:213
 * @route '/admin/users/{user}'
 */
 const showForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -320,7 +457,7 @@ const showForm = (args: { user: string | { id: string } } | [user: string | { id
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::show
-* @see app/Http/Controllers/Admin/UserManagementController.php:212
+* @see app/Http/Controllers/Admin/UserManagementController.php:213
 * @route '/admin/users/{user}'
 */
 showForm.get = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -330,7 +467,7 @@ showForm.get = (args: { user: string | { id: string } } | [user: string | { id: 
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::show
-* @see app/Http/Controllers/Admin/UserManagementController.php:212
+* @see app/Http/Controllers/Admin/UserManagementController.php:213
 * @route '/admin/users/{user}'
 */
 showForm.head = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -347,7 +484,7 @@ show.form = showForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::edit
-* @see app/Http/Controllers/Admin/UserManagementController.php:284
+* @see app/Http/Controllers/Admin/UserManagementController.php:285
 * @route '/admin/users/{user}/edit'
 */
 export const edit = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -362,7 +499,7 @@ edit.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::edit
-* @see app/Http/Controllers/Admin/UserManagementController.php:284
+* @see app/Http/Controllers/Admin/UserManagementController.php:285
 * @route '/admin/users/{user}/edit'
 */
 edit.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -395,7 +532,7 @@ edit.url = (args: { user: string | { id: string } } | [user: string | { id: stri
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::edit
-* @see app/Http/Controllers/Admin/UserManagementController.php:284
+* @see app/Http/Controllers/Admin/UserManagementController.php:285
 * @route '/admin/users/{user}/edit'
 */
 edit.get = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -405,7 +542,7 @@ edit.get = (args: { user: string | { id: string } } | [user: string | { id: stri
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::edit
-* @see app/Http/Controllers/Admin/UserManagementController.php:284
+* @see app/Http/Controllers/Admin/UserManagementController.php:285
 * @route '/admin/users/{user}/edit'
 */
 edit.head = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -415,7 +552,7 @@ edit.head = (args: { user: string | { id: string } } | [user: string | { id: str
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::edit
-* @see app/Http/Controllers/Admin/UserManagementController.php:284
+* @see app/Http/Controllers/Admin/UserManagementController.php:285
 * @route '/admin/users/{user}/edit'
 */
 const editForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -425,7 +562,7 @@ const editForm = (args: { user: string | { id: string } } | [user: string | { id
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::edit
-* @see app/Http/Controllers/Admin/UserManagementController.php:284
+* @see app/Http/Controllers/Admin/UserManagementController.php:285
 * @route '/admin/users/{user}/edit'
 */
 editForm.get = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -435,7 +572,7 @@ editForm.get = (args: { user: string | { id: string } } | [user: string | { id: 
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::edit
-* @see app/Http/Controllers/Admin/UserManagementController.php:284
+* @see app/Http/Controllers/Admin/UserManagementController.php:285
 * @route '/admin/users/{user}/edit'
 */
 editForm.head = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -452,7 +589,7 @@ edit.form = editForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::update
-* @see app/Http/Controllers/Admin/UserManagementController.php:313
+* @see app/Http/Controllers/Admin/UserManagementController.php:314
 * @route '/admin/users/{user}'
 */
 export const update = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -467,7 +604,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::update
-* @see app/Http/Controllers/Admin/UserManagementController.php:313
+* @see app/Http/Controllers/Admin/UserManagementController.php:314
 * @route '/admin/users/{user}'
 */
 update.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -500,7 +637,7 @@ update.url = (args: { user: string | { id: string } } | [user: string | { id: st
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::update
-* @see app/Http/Controllers/Admin/UserManagementController.php:313
+* @see app/Http/Controllers/Admin/UserManagementController.php:314
 * @route '/admin/users/{user}'
 */
 update.put = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -510,7 +647,7 @@ update.put = (args: { user: string | { id: string } } | [user: string | { id: st
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::update
-* @see app/Http/Controllers/Admin/UserManagementController.php:313
+* @see app/Http/Controllers/Admin/UserManagementController.php:314
 * @route '/admin/users/{user}'
 */
 const updateForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -525,7 +662,7 @@ const updateForm = (args: { user: string | { id: string } } | [user: string | { 
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::update
-* @see app/Http/Controllers/Admin/UserManagementController.php:313
+* @see app/Http/Controllers/Admin/UserManagementController.php:314
 * @route '/admin/users/{user}'
 */
 updateForm.put = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -542,7 +679,7 @@ update.form = updateForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::destroy
-* @see app/Http/Controllers/Admin/UserManagementController.php:425
+* @see app/Http/Controllers/Admin/UserManagementController.php:426
 * @route '/admin/users/{user}'
 */
 export const destroy = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -557,7 +694,7 @@ destroy.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::destroy
-* @see app/Http/Controllers/Admin/UserManagementController.php:425
+* @see app/Http/Controllers/Admin/UserManagementController.php:426
 * @route '/admin/users/{user}'
 */
 destroy.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -590,7 +727,7 @@ destroy.url = (args: { user: string | { id: string } } | [user: string | { id: s
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::destroy
-* @see app/Http/Controllers/Admin/UserManagementController.php:425
+* @see app/Http/Controllers/Admin/UserManagementController.php:426
 * @route '/admin/users/{user}'
 */
 destroy.delete = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -600,7 +737,7 @@ destroy.delete = (args: { user: string | { id: string } } | [user: string | { id
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::destroy
-* @see app/Http/Controllers/Admin/UserManagementController.php:425
+* @see app/Http/Controllers/Admin/UserManagementController.php:426
 * @route '/admin/users/{user}'
 */
 const destroyForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -615,7 +752,7 @@ const destroyForm = (args: { user: string | { id: string } } | [user: string | {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::destroy
-* @see app/Http/Controllers/Admin/UserManagementController.php:425
+* @see app/Http/Controllers/Admin/UserManagementController.php:426
 * @route '/admin/users/{user}'
 */
 destroyForm.delete = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -632,7 +769,7 @@ destroy.form = destroyForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::suspend
-* @see app/Http/Controllers/Admin/UserManagementController.php:376
+* @see app/Http/Controllers/Admin/UserManagementController.php:377
 * @route '/admin/users/{user}/suspend'
 */
 export const suspend = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -647,7 +784,7 @@ suspend.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::suspend
-* @see app/Http/Controllers/Admin/UserManagementController.php:376
+* @see app/Http/Controllers/Admin/UserManagementController.php:377
 * @route '/admin/users/{user}/suspend'
 */
 suspend.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -680,7 +817,7 @@ suspend.url = (args: { user: string | { id: string } } | [user: string | { id: s
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::suspend
-* @see app/Http/Controllers/Admin/UserManagementController.php:376
+* @see app/Http/Controllers/Admin/UserManagementController.php:377
 * @route '/admin/users/{user}/suspend'
 */
 suspend.post = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -690,7 +827,7 @@ suspend.post = (args: { user: string | { id: string } } | [user: string | { id: 
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::suspend
-* @see app/Http/Controllers/Admin/UserManagementController.php:376
+* @see app/Http/Controllers/Admin/UserManagementController.php:377
 * @route '/admin/users/{user}/suspend'
 */
 const suspendForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -700,7 +837,7 @@ const suspendForm = (args: { user: string | { id: string } } | [user: string | {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::suspend
-* @see app/Http/Controllers/Admin/UserManagementController.php:376
+* @see app/Http/Controllers/Admin/UserManagementController.php:377
 * @route '/admin/users/{user}/suspend'
 */
 suspendForm.post = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -712,7 +849,7 @@ suspend.form = suspendForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::updateLevel
-* @see app/Http/Controllers/Admin/UserManagementController.php:409
+* @see app/Http/Controllers/Admin/UserManagementController.php:410
 * @route '/admin/users/{user}/level'
 */
 export const updateLevel = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -727,7 +864,7 @@ updateLevel.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::updateLevel
-* @see app/Http/Controllers/Admin/UserManagementController.php:409
+* @see app/Http/Controllers/Admin/UserManagementController.php:410
 * @route '/admin/users/{user}/level'
 */
 updateLevel.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -760,7 +897,7 @@ updateLevel.url = (args: { user: string | { id: string } } | [user: string | { i
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::updateLevel
-* @see app/Http/Controllers/Admin/UserManagementController.php:409
+* @see app/Http/Controllers/Admin/UserManagementController.php:410
 * @route '/admin/users/{user}/level'
 */
 updateLevel.patch = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -770,7 +907,7 @@ updateLevel.patch = (args: { user: string | { id: string } } | [user: string | {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::updateLevel
-* @see app/Http/Controllers/Admin/UserManagementController.php:409
+* @see app/Http/Controllers/Admin/UserManagementController.php:410
 * @route '/admin/users/{user}/level'
 */
 const updateLevelForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -785,7 +922,7 @@ const updateLevelForm = (args: { user: string | { id: string } } | [user: string
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::updateLevel
-* @see app/Http/Controllers/Admin/UserManagementController.php:409
+* @see app/Http/Controllers/Admin/UserManagementController.php:410
 * @route '/admin/users/{user}/level'
 */
 updateLevelForm.patch = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -802,7 +939,7 @@ updateLevel.form = updateLevelForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::impersonate
-* @see app/Http/Controllers/Admin/UserManagementController.php:491
+* @see app/Http/Controllers/Admin/UserManagementController.php:492
 * @route '/admin/users/{user}/impersonate'
 */
 export const impersonate = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -817,7 +954,7 @@ impersonate.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::impersonate
-* @see app/Http/Controllers/Admin/UserManagementController.php:491
+* @see app/Http/Controllers/Admin/UserManagementController.php:492
 * @route '/admin/users/{user}/impersonate'
 */
 impersonate.url = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions) => {
@@ -850,7 +987,7 @@ impersonate.url = (args: { user: string | { id: string } } | [user: string | { i
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::impersonate
-* @see app/Http/Controllers/Admin/UserManagementController.php:491
+* @see app/Http/Controllers/Admin/UserManagementController.php:492
 * @route '/admin/users/{user}/impersonate'
 */
 impersonate.get = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -860,7 +997,7 @@ impersonate.get = (args: { user: string | { id: string } } | [user: string | { i
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::impersonate
-* @see app/Http/Controllers/Admin/UserManagementController.php:491
+* @see app/Http/Controllers/Admin/UserManagementController.php:492
 * @route '/admin/users/{user}/impersonate'
 */
 impersonate.head = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -870,7 +1007,7 @@ impersonate.head = (args: { user: string | { id: string } } | [user: string | { 
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::impersonate
-* @see app/Http/Controllers/Admin/UserManagementController.php:491
+* @see app/Http/Controllers/Admin/UserManagementController.php:492
 * @route '/admin/users/{user}/impersonate'
 */
 const impersonateForm = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -880,7 +1017,7 @@ const impersonateForm = (args: { user: string | { id: string } } | [user: string
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::impersonate
-* @see app/Http/Controllers/Admin/UserManagementController.php:491
+* @see app/Http/Controllers/Admin/UserManagementController.php:492
 * @route '/admin/users/{user}/impersonate'
 */
 impersonateForm.get = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -890,7 +1027,7 @@ impersonateForm.get = (args: { user: string | { id: string } } | [user: string |
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::impersonate
-* @see app/Http/Controllers/Admin/UserManagementController.php:491
+* @see app/Http/Controllers/Admin/UserManagementController.php:492
 * @route '/admin/users/{user}/impersonate'
 */
 impersonateForm.head = (args: { user: string | { id: string } } | [user: string | { id: string } ] | string | { id: string }, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -907,7 +1044,7 @@ impersonate.form = impersonateForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::stopImpersonation
-* @see app/Http/Controllers/Admin/UserManagementController.php:505
+* @see app/Http/Controllers/Admin/UserManagementController.php:506
 * @route '/admin/users/stop-impersonation'
 */
 export const stopImpersonation = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -922,7 +1059,7 @@ stopImpersonation.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::stopImpersonation
-* @see app/Http/Controllers/Admin/UserManagementController.php:505
+* @see app/Http/Controllers/Admin/UserManagementController.php:506
 * @route '/admin/users/stop-impersonation'
 */
 stopImpersonation.url = (options?: RouteQueryOptions) => {
@@ -931,7 +1068,7 @@ stopImpersonation.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::stopImpersonation
-* @see app/Http/Controllers/Admin/UserManagementController.php:505
+* @see app/Http/Controllers/Admin/UserManagementController.php:506
 * @route '/admin/users/stop-impersonation'
 */
 stopImpersonation.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -941,7 +1078,7 @@ stopImpersonation.post = (options?: RouteQueryOptions): RouteDefinition<'post'> 
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::stopImpersonation
-* @see app/Http/Controllers/Admin/UserManagementController.php:505
+* @see app/Http/Controllers/Admin/UserManagementController.php:506
 * @route '/admin/users/stop-impersonation'
 */
 const stopImpersonationForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -951,7 +1088,7 @@ const stopImpersonationForm = (options?: RouteQueryOptions): RouteFormDefinition
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::stopImpersonation
-* @see app/Http/Controllers/Admin/UserManagementController.php:505
+* @see app/Http/Controllers/Admin/UserManagementController.php:506
 * @route '/admin/users/stop-impersonation'
 */
 stopImpersonationForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -963,7 +1100,7 @@ stopImpersonation.form = stopImpersonationForm
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::bulk
-* @see app/Http/Controllers/Admin/UserManagementController.php:432
+* @see app/Http/Controllers/Admin/UserManagementController.php:433
 * @route '/admin/users/bulk'
 */
 export const bulk = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -978,7 +1115,7 @@ bulk.definition = {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::bulk
-* @see app/Http/Controllers/Admin/UserManagementController.php:432
+* @see app/Http/Controllers/Admin/UserManagementController.php:433
 * @route '/admin/users/bulk'
 */
 bulk.url = (options?: RouteQueryOptions) => {
@@ -987,7 +1124,7 @@ bulk.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::bulk
-* @see app/Http/Controllers/Admin/UserManagementController.php:432
+* @see app/Http/Controllers/Admin/UserManagementController.php:433
 * @route '/admin/users/bulk'
 */
 bulk.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -997,7 +1134,7 @@ bulk.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::bulk
-* @see app/Http/Controllers/Admin/UserManagementController.php:432
+* @see app/Http/Controllers/Admin/UserManagementController.php:433
 * @route '/admin/users/bulk'
 */
 const bulkForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -1007,7 +1144,7 @@ const bulkForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => (
 
 /**
 * @see \App\Http\Controllers\Admin\UserManagementController::bulk
-* @see app/Http/Controllers/Admin/UserManagementController.php:432
+* @see app/Http/Controllers/Admin/UserManagementController.php:433
 * @route '/admin/users/bulk'
 */
 bulkForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -1017,6 +1154,6 @@ bulkForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
 
 bulk.form = bulkForm
 
-const UserManagementController = { index, activate, ban, show, edit, update, destroy, suspend, updateLevel, impersonate, stopImpersonation, bulk }
+const UserManagementController = { index, create, store, activate, ban, show, edit, update, destroy, suspend, updateLevel, impersonate, stopImpersonation, bulk }
 
 export default UserManagementController

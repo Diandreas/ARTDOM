@@ -36,7 +36,7 @@ class ArtistProfileFactory extends Factory
             'user_id' => User::factory()->artist(),
             'stage_name' => fake()->firstName().' '.fake()->randomElement(['Artist', 'Soul', 'Voice', 'Beat', 'Flow']),
             'bio' => fake()->randomElement($bios),
-            'categories' => json_encode([$categoryKey]), // JSON array of categories
+            'categories' => [$categoryKey], // Array of categories (automatically cast to JSON)
             'base_rate' => fake()->randomElement([15000, 20000, 25000, 30000, 35000, 40000, 50000, 75000, 100000]),
             'is_verified' => fake()->boolean(80), // 80% verified
             'level' => \App\Enums\ArtistLevel::Talent,

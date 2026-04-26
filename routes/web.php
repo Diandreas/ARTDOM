@@ -76,6 +76,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/tracks/{track}/unban', [\App\Http\Controllers\Admin\TrackManagementController::class, 'unban'])->name('tracks.unban');
 
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
+        Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
         Route::post('/users/{user}/activate', [UserManagementController::class, 'activate'])->name('users.activate');
         Route::post('/users/{user}/ban', [UserManagementController::class, 'ban'])->name('users.ban');
         Route::get('/users/{user}', [UserManagementController::class, 'show'])->name('users.show');

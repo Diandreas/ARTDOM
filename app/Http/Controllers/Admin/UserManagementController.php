@@ -132,6 +132,7 @@ class UserManagementController extends Controller
                 'direction' => $direction,
             ],
             'cities' => $availableCities,
+            'categories' => $this->artistCategories(),
         ]);
     }
 
@@ -400,7 +401,7 @@ class UserManagementController extends Controller
         $user->update([
             'is_active' => false,
             'banned_at' => now(),
-            'ban_reason' => $validated['reason'],
+            'ban_reason' => $validated['reason'] ?? null,
         ]);
 
         return back()->with('message', 'Utilisateur banni.');

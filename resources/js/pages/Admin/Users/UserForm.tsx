@@ -39,6 +39,7 @@ type Props = {
     endpoint: string;
     categories: CategoryOption[];
     user?: InitialUser;
+    onSuccess?: () => void;
 };
 
 const levelOptions = [
@@ -47,7 +48,7 @@ const levelOptions = [
     { value: 'emerging_star', label: 'Star en émergence' },
 ];
 
-export default function UserForm({ mode, endpoint, categories, user }: Props) {
+export default function UserForm({ mode, endpoint, categories, user, onSuccess }: Props) {
     const form = useForm({
         first_name: user?.first_name ?? '',
         last_name: user?.last_name ?? '',
@@ -88,12 +89,16 @@ export default function UserForm({ mode, endpoint, categories, user }: Props) {
         }));
 
         if (mode === 'create') {
-            form.post(endpoint);
+            form.post(endpoint, {
+                onSuccess: () => onSuccess?.(),
+            });
 
             return;
         }
 
-        form.put(endpoint);
+        form.put(endpoint, {
+            onSuccess: () => onSuccess?.(),
+        });
     };
 
     return (

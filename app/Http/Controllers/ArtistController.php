@@ -69,6 +69,16 @@ class ArtistController extends Controller
                     $categories = json_decode($categories, true) ?? [];
                 }
 
+                $portfolioUrls = $user->artistProfile->portfolio_urls;
+                if (is_string($portfolioUrls)) {
+                    $portfolioUrls = json_decode($portfolioUrls, true) ?? [];
+                }
+
+                $socialLinks = $user->artistProfile->social_links;
+                if (is_string($socialLinks)) {
+                    $socialLinks = json_decode($socialLinks, true) ?? [];
+                }
+
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
@@ -81,6 +91,8 @@ class ArtistController extends Controller
                     'level' => $user->artistProfile->level?->value ?? 'talent',
                     'rating' => $user->artistProfile->rating ?? 0,
                     'total_reviews' => $user->artistProfile->total_reviews ?? 0,
+                    'portfolio_urls' => is_array($portfolioUrls) ? $portfolioUrls : [],
+                    'social_links' => is_array($socialLinks) ? $socialLinks : [],
                 ];
             });
 
@@ -180,6 +192,16 @@ class ArtistController extends Controller
             $categories = json_decode($categories, true) ?? [];
         }
 
+        $portfolioUrls = $artist->artistProfile->portfolio_urls;
+        if (is_string($portfolioUrls)) {
+            $portfolioUrls = json_decode($portfolioUrls, true) ?? [];
+        }
+
+        $socialLinks = $artist->artistProfile->social_links;
+        if (is_string($socialLinks)) {
+            $socialLinks = json_decode($socialLinks, true) ?? [];
+        }
+
         return Inertia::render('Artist/profile', [
             'artist' => [
                 'id' => $artist->id,
@@ -195,8 +217,8 @@ class ArtistController extends Controller
                 'level' => $artist->artistProfile->level?->value ?? 'talent',
                 'rating' => $artist->artistProfile->rating ?? 0,
                 'total_reviews' => $artist->artistProfile->total_reviews ?? 0,
-                'portfolio_urls' => $artist->artistProfile->portfolio_urls ?? [],
-                'social_links' => $artist->artistProfile->social_links ?? [],
+                'portfolio_urls' => is_array($portfolioUrls) ? $portfolioUrls : [],
+                'social_links' => is_array($socialLinks) ? $socialLinks : [],
             ],
             'services' => $services,
             'albums' => $albums,

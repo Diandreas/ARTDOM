@@ -95,7 +95,7 @@ class BroadcastNotificationController extends Controller
             $query->where('role', $validated['target_role']);
         }
 
-        if (! empty($validated['only_active'])) {
+        if (! empty($validated['only_active'] ?? null)) {
             $query->where('is_active', true);
         }
 
