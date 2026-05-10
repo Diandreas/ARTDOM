@@ -7,6 +7,7 @@ import {
     Settings,
     Home,
     Music,
+    Video,
     Grid,
     Bell,
     Calendar,
@@ -226,6 +227,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                                     ArtStream
                                                 </Link>
                                                 <Link
+                                                    href="/arttube"
+                                                    className="text-lg font-semibold transition-colors hover:text-primary"
+                                                >
+                                                    ArtTube
+                                                </Link>
+                                                <Link
                                                     href="/client/reservations"
                                                     className="text-lg font-semibold transition-colors hover:text-primary"
                                                 >
@@ -252,6 +259,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                                 className="text-lg font-semibold transition-colors hover:text-primary"
                                             >
                                                 ArtStream
+                                            </Link>
+                                            <Link
+                                                href="/arttube"
+                                                className="text-lg font-semibold transition-colors hover:text-primary"
+                                            >
+                                                ArtTube
                                             </Link>
                                         </>
                                     )}
@@ -336,6 +349,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                             ArtStream
                                         </Link>
                                         <Link
+                                            href="/arttube"
+                                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/arttube') ? 'text-primary' : ''}`}
+                                        >
+                                            ArtTube
+                                        </Link>
+                                        <Link
                                             href="/client/reservations"
                                             className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/client/reservations') ? 'text-primary' : ''}`}
                                         >
@@ -357,6 +376,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                     className="text-sm font-medium transition-colors hover:text-primary"
                                 >
                                     ArtStream
+                                </Link>
+                                <Link
+                                    href="/arttube"
+                                    className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/arttube') ? 'text-primary' : ''}`}
+                                >
+                                    ArtTube
                                 </Link>
                             </>
                         )}
@@ -563,6 +588,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
                         active={isActive('/artstream')}
                         icon={<Music className="h-5 w-5" />}
                         label="ArtStream"
+                    />
+                    <BottomNavItem
+                        href="/arttube"
+                        active={isActive('/arttube')}
+                        icon={<Video className="h-5 w-5" />}
+                        label="ArtTube"
                     />
                     {user ? (
                         <BottomNavItem

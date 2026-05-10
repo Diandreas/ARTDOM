@@ -87,6 +87,11 @@ export default function AdminLayout({
             icon: Layout,
         },
         {
+            label: t('Hero Sections'),
+            href: '/admin/hero-sections',
+            icon: Images,
+        },
+        {
             label: t('Push Campaigns'),
             href: '/admin/broadcast',
             icon: Bell,

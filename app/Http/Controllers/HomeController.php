@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\CarouselSlide;
+use App\Models\HeroSection;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -91,12 +92,40 @@ class HomeController extends Controller
             'is_active' => true,
         ]);
 
+        $heroSections = HeroSection::with(['artist.artistProfile'])
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->get()
+            ->map(function ($section) {
+                $isEn = app()->getLocale() === 'en';
+
+                return [
+                    'id' => $section->id,
+                    'media_type' => $section->media_type,
+                    'title' => ($isEn && $section->title_en) ? $section->title_en : $section->title,
+                    'subtitle' => ($isEn && $section->subtitle_en) ? $section->subtitle_en : $section->subtitle,
+                    'image_url' => $section->image_url,
+                    'video_url' => $section->video_url,
+                    'youtube_url' => $section->youtube_url,
+                    'link_url' => $section->link_url,
+                    'link_label' => ($isEn && $section->link_label_en) ? $section->link_label_en : $section->link_label,
+                    'artist' => $section->artist ? [
+                        'id' => $section->artist->id,
+                        'stage_name' => $section->artist->artistProfile->stage_name ?? $section->artist->name,
+                        'profile_photo' => $section->artist->profile_photo,
+                        'level' => $section->artist->artistProfile?->level?->value ?? 'talent',
+                        'is_verified' => $section->artist->artistProfile?->is_verified ?? false,
+                    ] : null,
+                ];
+            });
+
         return Inertia::render('home', [
             'featuredArtists' => $featuredArtists,
             'recentAlbums' => $recentAlbums,
             'carouselSlides' => $carouselSlides,
             'heroSlides' => $heroSlides,
             'heroSettings' => $heroSettings,
+            'heroSections' => $heroSections,
         ]);
     }
 

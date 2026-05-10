@@ -71,6 +71,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'index'])->name('hero-settings.index');
         Route::put('/hero-settings', [\App\Http\Controllers\Admin\HeroSettingController::class, 'update'])->name('hero-settings.update');
 
+        Route::get('/hero-sections', [\App\Http\Controllers\Admin\HeroSectionController::class, 'index'])->name('hero-sections.index');
+        Route::post('/hero-sections', [\App\Http\Controllers\Admin\HeroSectionController::class, 'store'])->name('hero-sections.store');
+        Route::put('/hero-sections/{heroSection}', [\App\Http\Controllers\Admin\HeroSectionController::class, 'update'])->name('hero-sections.update');
+        Route::delete('/hero-sections/{heroSection}', [\App\Http\Controllers\Admin\HeroSectionController::class, 'destroy'])->name('hero-sections.destroy');
+        Route::post('/hero-sections/reorder', [\App\Http\Controllers\Admin\HeroSectionController::class, 'reorder'])->name('hero-sections.reorder');
+        Route::patch('/hero-sections/{heroSection}/toggle', [\App\Http\Controllers\Admin\HeroSectionController::class, 'toggle'])->name('hero-sections.toggle');
+
         Route::get('/tracks', [\App\Http\Controllers\Admin\TrackManagementController::class, 'index'])->name('tracks.index');
         Route::post('/tracks/{track}/ban', [\App\Http\Controllers\Admin\TrackManagementController::class, 'ban'])->name('tracks.ban');
         Route::post('/tracks/{track}/unban', [\App\Http\Controllers\Admin\TrackManagementController::class, 'unban'])->name('tracks.unban');

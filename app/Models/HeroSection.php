@@ -4,17 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property string|null $image_url
- * @property string|null $image_url_en
- * @property string|null $video_url
- * @property string|null $video_upload_url
- * @property string|null $youtube_url
- */
-class HeroSetting extends Model
+class HeroSection extends Model
 {
     protected $fillable = [
-        'type',
+        'media_type',
         'title',
         'title_en',
         'subtitle',
@@ -22,10 +15,12 @@ class HeroSetting extends Model
         'image_url',
         'image_url_en',
         'video_url',
-        'video_upload_url',
         'youtube_url',
         'link_url',
         'link_label',
+        'link_label_en',
+        'artist_id',
+        'order',
         'is_active',
     ];
 
@@ -33,6 +28,12 @@ class HeroSetting extends Model
     {
         return [
             'is_active' => 'boolean',
+            'order' => 'integer',
         ];
+    }
+
+    public function artist(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'artist_id');
     }
 }

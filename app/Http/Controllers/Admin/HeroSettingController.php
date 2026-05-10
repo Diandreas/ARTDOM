@@ -40,7 +40,7 @@ class HeroSettingController extends Controller
         $settings = HeroSetting::firstOrFail();
 
         $validated = $request->validate([
-            'type' => 'required|string|in:image,carousel,video',
+            'type' => 'required|string|in:image,carousel,video,video_upload,video_youtube',
             'title' => 'nullable|string|max:255',
             'title_en' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
@@ -50,6 +50,8 @@ class HeroSettingController extends Controller
             'image_url' => 'nullable|string|max:500',
             'image_url_en' => 'nullable|string|max:500',
             'video_url' => 'nullable|string|max:500',
+            'video_upload' => 'nullable|file|mimetypes:video/mp4,video/webm|max:102400',
+            'youtube_url' => 'nullable|string|max:500',
             'link_url' => 'nullable|string|max:500',
             'link_label' => 'nullable|string|max:100',
             'is_active' => 'boolean',
@@ -69,6 +71,14 @@ class HeroSettingController extends Controller
             }
             $path = $request->file('image_en')->store('hero', 'public');
             $validated['image_url_en'] = Storage::url($path);
+        }
+
+        if ($request->hasFile('video_upload')) {
+            if ($settings->video_upload_url && str_contains($settings->video_upload_url, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $settings->video_upload_url));
+            }
+            $path = $request->file('video_upload')->store('hero/videos', 'public');
+            $validated['video_upload_url'] = Storage::url($path);
         }
 
         $settings->update($validated);

@@ -1,5 +1,5 @@
-import { Head, useForm } from '@inertiajs/react';
-import { Image as ImageIcon, Layout, Play, Save, Upload } from 'lucide-react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { Image as ImageIcon, Layout, Play, Save, Upload, Video, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
 import AdminLayout from '@/layouts/admin-layout';
 import { useAppLocale } from '@/hooks/use-app-locale';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 interface HeroSettings {
     id: number;
@@ -20,6 +20,8 @@ interface HeroSettings {
     image_url: string | null;
     image_url_en: string | null;
     video_url: string | null;
+    video_upload_url: string | null;
+    youtube_url: string | null;
     link_url: string | null;
     link_label: string | null;
     is_active: boolean;
@@ -33,6 +35,8 @@ export default function HeroSettings({ settings }: Props) {
     const { t } = useAppLocale();
     const imageInputRef = useRef<HTMLInputElement>(null);
     const imageEnInputRef = useRef<HTMLInputElement>(null);
+    const videoUploadRef = useRef<HTMLInputElement>(null);
+    const [videoUploadName, setVideoUploadName] = useState<string | null>(null);
 
     const form = useForm({
         type: settings.type,
@@ -45,6 +49,8 @@ export default function HeroSettings({ settings }: Props) {
         image_url: settings.image_url ?? '',
         image_url_en: settings.image_url_en ?? '',
         video_url: settings.video_url ?? '',
+        video_upload: null as File | null,
+        youtube_url: settings.youtube_url ?? '',
         link_url: settings.link_url ?? '',
         link_label: settings.link_label ?? '',
         is_active: settings.is_active,
@@ -152,44 +158,28 @@ export default function HeroSettings({ settings }: Props) {
                                 <RadioGroup
                                     value={form.data.type}
                                     onValueChange={(value) => form.setData('type', value)}
-                                    className="grid grid-cols-3 gap-2"
+                                    className="grid grid-cols-2 gap-2 sm:grid-cols-5"
                                 >
-                                    <div>
-                                        <RadioGroupItem value="image" id="type-image" className="sr-only" />
-                                        <Label
-                                            htmlFor="type-image"
-                                            className={`flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer transition-all ${
-                                                form.data.type === 'image' ? 'border-primary bg-primary/5' : ''
-                                            }`}
-                                        >
-                                            <ImageIcon className="mb-1 h-5 w-5" />
-                                            <span className="text-[10px] uppercase font-bold">{t('Image')}</span>
-                                        </Label>
-                                    </div>
-                                    <div>
-                                        <RadioGroupItem value="carousel" id="type-carousel" className="sr-only" />
-                                        <Label
-                                            htmlFor="type-carousel"
-                                            className={`flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer transition-all ${
-                                                form.data.type === 'carousel' ? 'border-primary bg-primary/5' : ''
-                                            }`}
-                                        >
-                                            <Layout className="mb-1 h-5 w-5" />
-                                            <span className="text-[10px] uppercase font-bold">{t('Carousel')}</span>
-                                        </Label>
-                                    </div>
-                                    <div>
-                                        <RadioGroupItem value="video" id="type-video" className="sr-only" />
-                                        <Label
-                                            htmlFor="type-video"
-                                            className={`flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 hover:bg-accent hover:text-accent-foreground cursor-pointer transition-all ${
-                                                form.data.type === 'video' ? 'border-primary bg-primary/5' : ''
-                                            }`}
-                                        >
-                                            <Play className="mb-1 h-5 w-5" />
-                                            <span className="text-[10px] uppercase font-bold">{t('Video')}</span>
-                                        </Label>
-                                    </div>
+                                    {[
+                                        { value: 'image', label: t('Image'), icon: ImageIcon },
+                                        { value: 'carousel', label: t('Carousel'), icon: Layout },
+                                        { value: 'video', label: t('Video URL'), icon: Play },
+                                        { value: 'video_upload', label: t('Upload video'), icon: Video },
+                                        { value: 'video_youtube', label: 'YouTube', icon: Youtube },
+                                    ].map(({ value, label, icon: Icon }) => (
+                                        <div key={value}>
+                                            <RadioGroupItem value={value} id={`type-${value}`} className="sr-only" />
+                                            <Label
+                                                htmlFor={`type-${value}`}
+                                                className={`flex cursor-pointer flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-2 transition-all hover:bg-accent hover:text-accent-foreground ${
+                                                    form.data.type === value ? 'border-primary bg-primary/5' : ''
+                                                }`}
+                                            >
+                                                <Icon className="mb-1 h-5 w-5" />
+                                                <span className="text-[10px] font-bold uppercase">{label}</span>
+                                            </Label>
+                                        </div>
+                                    ))}
                                 </RadioGroup>
 
                                 {form.data.type === 'image' && (
@@ -269,6 +259,57 @@ export default function HeroSettings({ settings }: Props) {
                                             placeholder="https://example.com/hero.mp4"
                                         />
                                         <p className="text-[10px] text-muted-foreground">{t('The video will play in a loop and without sound.')}</p>
+                                    </div>
+                                )}
+
+                                {form.data.type === 'video_upload' && (
+                                    <div className="space-y-2 border-t pt-4">
+                                        <Label className="text-xs">{t('Upload video')} (MP4 / WebM — max 100 Mo)</Label>
+                                        {settings.video_upload_url && !form.data.video_upload && (
+                                            <p className="truncate rounded bg-muted px-2 py-1 text-xs text-muted-foreground">
+                                                {settings.video_upload_url}
+                                            </p>
+                                        )}
+                                        {videoUploadName && (
+                                            <p className="truncate rounded bg-muted px-2 py-1 text-xs text-green-600">
+                                                {videoUploadName}
+                                            </p>
+                                        )}
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-8 w-full gap-2 text-xs"
+                                            onClick={() => videoUploadRef.current?.click()}
+                                        >
+                                            <Video className="h-3.5 w-3.5" /> {t('Choose video file')}
+                                        </Button>
+                                        <input
+                                            type="file"
+                                            ref={videoUploadRef}
+                                            className="hidden"
+                                            accept="video/mp4,video/webm"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0] || null;
+                                                form.setData('video_upload', file);
+                                                setVideoUploadName(file?.name ?? null);
+                                            }}
+                                        />
+                                        <p className="text-[10px] text-muted-foreground">{t('The video will play in a loop and without sound.')}</p>
+                                    </div>
+                                )}
+
+                                {form.data.type === 'video_youtube' && (
+                                    <div className="space-y-1.5 border-t pt-4">
+                                        <Label htmlFor="youtube_url" className="text-xs">URL YouTube</Label>
+                                        <Input
+                                            id="youtube_url"
+                                            className="h-9 text-sm"
+                                            value={form.data.youtube_url}
+                                            onChange={(e) => form.setData('youtube_url', e.target.value)}
+                                            placeholder="https://www.youtube.com/watch?v=..."
+                                        />
+                                        <p className="text-[10px] text-muted-foreground">{t('Accepts youtube.com/watch and youtu.be links.')}</p>
                                     </div>
                                 )}
 

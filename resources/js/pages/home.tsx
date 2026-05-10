@@ -2,10 +2,12 @@ import { Link } from '@inertiajs/react';
 import {
     Star,
     MapPin,
-    Users,
+    Mic,
     Play,
     Zap,
     Trophy,
+    Flame,
+    Crown,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -63,6 +65,25 @@ interface Slide {
     link_label: string | null;
 }
 
+interface HeroSectionItem {
+    id: number;
+    media_type: 'image' | 'video_upload' | 'video_youtube' | 'artist';
+    title: string | null;
+    subtitle: string | null;
+    image_url: string | null;
+    video_url: string | null;
+    youtube_url: string | null;
+    link_url: string | null;
+    link_label: string | null;
+    artist: {
+        id: string;
+        stage_name: string;
+        profile_photo: string;
+        level: string;
+        is_verified: boolean;
+    } | null;
+}
+
 interface HeroSettings {
     type: 'image' | 'carousel' | 'video';
     title: string | null;
@@ -80,6 +101,52 @@ interface HomeProps {
     carouselSlides: Slide[];
     heroSlides: Slide[];
     heroSettings: HeroSettings;
+    heroSections: HeroSectionItem[];
+}
+
+function ArtistLevelBadge({ level, className = '' }: { level: string; className?: string }) {
+    if (level === 'featured') {
+        return (
+            <Badge className={`border-none bg-purple-600 text-[10px] text-white hover:bg-purple-700 ${className}`}>
+                <Crown className="mr-1 h-3 w-3" />
+                Star
+            </Badge>
+        );
+    }
+    if (level === 'breakout' || level === 'emerging_star') {
+        return (
+            <Badge className={`border-none bg-orange-500 text-[10px] text-white hover:bg-orange-600 ${className}`}>
+                <Trophy className="mr-1 h-3 w-3" />
+                Breakout
+            </Badge>
+        );
+    }
+    if (level === 'rising' || level === 'rising_star') {
+        return (
+            <Badge variant="secondary" className={`text-[10px] ${className}`}>
+                <Flame className="mr-1 h-3 w-3 fill-current" />
+                Rising
+            </Badge>
+        );
+    }
+    if (level === 'emerging') {
+        return (
+            <Badge variant="secondary" className={`text-[10px] ${className}`}>
+                <Zap className="mr-1 h-3 w-3 fill-current" />
+                Emerging
+            </Badge>
+        );
+    }
+    return (
+        <Badge variant="outline" className={`border-white/20 bg-black/50 text-[10px] text-white ${className}`}>
+            Talent
+        </Badge>
+    );
+}
+
+function getYoutubeEmbedUrl(url: string): string {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    return match ? `https://www.youtube-nocookie.com/embed/${match[1]}?autoplay=1&mute=1&loop=1&playlist=${match[1]}&controls=0` : '';
 }
 
 export default function Home({
@@ -88,6 +155,7 @@ export default function Home({
     carouselSlides,
     heroSlides,
     heroSettings,
+    heroSections,
 }: HomeProps) {
     const { t } = useAppLocale();
 
@@ -243,6 +311,96 @@ export default function Home({
                 {/* Hero / Promotional Section */}
                 {renderHero()}
 
+                {/* Hero Sections Carousel (multi-sections personnalisées) */}
+                {heroSections.length > 0 && (
+                    <section className="px-4 py-4 md:py-6">
+                        <div className="container mx-auto max-w-7xl">
+                            <Carousel opts={{ loop: true, align: 'start' }} className="w-full overflow-hidden rounded-2xl">
+                                <CarouselContent>
+                                    {heroSections.map((section) => (
+                                        <CarouselItem key={section.id}>
+                                            <div className="relative h-[220px] w-full overflow-hidden rounded-2xl md:h-[420px]">
+                                                {/* Background media */}
+                                                {section.media_type === 'image' && section.image_url && (
+                                                    <img
+                                                        src={section.image_url}
+                                                        alt={section.title || ''}
+                                                        className="absolute inset-0 h-full w-full object-cover"
+                                                    />
+                                                )}
+                                                {section.media_type === 'video_upload' && section.video_url && (
+                                                    <video
+                                                        src={section.video_url}
+                                                        autoPlay
+                                                        loop
+                                                        muted
+                                                        playsInline
+                                                        className="absolute inset-0 h-full w-full object-cover"
+                                                    />
+                                                )}
+                                                {section.media_type === 'video_youtube' && section.youtube_url && (
+                                                    <iframe
+                                                        src={getYoutubeEmbedUrl(section.youtube_url)}
+                                                        className="absolute inset-0 h-full w-full scale-105"
+                                                        allow="autoplay; encrypted-media"
+                                                        allowFullScreen
+                                                        title={section.title || 'Hero video'}
+                                                    />
+                                                )}
+                                                {section.media_type === 'artist' && section.artist && (
+                                                    <img
+                                                        src={section.image_url || section.artist.profile_photo}
+                                                        alt={section.artist.stage_name}
+                                                        className="absolute inset-0 h-full w-full object-cover"
+                                                    />
+                                                )}
+                                                {/* Fallback gradient */}
+                                                {!section.image_url && !section.video_url && !section.youtube_url && (
+                                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-secondary/60" />
+                                                )}
+
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                                                <div className="relative z-10 flex h-full flex-col justify-end p-5 text-white md:p-12">
+                                                    {section.media_type === 'artist' && section.artist && (
+                                                        <ArtistLevelBadge level={section.artist.level} className="mb-2 w-fit" />
+                                                    )}
+                                                    {section.title && (
+                                                        <h2 className="font-heading mb-2 text-xl font-bold leading-tight md:mb-3 md:text-4xl">
+                                                            {section.title}
+                                                        </h2>
+                                                    )}
+                                                    {section.subtitle && (
+                                                        <p className="mb-3 hidden max-w-2xl text-sm text-white/90 md:block md:text-base">
+                                                            {section.subtitle}
+                                                        </p>
+                                                    )}
+                                                    {section.link_url && (
+                                                        <Link href={section.link_url}>
+                                                            <Button size="sm" className="h-8 bg-primary px-4 text-xs text-primary-foreground hover:bg-primary/90 md:h-10 md:px-6 md:text-sm">
+                                                                {section.link_label || t('Discover')}
+                                                            </Button>
+                                                        </Link>
+                                                    )}
+                                                    {section.media_type === 'artist' && section.artist && !section.link_url && (
+                                                        <Link href={`/artist/${section.artist.id}`}>
+                                                            <Button size="sm" className="h-8 bg-primary px-4 text-xs text-primary-foreground hover:bg-primary/90 md:h-10 md:px-6 md:text-sm">
+                                                                {t('View profile')}
+                                                            </Button>
+                                                        </Link>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselPrevious className="left-4 border-none bg-black/20 text-white hover:bg-black/40" />
+                                <CarouselNext className="right-4 border-none bg-black/20 text-white hover:bg-black/40" />
+                            </Carousel>
+                        </div>
+                    </section>
+                )}
+
                 {/* Main Carousel (Featured/Custom) */}
                 {carouselSlides.length > 0 && (
                     <section className="bg-muted/30 px-4 py-8">
@@ -324,24 +482,8 @@ export default function Home({
                                                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                                            <div className="absolute top-3 left-3 flex flex-col gap-2">
-                                                {artist.level === 'emerging_star' && (
-                                                    <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-none text-[10px]">
-                                                        <Trophy className="mr-1 h-3 w-3" />
-                                                        {t('Star en émergence')}
-                                                    </Badge>
-                                                )}
-                                                {artist.level === 'rising_star' && (
-                                                    <Badge variant="secondary" className="text-[10px]">
-                                                        <Zap className="mr-1 h-3 w-3 fill-current" />
-                                                        {t('Artiste perçant')}
-                                                    </Badge>
-                                                )}
-                                                {artist.level === 'talent' && (
-                                                    <Badge variant="outline" className="bg-black/50 text-white border-white/20 text-[10px]">
-                                                        {t('Talent')}
-                                                    </Badge>
-                                                )}
+                                            <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+                                                <ArtistLevelBadge level={artist.level} />
                                             </div>
                                             {artist.is_verified && (
                                                 <Badge className="absolute top-3 right-3 border-none bg-primary text-primary-foreground">

@@ -117,6 +117,7 @@ class AlbumUploadController extends Controller
             'price' => $request->price ?? 0,
             'is_streamable' => $request->is_free ?? false,
             'is_purchasable' => ! ($request->is_free ?? false),
+            'ai_type' => $request->ai_type ?? 'human',
             'published_at' => now(),
         ]);
 

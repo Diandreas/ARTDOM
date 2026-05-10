@@ -28,6 +28,7 @@ class Track extends Model
         'track_number',
         'is_banned',
         'ban_reason',
+        'ai_type',
     ];
 
     /**
@@ -50,6 +51,7 @@ class Track extends Model
     {
         return [
             'id' => 'string',
+            'ai_type' => \App\Enums\AiType::class,
         ];
     }
 

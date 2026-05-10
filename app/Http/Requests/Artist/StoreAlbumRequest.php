@@ -29,6 +29,7 @@ class StoreAlbumRequest extends FormRequest
             'price' => ['nullable', 'numeric', 'min:0'],
             'is_free' => ['nullable', 'boolean'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'ai_type' => ['nullable', 'string', 'in:human,partial_ai,full_ai'],
         ];
     }
 

@@ -28,6 +28,7 @@ class Album extends Model
         'is_purchasable',
         'total_plays',
         'published_at',
+        'ai_type',
     ];
 
     /**
@@ -53,6 +54,7 @@ class Album extends Model
             'is_streamable' => 'boolean',
             'is_purchasable' => 'boolean',
             'published_at' => 'datetime',
+            'ai_type' => \App\Enums\AiType::class,
         ];
     }
 
