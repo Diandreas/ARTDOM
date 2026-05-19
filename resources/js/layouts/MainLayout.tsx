@@ -268,6 +268,18 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                             </Link>
                                         </>
                                     )}
+                                    <Link
+                                        href="/impact-social"
+                                        className="text-lg font-semibold transition-colors hover:text-primary"
+                                    >
+                                        {t('Notre Impact')}
+                                    </Link>
+                                    <Link
+                                        href="/a-propos"
+                                        className="text-lg font-semibold transition-colors hover:text-primary"
+                                    >
+                                        {t('À Propos')}
+                                    </Link>
                                 </nav>
 
                                 <div className="mt-auto border-t border-border/40 pt-6 pb-10 px-2">
@@ -385,6 +397,18 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                 </Link>
                             </>
                         )}
+                        <Link
+                            href="/impact-social"
+                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/impact-social') ? 'text-primary' : ''}`}
+                        >
+                            {t('Notre Impact')}
+                        </Link>
+                        <Link
+                            href="/a-propos"
+                            className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/a-propos') ? 'text-primary' : ''}`}
+                        >
+                            {t('À Propos')}
+                        </Link>
                     </nav>
 
                     {/* Right Actions: Search & Profile */}

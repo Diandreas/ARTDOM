@@ -96,6 +96,21 @@ export default function AdminLayout({
             href: '/admin/broadcast',
             icon: Bell,
         },
+        {
+            label: t('Categories'),
+            href: '/admin/categories',
+            icon: Database,
+        },
+        {
+            label: t('Impact Social'),
+            href: '/admin/pages/impact-social/edit',
+            icon: ShieldCheck,
+        },
+        {
+            label: t('À Propos'),
+            href: '/admin/pages/a-propos/edit',
+            icon: ShieldCheck,
+        },
         ...(currentRole === 'super_admin'
             ? [
                   {

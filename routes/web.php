@@ -22,6 +22,8 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::put('/language', [LanguageController::class, 'update'])->name('language.update');
+Route::get('/impact-social', [\App\Http\Controllers\PageController::class, 'impactSocial'])->name('impact-social');
+Route::get('/a-propos', [\App\Http\Controllers\PageController::class, 'aPropos'])->name('a-propos');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
@@ -96,6 +98,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/users/{user}/impersonate', [UserManagementController::class, 'impersonate'])->name('users.impersonate');
         Route::post('/users/stop-impersonation', [UserManagementController::class, 'stopImpersonation'])->name('users.stop-impersonation');
         Route::post('/users/bulk', [UserManagementController::class, 'bulk'])->name('users.bulk');
+
+        // Page Content (Impact Social, A Propos)
+        Route::get('/pages/{slug}/edit', [\App\Http\Controllers\Admin\PageContentController::class, 'edit'])->name('pages.edit');
+        Route::put('/pages/{slug}', [\App\Http\Controllers\Admin\PageContentController::class, 'update'])->name('pages.update');
+
+        // Categories
+        Route::get('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories.index');
+        Route::post('/categories', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
+        Route::put('/categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::post('/categories/reorder', [\App\Http\Controllers\Admin\CategoryController::class, 'reorder'])->name('categories.reorder');
 
         // Admin Withdrawals
         Route::get('/withdrawals', [\App\Http\Controllers\Admin\WithdrawalManagementController::class, 'index'])->name('withdrawals.index');

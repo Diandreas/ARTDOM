@@ -1,6 +1,6 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import { Plus, Edit2, Trash2, GripVertical, Ban } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { store, update, destroy, toggle, reorder } from '@/actions/App/Http/Controllers/Artist/ServiceController';
 import { Badge } from '@/components/ui/badge';
@@ -38,8 +38,16 @@ interface Service {
     options?: ServiceOption[];
 }
 
+interface ServiceCategory {
+    slug: string;
+    label_fr: string;
+    label_en: string;
+    icon: string | null;
+}
+
 interface ServicesProps {
     services: Service[];
+    categories: ServiceCategory[];
 }
 
 interface FormFieldsProps {
@@ -48,7 +56,9 @@ interface FormFieldsProps {
     addOptionRow: () => void;
     updateOption: (index: number, key: keyof ServiceOption, value: string | number | boolean) => void;
     removeOption: (index: number) => void;
+    categories: ServiceCategory[];
     t: (key: string) => string;
+    locale: string;
 }
 
 interface ServiceFormData {
@@ -63,7 +73,7 @@ interface ServiceFormData {
     options: ServiceOption[];
 }
 
-function FormFields({ data, setData, addOptionRow, updateOption, removeOption, t }: FormFieldsProps) {
+function FormFields({ data, setData, addOptionRow, updateOption, removeOption, categories, t, locale }: FormFieldsProps) {
     return (
         <>
             <div className="space-y-2">
@@ -82,11 +92,11 @@ function FormFields({ data, setData, addOptionRow, updateOption, removeOption, t
                             <SelectValue placeholder={t('Select...')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="peinture">{t('Painting')}</SelectItem>
-                            <SelectItem value="photographie">{t('Photography')}</SelectItem>
-                            <SelectItem value="musique">{t('Music performance')}</SelectItem>
-                            <SelectItem value="sculpture">{t('Sculpture')}</SelectItem>
-                            <SelectItem value="autre">{t('Other')}</SelectItem>
+                            {categories.map((cat) => (
+                                <SelectItem key={cat.slug} value={cat.slug}>
+                                    {cat.icon ? `${cat.icon} ` : ''}{locale === 'fr' ? cat.label_fr : cat.label_en}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </div>
@@ -137,9 +147,14 @@ function FormFields({ data, setData, addOptionRow, updateOption, removeOption, t
             </div>
 
             <div className="space-y-4 pt-4 border-t">
-                <div className="flex items-center justify-between">
-                    <Label className="text-base font-semibold">{t('Additional options')}</Label>
-                    <Button type="button" variant="outline" size="sm" onClick={addOptionRow} className="gap-2">
+                <div className="flex items-start justify-between gap-4">
+                    <div>
+                        <Label className="text-base font-semibold">{t('Additional options')}</Label>
+                        <p className="text-xs text-muted-foreground mt-1 max-w-xs">
+                            {t('Options let clients customize their order — e.g. "A3 format +2000 FCFA", "Rush delivery +5000 FCFA". Each option adds a selectable extra at checkout.')}
+                        </p>
+                    </div>
+                    <Button type="button" variant="outline" size="sm" onClick={addOptionRow} className="gap-2 shrink-0">
                         <Plus className="w-3 h-3" />
                         {t('Add option')}
                     </Button>
@@ -171,9 +186,13 @@ function FormFields({ data, setData, addOptionRow, updateOption, removeOption, t
     );
 }
 
-export default function ArtistServices({ services: initialServices }: ServicesProps) {
-    const { t } = useAppLocale();
+export default function ArtistServices({ services: initialServices, categories }: ServicesProps) {
+    const { t, locale } = useAppLocale();
     const [services, setServices] = useState<Service[]>(initialServices);
+
+    useEffect(() => {
+        setServices(initialServices);
+    }, [initialServices]);
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingService, setEditingService] = useState<Service | null>(null);
@@ -235,7 +254,6 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                 toast.success(t('Service created successfully'));
                 setIsAddOpen(false);
                 reset();
-                router.reload({ only: ['services'] });
             },
         });
     };
@@ -250,7 +268,6 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                 setIsEditOpen(false);
                 setEditingService(null);
                 reset();
-                router.reload({ only: ['services'] });
             },
         });
     };
@@ -261,7 +278,6 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                 preserveScroll: true,
                 onSuccess: () => {
                     toast.success(t('Service deleted successfully'));
-                    router.reload({ only: ['services'] });
                 },
                 onError: (errors) => {
                     if (errors.message) toast.error(errors.message);
@@ -275,7 +291,6 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
             preserveScroll: true,
             onSuccess: () => {
                 toast.success(currentStatus ? t('Service disabled') : t('Service enabled'));
-                router.reload({ only: ['services'] });
             }
         });
     };
@@ -358,7 +373,9 @@ export default function ArtistServices({ services: initialServices }: ServicesPr
                                     addOptionRow={addOptionRow}
                                     updateOption={updateOption}
                                     removeOption={removeOption}
+                                    categories={categories}
                                     t={t}
+                                    locale={locale}
                                 />
                                 <div className="flex justify-end gap-2 pt-4 border-t">
                                     <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)}>{t('Cancel')}</Button>

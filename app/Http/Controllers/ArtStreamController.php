@@ -65,6 +65,7 @@ class ArtStreamController extends Controller
                     'price' => $album->price,
                     'total_plays' => $album->total_plays,
                     'tracks_count' => $album->tracks_count,
+                    'ai_type' => $album->ai_type?->value,
                     'artist' => [
                         'id' => $album->artist->id,
                         'name' => $album->artist->name,
@@ -92,6 +93,7 @@ class ArtStreamController extends Controller
                     'cover_url' => $album->cover_url,
                     'genre' => $album->genre,
                     'year' => $album->year,
+                    'ai_type' => $album->ai_type?->value,
                     'artist' => [
                         'id' => $album->artist->id,
                         'name' => $album->artist->name,

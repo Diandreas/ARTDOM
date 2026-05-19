@@ -71,6 +71,7 @@ class HomeController extends Controller
                     'genre' => $album->genre,
                     'year' => $album->year,
                     'price' => $album->price,
+                    'ai_type' => $album->ai_type?->value,
                     'artist' => [
                         'id' => $album->artist->id,
                         'name' => $album->artist->name,

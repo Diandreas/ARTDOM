@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Artist;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -38,8 +39,11 @@ class ServiceController extends Controller
                 return $data;
             });
 
+        $categories = Category::where('is_active', true)->orderBy('order')->get(['slug', 'label_fr', 'label_en', 'icon']);
+
         return Inertia::render('Artist/Services', [
             'services' => $services,
+            'categories' => $categories,
         ]);
     }
 

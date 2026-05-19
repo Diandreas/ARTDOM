@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import React from 'react';
 import {
     Star,
     MapPin,
@@ -43,6 +44,7 @@ interface Album {
     genre: string;
     year: number;
     price: number;
+    ai_type?: 'human' | 'partial_ai' | 'full_ai';
     artist: {
         id: string;
         name: string;
@@ -355,7 +357,7 @@ export default function Home({
                                                     />
                                                 )}
                                                 {/* Fallback gradient */}
-                                                {!section.image_url && !section.video_url && !section.youtube_url && (
+                                                {!section.image_url && !section.video_url && !section.youtube_url && !(section.media_type === 'artist' && section.artist?.profile_photo) && (
                                                     <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-secondary/60" />
                                                 )}
 
@@ -457,56 +459,86 @@ export default function Home({
                 )}
 
                 {/* Featured Artists Grid (Original) */}
-                <section className="px-4 py-8">
-                    <div className="container mx-auto max-w-7xl">
-                        <div className="mb-6 flex items-center justify-between">
-                            <h2 className="font-heading text-2xl font-bold text-foreground">
-                                {t('Featured artists')}
-                            </h2>
-                            <Link
-                                href="/artists"
-                                className="text-sm font-medium text-primary hover:underline"
-                            >
-                                {t('See all')}
-                            </Link>
-                        </div>
+                {(() => {
+                    const levelOrder = ['featured', 'breakout', 'emerging_star', 'rising', 'rising_star', 'emerging', 'talent'];
+                    const levelConfig: Record<string, { label: string; icon: React.ReactNode; accent: string }> = {
+                        featured:      { label: t('Star Artists'),    icon: <Crown className="h-5 w-5 text-purple-500" />,  accent: 'border-purple-500/30 bg-purple-500/5' },
+                        breakout:      { label: t('Breakout Artists'), icon: <Trophy className="h-5 w-5 text-orange-500" />, accent: 'border-orange-500/30 bg-orange-500/5' },
+                        emerging_star: { label: t('Breakout Artists'), icon: <Trophy className="h-5 w-5 text-orange-500" />, accent: 'border-orange-500/30 bg-orange-500/5' },
+                        rising:        { label: t('Rising Artists'),   icon: <Flame className="h-5 w-5 text-red-400" />,    accent: 'border-red-400/30 bg-red-400/5' },
+                        rising_star:   { label: t('Rising Artists'),   icon: <Flame className="h-5 w-5 text-red-400" />,    accent: 'border-red-400/30 bg-red-400/5' },
+                        emerging:      { label: t('Emerging Artists'), icon: <Zap className="h-5 w-5 text-yellow-500" />,   accent: 'border-yellow-500/30 bg-yellow-500/5' },
+                        talent:        { label: t('New Talents'),      icon: <Star className="h-5 w-5 text-primary" />,     accent: '' },
+                    };
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {featuredArtists.slice(0, 8).map((artist) => (
-                                <Link key={artist.id} href={`/artist/${artist.id}`}>
-                                    <Card className="group cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-xl">
-                                        <div className="relative aspect-square overflow-hidden bg-muted">
-                                            <img
-                                                src={artist.profile_photo}
-                                                alt={artist.stage_name}
-                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                                            <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                                                <ArtistLevelBadge level={artist.level} />
+                    // Deduplicate level groups (breakout + emerging_star merge, rising + rising_star merge)
+                    const canonicalLevels = ['featured', 'breakout', 'rising', 'emerging', 'talent'];
+                    const levelAlias: Record<string, string> = { emerging_star: 'breakout', rising_star: 'rising' };
+
+                    const grouped: Record<string, Artist[]> = {};
+                    for (const artist of featuredArtists) {
+                        const canonical = levelAlias[artist.level] ?? artist.level;
+                        if (!grouped[canonical]) grouped[canonical] = [];
+                        grouped[canonical].push(artist);
+                    }
+
+                    return canonicalLevels
+                        .filter((lvl) => grouped[lvl]?.length > 0)
+                        .map((lvl) => {
+                            const cfg = levelConfig[lvl];
+                            return (
+                                <section key={lvl} className="px-4 py-8">
+                                    <div className="container mx-auto max-w-7xl">
+                                        <div className="mb-6 flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                {cfg.icon}
+                                                <h2 className="font-heading text-2xl font-bold text-foreground">
+                                                    {cfg.label}
+                                                </h2>
                                             </div>
-                                            {artist.is_verified && (
-                                                <Badge className="absolute top-3 right-3 border-none bg-primary text-primary-foreground">
-                                                    <Star className="mr-1 h-3 w-3 fill-current" />
-                                                    {t('Verified')}
-                                                </Badge>
-                                            )}
-                                            <div className="absolute right-3 bottom-3 left-3">
-                                                <h3 className="mb-1 text-lg font-bold text-white">
-                                                    {artist.stage_name}
-                                                </h3>
-                                                <div className="flex items-center gap-2 text-sm text-white/90">
-                                                    <MapPin className="h-3 w-3" />
-                                                    <span>{artist.city}</span>
-                                                </div>
-                                            </div>
+                                            <Link href="/artists" className="text-sm font-medium text-primary hover:underline">
+                                                {t('See all')}
+                                            </Link>
                                         </div>
-                                    </Card>
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                            {grouped[lvl].map((artist) => (
+                                                <Link key={artist.id} href={`/artist/${artist.id}`}>
+                                                    <Card className={`group cursor-pointer overflow-hidden transition-shadow duration-300 hover:shadow-xl border ${cfg.accent}`}>
+                                                        <div className="relative aspect-square overflow-hidden bg-muted">
+                                                            <img
+                                                                src={artist.profile_photo}
+                                                                alt={artist.stage_name}
+                                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                            />
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                                                            <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+                                                                <ArtistLevelBadge level={artist.level} />
+                                                            </div>
+                                                            {artist.is_verified && (
+                                                                <Badge className="absolute top-3 right-3 border-none bg-primary text-primary-foreground">
+                                                                    <Star className="mr-1 h-3 w-3 fill-current" />
+                                                                    {t('Verified')}
+                                                                </Badge>
+                                                            )}
+                                                            <div className="absolute right-3 bottom-3 left-3">
+                                                                <h3 className="mb-1 text-lg font-bold text-white">
+                                                                    {artist.stage_name}
+                                                                </h3>
+                                                                <div className="flex items-center gap-2 text-sm text-white/90">
+                                                                    <MapPin className="h-3 w-3" />
+                                                                    <span>{artist.city}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </Card>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </section>
+                            );
+                        });
+                })()}
 
                 {/* Recent Albums Carousel */}
                 <section className="px-4 py-8">
@@ -555,6 +587,11 @@ export default function Home({
                                                             <Play className="h-5 w-5 fill-current" />
                                                         </Button>
                                                     </div>
+                                                    {album.ai_type && album.ai_type !== 'human' && (
+                                                        <div className={`absolute bottom-1.5 left-1.5 rounded-full px-1.5 py-0.5 text-[9px] font-bold text-white ${album.ai_type === 'full_ai' ? 'bg-red-600/80' : 'bg-yellow-500/80'}`}>
+                                                            {album.ai_type === 'full_ai' ? '🤖 IA' : '🤖 IA+'}
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <h3 className="mb-1 truncate text-sm font-semibold text-foreground">
                                                     {album.title}

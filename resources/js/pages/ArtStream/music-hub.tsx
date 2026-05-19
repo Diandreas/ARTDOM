@@ -31,6 +31,7 @@ interface Album {
     price?: number;
     total_plays?: number;
     tracks_count?: number;
+    ai_type?: 'human' | 'partial_ai' | 'full_ai';
     artist: Artist;
 }
 
@@ -490,6 +491,12 @@ function AlbumCard({
                 {(album.total_plays ?? 0) > 0 && !compact && (
                     <div className="absolute top-2 right-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur">
                         {formatPlays(album.total_plays!)}
+                    </div>
+                )}
+                {/* AI badge */}
+                {album.ai_type && album.ai_type !== 'human' && (
+                    <div className={`absolute bottom-2 left-2 rounded-full px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur ${album.ai_type === 'full_ai' ? 'bg-red-600/80' : 'bg-yellow-500/80'}`}>
+                        {album.ai_type === 'full_ai' ? '🤖 IA' : '🤖 IA+'}
                     </div>
                 )}
             </div>
