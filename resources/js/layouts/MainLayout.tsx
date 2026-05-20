@@ -18,6 +18,7 @@ import type { PropsWithChildren, FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import MiniPlayer from '@/components/Player/MiniPlayer';
+import PageTransition from '@/components/PageTransition';
 import LanguageSwitcher from '@/components/language-switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -272,7 +273,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                                         href="/impact-social"
                                         className="text-lg font-semibold transition-colors hover:text-primary"
                                     >
-                                        {t('Notre Impact')}
+                                        {t('Volet Social')}
                                     </Link>
                                     <Link
                                         href="/a-propos"
@@ -401,7 +402,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
                             href="/impact-social"
                             className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/impact-social') ? 'text-primary' : ''}`}
                         >
-                            {t('Notre Impact')}
+                            {t('Volet Social')}
                         </Link>
                         <Link
                             href="/a-propos"
@@ -581,7 +582,9 @@ export default function MainLayout({ children }: PropsWithChildren) {
             </header>
 
             {/* Main Content */}
-            <main className="relative z-10 flex-1">{children}</main>
+            <main className="relative z-10 flex-1">
+                <PageTransition>{children}</PageTransition>
+            </main>
 
             {/* Footer Placeholder */}
             <footer className="relative z-10 border-t border-border/40 bg-muted/30 py-6 md:px-8 md:py-0">

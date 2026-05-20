@@ -166,6 +166,51 @@
     }
 }
 
+/* ── View Transitions — morphing entre pages ── */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(page) {
+    animation: vt-slide-out 220ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+::view-transition-new(page) {
+    animation: vt-slide-in 280ms cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+@keyframes vt-slide-out {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.99);
+        filter: blur(3px);
+    }
+}
+
+@keyframes vt-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.99);
+        filter: blur(3px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+    }
+}
+
+/* Navbar reste fixe pendant la transition */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+}
+
 /* African Earth Gradient - adapts to light/dark mode */
     .bg-gradient-earth {
         background: linear-gradient(135deg,

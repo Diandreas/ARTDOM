@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 import LanguageSwitcher from '@/components/language-switcher';
+import PageTransition from '@/components/PageTransition';
 import MiniPlayer from '@/components/Player/MiniPlayer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -218,7 +219,9 @@ export default function AdminLayout({
                             </div>
                         </div>
                     </header>
-                    <section className="p-4 md:p-8">{children}</section>
+                    <section className="p-4 md:p-8">
+                        <PageTransition>{children}</PageTransition>
+                    </section>
                 </main>
             </div>
             <MiniPlayer />
