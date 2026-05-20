@@ -39,7 +39,7 @@ class VideoController extends Controller
 
         // Vidéos des artistes suivis (si client)
         $followingVideos = collect();
-        if ($client->isClient() && $client->clientProfile) {
+        if ($client && $client->isClient() && $client->clientProfile) {
             $followedArtists = $client->clientProfile->followedArtists()->pluck('id');
             $followingVideos = Video::whereIn('artist_id', $followedArtists)
                 ->where('visibility', '!=', 'private')

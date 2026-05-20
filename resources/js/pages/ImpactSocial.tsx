@@ -73,6 +73,18 @@ export default function ImpactSocial({ page }: Props) {
 
             {/* ── HERO BANNER ── */}
             <section className="relative overflow-hidden">
+                {/* Background image at 10% opacity */}
+                <div
+                    aria-hidden="true"
+                    className="absolute inset-0 z-0"
+                    style={{
+                        backgroundImage: `url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600&auto=format&fit=crop&q=80')`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        opacity: 0.10,
+                    }}
+                />
+
                 {/* African pattern overlay */}
                 <div
                     aria-hidden="true"
@@ -99,10 +111,10 @@ export default function ImpactSocial({ page }: Props) {
                 <div className="relative z-10 container mx-auto max-w-6xl px-4 py-20 md:py-28 md:px-6">
                     <div className="max-w-3xl">
                         <Badge className="mb-6 bg-primary/10 text-primary border-primary/20 px-3 py-1 text-xs font-semibold tracking-widest uppercase">
-                            {isFr ? 'Notre Mission' : 'Our Mission'}
+                            {isFr ? 'Volet Social' : 'Social Impact'}
                         </Badge>
                         <h1 className="font-heading text-4xl font-black leading-tight tracking-tight text-foreground md:text-6xl lg:text-7xl">
-                            {title}
+                            {isFr ? 'Volet Social' : 'Social Impact'}
                         </h1>
                         <p className="mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">
                             {isFr
